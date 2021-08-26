@@ -1,0 +1,56 @@
+:host{
+    button{
+        background: var(--color-primary);
+        height:50px;
+        min-width:130px;
+        line-height:50px;
+        border:none;
+        border-radius:50px;
+        color:#fff;
+        font-size:16px;
+        position: relative;
+        padding:0 15px;
+        font-weight:bold;
+        cursor: pointer;
+        svg{
+            position: absolute;
+            top:0px;
+            right:0px;
+        }
+        &.blue-lite{
+            background:var(--color-primary-lite);
+        }
+        &.blue-lite-extra{
+            background:var(--color-primary-lite-extra);
+        }
+        &.black{
+            background:#000;
+        }
+        &.success{
+            background:var(--color-success);
+        }
+        &.danger{
+            background:var(--color-danger);
+        }
+        &.small{
+            height:36px;
+            line-height:36px;
+            border-radius:36px;
+            font-size:14px;
+            min-width:100px;
+        }
+        &.extra-small{
+            height:25px;
+            line-height:25px;
+            border-radius:25px;
+            font-size:11px;
+            min-width:80px;
+        }
+    }
+    &.disabled{
+        pointer-events: none; 
+    }
+    &.disabled button{
+        background:#bbb;
+    }
+}

@@ -1,0 +1,259 @@
+<div class="flex end-xs mb-5">
+    <span *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--color-success);" class="dot"></span>
+    <span *ngIf="pendingApprovalCount > 0" class="dot" style="background-color: var(--color-danger);"></span>
+    <span *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="dot" style="background-color: var(--color-warning);"></span>
+</div>
+<div style="display: grid;grid-template-columns: 1fr 1fr 1fr;">
+    <h2 class="heading">Team Timesheets
+    </h2>
+    <div>
+        <div class="flex center-xs mt-10">
+            <a [dbdFileDownload]="{endPoint:'downloadwst/',responseType:'blob'}" style="display:grid;max-height: 10px;">
+                <p class="pr-50 wsr-download">WTR <br>
+                    <span class="ml-3" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:20}" style="color:var(--color-tertiary);" svg-fill="currentColor"></span>
+                </p>
+            </a>
+            <a [dbdFileDownload]="{endPoint:'downloadwsr/',responseType:'blob'}" style="display:grid;max-height: 10px;">
+                <p class="wsr-download">WSR<br>
+                    <span class="ml-3" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:20}" style="color:var(--color-tertiary);" svg-fill="currentColor"></span>
+                </p>
+            </a>
+        </div>
+    </div>
+    <form #searchForm="ngForm" [formGroup]="fgSearch">
+        <div class="flex end-xs top-xs ">
+            <mat-form-field>
+                <mat-select formControlName="filtervalue" (selectionChange)="onSubmitSearch($event.value,1,paginator.pageSize,1)">
+                    <mat-option *ngFor="let item of filterArray" [value]="item.value">
+                        {{item.Name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<!-- <div class="flex end-xs mb-10">
+    <span class="dot"></span>
+</div> -->
+<!-- <form #searchForm="ngForm" class="mt-30" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch()">
+    <div class="flex " style="max-width:800px;">
+        <mat-form-field class="formField lite" style="flex-grow:1;">
+            <mat-label>Search <sup>*</sup>
+            </mat-label>
+            <input autocomplete="off" matInput type="email" placeholder="Enter username" formControlName="username">
+            <mat-error *ngIf="fgSearch.controls.username.hasError('required')">
+                Please enter a username string
+            </mat-error>
+        </mat-form-field>
+        <div class="flex middle-xs" style="height:60px;">
+            <app-button type="button" theme="black" (click)="searchForm.resetForm()" class=" ml-15">Reset</app-button>
+            <app-button class=" ml-15">Submit</app-button>
+        </div>
+    </div>
+</form> -->
+<div class="timesheet">
+    <div class="timesheet__overlay">
+        <div class="timesheet__weekend-overlay">
+
+        </div>
+    </div>
+    <div class="timesheet__head-days" *ngIf="timesheetsData.length > 0">
+        <div class="week">Week {{timesheetsData[0]?.week_number}}</div>
+        <div *ngFor="let day of timesheetsData[0]?.days;" class="mb-15">{{day | date:'EEE, dd LLL'}}</div>
+        <div>Total</div>
+    </div>
+
+    <ng-container *ngFor="let timesheet of timesheetsData;let ts_index=index">
+        <div class="mb-15">
+            <div class="timesheet__head-name" *ngIf="timesheetsData.length > 0">
+                <div class="timesheet__name" *ngIf="timesheet.status == 3">
+                    {{timesheet?.emp_name}} <span class="dot-red"></span>
+                </div>
+                <div class="timesheet__name" *ngIf="timesheet.status != 3">
+                    {{timesheet?.emp_name}}
+                </div>
+                <div class="timesheet__actions">
+                    <app-button class="timesheet__approve pointer pointer mr-30" size='small' theme="blue-lite" (click)="onClickViewWSR(timesheet.emp_id)">View WSR</app-button>
+                    <div *ngIf="enableFlag">
+                        <div *ngIf="timesheet.status == 0 || timesheet.status == 3">
+                            <app-button class="timesheet__approve pointer ml-15" size='small' theme="success" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,1,ts_index)">Approve</app-button>
+                            <app-button class="timesheet__reject ml-15" size='small' theme="danger" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,2)">Reject</app-button>
+                        </div>
+                        <div *ngIf="timesheet.status == 1" class="flex">
+                            <div class="wts-approved">Approved</div>
+                            <app-button class="timesheet__reject ml-15" size='small' theme="danger" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,2)">Reject</app-button>
+                            <!-- <app-button class="timesheet__approve ml-15 pointer-none" size='small' theme="success">Approved
+                        </app-button> -->
+                        </div>
+                        <div *ngIf="timesheet.status == 2">
+                            <div class="wts-rejected">Rejected</div>
+                            <!-- <app-button class="timesheet__reject ml-15 pointer-none" size='small' theme="danger">Rejected
+                        </app-button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timesheet__row timesheet--total">
+                <div class="total">
+                    Total
+                </div>
+                <ng-container *ngFor="let x of [1,2,3,4,5,6,7];let i=index;">
+                    <div [ngClass]="{'red_total':timesheet['total_highlight'][i]}" *ngIf="timesheet?.active_projects || timesheet?.VACATION || timesheet?.MISCELLANEOUS || timesheet?.HOLIDAY">
+                        <div>{{getTotal(timesheet.active_projects,timesheet.VACATION,timesheet.MISCELLANEOUS,timesheet.HOLIDAY,i)}}</div>
+                    </div>
+                </ng-container>
+                <div>{{timesheet?.allProjTotal}}</div>
+            </div>
+            <div class="timesheet__row timesheet--sub-total">
+                <div class="sub-total">
+                    Project Sub Total
+                </div>
+                <ng-container *ngFor="let x of [1,2,3,4,5,6,7];let i=index;">
+                    <div *ngIf="timesheet.active_projects">
+                        <div>{{getSubTotal(timesheet.active_projects,i)}}</div>
+                    </div>
+                </ng-container>
+                <div>{{timesheet?.projSubTotal}}</div>
+            </div>
+            <div class="timesheet__body">
+                <div class="timesheet__row" *ngFor="let project of timesheet?.active_projects;let i=index;">
+                    <ng-container *ngIf="project.visibilityFlag">
+                        <div class="project">
+                            {{project?.project_name}} [{{project.cumulative.h | number:'2.'}} : {{project.cumulative.m | number:'2.'}}]
+                        </div>
+                        <ng-container *ngFor="let day of project?.work_hours;let j=index;">
+                            <div>{{day.h}} : {{day.m | number:'2.'}}
+                            </div>
+                        </ng-container>
+                        <div>{{projectWeekTotal(project?.work_hours)}}</div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="timesheet__row timesheet--misc mb-10">
+                <div class="misc">
+                    Miscellaneous
+                </div>
+                <ng-container *ngFor="let day of timesheet?.MISCELLANEOUS?.work_hours;let i=index;">
+                    <div>{{day.h}} : {{day.m | number:'2.'}}
+                    </div>
+                </ng-container>
+                <div>{{projectWeekTotal(timesheet?.MISCELLANEOUS?.work_hours)}}</div>
+            </div>
+            <div class="timesheet__row timesheet--holi mb-10">
+                <div class="holi">
+                    Holiday
+                </div>
+                <ng-container *ngFor="let day of timesheet?.HOLIDAY?.work_hours;let i=index;">
+                    <div>{{day.h}} : {{day.m | number:'2.'}}
+                    </div>
+                </ng-container>
+                <div>{{projectWeekTotal(timesheet?.HOLIDAY?.work_hours)}}</div>
+            </div>
+            <div class="timesheet__row  timesheet--vacation">
+                <div class="vacation">
+                    Vacation
+                </div>
+                <ng-container *ngFor="let day of timesheet?.VACATION?.work_hours;let i=index;">
+                    <div>{{day.h}} : {{day.m | number:'2.'}}
+                    </div>
+                </ng-container>
+                <div>{{projectWeekTotal(timesheet?.VACATION?.work_hours)}}</div>
+            </div>
+            <ng-container *ngIf="timesheet.attendance_flag">
+                <div style="border: 2px solid #f5dcb8; padding: 5px 0px; background: #f5dcb8;">
+
+                    <div class="timesheet__row  timesheet--vacation">
+                        <div class="net">
+                            Net Working Hours<br><span class="fs-12" style="text-align: center;">(from Access Control)</span>
+                        </div>
+                        <ng-container *ngFor="let day of timesheet?.net_working_hours;let i=index;">
+                            <div>{{day.h}} : {{day.m | number:'2.'}}
+                            </div>
+                        </ng-container>
+                        <div>{{projectWeekTotal(timesheet?.net_working_hours)}}</div>
+                    </div>
+
+                    <div class="timesheet__row  timesheet--gross">
+                        <div class="gross">
+                            Gross Working Hours<br><span class="fs-12" style="text-align: center;">(from Access Control)</span>
+                        </div>
+                        <ng-container *ngFor="let day of timesheet?.gross_working_hours;let i=index;">
+                            <div>{{day.h}} : {{day.m | number:'2.'}}
+                            </div>
+                        </ng-container>
+                        <div>{{projectWeekTotal(timesheet?.gross_working_hours)}}</div>
+                    </div>
+
+                </div>
+            </ng-container>
+
+        </div>
+    </ng-container>
+</div>
+<mat-paginator *ngIf="timesheetsData.length > 0" #refPaginator [length]="totalTimesheetsLength" [pageSize]="paginator.pageSize" [pageSizeOptions]="paginator.pageSizeOptions" (page)="onChangePage($event)">
+</mat-paginator>
+<div *ngIf="timesheetsData?.length == 0">
+    <p class="p-15 dis-ib" style="background:#ccc;">None</p>
+</div>
+
+<app-modal-popup #refModalRejectComments [w]="600" [h]="300">
+    <div head>
+        Enter comments
+    </div>
+    <form #commentForm="ngForm" [formGroup]="fgRejectionComments" (ngSubmit)="onModalCommentSubmit(fgRejectionComments.value)">
+        <!-- <mat-form-field  style="flex-grow:1;"> -->
+        <!-- <mat-label>Comments <sup>*</sup>
+            </mat-label> -->
+        <textarea matInput formControlName="comments" class="reject-textarea" placeholder="Enter comments *"></textarea>
+        <!-- <div *ngIf="fgRejectionComments.controls?.comments.hasError('required')">
+                Please enter Comments
+            </div> -->
+        <!-- </mat-form-field> -->
+        <div class="flex end-xs middle-xs mt-20">
+            <app-button [class.disabled]="!fgRejectionComments?.controls['comments']?.value?.length">Submit
+            </app-button>
+        </div>
+    </form>
+</app-modal-popup>
+
+<app-modal-popup #refModalApproveComments [w]="600" [h]="300">
+    <div head>
+        Enter comments
+    </div>
+    <p style="color: red;">
+        Swipe hours are not available but project hours available 
+    </p>
+    <form #commentForm="ngForm" [formGroup]="fgRejectionComments" (ngSubmit)="onSubmitApprove(fgRejectionComments.value)">
+        <!-- <mat-form-field  style="flex-grow:1;"> -->
+        <!-- <mat-label>Comments <sup>*</sup>
+            </mat-label> -->
+        <textarea matInput formControlName="comments" class="reject-textarea" placeholder="Enter comments *"></textarea>
+        <!-- <div *ngIf="fgRejectionComments.controls?.comments.hasError('required')">
+                Please enter Comments
+            </div> -->
+        <!-- </mat-form-field> -->
+        <div class="flex end-xs middle-xs mt-20">
+            <app-button [class.disabled]="!fgRejectionComments?.controls['comments']?.value?.length">Submit
+            </app-button>
+        </div>
+    </form>
+</app-modal-popup>
+
+<app-modal-popup #refModalViewWsr [w]="'70%'" [h]="'60%'">
+
+    <h2 head>Weekly Status Report</h2>
+    <ng-container *ngFor="let data of wsrData;let i=index;">
+        <div>
+            <div *ngFor="let project of data.active_projects;let i=index;">
+                <ng-container *ngIf="project.visibilityFlag">
+                    <div class="wsr__project-name">{{project?.project_name}}</div>
+                    <textarea disabled class="wsr__project-text mb-30 p-5">{{project.work_report}}</textarea>
+                </ng-container>
+            </div>
+        </div>
+        <ng-container *ngIf="data.GENERAL.visibilityFlag">
+            <div class="wsr__project-name">General</div>
+            <textarea disabled class="wsr__project-text mb-30 p-5">{{data.GENERAL.work_report}}</textarea>
+        </ng-container>
+    </ng-container>
+</app-modal-popup>

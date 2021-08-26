@@ -1,0 +1,36 @@
+<div class="overlay" #overlay style="display:none;">
+    <div   [ngStyle]="{
+        width:widthToSet,
+        height:heightToSet,
+        'max-width':maxWidthToSet,
+        'max-height':maxHeightToSet,
+        'min-width':minWidthToSet,
+        'min-height':minHeightToSet
+    }" class="modal-content" #content>
+        <!--The heading of the pop up with angular transclusion using attribute head-->
+        <div *ngIf="head" class="head">
+            <ng-content select="[head]"></ng-content>
+            <div class="close" #content>
+                <!-- <mat-icon class="white-icon">close</mat-icon> -->
+                <div (click)="close()" [svgIcon]="{url:'./assets/icons-sprite.svg#close-circle',w:30}"
+                    style="fill:#fff;cursor:pointer;" class="closebutton"></div>
+            </div>
+        </div>
+
+        <!-- The content for the main content area of the pop up -->
+        <div class="middle">
+            <!-- <wyniki-scroll-bar [takeMinParentHeight]="true" [autoUpdate]="true" style="height:100%;" idd="test" #scrollbar> -->
+            <div class="p-30" style="height:100%;">
+                <ng-content></ng-content>
+            </div>
+            <!-- </wyniki-scroll-bar> -->
+        </div>
+
+        <!--The content for the foot of the pop up with angular transclusion using attribute foot-->
+        <!-- <div *ngIf="foot" class="foot">
+            <ng-content select="[foot]"></ng-content>
+        </div> -->
+
+    </div>
+
+</div>

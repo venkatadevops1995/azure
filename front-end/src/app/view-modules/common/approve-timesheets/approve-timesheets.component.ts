@@ -1,0 +1,453 @@
+import { ModalPopupComponent } from './../../../components/modal-popup/modal-popup.component';
+import { SingletonService } from 'src/app/services/singleton.service';
+import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { Subject } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { HttpClientService } from 'src/app/services/http-client.service';
+
+@Component({
+  selector: 'app-approve-timesheets',
+  templateUrl: './approve-timesheets.component.html',
+  styleUrls: ['./approve-timesheets.component.scss']
+})
+export class ApproveTimesheetsComponent implements OnInit {
+
+  // subject to emit for clearing the subscriptions
+  destroy$: Subject<any> = new Subject();
+
+  // template ref element for the modal pop up of reject comments
+  @ViewChild('refModalRejectComments') modalRejectComments: ModalPopupComponent;
+
+  @ViewChild('refModalApproveComments') modalApproveComments: ModalPopupComponent;
+
+  // template ref element for the modal pop up of view wsr
+  @ViewChild('refModalViewWsr') modalViewWsr: ModalPopupComponent;
+
+  // form group for search form
+  fgSearch: FormGroup;
+
+  // rejection comments form group 
+  fgRejectionComments: FormGroup;
+
+ //coments form reference to reset the form
+  @ViewChild('commentForm')commentForm;
+
+  //updating the page no
+  page = 1;
+
+  //filter for timesheets
+  filterArray: any = [{ 'Name': 'All', value: -1 }, { 'Name': 'Pending', value: 0 }, { 'Name': 'Approved', value: 1 }, { 'Name': 'Rejected', value: 2 }, { 'Name': 'NC', value: 3 }]
+
+  //Enable flag for all buttons 
+  enableFlag: boolean;
+
+  //sending request post to backend
+  requestBody: any = {};
+
+  //counting status of each employee with the following variables
+  pendingApprovalCount = 0;
+  rejectedCount = 0;
+
+  // all timesheets data
+  timesheetsData: Array<any> = [];
+  
+  //paginator ref
+  @ViewChild('refPaginator') refPaginator: MatPaginator;
+  
+  // emp wsr data
+  wsrData: Array<any> = [];
+
+  //timesheets length
+  totalTimesheetsLength = 0;
+  // timesheetsData: Array<any> = [
+  //   {
+  //     emp_name: "Name",
+  //     week_number: 18,
+  //     days: ["2020-05-02", "2020-05-03", "2020-05-04", "2020-05-05", "2020-05-06", "2020-05-07", "2020-05-08"],
+  //     active_projects: [
+  //       {
+  //         project_name: "test 1",
+  //         work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //       }
+  //     ],
+  //     "VACATION": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     },
+  //     "MISCELLANEOUS": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     }
+  //   },
+  //   {
+  //     emp_name: "Name 2",
+  //     week_number: 18,
+  //     days: ["2020-05-02", "2020-05-03", "2020-05-04", "2020-05-05", "2020-05-06", "2020-05-07", "2020-05-08"],
+  //     active_projects: [
+  //       {
+  //         project_name: "test 1",
+  //         work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //       }
+  //     ],
+  //     "VACATION": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     },
+  //     "MISCELLANEOUS": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     }
+  //   },
+  //   {
+  //     emp_name: "Name 3",
+  //     week_number: 18,
+  //     days: ["2020-05-02", "2020-05-03", "2020-05-04", "2020-05-05", "2020-05-06", "2020-05-07", "2020-05-08"],
+  //     active_projects: [
+  //       {
+  //         project_name: "test 1",
+  //         work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //       }
+  //     ],
+  //     "VACATION": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     },
+  //     "MISCELLANEOUS": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     }
+  //   },
+  //   {
+  //     emp_name: "Name 4",
+  //     week_number: 18,
+  //     days: ["2020-05-02", "2020-05-03", "2020-05-04", "2020-05-05", "2020-05-06", "2020-05-07", "2020-05-08"],
+  //     active_projects: [
+  //       {
+  //         project_name: "test 1",
+  //         work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //       }
+  //     ],
+  //     "VACATION": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     },
+  //     "MISCELLANEOUS": {
+  //       work_hours: [{ h: 0, m: 15 }, { h: 7, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 0, m: 15 }, { h: 8, m: 15 }]
+  //     }
+  //   }
+  // ];
+
+  // mat paginator settings
+  paginator: any = {
+    length: 3,
+    pageSize: 3,
+    pageSizeOptions: [3, 6, 9]
+  }
+
+  constructor(
+    private el: ElementRef,
+    private ss: SingletonService,
+    private http: HttpClientService
+  ) {
+
+    this.fgSearch = this.ss.fb.group({
+      filtervalue: ["", [Validators.required]],
+    })
+    this.fgRejectionComments = this.ss.fb.group({
+      comments: ["", [Validators.required]],
+    })
+
+  }
+
+  ngOnInit(): void {
+    this.fgSearch.controls['filtervalue'].setValue(-1);
+    this.onSubmitSearch(-1,1,this.paginator.pageSize);
+  }
+
+  // onclicking the host
+  @HostListener('click', ['$event'])
+  onClickHost(e: Event) {
+    let target = e.target;
+    let tempTarget: any = target;
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('timesheet__approve')) {
+        console.log("approve")
+        break;
+      } else if (tempTarget.classList.contains('timesheet__reject')) {
+        console.log("reject")
+        this.modalRejectComments.open();
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
+    }
+  }
+
+  // on submitting the search by filter form
+  onSubmitSearch(value,page,count,change?) {
+    if (change == 1){
+      if(this.refPaginator)
+      this.refPaginator.firstPage();
+    }
+    this.http.request("get", 'employeeswstdata/', 'status=' + value + '&page=' +page+'&itms_per_page='+this.paginator.pageSize).subscribe(res => {
+      if (res.status == 200) {
+        this.timesheetsData = res.body['results'];
+        // console.log(this.timesheetsData);
+        for (let i = 0; i < this.timesheetsData.length; i++) {
+        
+          let totHoliHours =  this.timesheetsData[i]['HOLIDAY'].work_hours.map(item => item.h).reduce((prev, next) => prev + next);
+          let totHoliMins =  this.timesheetsData[i]['HOLIDAY'].work_hours.map(item => item.m).reduce((prev, next) => prev + next);
+          let totVacHours =  this.timesheetsData[i]['VACATION'].work_hours.map(item => item.h).reduce((prev, next) => prev + next);
+          let totVacMins =  this.timesheetsData[i]['VACATION'].work_hours.map(item => item.m).reduce((prev, next) => prev + next);
+          let totMisHours =  this.timesheetsData[i]['MISCELLANEOUS'].work_hours.map(item => item.h).reduce((prev, next) => prev + next);
+          let totMisMins =  this.timesheetsData[i]['MISCELLANEOUS'].work_hours.map(item => item.m).reduce((prev, next) => prev + next);
+          let proj_work = [];
+          let proj_work_hours = [];
+          this.timesheetsData[i]['active_projects'].forEach(element => {
+            element.work_hours.forEach(element1 => {
+              proj_work_hours.push(element1);
+            });
+          });
+          console.log("---------",proj_work_hours,i);
+
+          let projects_total_hours = [[],[],[],[],[],[],[]]
+          this.timesheetsData[i]['active_projects'].forEach(element => {
+            for(let k=0;k<7;k++){
+              projects_total_hours[k].push(element.work_hours[k]);
+            }
+          });
+          this.timesheetsData[i]['total_highlight'] = []
+          this.timesheetsData[i]['total_project_work_mins'] = []
+          let daywise_projects_total_hours = this.getProjectTotal(projects_total_hours)
+          let gross_working_hours = this.timesheetsData[i]['gross_working_hours']
+          for(let k=0;k<7;k++){
+            if((this.ss.attendanceFlag==true)&&(gross_working_hours[k]['h']*60 + gross_working_hours[k]['m'])==0 && daywise_projects_total_hours[k]>0 ){
+              this.timesheetsData[i]['total_highlight'].push(true)
+              this.timesheetsData[i]['total_project_work_mins'].push([true,daywise_projects_total_hours[k]])
+            }else{
+              this.timesheetsData[i]['total_highlight'].push(false)
+              this.timesheetsData[i]['total_project_work_mins'].push([false,daywise_projects_total_hours[k]])
+            }
+            
+
+          }
+          
+          // let daywise_projects_total_hours = projects_total_hours.map(item => item.h).reduce((prev, next) => prev + next);
+
+          let totProjHours =  proj_work_hours.map(item => item.h).reduce((prev, next) => prev + next);
+          let totProjMins =  proj_work_hours.map(item => item.m).reduce((prev, next) => prev + next);
+
+
+          if(totProjMins >= 60){
+            totProjHours = totProjHours + Math.floor(totProjMins/60);
+            totProjMins = totProjMins % 60;
+            }
+            // console.log(active);
+            this.timesheetsData[i].projSubTotal =   ("00" + totProjHours).slice(-JSON.stringify(totProjHours).length)+ ' : ' + ("00" + totProjMins).slice(-2)
+            let allProjTotalHours = totProjHours + totHoliHours + totMisHours + totVacHours; 
+            let allProjTotalMins = totProjMins + totMisMins + totHoliMins + totVacMins;
+            if(allProjTotalMins >= 60){
+              allProjTotalHours = allProjTotalHours + Math.floor(allProjTotalMins/60);
+              allProjTotalMins = allProjTotalMins % 60;
+              }
+              this.timesheetsData[i].allProjTotal = ("00" + allProjTotalHours).slice(-JSON.stringify(allProjTotalHours).length)+ ' : ' + ("00" + allProjTotalMins).slice(-2)
+          }
+        this.enableFlag = res.body['enableFlag'];
+        this.totalTimesheetsLength = res.body['total'];
+      }
+    })
+    this.http.request("get", 'statuswisetimesheetcount/').subscribe(res => {
+      if (res.status == 200) {
+
+        let timesheetsData = res.body;
+        this.pendingApprovalCount = timesheetsData.pending_cnt + timesheetsData.entry_complaince_cnt;
+        this.rejectedCount = timesheetsData.rejected_cnt;
+        
+        this.ss.resTimeSheet$.next({
+          rc: this.rejectedCount,
+          pac : this.pendingApprovalCount
+        })
+      }
+    })
+
+  }
+
+  //on clicking view wsr show wsr of emp
+  onClickViewWSR(emp_id){
+    this.http.request("get", 'getwsr/','empid='+emp_id).subscribe(res => {
+      if (res.status == 200) {
+        this.wsrData = res.body;
+        console.log(this.wsrData);
+        
+      }
+    this.modalViewWsr.open();
+    })
+  }
+
+  // on page change of the pagination for the timesheets
+  onChangePage(e: PageEvent) {
+    console.log(e);
+    
+    this.page = this.page + e.pageIndex - e.previousPageIndex;
+    this.paginator.pageSize = e.pageSize;
+    this.onSubmitSearch(this.fgSearch.value.filtervalue,this.page,e.pageSize)
+  }
+
+  //on clicking on approve or reject
+  onClickApprove(work_week, emp_id, year,status,i=undefined) {
+    
+    this.requestBody = {};
+    this.requestBody.work_week = work_week;
+    this.requestBody.emp_id = emp_id;
+    this.requestBody.status = status;
+    this.requestBody.year = year;
+    this.requestBody.attendance_ts_approved_dates = []
+    this.requestBody.attendance_ts_work_minutes = []
+    console.log(this.requestBody);
+    var attendance_data_confict = false
+    if(i!=undefined){
+      for(let j=0;j<this.timesheetsData[i]['total_project_work_mins'].length;j++){
+        if(this.timesheetsData[i]['total_project_work_mins'][j][0]==true){
+          this.requestBody.attendance_ts_approved_dates.push(this.timesheetsData[i]['days'][j])
+          this.requestBody.attendance_ts_work_minutes.push(this.timesheetsData[i]['total_project_work_mins'][j][1])
+        attendance_data_confict = true
+      }
+    }
+      
+    }
+    if (status == 1) {
+      if(attendance_data_confict == true){
+        this.commentForm.resetForm();
+        this.modalApproveComments.open();
+      }
+      else{
+
+        this.http.request("post", 'approve-emp-timesheet/', '', this.requestBody).subscribe(res => {
+          if (res.status == 201) {
+            this.ss.statusMessage.showStatusMessage(true, 'Status Updated Sucessfully');
+            this.onSubmitSearch(this.fgSearch.value.filtervalue,this.page,this.paginator.pageSize);
+          }
+          else {
+            this.ss.statusMessage.showStatusMessage(false, 'Something went wrong')
+          }
+        })
+      }
+    }
+
+    else {
+      this.commentForm.resetForm();
+      this.modalRejectComments.open();
+    }
+  }
+
+  onSubmitApprove(value){
+    this.requestBody.rm_comments = value.comments;
+
+      this.http.request("post", 'approve-emp-timesheet/', '', this.requestBody).subscribe(res => {
+        if (res.status == 201) {
+          this.ss.statusMessage.showStatusMessage(true, 'Status Updated Sucessfully');
+          this.modalApproveComments.close();
+          this.onSubmitSearch(this.fgSearch.value.filtervalue,this.page,this.paginator.pageSize);
+        }
+        else {
+          this.ss.statusMessage.showStatusMessage(false, 'Something went wrong')
+        }
+      })
+  }
+
+
+
+  //Modal comments reject submisson
+  onModalCommentSubmit(value) {
+    console.log(value);
+
+    if (this.fgRejectionComments.valid) {
+      this.requestBody.comments = value.comments;
+      this.http.request("post", 'approve-emp-timesheet/', '', this.requestBody).subscribe(res => {
+        if (res.status == 201) {
+          this.ss.statusMessage.showStatusMessage(true, 'Status Updated Sucessfully');
+          this.modalRejectComments.close();
+          this.onSubmitSearch(this.fgSearch.value.filtervalue,this.page,this.paginator.pageSize);
+        }
+        else {
+          this.ss.statusMessage.showStatusMessage(false, 'Something went wrong')
+        }
+      })
+    }
+  }
+
+
+  //get total hours and minutes of weekly wise
+  projectWeekTotal(hours){
+	  let TotHours = 0;
+	  let TotMins = 0;
+	//   console.log(hours);
+	  
+	  hours.forEach(element => {
+		if(element.h >=0){
+		TotHours =+ TotHours + element.h;
+	}
+	if(element.h >=0){
+		TotMins =+ TotMins + element.m;
+	}
+	  });
+	  if(TotMins >= 60){
+		TotHours = TotHours + Math.floor(TotMins/60);
+		TotMins = TotMins % 60;
+	  }
+	  // console.log(active);
+	  return   ("00" + TotHours).slice(-JSON.stringify(TotHours).length)+ ' : ' + ("00" + TotMins).slice(-2)
+     
+	}
+
+ //get total for active projects
+  getSubTotal(active,index){
+    let hours = 0;
+    let minutes = 0;
+    active.forEach(element => {
+      hours  += element.work_hours[index].h
+      minutes += element.work_hours[index].m
+    });
+    if(minutes >= 60){
+      hours = hours + Math.floor(minutes/60);
+      minutes = minutes % 60;
+    }
+    // console.log(active);
+    return   ("00" + hours).slice(-JSON.stringify(hours).length)+ ' : ' + ("00" + minutes).slice(-2)
+  }
+
+
+  //get total for projects
+  getTotal(active,vacation,mis,holi,index){
+    let hours = 0;
+    let minutes = 0;
+    active.forEach(element => {
+      hours  += element.work_hours[index].h
+      minutes += element.work_hours[index].m
+    });
+    hours += vacation.work_hours[index].h
+    minutes   += vacation.work_hours[index].m
+    hours += mis.work_hours[index].h
+    minutes   += mis.work_hours[index].m
+    hours += holi.work_hours[index].h
+    minutes   += holi.work_hours[index].m
+    if(minutes >= 60){
+      hours = hours + Math.floor(minutes/60);
+      minutes = minutes % 60;
+    }
+    // console.log(active);
+    return   ("00" + hours).slice(-JSON.stringify(hours).length)+ ' : ' + ("00" + minutes).slice(-2)
+    
+  }
+  getProjectTotal(pr){
+    let total = [];
+
+    for(let index=0;index< pr.length;index++){
+
+      total.push( pr[index].map(item => (item['h']*60 + item['m'])).reduce((prev, next) => prev + next));
+      
+    }
+    
+    return total
+  }
+
+  getColor(active,vacation,mis,holi,index,gross_working_hours){
+    let hours = this.getTotal(active,vacation,mis,holi,index)
+    console.log("=================",hours,gross_working_hours[index])
+    return {'red_total':false}
+  }
+
+}

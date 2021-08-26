@@ -1,0 +1,26 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ImportExportLeaveComponent } from './import-export-leave.component';
+import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
+import { FileUploadModule } from 'src/app/components/input-file/input-file.module';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { ButtonModule } from 'src/app/components/button/button.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
+
+
+@NgModule({
+  declarations: [ImportExportLeaveComponent],
+  imports: [
+    CommonModule,
+    SvgIconModule,
+    FileDownloadModule,
+    FileUploadModule,
+    ButtonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule
+  ]
+})
+export class ImportExportLeaveModule { }

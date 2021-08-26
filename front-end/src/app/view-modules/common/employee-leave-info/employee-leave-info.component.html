@@ -1,0 +1,148 @@
+<div>
+    <!-- <form [formGroup]="filterForm">
+        <h2 style="color:var(--color-primary)">
+            Search Employee
+        </h2>
+        <div class="w-50 flex">
+            <div>
+                <mat-form-field style="width:250px; margin: 5px;">
+                    <mat-label>Search</mat-label>
+                    <input type="text" autocomplete="off" placeholder="Enter search text" aria-label="Number" matInput formControlName="filter">
+                </mat-form-field>
+            </div>
+            <div style="margin: 10px 5px;">
+                <app-button size='default' theme="blue-lite" type="button" w="130" (click)="filterForm.reset()">Reset</app-button>
+            </div>
+        </div>
+    </form> -->
+    <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
+        <!-- <h2 style="color:var(--color-primary)">
+            Leader Name
+        </h2> -->
+        <div class="flex" style="justify-content:space-between;">
+            <!-- <mat-form-field>
+                <mat-select formControlName="filtervalue" (selectionChange)="onSubmitSearch($event.value)">
+                    <mat-option *ngFor="let item of filterArray" [value]="item.emp_id">
+                        {{item.emp_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+            <div class="flex w-50">
+                <mat-form-field class="w-50 mr-10">
+                    <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl" [(ngModel)]="value">
+                    <button style="background: none;border:none;" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                        <mat-icon>arrow_drop_down</mat-icon>
+                      </button>
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
+                            {{state.emp_name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <!-- <p *ngIf="show" style="color: var(--color-danger);">Select Leader from list</p> -->
+                <div class="flex end-xs middle-xs" style="margin-top: -25px;">
+                    <app-button>Submit
+                    </app-button>
+                </div>
+            </div>
+            <!-- <div *ngIf="showMisDownload" class="fs-18 p-10 download-bn" style="color: #067bca;cursor:pointer;justify-content:space-between;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">
+                MIS
+                <span [svgIcon]="{url:'./assets/icons-sprite.svg#download',w:15}" style="color:var(--color-tertiary);" svg-fill="currentColor" class="ml-5 mt-3"></span>
+            </div> -->
+        </div>
+    </form>
+</div>
+<table mat-table [dataSource]="EMP_LEAVE_FILTERED_DATA" *ngIf="EMP_LEAVE_FILTERED_DATA.length!=0" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="emp_name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="company">
+        <th mat-header-cell *matHeaderCellDef> Group </th>
+        <td mat-cell *matCellDef="let element"> {{element.company}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="staff_no">
+        <th mat-header-cell *matHeaderCellDef>Staff No. </th>
+        <td mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="currLvBal">
+        <th mat-header-cell *matHeaderCellDef style="width:20%;"> Current Leave Balance </th>
+        <td mat-cell *matCellDef="let element"> {{element.outstanding_leave_bal}} </td>
+    </ng-container>
+
+
+
+
+    <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef> Edit</th>
+        <td mat-cell *matCellDef="let element;let i = index">
+            <button type="button" style="border: none;background-color: #f6fafd;" (click)="openEditDialog(i)"><span class="material-icons">
+                mode_edit
+                </span></button>
+        </td>
+    </ng-container>
+
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+
+
+</table>
+
+<div *ngIf="EMP_LEAVE_FILTERED_DATA.length==0 && showMessage == true" class="p-20">
+    NO DATA AVAILABLE
+
+</div>
+
+
+<app-modal-popup #editLeaveDialog [w]="'30%'" [h]="'60%'">
+    <div head>
+        Edit Leave Balance
+    </div>
+    <p>
+        Edit Leave Balance for <b>{{edited_emp_name}}</b>
+    </p>
+    <ng-container>
+        <form [formGroup]="editLeaveForm" (ngSubmit)="updateLeave()">
+            <h2>Current Leave Balance: {{editLeaveForm.controls.currentLeaveBal.value}}</h2>
+
+
+
+
+
+            <mat-form-field class="max-w250">
+                <mat-label>Modify</mat-label>
+                <input type="number" placeholder="Enter leave balance" aria-label="Number" matInput formControlName="leave_credits" step="0.5">
+                <mat-error *ngIf="(editLeaveForm.controls.leave_credits.touched && editLeaveForm.controls.leave_credits.hasError('required'))">
+                    Please Enter Leave Balance
+                </mat-error>
+
+            </mat-form-field>
+            <div>
+
+                <textarea formControlName="comments" placeholder="Comments" class="update_leave_comment"></textarea>
+                <!-- <textarea matInput formControlName="comment" placeholder="comments"></textarea> -->
+                <mat-error id="mat-error-4" *ngIf="(editLeaveForm.controls.comments.touched && editLeaveForm.controls.comments.hasError('required'))">
+                    Please Enter Comments
+                </mat-error>
+            </div>
+
+            
+            <div mat-dialog-actions>
+                <div style="display: inline-block; text-align: center;margin-top:10px">
+                    <app-button size='small' theme="blue-lite" type="submit" [disabled]="editLeaveForm.invalid">Update</app-button>
+                </div>
+            </div>
+
+
+
+        </form>
+
+    </ng-container>
+</app-modal-popup>

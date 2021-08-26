@@ -1,0 +1,18 @@
+<button class="{{theme}} {{size}}" [disabled]="disabled" [attr.type]="type">
+    <ng-content></ng-content>
+    <svg width="80" height="50" *ngIf="size == 'default'">
+        <path stroke="#fff"
+            [attr.d]="'M 45 8 L 55 8 C 72 8, 72 25, 72 25 C 72 42, 55 42, 55 42 L 35 42 M 25 42 L 5 42 '" stroke="#fff"
+            stroke-opacity="0.3" stroke-width="2" fill="none"></path> 
+    </svg>
+    <svg width="50" height="36" *ngIf="size == 'small'"> 
+        <path stroke="#fff"
+            [attr.d]="'M 25 4 L 35 4 C 46 4, 46 18, 46 18 C 46 32, 35 32, 35 32 L 25 32 M 15 32 L 5 32  '" stroke="#fff"
+            stroke-opacity="0.3" stroke-width="2" fill="none"></path>
+    </svg>
+    <svg width="40" height="26" *ngIf="size == 'extra-small'"> 
+        <path stroke="#fff"
+            [attr.d]="'M 20 4 L 28 4 C 37 4, 37 13, 37 13 C 36 21, 30 21, 30 21 L 21 21 M 13 21 L 2 21  '" stroke="#fff"
+            stroke-opacity="0.3" stroke-width="1" fill="none"></path>
+    </svg>
+</button>

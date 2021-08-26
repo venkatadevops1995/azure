@@ -1,0 +1,28 @@
+<!-- used to store the svg sprite symbols fetched from svg file -->
+<app-svg></app-svg>
+
+<!-- loader used in http requests -->
+<app-loader></app-loader>
+
+<!-- progress bar which can be used in http requests -->
+<app-progress-bar></app-progress-bar>
+
+<!-- status message component for notifications -->
+<app-status-message></app-status-message>
+
+<div [class.layout]="!isPreSignIn" [class.presignin-layout]="!isPreSignIn"  >
+  <app-header style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-header>
+
+  <app-sidebar style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-sidebar>
+
+  <main>
+    <div>
+      <router-outlet></router-outlet> 
+    </div>
+  </main>
+  <app-footer *ngIf="!isPreSignIn"></app-footer>
+</div> 
+
+<!-- <ng-template #templateIsPreSignIn>
+  <router-outlet></router-outlet>
+</ng-template> -->

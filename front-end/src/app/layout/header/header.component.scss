@@ -1,0 +1,38 @@
+:host {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .change-password {
+        color: var(--color-tertiary);
+        font-size: 15px;
+    }
+    .logout {
+        color: var(--color-tertiary);
+        font-size: 13px;
+    }
+}
+
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+    background: rgb(106 228 207 / 60%) !important;
+}
+
+:host ::ng-deep .mat-slide-toggle-bar {
+    background: #675454 !important;
+}
+
+.common-grid {
+    display: grid;
+    align-items: center;
+}
+
+.l0-grid {
+    grid-template-columns: 300px 1fr;
+}
+
+.l2-l3-grid {
+    grid-template-columns: 300px 0.5fr 100px;
+}
+
+.hr-grid {
+    grid-template-columns: 300px 0.5fr 100px 100px;
+}

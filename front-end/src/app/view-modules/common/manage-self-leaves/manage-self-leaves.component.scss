@@ -1,0 +1,46 @@
+.grid {
+    display: grid;
+    grid-template-columns: auto;
+    justify-items: space-between;
+    align-content: center;
+}
+
+
+tr th {
+    background: #FFFFFF;
+    // color:hi;
+}
+
+table.history tr th {
+    background: #edf1f7;
+    // color:hi;
+}
+
+::ng-deep .md-drppicker.double {
+    min-width: 512px;
+}
+
+// ::ng-deep ngx-daterangepicker-material div {
+//     left: auto;
+// }
+::ng-deep .custompicker {
+     ::ng-deep .md-drppicker {
+        top: -100px!important;
+    }
+}
+
+.leave__comment {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #666;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: inherit;
+    // background-color: var(--color-gray-lite);
+}
+.negative-balance{
+    color:red;
+}
+.positive-balance{
+    color:green;
+}

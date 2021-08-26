@@ -1,0 +1,47 @@
+<app-pre-sign-in>
+    <h2 class="heading tac">Login!</h2>
+    <form #form="ngForm" class="mt-30" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
+        <mat-form-field class="formField lite">
+            <mat-label>Email <sup>*</sup>
+            </mat-label>
+            <input autocomplete="off" matInput type="email" placeholder="Enter email" formControlName="email">
+            <div class="center-xs middle-xs flex" matPrefix
+                 >
+                <div fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#user',w:35}" style="color:var(--color-tertiary);" svg-fill="currentColor"></div>
+            </div>
+            <mat-error *ngIf="fgLogin.controls.email.hasError('email')">
+                Please enter a valid email
+            </mat-error>
+            <mat-error *ngIf="fgLogin.controls.email.hasError('required')">
+                Please enter your email
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="formField lite">
+            <mat-label>Password <sup>*</sup>
+            </mat-label>
+            <input autocomplete="off" matInput [attr.type]="hidePassword ? 'password' : 'text'" placeholder="Enter password" formControlName="password">
+            <div class="center-xs middle-xs flex" matPrefix
+                 >
+                <div fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#key',w:35}" style="color:var(--color-tertiary);" svg-fill="currentColor"></div>
+            </div>
+            <mat-error *ngIf="fgLogin.controls.password.hasError('required')">
+                Please enter the password
+            </mat-error>
+
+            <div style="cursor: pointer;" matSuffix  
+                [attr.aria-label]="'Hide password'" (click)="hidePassword = !hidePassword" >
+                <div title="Show password" *ngIf="hidePassword"  matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye',w:25}"
+                    svg-fill="#333"></div>
+                <div title="Hide password" *ngIf="!hidePassword" matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye-slash',w:25}"
+                    svg-fill="#333"></div>
+            </div>
+        </mat-form-field>
+        <div class="flex end-xs mb-30 mt-20" >
+            <a style="color:var(--color-tertiary);"   [routerLink]="'/forgot-password'">Forgot password</a> 
+        </div>
+        <div class="flex center-xs">
+                <app-button type="button" (click)="form.resetForm()" class="mr-30" theme="blue-lite">Clear</app-button>
+                <app-button theme="black">Submit</app-button>
+        </div>
+    </form>
+</app-pre-sign-in>

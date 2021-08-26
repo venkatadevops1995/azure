@@ -1,0 +1,147 @@
+<div class="timesheet" [class.disable]="disable" *ngIf="showTimeSheet;else noTimeSheetData">
+    <div class="timesheet__overlay">
+        <div class="timesheet__weekend-overlay">
+
+        </div>
+    </div>
+    <div class="timesheet__head">
+        <div class="week">Week {{config?.week_number}}</div>
+        <div *ngFor="let day of config?.days;">
+            <ng-container *ngIf="day != 'Total'">
+                {{day | date:'EEE, dd LLL'}}
+            </ng-container>
+
+            <div *ngIf="day == 'Total'">{{day}}</div>
+        </div>
+        <!-- <div>Total</div> -->
+    </div>
+    <div class="timesheet__body">
+        <div class="timesheet__row" *ngFor="let project of visibleActiveProjects;let i=index;">
+            <div class="project">
+                {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} : {{project?.cumulative?.m | number:'2.' }}]
+                <div *ngIf="project.priority != 1 && !disable" [attr.data-index]='i' [svgIcon]="{url:'./assets/icons-sprite.svg#close-circle',w:25}" svg-fill="#666" class="timesheet__row-remove">
+
+                </div>
+            </div>
+            <ng-container *ngFor="let day of project?.work_hours;let j=index;">
+                <div *ngIf="day?.date != 'Total'">
+                    <app-time-field [index]="j" [formControl]="fgTimeFields['controls']['active_projects']['controls'][i].controls[j]" [editable]="!disable" [disabled]="!day?.enable"></app-time-field>
+                </div>
+                <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+            </ng-container>
+            <!-- <div >{{projectWeekTotal(project?.work_hours)}}</div> -->
+        </div>
+    </div>
+    <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project">
+        <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
+            <div style="pointer-events: none;" class="flex middle-xs center-xs">
+                <div class="mr-5" [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" svg-fill="currentColor"></div> Select Project
+            </div>
+            <div class="sel-project__project-list" *ngIf="showProjectList && hiddenActiveProjects.length > 0">
+                <div class="sel-project__project" [attr.data-project]="project?.project_id" [attr.index]="i" *ngFor="let project of hiddenActiveProjects;let i = index;">
+                    {{project?.project_name}}
+                </div>
+            </div>
+        </div>
+        <ng-container *ngFor="let x of [1,2,3,4,5,6,7,8]">
+            <div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="timesheet__row timesheet--misc">
+        <div class="misc">
+            Miscellaneous
+        </div>
+        <ng-container *ngFor="let day of config?.MISCELLANEOUS?.work_hours;let i=index;">
+            <div *ngIf="day.date != 'Total'">
+                <app-time-field [index]="i" [formControl]="fgTimeFields['controls']['MISCELLANEOUS']['controls'][i]" [editable]="!disable" [disabled]="!day?.enable"></app-time-field>
+            </div>
+            <div *ngIf="day.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+        </ng-container>
+        <!-- <div >{{projectWeekTotal(config?.MISCELLANEOUS?.work_hours)}}</div> -->
+    </div>
+    <div class="timesheet__row timesheet--holi">
+        <div class="holi">
+            Holiday
+        </div>
+        <ng-container *ngFor="let day of config?.HOLIDAY?.work_hours;let i=index;">
+            <div *ngIf="day?.date != 'Total'">
+                <app-time-field [index]="i" [formControl]="fgTimeFields['controls']['HOLIDAY']['controls'][i]" [editable]="!disable" [disabled]="!day?.enable"></app-time-field>
+            </div>
+            <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+        </ng-container>
+        <!-- <div >{{projectWeekTotal(config?.HOLIDAY?.work_hours)}}</div> -->
+    </div>
+    <div class="timesheet__row  timesheet--vacation">
+        <div class="vacation">
+            Vacation
+        </div>
+        <ng-container *ngFor="let day of config?.VACATION?.work_hours;let i=index;">
+            <div *ngIf="day?.date != 'Total'">
+                <app-time-field [index]="i" [formControl]="fgTimeFields['controls']['VACATION']['controls'][i]" [editable]="!disable" [disabled]="!day?.enable"></app-time-field>
+            </div>
+            <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+        </ng-container>
+        <!-- <div >{{projectWeekTotal(config?.VACATION?.work_hours)}}</div> -->
+    </div>
+    <div class="timesheet__row timesheet--total">
+        <div class="total">
+            Total
+        </div>
+        <ng-container *ngFor="let x of [1,2,3,4,5,6,7];let i=index;">
+            <div class="fs-16 total-value">
+                <!-- <app-time-field [editable]="false" 
+                    [formControl]="fgTotalTimeFields['controls']['total']['controls'][i]"></app-time-field> -->
+                {{totalDayTimeMeta[i]?.h | number:'2.'}} : {{totalDayTimeMeta[i]?.m | number:'2.'}}
+                <p class="error-total" *ngIf="totalDayTimeMeta[i]?.showError">The total hours for a day has to be less than 24.</p>
+            </div>
+        </ng-container>
+        <div>{{grandTotal}}</div>
+    </div>
+    <ng-container *ngIf="config.attendance_flag">
+        <div style="border: 2px solid #f5dcb8;padding: 5px 0px;background: #f5dcb8;">
+            <div class="timesheet__row  timesheet--nethours p-2">
+                <div class="nethours">
+                    Net Working Hours<br><span class="fs-12" style="text-align: center;">(from Access Control)</span>
+                </div>
+                <ng-container *ngFor="let day of config?.net_working_hours;let i=index;">
+                    <div *ngIf="day?.date != 'Total'">
+                        {{day.h | number:'2.'}} : {{day?.m | number:'2.'}}
+                    </div>
+                    <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+                </ng-container>
+                <!-- <div >{{projectWeekTotal(config?.VACATION?.work_hours)}}</div> -->
+            </div>
+
+            <div class="timesheet__row  timesheet--grosshours p-2">
+                <div class="grosshours">
+                    Gross Working Hours<br><span class="fs-12" style="text-align: center;">(from Access Control)</span>
+                </div>
+                <ng-container *ngFor="let day of config?.gross_working_hours;let i=index;">
+                    <div *ngIf="day?.date != 'Total'">
+                        {{day.h | number:'2.'}} : {{day?.m | number:'2.'}}
+                    </div>
+                    <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
+                </ng-container>
+                <!-- <div >{{projectWeekTotal(config?.VACATION?.work_hours)}}</div> -->
+            </div>
+        </div>
+    </ng-container>
+</div>
+<ng-template #noTimeSheetData>
+    <p class="p-15 dis-ib" style="background:#ccc;">None</p>
+</ng-template>
+
+<app-modal-popup [w]="500" [h]="250">
+    <div head="">
+        Confirm
+    </div>
+    <div class="p-15">
+        Are you sure you want to remove the project ? All entries will be lost.
+        <div class="mt-30 flex end-xs">
+            <app-button theme="black" class="mr-30 remove-project-cancel">Cancel</app-button>
+            <app-button class="remove-project-proceed">Proceed</app-button>
+        </div>
+    </div>
+</app-modal-popup>

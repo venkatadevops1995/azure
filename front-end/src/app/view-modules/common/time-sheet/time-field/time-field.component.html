@@ -1,0 +1,18 @@
+<input  #input type="number" [class.empty]="disabled" [disabled]="disabled" [attr.maxlength]="2" min="0" max="24">
+<p *ngIf="showErrorHours">Number must be between 0 and 24</p>
+<p *ngIf="showErrorHoliday"  class="{{errorTotalType}}">Hours filled for holiday</p>
+<p *ngIf="showErrorVacation"  class="{{errorTotalType}}">Hours filled for vacation</p>
+<p *ngIf="showErrorHalfVacation"  class="{{errorTotalType}}">More than 5 hours filled for half day vacation</p>
+<p *ngIf="showErrorTotal" class="{{errorTotalType}}">Total hours for this day cannot be more than 24. Please re-enter.</p>
+
+<div class="mins">
+    <div #refMinsActive [attr.tabindex]="disabled ? -1 : 0"  class="mins__active">
+        {{minsActive}}
+        <svg width="12" height="8">
+            <path d="M 0 0 L 12 0 L 6 8 L 0 0"></path>
+        </svg>
+        <ul *ngIf="showDropDown" class="mins__list">
+            <li [class.active]="inFocusMinIndex == i" class="mins__item" *ngFor="let min of minsDdValues;let i =index;" [attr.data-min]="min">{{min}}</li> 
+        </ul>
+    </div>
+</div>

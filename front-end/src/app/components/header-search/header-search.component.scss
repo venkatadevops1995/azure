@@ -1,0 +1,64 @@
+form {
+    position: relative;
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%,-50%);
+    transition: all 1s;
+    width: 50px;
+    height: 50px;
+    // background: white;
+    // right:30%;
+    // margin-right: 100px;
+    box-sizing: border-box;
+    border-radius: 25px;
+    border: 1px solid #76efef;
+    padding: 5px;
+    width: 500px;
+    cursor: pointer;
+}
+
+input {
+    // position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    ;
+    // height: 42.5px;
+    line-height: 30px;
+    outline: 0;
+    border: 0;
+    // display: none;
+    font-size: 1em;
+    border-radius: 20px;
+    padding: 5px 20px;
+    display: block;
+    color: #3a7bca;
+}
+
+.fa {
+    box-sizing: border-box;
+    padding: 17px;
+    // width: 42.5px;
+    // height: 42.5px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 1.2em;
+    transition: all 1s;
+    // background: #06b4e8;
+    color: #040404;
+}
+
+// form:hover{
+//     width: 200px;
+//     cursor: pointer;
+// }
+// form:hover input{
+//     display: block;
+// }
+// form:hover .fa{
+//     background: #06b4e8;
+//     color: #040404;
+// }
