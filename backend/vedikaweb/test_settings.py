@@ -101,7 +101,7 @@ CRONJOBS = [
     ('5 1 * * 6', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SATURDAY MANAGER MAIL
     ('5 1 * * 0', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SUNDAY MANAGER MAIL
     ('5 1 * * 3', 'vedikaweb.vedikaapi.cron.ModifyProjectsCron'), #EVERY WEDNESDAY PROJECT UPDATE 
-    ('5 0 * 1 *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
+    ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
     ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
     ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
 ]

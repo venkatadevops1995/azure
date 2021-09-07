@@ -45,4 +45,3 @@ openpyxl==3.0.3
 django-crontab==0.7.1
 django-prometheus==2.1.0
 django-filter==2.4.0
-#
