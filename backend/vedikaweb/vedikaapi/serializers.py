@@ -8,12 +8,16 @@ import ast
 from django.db.models import Q, fields
 from django.core.validators import MaxValueValidator,MinValueValidator
 
-from vedikaweb.vedikaapi.models import Employee, EmployeeProject, EmployeeProjectTimeTracker, EmployeeWeeklyStatusTracker, Project, Role, EmployeeWorkApproveStatus,EmployeeApprovalCompStatus,EmployeeEntryCompStatus,ManagerWorkHistory,EmployeeMaster,PunchLogs, RejectedTimesheetEmailNotification,  EmployeeHierarchy, Category, LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig ,LeaveBalance, LeaveRequest, Leave , Company, LocationHolidayCalendar, HolidayCalendar, Holiday, Location, EmployeeProfile, EmailQueue, EmployeeTimesheetApprovedHistory
+from vedikaweb.vedikaapi.models import Employee, EmployeeProject, EmployeeProjectTimeTracker, EmployeeWeeklyStatusTracker, Project, Role, EmployeeWorkApproveStatus,EmployeeApprovalCompStatus,EmployeeEntryCompStatus,ManagerWorkHistory,EmployeeMaster,PunchLogs, RejectedTimesheetEmailNotification,  EmployeeHierarchy, Category, LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig ,LeaveBalance, LeaveRequest, Leave , Company, LocationHolidayCalendar, HolidayCalendar, Holiday, Location, EmployeeProfile, EmailQueue, EmployeeTimesheetApprovedHistory, PolicyDocument, PolicyType, PolicyCompany, PolicyDocumentEmployeeAccessPermission, PolicyDocumentEmployeeAction
 
 from .utils import utils
 from datetime import datetime,timedelta
 from django.core.validators import MaxValueValidator,MinValueValidator
 from django.conf import settings
+from rest_framework.exceptions import ErrorDetail
+import logging
+from django.db.models import When, Case
+log = logging.getLogger(__name__)
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -765,4 +769,74 @@ class LeaveBalanceUploadedSerializer(serializers.ModelSerializer):
 class EmployeeTimesheetApprovedHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeTimesheetApprovedHistory
+        fields = '__all__'
+
+class PolicyDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolicyDocument
+        fields = '__all__'
+class PolicyDocumentCreateSerializer(serializers.Serializer):
+
+    policy_type = serializers.PrimaryKeyRelatedField(queryset=PolicyType.objects.filter(status=1))
+    policy_name = serializers.CharField(max_length=255)
+    display_name = serializers.CharField(max_length=255)
+    file_name = serializers.CharField(max_length=255)
+    enable_for = serializers.CharField(max_length=20)
+    enable_on = serializers.DateField()
+    expire_on = serializers.DateField()
+    company_list = serializers.ListField(
+         child=serializers.PrimaryKeyRelatedField(queryset=Company.objects.filter(status=1)),required=True
+    )
+    emp_list = serializers.ListField(
+         child=serializers.PrimaryKeyRelatedField(queryset=Employee.objects.filter(status=1)),required=False
+    )
+    def validate(self,data):
+
+        if data['enable_for'] == 'FEW' and ('emp_list' not in data):
+            raise ValidationError({'emp_list':[ErrorDetail(string='This field is required.', code='required')]})
+        fileExists = utils.fileExists(settings.UPLOAD_PATH+'/policy/'+data['file_name'])
+        if(not fileExists):
+            raise ValidationError({'file_name':'file "{}" does not exist'.format(data['file_name'])})
+        return data
+
+
+class PolicyCompanySerializer(serializers.ModelSerializer):
+
+    def create(self,validated_data):
+        obj,created=PolicyCompany.objects.update_or_create(
+            policy=validated_data['policy'],company=validated_data['company'],
+            defaults=validated_data
+        )
+        return obj,created
+    class Meta:
+        model = PolicyCompany
+        fields = '__all__'
+
+class PolicyDocumentEmployeeAccessPermissionSerializer(serializers.ModelSerializer):
+
+    def create(self,validated_data):
+        obj,created=PolicyDocumentEmployeeAccessPermission.objects.update_or_create(
+            policy_document=validated_data['policy_document'],emp=validated_data['emp'],
+            defaults=validated_data
+        )
+        return obj,created
+    class Meta:
+        model = PolicyDocumentEmployeeAccessPermission
+        fields = '__all__'
+
+class PolicyDocumentEmployeeActionSerializer(serializers.ModelSerializer):
+    def validate(self,data):
+        if('upload_policy_document' in data.keys()):
+            fileExists = utils.fileExists(settings.UPLOAD_PATH+'/policy/'+data['upload_policy_document'])
+            if(not fileExists):
+                raise ValidationError({'upload_policy_document':'file "{}" does not exist'.format(data['upload_policy_document'])})
+        return data
+    def create(self,validated_data):
+        obj,created=PolicyDocumentEmployeeAction.objects.update_or_create(
+            policy_document=validated_data['policy_document'],emp=validated_data['emp'],
+            defaults=validated_data
+        )
+        return obj,created
+    class Meta:
+        model = PolicyDocumentEmployeeAction
         fields = '__all__'
