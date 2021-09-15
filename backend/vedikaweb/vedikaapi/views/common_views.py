@@ -49,10 +49,12 @@ class CommonFunctions:
                 emp_leave_access_flags[each_emp['emp_id']] = True
         else:
             leave_access_enabled_fms=LeaveAccessGroup.objects.filter(status=1).values_list('emp_id',flat=True)
-        
+            leave_individ_access_list = LeaveAccessGroup.objects.filter(status=2).values_list('emp_id',flat=True)
             for each_emp in fms_of_emps:
                 emp_leave_access_flags[each_emp['emp_id']] = True if each_emp['manager_id'] in leave_access_enabled_fms else False
-        
+            for each_emp in leave_individ_access_list:
+                emp_leave_access_flags[each_emp]=True
+
         for eachemployee in employeeList:
             emp_id=eachemployee
             empObj=Employee.objects.prefetch_related('profile').get(emp_id=emp_id)
@@ -632,14 +634,16 @@ class SendWelcomeEmails(APIView):
             check_status = 0
 
             global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
+            individual_email_access_emps=[]
             if(len(global_email_access)>0):
                 accessed_managers = list(map(lambda x:utils.strip_value(x.emp_name),Employee.objects.filter(role_id=4,status=1)))
             else:
                 accessed_managers = list(map(lambda x:utils.strip_value(x.emp.emp_name),EmailAccessGroup.objects.filter(status=1)))
+                individual_email_access_emps = list(map(lambda x:x.emp.emp_id,EmailAccessGroup.objects.filter(status=2)))
             
 
             if (fun_owner !=0) and (fun_owner != None) and (fun_owner != '#N/A'):
-                if(utils.strip_value(fun_owner) in accessed_managers):
+                if((utils.strip_value(fun_owner) in accessed_managers) or (utils.strip_value(fun_owner) in individual_email_access_emps)):
                     ret_val = 0
                     try:
                         if(settings.SENDEMAILTOALL):
