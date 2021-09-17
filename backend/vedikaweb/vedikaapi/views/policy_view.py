@@ -21,6 +21,7 @@ import logging
 from django.db.models import When, Case
 from django.db.models import ObjectDoesNotExist
 from datetime import datetime
+from django.http import HttpResponse, FileResponse, response
 log = logging.getLogger(__name__)
 
 
@@ -222,25 +223,42 @@ class EmployeePolicyView(APIView):
 
 
 class PolicyUpload(APIView):
+    
     def get(self,request,*args,**kwargs):
-        auth_details = utils.validateJWTToken(request)
-        if(auth_details['email']==""):
-            return Response(auth_details, status=400)
-        emp_id=auth_details['emp_id']
-        file_name = request.data['filename']
+        # auth_details = utils.validateJWTToken(request)
+        # if(auth_details['email']==""):
+        #     return Response(auth_details, status=400)
+        # emp_id=auth_details['emp_id']
+        emp_id =35
+        if 'filename' in request.query_params:
+            # file_name = request.data['filename']
+            file_name = request.query_params['filename']
+        print(file_name)
+        
         policy_data = PolicyDocument.objects.prefetch_related('policydocumentemployeeaccesspermission_set').filter(Q(status=1)&Q(file_name=file_name)&(Q(policydocumentemployeeaccesspermission__emp_id=emp_id)|Q(enable_for__iexact='ALL'))).annotate(has_access=Case( When(Q(policydocumentemployeeaccesspermission__status=1)|Q(enable_for__iexact='ALL'), then=True),default=False,output_field=BooleanField(),)).values()
         
         if(len(policy_data)==0 or policy_data[0]['has_access']==False):
             return Response(utils.StyleRes(False,"Employee Policy file download", "Employee does not have the permission for the file"), status=StatusCode.HTTP_UNAUTHORIZED)
         try: 
-            with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
-                response=utils.contentTypesResponce('pdf',policy_data[0]['display_name'],f)
-                return response
-        except:
+            # with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
+            #     data = f.read()
+            # response = HttpResponse(content_type="application/pdf")    
+            # response['Content-Disposition'] = 'attachment; filename=%s' % file_name # force browser to download file    response.write(data)
+            #     # response=utils.contentTypesResponce('pdf',policy_data[0]['display_name'],f)
+            # response['response-type'] = 'blob'
+            # response.write(data)
+            # response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb'), content_type='application/pdf')
+            response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name,'rb'),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response["Access-Control-Allow-Origin"] = "*"
+            response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+            response["Access-Control-Max-Age"] = "1000"
+            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+            return response
+        except Exception as e:
+            print(e)
             return Response(utils.StyleRes(False,"Employee Policy file download", "file does not exist"), status=StatusCode.HTTP_OK)
     def post(self,request,*args,**kwargs):
         file_name = request.data['file']
-
         uploadedfilename = str(file_name).split('.')[0]
         uploadedfileext=str(file_name).split('.')[-1]
         filename=uploadedfilename+"_"+utils.getUniqueId() + '.'+ uploadedfileext
@@ -248,4 +266,4 @@ class PolicyUpload(APIView):
         with open(settings.UPLOAD_PATH+'/policy/'+filename, 'wb') as f:
             f.write(file_name.read())
         dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return Response(utils.StyleRes(True,"Employee Policy file upload", {"filename":filename}), status=StatusCode.HTTP_OK)
+        return Response(utils.StyleRes(True,"Employee Policy file upload", {"displayname":str(file_name),"filename":filename}), status=StatusCode.HTTP_OK)

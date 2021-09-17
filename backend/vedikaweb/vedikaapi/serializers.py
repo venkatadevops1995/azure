@@ -792,9 +792,10 @@ class PolicyDocumentCreateSerializer(serializers.Serializer):
     )
     def validate(self,data):
 
-        if data['enable_for'] == 'FEW' and ('emp_list' not in data):
+        if data['enable_for'] == 'FEW' and (('emp_list' not in data) or len(data['emp_list'])==0):
             raise ValidationError({'emp_list':[ErrorDetail(string='This field is required.', code='required')]})
         fileExists = utils.fileExists(settings.UPLOAD_PATH+'/policy/'+data['file_name'])
+        
         if(not fileExists):
             raise ValidationError({'file_name':'file "{}" does not exist'.format(data['file_name'])})
         return data

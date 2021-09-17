@@ -70,8 +70,8 @@ backend/vedikaweb/logs/*.log.[0-9]*
 backend/media/
 backend/vedikaweb/configs/moulali.config
 .dccache
-
-
+backend/MIS-files/
+backend/EMP-files/
  
 
 

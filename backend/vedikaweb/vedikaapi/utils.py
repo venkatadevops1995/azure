@@ -19,7 +19,7 @@ import calendar
 # Modles
 from .models import Employee,Project,EmployeeHierarchy,EmployeeProject, ServiceAccount, EmployeeAdmin
 
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from operator import itemgetter as itemget
 from functools import cmp_to_key
 from dateutil.rrule import rrule, MONTHLY,DAILY
@@ -303,8 +303,16 @@ class utils():
         if(filetype.upper()=='PDF'):
             resp = HttpResponse(file_obj,content_type="application/pdf")
             resp['Content-Disposition'] = f'attachment; filename=' + str(name)+ '.pdf'
+            resp['Access-Control-Expose-Headers'] = 'inline;Content-Disposition'
+            resp['responseType'] = 'blob'
+            return resp
+        if(filetype.upper()=='DOCX'):
+            resp = HttpResponse(file_obj,content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            resp['Content-Disposition'] = f'attachment; filename=' + str(name)+ '.docx'
             resp['Access-Control-Expose-Headers'] = 'Content-Disposition'
             return resp
+
+            
 
     
     def getUsername(email):

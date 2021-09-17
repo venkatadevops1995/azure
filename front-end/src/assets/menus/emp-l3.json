@@ -86,6 +86,19 @@
 
 
         ]
+    },
+    {
+        "text": "Document Management",
+        "link": "",
+        "submenu": [{
+                "text": "Document Configuration",
+                "link": "document-config"
+            }, {
+                "text": "Document",
+                "link": "document-list"
+            }
+
+        ]
     }
 
 ]
