@@ -76,14 +76,28 @@
                 "text": "Leave Update",
                 "link": "employee-leave-info"
 
-            },
-            {
-                "text": "Leave History",
-                "link": "leave-history"
-
             }
 
 
+
+        ]
+    },
+    {
+        "text": "HR Reports",
+        "link": "",
+        "submenu": [
+            {
+                "text": "Leave History",
+                "link": "leave-history"
+            },
+            {
+                "text": "Timesheet Report",
+                "link": "hr-timesheet-reports"
+            },
+            {
+                "text": "Attendance report",
+                "link": "hr-attendance-reports"
+            }
 
         ]
     }

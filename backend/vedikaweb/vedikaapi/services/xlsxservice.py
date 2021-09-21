@@ -32,12 +32,15 @@ class ExcelServices:
             if merge_rane is not None:
                 self.worksheet.merge_range(merge_rane,merge_string,self.merge_format)
     
-    def defineMultipleWorksheets(self,workSheetNamesList,dataList,reportFlag=False):
+    def defineMultipleWorksheets(self,workSheetNamesList,dataList,reportFlag=False,leaveFlag=False):
         for i,eachworksheet in enumerate(workSheetNamesList):
             self.multiWorksheet.append(self.workbook.add_worksheet(eachworksheet))
             if(i==0):
                 if(not reportFlag):
-                    self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,datetimeColList=[5],customFormat={'num_format':'[HH]:MM'},closeFlag=False)
+                    if(not leaveFlag):
+                        self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,datetimeColList=[5],customFormat={'num_format':'[HH]:MM'},closeFlag=False)
+                    else:
+                        self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,closeFlag=False)
                 else:
                     self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,customFormat={'num_format':'HH:MM'},closeFlag=False)
             elif(i==1):
@@ -75,7 +78,6 @@ class ExcelServices:
                             worksheet.write(row_nums, col , regra[each],self.cell_format)
 
                     elif(len(datetimeColList)>0):
-                        
                         if col in datetimeColList:
                             worksheet.write_datetime(row_nums, col , regra[each],customFormat)
                         else:

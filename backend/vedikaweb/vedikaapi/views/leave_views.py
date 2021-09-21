@@ -747,9 +747,11 @@ class ExportResolvedLeaves(APIView):
             end_date = datetime.strftime(datetime.strptime(qp.get('end_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S'),'%Y-%m-%d')
         # print(start_date,end_date,"=================")
         excel_file = utils.contentTypesResponce('xl',emp_name+'_LeaveHistory_'+start_date+"_"+end_date+".xlsx")
-        excel = ExcelServices(excel_file,in_memory=True,workSheetName='LeaveHistory')
+        excel = ExcelServices(excel_file,in_memory=True,multisheetFlag=True)
         columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']
         excel_data= [columns]
+        sheet2_columns = ['Staff No', 'Name', 'Total Leavels']
+        sheets2_data=[sheet2_columns]
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
         if errors:
             return Response(utils.StyleRes(False,"Invalid parameters",errors),status=StatusCode.HTTP_OK)
@@ -759,16 +761,25 @@ class ExportResolvedLeaves(APIView):
             else:
                 # statuses = ['Pending','Approved','Rejected','Cancelled']
                 statuses = [s.name for s in LeaveRequestStatus]
+                leave_summary_dict={}
                 for leave_request in leave_requests:
                     lr = leave_request
                     leave_type = lr.leave_type_name
                     if(lr.leave_type_name == 'Paid'):
                         leave_type = 'General'
+                    if(lr.emp_staff_no in leave_summary_dict):
+                        leave_summary_dict[lr.emp_staff_no]['leave_count'] +=  int(lr.day_count)
+                    else:
+                        leave_summary_dict[lr.emp_staff_no]={'emp_name':lr.emp_name, 'leave_count':lr.day_count}
                     excel_data.append([
                         lr.emp_staff_no,lr.emp_name,str(datetime.strftime(lr.created,'%d-%m-%Y')),str(datetime.strftime(lr.startdate,'%d-%m-%Y')),str(datetime.strftime(lr.enddate,'%d-%m-%Y')),lr.day_count,leave_type, statuses[lr.status]
                     ])
-                excel.writeExcel(excel_data,row_start=0)
-                excel.terminateExcelService()
+                for key,value in leave_summary_dict.items():
+                    sheets2_data.append([key,value['emp_name'],value['leave_count']])
+
+                excel.defineMultipleWorksheets(['Leave History','Leave Summary'],[excel_data,sheets2_data],leaveFlag=True)
+                # excel.writeExcel(excel_data,row_start=0)
+                # excel.terminateExcelService()
                 del excel
                 return excel_file
 

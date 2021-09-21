@@ -781,10 +781,15 @@ def LeaveUpdateCron():
         maternal_leave_obj = Leave.objects.filter(leave_on__date=datetime.today().date(),leave_request__leave_type__name__iexact='Maternity',leave_request__status__in=[LeaveRequestStatus.Pending.value,LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value]).annotate(
             emp_id = F('leave_request__emp__emp_id')
         ).values_list('emp_id',flat=True)
-        leave_access_managers_obj = LeaveAccessGroup.objects.filter(status=1)
-        leave_access_individual_obj = LeaveAccessGroup.objects.filter(status=2)
-        leave_access_managers_list = list(map(lambda x:x.emp_id,leave_access_managers_obj))
-        leave_access_individual_list = list(map(lambda x:x.emp_id, leave_access_individual_obj))
+        emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
+        global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='LEAVE')
+        if(len(global_email_access)>0):
+            leave_access_managers_list = list(map(lambda x:x.emp_id,emp_obj))
+        else:
+            leave_access_managers_obj = LeaveAccessGroup.objects.filter(status=1)
+            leave_access_individual_obj = LeaveAccessGroup.objects.filter(status=2)
+            leave_access_managers_list = list(map(lambda x:x.emp_id,leave_access_managers_obj))
+            leave_access_individual_list = list(map(lambda x:x.emp_id, leave_access_individual_obj))
         maternal_leave_emps_list = list(maternal_leave_obj)
         for employee in employees:
             if((employee.functional_manager in leave_access_managers_list) or (employee.emp in leave_access_individual_list)):

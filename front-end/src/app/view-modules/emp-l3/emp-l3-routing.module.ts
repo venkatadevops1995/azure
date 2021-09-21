@@ -21,6 +21,8 @@ import { LeaveHistoryComponent } from '../common/leave-history/leave-history.com
 import { PolicyConfigComponent } from '../common/policy-config/policy-config.component';
 import { PolicyListComponent } from '../common/policy-list/policy-list.component';
 import { EmpPolicyListComponent } from '../common/emp-policy-list/emp-policy-list.component';
+import { HrAttendanceReportComponent } from '../common/hr-attendance-report/hr-attendance-report.component';
+import { HrTimesheetReportComponent } from '../common/hr-timesheet-report/hr-timesheet-report.component';
 
 
 const routes: Routes = [
@@ -46,7 +48,8 @@ const routes: Routes = [
   {path:"document-list",component:PolicyListComponent},
   {path:"emp-document-list",component:EmpPolicyListComponent},
   {path:"dashboard",redirectTo:"history-dashboard",pathMatch:'full'},
-
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent},
+  {path:"hr-timesheet-reports",component:HrTimesheetReportComponent},
 ];
 
 @NgModule({

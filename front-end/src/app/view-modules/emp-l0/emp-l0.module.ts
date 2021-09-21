@@ -22,6 +22,8 @@ import { ManageProjectModule } from '../common/manage-project/manage-project.mod
 import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
 import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
 import { PolicyListModule } from '../common/policy-list/policy-list.module';
+import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-attendance-report.module';
+import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
 
 
 @NgModule({
@@ -47,7 +49,8 @@ import { PolicyListModule } from '../common/policy-list/policy-list.module';
     PolicyConfigModule,
     PolicyListModule,
     EmpPolicyListModule,
-
+    HrAttendenceReportModule,
+    HrTimesheetReportModule
   ]
 })
 export class EmpL0Module { }
