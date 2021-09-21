@@ -89,6 +89,7 @@ urlpatterns = [
         path('types/',leave_views.LeaveTypeView.as_view(),name='leaveType'),
         path('special-leave-requests-available/',leave_views.SpecialLeaveRequestsAvailableView.as_view(),name='specialLeaveRequestsAvailableView'),
         path('mail-opted/',common_views.MailOptedStatus.as_view(),name='mail-opted'),
+        path('monthlycycleleavereport/',leave_views.MonthyCycleLeaveReportView.as_view(),name='MonthyCycleLeaveReportView'),
     ])),
     # url(r'leave-type/$', leave_views.LeaveTypeView.as_view(), name='leaveType'),
     url(r'employee-type/$', common_views.CategoryView.as_view(), name='Category'),
