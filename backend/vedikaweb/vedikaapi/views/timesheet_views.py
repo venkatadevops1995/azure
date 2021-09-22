@@ -903,6 +903,7 @@ class ReportApi(APIView):
         empid=str(auth_details['emp_id'])
         emp_id = self.request.query_params.get('emp_id',empid)
         all_emp = self.request.query_params.get('all_emp',False)
+        is_hr = self.request.query_params.get('is_hr',False)
         start_date = self.request.query_params.get('from','')
         last_date = self.request.query_params.get('to','')
         common_fun_obj=CommonFunctions()
@@ -910,7 +911,10 @@ class ReportApi(APIView):
         # name="All"
         if all_emp:
             emp=[]
-            empList = EmployeeHierarchy.objects.direct_indirect_employees(manager_id=emp_id).values('emp_id').distinct()
+            if(not is_hr):
+                empList = EmployeeHierarchy.objects.direct_indirect_employees(manager_id=emp_id).values('emp_id').distinct()
+            else:
+                empList = Employee.objects.filter(status=1).values('emp_id').distinct()
             for each in empList:
                 emp.append(each['emp_id'])
             if(emp_id not in empList):

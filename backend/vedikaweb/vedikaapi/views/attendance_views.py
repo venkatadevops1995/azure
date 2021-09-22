@@ -35,6 +35,7 @@ class AttendanceApi(APIView):
             emp_id=auth_details['emp_id']
         empid=auth_details['emp_id']
         attendance_for_all = self.request.query_params.get('all_emp', False)
+        is_hr = self.request.query_params.get('is_hr', False)
         # final_datastructure,attendance_flag,present_dates_list=attendance_.get_tt_final_datastructure(emp_id,from_date,to_date)
         final_dict = {'final_datastructure': [],'attendance_flag':[],'present_dates_list':[]}
 
@@ -44,7 +45,10 @@ class AttendanceApi(APIView):
             final_dict['attendance_flag'].append(attendance_flag)
             final_dict['present_dates_list'].append(present_dates_list)
         else:
-            direct_and_indirect_repoters_details = EmployeeHierarchy.objects.filter(manager_id = emp_id, emp__status=1).values('emp_id').distinct()
+            if(not is_hr):
+                direct_and_indirect_repoters_details = EmployeeHierarchy.objects.filter(manager_id = emp_id, emp__status=1).values('emp_id').distinct()
+            else:
+                direct_and_indirect_repoters_details = Employee.objects.filter(status=1).values('emp_id').distinct()
             
             # get data of user itself, if user is NOT a reporting manager of himself/herself.
             if emp_id not in [eachereporter['emp_id']for eachereporter in direct_and_indirect_repoters_details]:
