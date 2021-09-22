@@ -21,6 +21,7 @@ import { ReportModule } from '../common/report/report.module';
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
 import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
 import { PolicyListModule } from '../common/policy-list/policy-list.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { PolicyListModule } from '../common/policy-list/policy-list.module';
     LeaveHistoryModule,
     PolicyConfigModule,
     PolicyListModule,
+    EmpPolicyListModule,
     NgCircleProgressModule.forRoot({})
   ]
 })

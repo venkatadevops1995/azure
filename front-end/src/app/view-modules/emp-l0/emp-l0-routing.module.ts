@@ -16,6 +16,9 @@ import { AddUserComponent } from '../common/manage-user/add-user/add-user.compon
 import { EditUserComponent } from '../common/manage-user/edit-user/edit-user.component';
 import { ManageUserComponent } from '../common/manage-user/manage-user.component';
 import { ManageProjectComponent } from '../common/manage-project/manage-project.component';
+import { EmpPolicyListComponent } from '../common/emp-policy-list/emp-policy-list.component';
+import { PolicyConfigComponent } from '../common/policy-config/policy-config.component';
+import { PolicyListComponent } from '../common/policy-list/policy-list.component';
 
 
 const routes: Routes = [
@@ -35,6 +38,9 @@ const routes: Routes = [
   {path:"add-user",component: AddUserComponent},
   {path:"edit-user",component: EditUserComponent},
   {path:"manage-project",component: ManageProjectComponent},
+  {path:"document-config",component:PolicyConfigComponent},
+  {path:"document-list",component:PolicyListComponent},
+  {path:"emp-document-list",component:EmpPolicyListComponent},
 ];
 
 @NgModule({

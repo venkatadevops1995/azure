@@ -1,10 +1,13 @@
 <div>
     <h2 class="heading">Document Configuration</h2>
     <div style="margin: 10px 0px 0px 100px;">
-        <mat-tab-group [selectedIndex]="2" mat-stretch-tabs (selectedIndexChange)="setTab($event)" >
-            <mat-tab *ngFor="let tab of tabList" [label]="tab['name']">
+        <!-- <nav mat-tab-nav-bar>
+            <a mat-tab-link *ngFor="let tab of tabList" (click)="selectTab=tab['id']" [active]="tab['id']==selectTab"> {{tab['name']}} </a>
+        </nav> -->
+        <mat-tab-group [selectedIndex]="tabIndexControl.value" (selectedIndexChange)="setTab($event)">
+            <mat-tab *ngFor="let tab of tabList" [label]="tab['name']" [disabled]="policy_id!=''">
 
-                <ng-template [ngIf]="tab['id']">
+                <ng-template matTabContent [ngIf]="tab['id']">
 
                     <div style="margin: 50px 10px 0px">
                         <form [formGroup]="policyForm">
@@ -16,50 +19,72 @@
                                     </mat-form-field>
                                     <!-- <textarea formControlName="policy_name" placeholder="Policy name" class="leave__comment"></textarea> -->
                                     <mat-error [@slideAnimation]="(policyForm.controls.policy_name.touched) && policyForm.controls.policy_name.hasError('required') ? 'open': 'close'">
-                                        Please Enter Policy name
+                                        Policy name is required
                                     </mat-error>
                                 </div>
                                 <br>
-                                <div>
+                                <div *ngIf="showUploadBlock">
                                     <mat-form-field class="full-width fg-1 file">
-                                        <app-file [accept]="{browse:'*'}" [folderUpload]="false" [formControl]="policyUploadControl" [multiple]="false" pH="Drop or browse policy" idd="policy-upload" (changeEE)="uploadFile()"></app-file>
+                                        <app-file [getFile]="fileObjInstance" [accept]="{browse:'.pdf'}" [folderUpload]="false" [formControl]="policyUploadControl" [multiple]="false" pH="Drop or browse policy" idd="policy-upload" (changeEE)="uploadFile()"></app-file>
                                         <!-- {{applyForm.controls.invitationUpload.touched}} {{applyForm.controls.invitationUpload.hasError('unAcceptedFile')}} -->
-                                        <mat-error class="fs-14" *ngIf="(policyUploadControl.touched ) && policyUploadControl.hasError('required')">
-                                            This field is required
-                                        </mat-error>
-                                        <mat-error class="fs-14" *ngIf="policyUploadControl.touched && policyUploadControl.hasError('unAcceptedFile')">
-                                            Only jpg, jpeg format files allowed
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div style="display: flex;justify-content: space-between;">
 
-                                    <div style="display: flex;  justify-content: space-between;">
+                                        <!-- <mat-error class="fs-14" *ngIf="policyUploadControl.touched && policyUploadControl.hasError('unAcceptedFile')">
+                                    Only jpg, jpeg format files allowed
+                                </mat-error> -->
+                                    </mat-form-field>
+                                    <mat-error class="fs-14" [@slideAnimation]="(policyForm.controls.display_name.touched) && ((policyForm.controls.display_name.hasError('required'))) ? 'open': 'close'">
+                                        Policy selection is required
+                                    </mat-error>
+                                </div>
+                                <div style="margin-top:10px;">
+
+                                    <div style="display: flex;  justify-content: flex-start;">
                                         <div class="custom_checkbox" style="margin: 0px 10px 0px;">
-                                            <input type="checkbox" id="all" name="all" value="all" (change)="setAll($event)" [checked]="companyList['completed']">
+                                            <input type="checkbox" id="all" name="all" value="all" (change)="setAll($event)" [checked]="companyList['completed']" [disabled]="emp_count>0">
                                             <label for="all">All</label>
                                         </div>
                                         <div class="custom_checkbox" style="margin: 0px 10px 0px;" *ngFor="let com of companyList.subtasks">
-                                            <input type="checkbox" id="{{com['name']}}" name="com" (change)="com['completed'] = !com['completed'];updateAllComplete()" [checked]="com['completed']">
+                                            <input type="checkbox" id="{{com['name']}}" name="com" (change)="com['completed'] = !com['completed'];updateAllComplete()" [checked]="com['completed']" [disabled]="emp_count>0">
                                             <label for="{{com['name']}}">{{com['name']}}</label>
                                             <!-- <mat-radio-button class="example-radio-button mr-20"></mat-radio-button>
                                             {{com}} -->
                                         </div>
 
                                     </div>
-                                    <div>
+                                    <div style="margin-top: 20px;padding-left: 20px;">
 
                                         <mat-radio-group class="pb-10 example-radio-group secondary" formControlName="enable_for">
-                                            <mat-radio-button class="example-radio-button mr-20" [value]="optn.option" *ngFor="let optn of enable_for_options" [checked]="optn.option=='ALL'" (change)="openSelectEmp(optn.option)">
+                                            <mat-radio-button class="example-radio-button mr-20" [value]="optn.option" *ngFor="let optn of enable_for_options" [checked]="optn.option==policyForm.controls.enable_for.value" (change)="openSelectEmp(optn.option)">
                                                 {{optn.value | titlecase}}
                                                 <div>
                                                     <div style="display: flex;position: absolute;color:#1991DF ;">
-                                                        <a *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'" (click)="openSelectEmp(optn.option,false)">
-                                                    {{emp_count}} employee(s)
+                                                        <div style="display: flex;flex-direction:column;">
+                                                            <div>
+                                                                <a style="padding-top: 4px;" *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'" (click)="openSelectedEmp()">
+                                                    {{emp_count}} employee(s) 
                                                 </a>
+                                                                <span *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'" class="ml-10" (click)="editSelectEmp()" [svgIcon]="{url:'./assets/icons-sprite.svg#add',w:20,h:20}" style="color:var(--color-tertiary);margin-top:2px;cursor:pointer;vertical-align: bottom;"
+                                                                    svg-fill="var(--color-secondary)"></span>
+                                                            </div>
+                                                            <div *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'">
+                                                                <mat-error *ngIf="policyForm.controls.emp_list.touched && emp_count==0" class="fs-14" [@slideAnimation]="true ? 'open': 'close'">
+                                                                    At least 1 employee selection is required
+                                                                </mat-error>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
+
+                                                    <!-- "(policyForm.controls.display_name.touched) && ((policyForm.controls.display_name.hasError('required'))) -->
+
                                                 </div>
+
                                             </mat-radio-button>
+                                            <!-- <div>
+                                                <mat-error *ngIf="policyForm.controls.enable_for.value == 'FEW'" class="fs-14" [@slideAnimation]="true ? 'open': 'close'">
+                                                    Policy selection is required
+                                                </mat-error>
+                                            </div> -->
 
                                             <mat-error class="fs-14 mt-5" [@slideAnimation]="(policyForm.controls.enable_for.touched) && policyForm.controls.enable_for.hasError('required') ? 'open': 'close'">
                                                 Please Enable for
@@ -67,10 +92,19 @@
                                         </mat-radio-group>
                                     </div>
                                 </div>
-                                <div style="display: block;padding: 10px;text-align:center;">
-                                    <app-button size='small' type="button" w="130" (click)="publishPolicy()">Publish</app-button>
+                                <div *ngIf="policy_id == ''" style="display: flex;" [ngStyle]="{'margin-top': (policyForm.controls.enable_for.value=='FEW')&&(policyForm.controls.emp_list.touched) && (emp_count==0)? '44px':'20px'}">
+                                    <div *ngIf="policy_id == ''" style="display: block;padding: 10px;text-align:center;">
+                                        <app-button size='small' type="button" w="130" (click)="openConfirmation()">Publish</app-button>
+                                    </div>
                                 </div>
-
+                                <div *ngIf="policy_id != ''" style="display: flex;" [ngStyle]="{'margin-top': (policyForm.controls.enable_for.value=='FEW')&&(policyForm.controls.emp_list.touched) && (emp_count==0)? '44px':'20px'}">
+                                    <div style="display: block;padding: 10px;text-align:center;">
+                                        <app-button size='small' type="button" w="130" (click)="openConfirmation()">Update</app-button>
+                                    </div>
+                                    <div style="display: block;padding: 10px;text-align:center;">
+                                        <app-button size='small' theme="danger" type="button" w="130" (click)="navigateToList()">Cancel</app-button>
+                                    </div>
+                                </div>
                                 <!-- <div class="mb-15  " [@slideAnimation]="applyForm.controls.type.value && applyForm.controls.type.value.name == 'Marriage' ? 'open': 'close'"> -->
 
                                 <!-- </div> -->
@@ -103,12 +137,12 @@
 
         <div style="display: flex;  justify-content: space-between;">
             <div class="custom_checkbox" style="margin: 0px 10px 0px;">
-                <input type="checkbox" id="all" name="all" value="all" (ngModelChange)="setAll($event)" [checked]="companyList['completed']">
-                <label for="all">All</label>
+                <input type="checkbox" id="allIn" name="all" value="all" (change)="setAll($event)" [checked]="companyList['completed']" [disabled]="false">
+                <label for="allIn">All</label>
             </div>
             <div class="custom_checkbox" style="margin: 0px 10px 0px;" *ngFor="let com of companyList.subtasks">
-                <input type="checkbox" id="{{com['name']}}" name="com" (ngModelChange)="com['completed'] = !com['completed'];updateAllComplete()" [checked]="com['completed']">
-                <label for="{{com['name']}}">{{com['name']}}</label>
+                <input type="checkbox" id="{{com['name']}}In" name="com" (change)="com['completed'] = !com['completed'];updateAllComplete()" [checked]="com['completed']" [disabled]="false">
+                <label for="{{com['name']}}In">{{com['name']}}</label>
                 <!-- <mat-radio-button class="example-radio-button mr-20"></mat-radio-button>
                     {{com}} -->
             </div>
@@ -151,5 +185,81 @@
             <tr mat-row *matRowDef="let row; columns: employeePopupColumns; "></tr>
         </table>
 
+    </div>
+</app-modal-popup>
+
+
+<app-modal-popup #selectedEmployeePopup [w]="'60%'" [maxH]="'90%'" [minH]="'80%'">
+    <div head>
+        Selected Employees
+    </div>
+
+    <div>
+        <div style="text-align: center;">
+            <p *ngIf="SELECTED_EMPLOYEE_DATA.length==0">
+                No employee has been selected
+            </p>
+        </div>
+        <table mat-table [dataSource]="SELECTED_EMPLOYEE_DATA" *ngIf="SELECTED_EMPLOYEE_DATA.length!=0" class="mat-elevation-z8">
+            <ng-container matColumnDef="serial_no">
+                <th mat-header-cell *matHeaderCellDef>S.No.</th>
+                <td mat-cell *matCellDef="let element;let i=index" [ngClass]="{'selectedBg':element.selected==true}"> {{i+1}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="staff_no">
+                <th mat-header-cell *matHeaderCellDef>Staff No.</th>
+                <td mat-cell *matCellDef="let element" [ngClass]="{'selectedBg':element.selected==true}"> {{element.staff_no}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="emp_name">
+                <th mat-header-cell *matHeaderCellDef>Employee Name</th>
+                <td mat-cell *matCellDef="let element" [ngClass]="{'selectedBg':element.selected==true}"> {{element.emp_name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="company">
+                <th mat-header-cell *matHeaderCellDef>Group</th>
+                <td mat-cell *matCellDef="let element" [ngClass]="{'selectedBg':element.selected==true}"> {{element.company}} </td>
+            </ng-container>
+
+
+
+
+            <tr mat-header-row *matHeaderRowDef="selectedEmployeePopupColumns sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: selectedEmployeePopupColumns; "></tr>
+        </table>
+
+    </div>
+</app-modal-popup>
+
+
+<app-modal-popup #publishPolicyRef [w]="'30%'" [h]="'35%'">
+    <div head>
+        Policy
+    </div>
+    <div style="margin: 10px;text-align: center;">
+        Are you sure to publish Policy with the selected groups?
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <app-button style="margin:5px 20px" size='small' type="button" w="130" (click)="publishPolicy()">Confirm
+        </app-button>
+        <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="closeConfirmation()">Cancel
+        </app-button>
+    </div>
+</app-modal-popup>
+
+<app-modal-popup #discardSelectRef [w]="'30%'" [h]="'35%'">
+    <div head>
+        Confirmation
+    </div>
+    <div style="margin: 10px;text-align: center;">
+        Are you sure to discard <b>{{emp_count}}</b> selected employee(s) ?
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <app-button style="margin:5px 20px" size='small' type="button" w="130" (click)="discardSelection()">Confirm
+        </app-button>
+        <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="closeDiscardSelectModal()">Cancel
+        </app-button>
     </div>
 </app-modal-popup>

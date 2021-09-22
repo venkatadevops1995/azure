@@ -36,20 +36,7 @@
 
                 </td>
             </ng-container>
-            <ng-container matColumnDef="edit">
-                <th mat-header-cell *matHeaderCellDef>Edit</th>
-                <td mat-cell *matCellDef="let element">
-                    <span class="ml-5" (click)="navigateToEdit(element.id,element.policy_type)" [svgIcon]="{url:'./assets/icons-sprite.svg#edit',w:20,h:20}" style="color:var(--color-tertiary);margin-top:0px;cursor:pointer" svg-fill="#CCCCCC"></span>
 
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="delete">
-                <th mat-header-cell *matHeaderCellDef>Delete</th>
-                <td mat-cell *matCellDef="let element">
-                    <span class="ml-5" [svgIcon]="{url:'./assets/icons-sprite.svg#delete',w:20,h:20}" (click)="openDeletePolicy(element.id)" style="color:var(--color-tertiary);margin-top:0px;cursor:pointer" svg-fill="#FF0000"></span>
-
-                </td>
-            </ng-container>
 
 
 
@@ -65,9 +52,8 @@
         Policy
     </div>
     <div style="text-align: center;">
-        <!-- ===================== {{fileResponse}}============ -->
-
-        <!-- <pdf-viewer [src]="pdfSrc" [render-text]="true" style="display: block;"></pdf-viewer> -->
+        <!-- <pdf-viewer src="http://10.60.62.114:8000/api/policy/upload/?filename=id_card.pdf" [render-text]="true" style="display: block;">
+        </pdf-viewer> -->
 
 
 
@@ -85,25 +71,9 @@
 
         <!-- <iframe src="'http://10.60.62.114:8000/api/policy/upload/?filename=id_card.pdf'" style="width: 100%;height: 400px;" title="Policy"></iframe> -->
 
-        <iframe src="" #ifr style="width: 800px; height: 420px"></iframe>
-
+        <!-- <iframe src="https://docs.google.com/gview?url=http://testvedika.atai.ai/api/media/profiles/SAMPLE.docx&embedded=true" style="width: 90%; height: 1000px"/> -->
         <!-- <p>Your browser does not support iframes.</p> -->
+        <iframe src="" style="width: 800px; height: 420px"></iframe>
 
-    </div>
-</app-modal-popup>
-
-<app-modal-popup #deletePolicyRef [w]="'30%'" [h]="'30%'">
-    <div head>
-        Policy
-    </div>
-    <div style="margin: 10px;text-align: center;">
-        Are you sure want to delete the policy ?
-    </div>
-    <br>
-    <div style="text-align: center;">
-        <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="deletePolicy(deleteId)">Delete
-        </app-button>
-        <app-button style="margin:5px 20px" size='small' theme="blue-lite" type="button" w="130" (click)="closeDeletePolicy()">Cancel
-        </app-button>
     </div>
 </app-modal-popup>

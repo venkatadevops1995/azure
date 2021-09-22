@@ -28,6 +28,9 @@ import { EmployeeLeaveInfoModule } from '../common/employee-leave-info/employee-
 import { ImportExportLeaveModule } from '../common/import-export-leave/import-export-leave.module';
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
 import { ManageUserModule } from '../common/manage-user/manage-user.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
+import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
+import { PolicyListModule } from '../common/policy-list/policy-list.module';
 
 @NgModule({
   declarations: [EmpL2Component, L2DashboardComponent],
@@ -58,7 +61,10 @@ import { ManageUserModule } from '../common/manage-user/manage-user.module';
     EmployeeLeaveInfoModule,
     ImportExportLeaveModule,
     LeaveHistoryModule,
-    ManageUserModule
+    ManageUserModule,
+    PolicyConfigModule,
+    PolicyListModule,
+    EmpPolicyListModule,
   ]
 })
 export class EmpL2Module { }

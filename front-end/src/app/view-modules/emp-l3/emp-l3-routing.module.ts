@@ -20,6 +20,7 @@ import { ReportComponent } from '../common/report/report.component';
 import { LeaveHistoryComponent } from '../common/leave-history/leave-history.component';
 import { PolicyConfigComponent } from '../common/policy-config/policy-config.component';
 import { PolicyListComponent } from '../common/policy-list/policy-list.component';
+import { EmpPolicyListComponent } from '../common/emp-policy-list/emp-policy-list.component';
 
 
 const routes: Routes = [
@@ -43,6 +44,7 @@ const routes: Routes = [
   {path:"leave-history",component:LeaveHistoryComponent},
   {path:"document-config",component:PolicyConfigComponent},
   {path:"document-list",component:PolicyListComponent},
+  {path:"emp-document-list",component:EmpPolicyListComponent},
   {path:"dashboard",redirectTo:"history-dashboard",pathMatch:'full'},
 
 ];

@@ -96,12 +96,20 @@
                     <!-- <div *ngIf="day == 'Total'">{{day}}</div> -->
                 </div>
 
-
-                <div class="location" [attr.value]="loc['id']" *ngFor="let loc of showLocation;let loc_index = index">
-                    <ng-container>
-                        {{loc['name']}}
-                    </ng-container>
-                </div>
+                <ng-template [ngIf]="!editMode">
+                    <div class="location" [attr.value]="loc['id']" *ngFor="let loc of showLocation;let loc_index = index">
+                        <ng-container>
+                            {{loc['name']}}
+                        </ng-container>
+                    </div>
+                </ng-template>
+                <ng-template [ngIf]="editMode">
+                    <div class="location" [attr.value]="loc['id']" *ngFor="let loc of headerLocation;let loc_index = index">
+                        <ng-container>
+                            {{loc['name']}}
+                        </ng-container>
+                    </div>
+                </ng-template>
 
                 <!-- <div>Total</div> -->
             </div>
@@ -209,6 +217,7 @@
             <div *ngIf="!editMode" class="timesheet__body">
                 <!-- <div class="timesheet__row" *ngFor="let holiday of HOLIDAYLIST_TESTDATA;let i=index;"> -->
                 <div *ngFor="let hol_data of holidayArrayData; let i=index">
+
                     <div class="timesheet__row" [ngStyle]="{'grid-template-columns':  '80px minmax(200px, 2fr) minmax(80px, 1fr) minmax(150px, 2fr) minmax(150px, 2fr) repeat('+  ((editMode==true) ? headerLocation.length : showLocation.length) +', minmax(80px,1fr))'}">
                         <div class="project">
                             {{i+1}}

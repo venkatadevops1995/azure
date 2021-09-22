@@ -19,6 +19,9 @@ import { LeavePolicyConfigModule } from '../common/leave-policy-config/leave-pol
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
 import { ManageUserModule } from '../common/manage-user/manage-user.module';
 import { ManageProjectModule } from '../common/manage-project/manage-project.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
+import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
+import { PolicyListModule } from '../common/policy-list/policy-list.module';
 
 
 @NgModule({
@@ -40,7 +43,10 @@ import { ManageProjectModule } from '../common/manage-project/manage-project.mod
     LeavePolicyConfigModule,
     LeaveHistoryModule,
     ManageUserModule,
-    ManageProjectModule
+    ManageProjectModule,
+    PolicyConfigModule,
+    PolicyListModule,
+    EmpPolicyListModule,
 
   ]
 })

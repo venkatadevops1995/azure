@@ -5,7 +5,7 @@ from django.http.request import QueryDict
 from vedikaweb.vedikaapi.decorators import jwttokenvalidator, custom_exceptions
 from rest_framework.views import APIView
 from vedikaweb.vedikaapi.serializers import PolicyDocumentSerializer,PolicyDocumentCreateSerializer, PolicyCompanySerializer, PolicyDocumentEmployeeAccessPermissionSerializer, PolicyDocumentEmployeeActionSerializer
-from vedikaweb.vedikaapi.models import PolicyType, PolicyDocument, PolicyCompany, PolicyDocumentEmployeeAccessPermission
+from vedikaweb.vedikaapi.models import Company, PolicyType, PolicyDocument, PolicyCompany, PolicyDocumentEmployeeAccessPermission
 from hashlib import md5
 from rest_framework.response import Response
 
@@ -37,15 +37,21 @@ class PolicyTypeView(APIView):
     
 class CreatePolicyView(APIView):
 
-    def get(self,request,*args,**kwargs):
-        policy_list = PolicyDocument.objects.prefetch_related('policycompany_set','policydocumentemployeeaccesspermission_set','policydocumentemployeeaction_set').filter(status=1).order_by('-created')
+    def get(self,request,pk=None,*args,**kwargs):
+        condition = Q(status=1)
+        if pk is not None:
+            condition = condition&Q(id=pk)
+        policy_list = PolicyDocument.objects.prefetch_related('policycompany_set','policydocumentemployeeaccesspermission_set','policydocumentemployeeaction_set').filter(condition).order_by('-created')
         all_policy_data = []
         for each_policy in policy_list:
             each_data = {}
             each_data.update(PolicyDocumentSerializer(each_policy).data)
-            each_data.update({'company_list':list(each_policy.policycompany_set.filter(status=1).annotate(company_name=F('company__name')).values('company_name'))})
+            each_data.update({'company_list':list(each_policy.policycompany_set.filter(status=1).annotate(company_name=F('company__name'),cmpny_id=F('company__id')).values('company_name','cmpny_id'))})
             emp_list = list(each_policy.policydocumentemployeeaccesspermission_set.filter(status=1).annotate(emp_name=F('emp__emp_name')).values('emp_name','emp_id'))
-            emp_action = list(each_policy.policydocumentemployeeaction_set.filter(status=1).annotate(emp_name=F('emp__emp_name')).values('emp_name','is_policy_accepted','upload_status','upload_policy_document','emp_id'))
+            if(pk is None):
+                emp_action = list(each_policy.policydocumentemployeeaction_set.filter(status=1).annotate(emp_name=F('emp__emp_name')).values('emp_name','is_policy_accepted','upload_status','upload_policy_document','emp_id'))
+            else:
+                emp_action = []
             # emps = list(map(lambda x: x.update(emp) for emp in emp_list if emp.emp_id == x.emp_id else x,emp_action))
             emps = []
             for each_list in emp_list:
@@ -148,8 +154,14 @@ class CreatePolicyView(APIView):
                     log.info("Employee access has been disabled as it is enabled for ALL for policy id {}".format(policy_document.id))
 
             return Response(utils.StyleRes(True,"Policy updated successfully", "Policy updated successfully"), status=StatusCode.HTTP_CREATED)
-        return Response(utils.StyleRes(True,"Policy updated successfully", str(policy_serial_data.errors)), status=StatusCode.HTTP_CREATED)
+        return Response(utils.StyleRes(False,"Error while updating policy", str(policy_serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+    def delete(self,request,pk=None,*args,**kwargs):
 
+        policy_list = PolicyDocument.objects.filter(id=pk,status=1)
+        if(len(policy_list)==0):
+            return Response(utils.StyleRes(False,"Policy disabled error", "No active policy found with id {}".format(pk)), status=StatusCode.HTTP_CONFLICT)
+        policy_list.update(status=0)
+        return Response(utils.StyleRes(True,"Policy disabled successfully", "Policy disabled successfully"), status=StatusCode.HTTP_OK)
 
 class EmployeePolicyView(APIView):
 
@@ -225,38 +237,49 @@ class EmployeePolicyView(APIView):
 class PolicyUpload(APIView):
     
     def get(self,request,*args,**kwargs):
-        # auth_details = utils.validateJWTToken(request)
-        # if(auth_details['email']==""):
-        #     return Response(auth_details, status=400)
-        # emp_id=auth_details['emp_id']
-        emp_id =35
-        if 'filename' in request.query_params:
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        emp_id=auth_details['emp_id']
+        is_admin = auth_details['is_emp_admin']
+        # if 'filename' in request.query_params:
+        if 'policy_id' in request.query_params:
             # file_name = request.data['filename']
-            file_name = request.query_params['filename']
-        print(file_name)
-        
-        policy_data = PolicyDocument.objects.prefetch_related('policydocumentemployeeaccesspermission_set').filter(Q(status=1)&Q(file_name=file_name)&(Q(policydocumentemployeeaccesspermission__emp_id=emp_id)|Q(enable_for__iexact='ALL'))).annotate(has_access=Case( When(Q(policydocumentemployeeaccesspermission__status=1)|Q(enable_for__iexact='ALL'), then=True),default=False,output_field=BooleanField(),)).values()
-        
-        if(len(policy_data)==0 or policy_data[0]['has_access']==False):
-            return Response(utils.StyleRes(False,"Employee Policy file download", "Employee does not have the permission for the file"), status=StatusCode.HTTP_UNAUTHORIZED)
+            # file_name = request.query_params['filename']
+            policy_id = request.query_params['policy_id']
+        # print(file_name)
+        # Q(file_name=file_name)
+
+        if(not is_admin):
+            policy_data = PolicyDocument.objects.prefetch_related('policydocumentemployeeaccesspermission_set').filter(Q(status=1)&Q(id=policy_id)&(Q(policydocumentemployeeaccesspermission__emp_id=emp_id)|Q(enable_for__iexact='ALL'))).annotate(has_access=Case( When(Q(policydocumentemployeeaccesspermission__status=1)|Q(enable_for__iexact='ALL'), then=True),default=False,output_field=BooleanField(),)).values()
+
+            
+            if(len(policy_data)==0 or policy_data[0]['has_access']==False):
+                return Response(utils.StyleRes(False,"Employee Policy file download", "Employee does not have the permission for the file"), status=StatusCode.HTTP_UNAUTHORIZED)
+        else:
+            policy_data = PolicyDocument.objects.filter(Q(status=1)&Q(id=policy_id)).values()
+            if(len(policy_data)==0 ):
+                return Response(utils.StyleRes(False,"Employee Policy file download", "Policy does not exist with id {}".format(policy_id)), status=StatusCode.HTTP_UNAUTHORIZED)
+        file_name = policy_data[0]['file_name']
+        display_name = policy_data[0]['display_name']
         try: 
-            # with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
-            #     data = f.read()
-            # response = HttpResponse(content_type="application/pdf")    
-            # response['Content-Disposition'] = 'attachment; filename=%s' % file_name # force browser to download file    response.write(data)
+            with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
+                data = f.read()
+            response = HttpResponse(data,content_type="application/pdf")    
+            response['Content-Disposition'] = 'attachment; filename=%s' % display_name # force browser to download file    response.write(data)
             #     # response=utils.contentTypesResponce('pdf',policy_data[0]['display_name'],f)
             # response['response-type'] = 'blob'
             # response.write(data)
             # response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb'), content_type='application/pdf')
-            response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name,'rb'),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-            response["Access-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+            # response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name,'rb'),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            # response["Access-Control-Allow-Origin"] = "*"
+            # response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+            # response["Access-Control-Max-Age"] = "1000"
+            # response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
             return response
         except Exception as e:
             print(e)
-            return Response(utils.StyleRes(False,"Employee Policy file download", "file does not exist"), status=StatusCode.HTTP_OK)
+            return Response(utils.StyleRes(False,"Employee Policy file download", "file does not exist"), status=StatusCode.HTTP_NOT_FOUND)
     def post(self,request,*args,**kwargs):
         file_name = request.data['file']
         uploadedfilename = str(file_name).split('.')[0]

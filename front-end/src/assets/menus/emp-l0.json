@@ -74,6 +74,23 @@
 
 
         ]
+    },
+    {
+        "text": "Document Management",
+        "link": "",
+        "submenu": [{
+                "text": "Create",
+                "link": "document-config"
+            }, {
+                "text": "All Policies",
+                "link": "document-list"
+            },
+            {
+                "text": "Policy",
+                "link": "emp-document-list"
+            }
+
+        ]
     }
 
 ]

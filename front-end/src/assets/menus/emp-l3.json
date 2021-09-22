@@ -88,14 +88,18 @@
         ]
     },
     {
-        "text": "Document Management",
+        "text": "Policy Management",
         "link": "",
         "submenu": [{
-                "text": "Document Configuration",
+                "text": "Create",
                 "link": "document-config"
             }, {
-                "text": "Document",
+                "text": "All Policies",
                 "link": "document-list"
+            },
+            {
+                "text": "Policy",
+                "link": "emp-document-list"
             }
 
         ]

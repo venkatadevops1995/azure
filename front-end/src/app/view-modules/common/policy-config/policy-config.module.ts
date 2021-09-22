@@ -11,6 +11,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatTableModule } from '@angular/material/table';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 
 @NgModule({
   declarations: [PolicyConfigComponent],
@@ -26,7 +27,8 @@ import { MatTableModule } from '@angular/material/table';
     MatRadioModule,
     MatCheckboxModule,
     ModalPopupModule,
-    MatTableModule
+    MatTableModule,
+    SvgIconModule
     
   ]
 })
