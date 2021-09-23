@@ -295,7 +295,7 @@ LOGGING = {
 }
 ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
-IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai']
+IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com','gd@invecas.com']
 
 SENDEMAILTOALL=True
 CUSTOM_EMAILS = []
