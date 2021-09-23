@@ -814,7 +814,7 @@ def LeaveUpdateCron():
 def autoApprovalOfExpiredLeaveRequests():
     today = datetime.today()
     today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    expired_leave_req = LeaveRequest.objects.prefetch_related('leave_set').filter(status=LeaveRequestStatus.Pending.value,startdate__lte=today)
+    expired_leave_req = LeaveRequest.objects.prefetch_related('leave_set').filter(status=LeaveRequestStatus.Pending.value,startdate__custom_lte=today)
     for each_req in expired_leave_req:
         each_req.leave_set.filter().update(status=LeaveDayStatus.Consumed.value)
         each_req.status=LeaveRequestStatus.AutoApprovedMgr.value

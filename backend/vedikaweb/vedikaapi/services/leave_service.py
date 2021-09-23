@@ -1,3 +1,4 @@
+from vedikaweb.vedikaapi.utils import utils
 from vedikaweb.vedikaapi.serializers import LeaveRequestQpSerializer
 from django.db.models import Q,F,Prefetch,Count,CharField, Case, When, Value as V, Subquery, OuterRef
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -26,7 +27,16 @@ def get_leave_requests(qp, emp_id,is_hr=False):
         filter =  qp.get('filter') 
         # is_unconsumed = json.loads(qp.get('is_unconsumed','false'))
         # is_consumed = json.loads(qp.get('is_consumed','false'))
-        is_history_valid = bool(qp.get('start_date') and qp.get('end_date'))
+        monthly_time_cycle_flag = json.loads(qp.get('cyclewise','false'))
+        threshold = qp.get('previous',1)
+        if(monthly_time_cycle_flag):
+            res = utils.get_monthly_cycle(date.today(),Threshold=threshold)
+            start_date,end_date = str(res[0]),str(res[1])
+        else:
+            start_date = qp.get('start_date')
+            end_date = qp.get('end_date')
+
+        is_history_valid = bool(start_date and end_date)
         is_manager = json.loads(qp.get('is_manager','false'))
         
         # STEP : store sorting criteria and process sorting query params into an array in the order desired
@@ -57,7 +67,6 @@ def get_leave_requests(qp, emp_id,is_hr=False):
                 sorting_order[0] = '-'+sort_key
         if is_hr:
             employees = Employee.objects.filter(status=1).distinct().values_list('emp_id',flat=True)
-
         elif is_manager:
             manager_id=emp_id
             # get all the employees in employee hierarchy under the manager with status 1
@@ -68,11 +77,16 @@ def get_leave_requests(qp, emp_id,is_hr=False):
             is_pending = json.loads(qp.get('is_pending','false'))                                    
         if filter == 'history':
             if is_history_valid:
-                start_date= datetime.strptime(qp.get('start_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S')
-                end_date = datetime.strptime(qp.get('end_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S')
+                if(monthly_time_cycle_flag):
+                    res = utils.get_monthly_cycle(date.today(),Threshold=threshold)
+                    start_date,end_date = str(res[0]),str(res[1])
+                else:
+                    start_date= datetime.strptime(qp.get('start_date', utils.default_date()), '%Y-%m-%dT%H:%M:%S')
+                    end_date = datetime.strptime(qp.get('end_date', utils.default_date()), '%Y-%m-%dT%H:%M:%S')
+                
                 today = datetime.today()
                 today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-                is_date_between_startdate_end_date = (Q(startdate__gte=start_date) & Q(startdate__lte=end_date)) | (Q(enddate__gte=start_date) & Q(enddate__lte=end_date)) | (Q(startdate__lte=start_date) & Q(enddate__gte=end_date) & ~(Q(startdate__gte=today) & Q(enddate__lte=today)))
+                is_date_between_startdate_end_date = (Q(startdate__gte=start_date) & Q(startdate__lte=end_date)) | (Q(enddate__gte=start_date) & Q(enddate__lte=end_date)) | (Q(startdate__lte=start_date) & Q(enddate__gte=end_date) & ~(Q(startdate__custom_gte=today) & Q(enddate__custom_lte=today)))
 
         base_query_set_leave_requests = LeaveRequest.objects.prefetch_related('leave_set','leavediscrepancy')
         if is_manager:
@@ -87,10 +101,10 @@ def get_leave_requests(qp, emp_id,is_hr=False):
                 query_expression = is_date_between_startdate_end_date & query_expression
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression ).exclude(status__in = [LeaveRequestStatus.Pending.value,LeaveRequestStatus.EmployeeCancelled.value,LeaveRequestStatus.Rejected.value])
             elif filter == 'pending':
-                query_expression = query_expression & (Q(startdate__gt=today))
+                query_expression = query_expression & (Q(startdate__custom_gt=today))
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression).exclude(status__in=[LeaveRequestStatus.EmployeeCancelled.value])
             elif filter == 'in_progress':
-                query_expression = query_expression & (Q(startdate__gt=today))
+                query_expression = query_expression & (Q(startdate__custom_gt=today))
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression, status__in=[LeaveRequestStatus.Pending.value]) 
             else: 
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression)
@@ -106,14 +120,14 @@ def get_leave_requests(qp, emp_id,is_hr=False):
                 if is_history_valid:
                     query_expression = query_expression & is_date_between_startdate_end_date 
                 else: 
-                    query_expression = query_expression & Q(startdate__lte=today) & Q(startdate__gte=today-timedelta(days=30))
+                    query_expression = query_expression & Q(startdate__custom_lte=today) & Q(startdate__custom_gte=today-timedelta(days=30))
                 
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression).exclude(Q(status__in = [LeaveRequestStatus.Rejected.value,LeaveRequestStatus.EmployeeCancelled.value]) )
             elif filter == 'pending':
-                query_expression = query_expression & (Q(startdate__gt=today))
+                query_expression = query_expression & (Q(startdate__custom_gt=today))
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression)
             elif filter == 'in_progress':
-                query_expression = query_expression & (Q(enddate__gte=today) )
+                query_expression = query_expression & (Q(enddate__custom_gte=today) )
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(query_expression)
             else:
                 base_query_set_leave_requests = base_query_set_leave_requests.filter(Q(emp_id=emp_id))
