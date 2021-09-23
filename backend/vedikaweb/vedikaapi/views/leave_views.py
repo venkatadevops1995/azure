@@ -1311,6 +1311,8 @@ class LeaveStatusAPI(APIView):
 
 
 
+#BASED ON LEAVE TABLE
+#INDIVIDUAL LEAVE DAYS AE CONSIDERING AND RETURNING AS RESPONSE
 class MonthyCycleLeaveReportView(APIView):
     def get(self,request,*args,**kwargs):
         threshold = self.request.query_params.get('previous',1)
@@ -1340,6 +1342,8 @@ class MonthyCycleLeaveReportView(APIView):
             output.append({'leaves_count':len(value),'leave_request_id':key,'values':value})
         return Response(output)
 
+#BASED ON BOTH LEAVE AND LEAVE REQUEST TABLE
+#SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
 class MonthyCycleLeaveReportRequestBasedView(APIView):
     def get(self,request,*args,**kwargs):
         threshold = self.request.query_params.get('previous',1)
