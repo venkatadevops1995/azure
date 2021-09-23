@@ -780,7 +780,7 @@ class getHistoricalData(APIView):
                     for each in work_weeks_years:
                         
                         manager_work_his = ManagerWorkHistory.objects.filter(emp_id = emp,work_week = each['week'],created__year=each['year']).order_by('-work_week').values()
-                        print(manager_work_his,"*************")
+                        # print(manager_work_his,"*************")
                         # print('manager_work_his',manager_work_his)
                         if len(manager_work_his)>0:
                             # manager_work = list(manager_work_his)
