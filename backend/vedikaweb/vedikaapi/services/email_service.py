@@ -30,11 +30,14 @@ class email_service():
         if(len(emp_obj)>0):
             emp_object = emp_obj[len(emp_obj)-1]
             global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
+            individual_email_access_emps = []
             if(len(global_email_access)>0):
                 accessed_managers = list(map(lambda x:utils.strip_value(x.emp_name),Employee.objects.filter(role_id=4,status=1)))
             else:
                 accessed_managers = list(map(lambda x:utils.strip_value(x.emp.emp_name),EmailAccessGroup.objects.filter(status=1)))
-            if(utils.strip_value(emp_object.fun_owner) in accessed_managers):
+                individual_email_access_emps = list(map(lambda x:x.emp.emp_id,EmailAccessGroup.objects.filter(status=2)))
+
+            if((utils.strip_value(emp_object.fun_owner) in accessed_managers) or (emp_id in individual_email_access_emps)):
                 try:
                     if(settings.SENDEMAILTOALL or emp_object.emp.email in settings.CUSTOM_EMAILS):
                         return True

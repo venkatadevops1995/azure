@@ -108,14 +108,17 @@ class AttendanceStatusAPI(APIView):
             return Response(auth_details, status=400)
         attendance_flag = False
         emp_id=auth_details['emp_id']
+        individual_att_access_list=[]
         global_attendance_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='ATTENDANCE')
         if(len(global_attendance_access)>0):
             att_access_grp_list = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
         else:
             att_access_grp_obj = AttendanceAccessGroup.objects.filter(status=1)
             att_access_grp_list = list(map(lambda x: x.emp_id,att_access_grp_obj))
+            att_access_individ_obj = AttendanceAccessGroup.objects.filter(status=2,emp_id=emp_id)
+            individual_att_access_list = list(map(lambda x: x.emp_id,att_access_individ_obj))
 
         emp_hierarchy_obj = EmployeeHierarchy.objects.filter(manager_id__in=att_access_grp_list,emp_id=emp_id)
-        if(len(emp_hierarchy_obj)>0):
+        if(len(emp_hierarchy_obj)>0 or len(individual_att_access_list)>0):
             attendance_flag = True
         return Response({'attendance_flag':attendance_flag})

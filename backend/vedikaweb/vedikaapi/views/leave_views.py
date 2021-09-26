@@ -1287,14 +1287,18 @@ class LeaveStatusAPI(APIView):
             return Response(auth_details, status=400)
         leave_flag = False
         emp_id=auth_details['emp_id']
+        individual_leave_access_list = []
         global_leave_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='LEAVE')
         if(len(global_leave_access)>0):
             leave_access_grp_list = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
         else:
             leave_access_grp_obj = LeaveAccessGroup.objects.filter(status=1)
             leave_access_grp_list = list(map(lambda x: x.emp_id,leave_access_grp_obj))
+            leave_access_individ_obj = LeaveAccessGroup.objects.filter(status=2,emp_id=emp_id)
+            individual_leave_access_list = list(map(lambda x: x.emp_id,leave_access_individ_obj))
+
 
         emp_hierarchy_obj = EmployeeHierarchy.objects.filter(manager_id__in=leave_access_grp_list,emp_id=emp_id)
-        if(len(emp_hierarchy_obj)>0):
+        if(len(emp_hierarchy_obj)>0 or len(individual_leave_access_list)>0):
             leave_flag = True
         return Response({'leave_flag':leave_flag})

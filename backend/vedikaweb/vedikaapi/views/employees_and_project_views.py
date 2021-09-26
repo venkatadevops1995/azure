@@ -190,12 +190,17 @@ class Users(APIView):
 
                 global_leave_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='LEAVE')
                 leave_access_grp_list = []
+                leave_access_individual_list = []
                 if(len(global_leave_access)>0):
                     leave_access_grp_list = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
                 else:
                     leave_access_grp_obj = LeaveAccessGroup.objects.filter(status=1)
                     leave_access_grp_list = list(map(lambda x: x.emp_id,leave_access_grp_obj))
-                if((data["fun_own"].value != 0 and data["fun_own"].value in leave_access_grp_list) or len(global_leave_access)>0 ):
+                    leave_access_individual_obj = LeaveAccessGroup.objects.filter(status=2)
+                    leave_access_individual_list = list(map(lambda x: x.emp_id,leave_access_individual_obj))
+
+
+                if((data["fun_own"].value != 0 and (data["fun_own"].value in leave_access_grp_list or emp_id in leave_access_individual_list)) or len(global_leave_access)>0 ):
                     # adding leaves
                     doj = datetime.strptime( data["doj"].value ,'%Y-%m-%d')
                     today = datetime.now()

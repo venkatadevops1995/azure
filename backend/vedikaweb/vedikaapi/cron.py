@@ -259,11 +259,12 @@ def EmployeeNotificationOne():
 
     emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
     global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-
+    individual_email_access_emps=[]
     if(len(global_email_access)>0):
         accessed_managers = list(map(lambda x:x.emp_id,emp_obj.filter(role_id=4)))
     else:
         accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
+        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
 
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
@@ -287,7 +288,7 @@ def EmployeeNotificationOne():
     for eachemp in emp_obj:
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
-            if(any(item in accessed_managers for item in managers_list)):
+            if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
                 entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
                     cnt = Count('cnt'),
                     week_and_year = Concat(
@@ -359,13 +360,13 @@ def ManagerNotificationThree():
 
     emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
     global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-
+    individual_email_access_emps = []
     if(len(global_email_access)>0):
         accessed_managers = list(map(lambda x:x.emp_id,emp_obj))
         
     else:
         accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-
+        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
     # emp_obj = AttendanceAccessGroup.objects.select_related('emp').filter(status=1)
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
@@ -388,7 +389,7 @@ def ManagerNotificationThree():
     for count,eachemp in enumerate(emp_obj):
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
-            if(any(item in accessed_managers for item in managers_list)):
+            if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
                 manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
                     approval_comp_cnt = F('cnt'),
                     week_and_year = Concat(
@@ -460,12 +461,12 @@ def EmployeeNotificationTwo():
     emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
     emp_list = list(map(lambda x:x.emp_id,emp_obj))
     global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-
+    individual_email_access_emps=[]
     if(len(global_email_access)>0):
         accessed_managers = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
     else:
         accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-
+        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
     weekyear = str(weekdatesList[-1]).split('-')[0]
@@ -503,7 +504,7 @@ def EmployeeNotificationTwo():
         try:
             if(eachemp.emp_id not in time_submitted_employees_list):
                 managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
-                if(any(item in accessed_managers for item in managers_list)):
+                if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
                     entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
                         cnt = Count('cnt'),
                         week_and_year = Concat(
@@ -579,12 +580,13 @@ def ManagerNotificationOneTwo():
 
     emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
     global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-
+    individual_email_access_emps=[]
     if(len(global_email_access)>0):
         accessed_managers = list(map(lambda x:x.emp_id,emp_obj))
         
     else:
         accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
+        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
 
     # emp_obj = AttendanceAccessGroup.objects.select_related('emp').filter(status=1)
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
@@ -627,7 +629,7 @@ def ManagerNotificationOneTwo():
         try:
             
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
-            if(any(item in accessed_managers for item in managers_list)):
+            if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
                 employees_under_manager_obj=EmployeeHierarchy.objects.directemployees(manager_id=eachemp.emp_id)
                 employees_under_manager_list=list(map(lambda  x: {"emp_id":x.emp_id,"name":x.emp.emp_name,"staff_no":x.emp.staff_no,'created':x.emp.created},employees_under_manager_obj))
                 
@@ -780,10 +782,12 @@ def LeaveUpdateCron():
             emp_id = F('leave_request__emp__emp_id')
         ).values_list('emp_id',flat=True)
         leave_access_managers_obj = LeaveAccessGroup.objects.filter(status=1)
+        leave_access_individual_obj = LeaveAccessGroup.objects.filter(status=2)
         leave_access_managers_list = list(map(lambda x:x.emp_id,leave_access_managers_obj))
+        leave_access_individual_list = list(map(lambda x:x.emp_id, leave_access_individual_obj))
         maternal_leave_emps_list = list(maternal_leave_obj)
         for employee in employees:
-            if(employee.functional_manager in leave_access_managers_list):
+            if((employee.functional_manager in leave_access_managers_list) or (employee.emp in leave_access_individual_list)):
                 emp_id = employee.emp
                 if(emp_id.emp_id not in maternal_leave_emps_list):
                     category = employee.category
