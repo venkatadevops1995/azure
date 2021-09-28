@@ -155,6 +155,9 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // for mat
     focused = false;
 
+
+    @Input() getFile:any;
+
     constructor(
         private el: ElementRef,
         public _defaultErrorStateMatcher: ErrorStateMatcher,
@@ -195,8 +198,6 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
  
     ngOnInit() {
-
-
         // set the control to the ngControl
         this.control = (this.ngControl) ? this.ngControl.control : new FormControl();
         // this.control.root.onSubmit
@@ -207,6 +208,18 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
             this.fileArray = temp;
         }
         // RESET the custom select form control UI when the form control is RESET
+        if(this.getFile instanceof File && this.getFile!= undefined){
+            // this.fileArray.push(this.getFile)
+            // // log
+            // this.fileArray.push(this.getFile)
+            // this.multiple = false
+            var e= new Event('manualFile')
+            // this.control.setValue(this.getFile)
+            this.onChange(e,[[this.getFile]])
+            // this.multiple = false
+        }
+            // this.fileArray.push(this.getFile)
+        
         this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
             () => {
                 console.log("value changes")
@@ -727,12 +740,13 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                 this.propagateChange(this.fileArray);
             }
             this.setFileSize();
-
             // make the value available in the event emitted
-            this.changeEE.emit(this.fileArray);
-
-            this.fileRef.nativeElement.value = ""; // resetting the filelist of input file (to avoid a mismatch b/w file array and file list when the user selects same files as the browser does not trigger change event.) by giving it an empty string
-            this.checkErrors(); // update Errors
+            if(e.type != "manualFile"){
+                this.changeEE.emit(this.fileArray);
+            // if (this.fileRef != undefined)
+                this.fileRef.nativeElement.value = ""; // resetting the filelist of input file (to avoid a mismatch b/w file array and file list when the user selects same files as the browser does not trigger change event.) by giving it an empty string
+            }
+                this.checkErrors(); // update Errors
             setTimeout(() => {
                 this.showLoader = false;
                 console.log(this.control.errors);

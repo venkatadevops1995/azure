@@ -5,7 +5,7 @@ from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 from django.urls import path, include
 from vedikaweb.vedikaapi import views
-from vedikaweb.vedikaapi.views import attendance_views, common_views,employees_and_project_views,holiday_views,leave_views,login_views,mis_views,timesheet_views, third_party_views
+from vedikaweb.vedikaapi.views import attendance_views, common_views,employees_and_project_views,holiday_views,leave_views,login_views,mis_views,timesheet_views, third_party_views, policy_view
 from django.conf.urls.static import static
 from django.conf import settings
 router = routers.DefaultRouter()
@@ -116,4 +116,12 @@ urlpatterns = [
     url(r'^holiday/',holiday_views.HolidayView.as_view(),name="Holiday"),
     url(r'^statuswisetimesheetcount/',timesheet_views.StatusWiseTimesheetCount.as_view(),name='StatusWiseTimesheetCount'),
     url(r'^employeeData/',employees_and_project_views.EmployeeDetails.as_view(),name='EmployeeDetails'),
+    path('policy/',include([ 
+            path('',policy_view.CreatePolicyView.as_view(),name='CreatePolicyView'),
+            path('<int:pk>/',policy_view.CreatePolicyView.as_view(),name='UpdatePolicyView'),
+            path('type/',policy_view.PolicyTypeView.as_view(),name='policyTypeView'),
+            path('emp-policy/', policy_view.EmployeePolicyView.as_view(),name='EmployeePolicyView'),
+            path('emp-policy/<int:policy_id>/', policy_view.EmployeePolicyView.as_view(),name='EmployeePolicyUpdateView'),
+            path('upload/',policy_view.PolicyUpload.as_view(),name='PolicyUpload'),
+    ])),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

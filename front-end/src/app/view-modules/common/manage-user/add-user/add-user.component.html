@@ -1,7 +1,7 @@
 <h2 class="heading">Add Employee</h2>
 
 <div>
-    <form [formGroup]="addUserForm" (ngSubmit)="addUser()">
+    <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()">
         <div>
             <div class="grid-container">
                 <mat-form-field>
@@ -220,3 +220,19 @@
         </div>
     </form>
 </div>
+
+<app-modal-popup #confirmationRef [w]="'30%'" [h]="'35%'">
+    <div head>
+        Confirmation
+    </div>
+    <div style="margin: 10px;text-align: center;">
+        Are you sure to add this employee ?
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <app-button style="margin:5px 20px" size='small' type="button" w="130" (click)="addUser()">Confirm
+        </app-button>
+        <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="closeConfirmation()">Cancel
+        </app-button>
+    </div>
+</app-modal-popup>

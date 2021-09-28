@@ -18,6 +18,9 @@ import { ImportExportLeaveModule } from '../common/import-export-leave/import-ex
 import { LeavePolicyConfigModule } from '../common/leave-policy-config/leave-policy-config.module';
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
 import { ManageUserModule } from '../common/manage-user/manage-user.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
+import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
+import { PolicyListModule } from '../common/policy-list/policy-list.module';
 
 
 @NgModule({
@@ -38,7 +41,10 @@ import { ManageUserModule } from '../common/manage-user/manage-user.module';
     ImportExportLeaveModule,
     LeavePolicyConfigModule,
     LeaveHistoryModule,
-    ManageUserModule
+    ManageUserModule,
+    PolicyConfigModule,
+    PolicyListModule,
+    EmpPolicyListModule,
 
 
   ]

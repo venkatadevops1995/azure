@@ -19,6 +19,9 @@ import { HolidayModule } from '../common/holiday/holiday.module';
 import { ImportExportLeaveModule } from '../common/import-export-leave/import-export-leave.module';
 import { ReportModule } from '../common/report/report.module';
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
+import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
+import { PolicyListModule } from '../common/policy-list/policy-list.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
 
 
 @NgModule({
@@ -42,6 +45,9 @@ import { LeaveHistoryModule } from '../common/leave-history/leave-history.module
     ImportExportLeaveModule,
     ReportModule,
     LeaveHistoryModule,
+    PolicyConfigModule,
+    PolicyListModule,
+    EmpPolicyListModule,
     NgCircleProgressModule.forRoot({})
   ]
 })
