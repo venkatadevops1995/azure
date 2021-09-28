@@ -20,23 +20,30 @@
                 </mat-autocomplete>
             </mat-form-field>
         </div>
-        <div class="ml-15">
-            <div class="dateinput">
-                <input type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
-                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: #3a7bca;" (datesUpdated)="onSubmitResolvedLeaveFilter($event)" [opens]="'left'"
+        <div class="ml-15" style="margin-left: 55px;">
+            <div class="dateinput change">
+                <input [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
+                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: red;" (datesUpdated)="onSubmitResolvedLeaveFilter($event)" [opens]="'left'"
                     [drops]="'down'" readonly>
 
-                <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-                            <mat-icon role="img" (click)="pickerDirective.open()"
-                        class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
+                <button [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
+                            <mat-icon  role="img" (click)="pickerDirective.open()"
+                        class="mat-icon material-icons ngx-daterangepicker-action" [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" >date_range</mat-icon>
                         </button>
             </div>
         </div>
+<!-- month-year starts  -->
+        <div class="ml-15">
+            <app-month-year (newItemEvent1) = "getTrigger($event)" (newItemEvent) = "getSide($event)" ></app-month-year>
+        </div>
+<!-- month-year ends  -->
 
-        <div class="export_icon ml-15" style="margin-top: 5px;margin-left: 5px">
+
+
+
+        <div class="export_icon ml-15" style="position: absolute; right: 100px ;float: right; margin-top: 5px;margin-left: 65px">
             <a (click)="onClickExportResolved()" style="max-height: 10px;">
                 <span class="ml-5" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}" style="color:var(--color-tertiary);margin-top:0px;cursor:pointer" svg-fill="currentColor"></span>
-
             </a>
         </div>
 
@@ -60,22 +67,23 @@
         </ng-container>
 
 
-        <div style="overflow-y: auto;max-height: 450px;" #refTableWrap>
-            <table mat-table [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0" class="mat-elevation-z8">
+        <div style="overflow-y: auto;max-height: 450px;" *ngIf="LEAVE_DATA_HISTORY.length" #refTableWrap>
+            <app-show-table [LEAVE_DATA_HISTORY] = "LEAVE_DATA_HISTORY"></app-show-table>
+            <!-- <table mat-table [dataSource]="LEAVE_DATA_HISTORY"  *ngIf="LEAVE_DATA_HISTORY.length!=0" class="mat-elevation-z8" matSort>
 
                 <ng-container matColumnDef="serial">
-                    <th mat-header-cell *matHeaderCellDef> S.No. </th>
+                    <th mat-header-cell *matHeaderCellDef  mat-sort-header> S.No. </th>
                     <td mat-cell *matCellDef="let element;let i=index;">{{i+1}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="staff_no">
-                    <th mat-header-cell *matHeaderCellDef >
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
                         Staff No.
                     </th>
                     <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_staff_no}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="employee">
+                <ng-container matColumnDef="emp_name">
                     <th mat-header-cell *matHeaderCellDef [class.show-on-hover]="!sortHistoric.empName">
                         Name
                         <mat-icon class="pointer {{true ? 'north' : 'south'}}" matSuffix (click)="onClickSort('empName')" style=" font-size:12px;width:12px;height:12px;">
@@ -123,16 +131,22 @@
                     <th mat-header-cell *matHeaderCellDef> Action</th>
                     <td mat-cell *matCellDef="let element;let i = index">
                         <div class="flex middle-xs start-xs">
-                            <!-- <app-button class=" view-leave-details-history" title="View Details" type="button" theme='blue-lite' size="extra-small" [attr.data-id]="element.id" [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">View
-                            </app-button> -->
+                            <app-button class=" view-leave-details-history" title="View Details" type="button" theme='blue-lite' size="extra-small" [attr.data-id]="element.id" [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">View
+                            </app-button>
                         </div>
                     </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="leaveApplicationColumns sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: leaveApplicationColumns; "></tr>
-            </table>
+            </table> -->
         </div>
     </div>
 </div>
 
 <!-- <app-leave-details #showAppliedLeaveDialog type='team' [requestId]="leaveDetailsRequestId"></app-leave-details> -->
+
+
+
+
+
+  

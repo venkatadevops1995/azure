@@ -1,0 +1,57 @@
+:root{
+  --isDisabled: "red";
+  --opa:1;
+}
+::ng-deep{
+    .example-month-picker .mat-calendar-period-button {
+        pointer-events: none;
+      }    
+      .example-month-picker .mat-calendar-arrow {
+        display: none;
+      }
+    .mat-form-field-flex{
+        border-radius: 20px !important;
+    }
+    .mat-form-field-flex{
+      color: var(--isDisabled);
+    }   
+}
+.myclass{
+    margin-top: 20px !important;
+}
+.flex-box{
+    display: flex;
+}
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background: rgb(106 228 207 / 60%) !important;
+}
+
+:host ::ng-deep .mat-slide-toggle-bar {
+  background: #675454 !important;
+}
+.change{
+  ::ng-deep .mat-form-field {
+    .mat-input-element {
+      // color: blue !important;
+      color: var(--isDisabled) !important;
+      opacity: var(--opa);
+    }
+    .mat-form-field-label {
+      left: -10px !important;
+      color: var(--isDisabled) !important;
+      opacity: var(--opa);
+    }
+    .mat-form-field-required-marker {
+      color: var(--isDisabled) !important;
+      opacity: var(--opa);
+    }
+    .mat-icon-button{
+      margin-top: -10px;
+      font-size: 40px;
+      size: 30px;
+      height: 100px;
+      color: var(--isDisabled) !important;
+      opacity: var(--opa);
+    }
+  }
+}
