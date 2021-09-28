@@ -745,7 +745,7 @@ class ExportResolvedLeaves(APIView):
         else:
             start_date= datetime.strftime(datetime.strptime(qp.get('start_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S'),'%Y-%m-%d')
             end_date = datetime.strftime(datetime.strptime(qp.get('end_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S'),'%Y-%m-%d')
-        print(start_date,end_date,"=================")
+        # print(start_date,end_date,"=================")
         excel_file = utils.contentTypesResponce('xl',emp_name+'_LeaveHistory_'+start_date+"_"+end_date+".xlsx")
         excel = ExcelServices(excel_file,in_memory=True,workSheetName='LeaveHistory')
         columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']
@@ -1311,13 +1311,15 @@ class LeaveStatusAPI(APIView):
 
 
 
+#BASED ON LEAVE TABLE
+#INDIVIDUAL LEAVE DAYS AE CONSIDERING AND RETURNING AS RESPONSE
 class MonthyCycleLeaveReportView(APIView):
     def get(self,request,*args,**kwargs):
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
         year = self.request.query_params.get('year',None)
-        print(utils.isNotNone(month,year))
+        # print(utils.isNotNone(month,year))
         if(utils.isNotNone(month,year)):
             start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
         else:
@@ -1338,4 +1340,55 @@ class MonthyCycleLeaveReportView(APIView):
         for key, value in groupby(LEAVES_INFO, key_func):
             value=list(value)
             output.append({'leaves_count':len(value),'leave_request_id':key,'values':value})
+        return Response(output)
+
+#BASED ON BOTH LEAVE AND LEAVE REQUEST TABLE
+#SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
+class MonthyCycleLeaveReportRequestBasedView(APIView):
+    def get(self,request,*args,**kwargs):
+        threshold = self.request.query_params.get('previous',1)
+        emp_name = self.request.query_params.get('emp_name',None)
+        month = self.request.query_params.get('month',None)
+        year = self.request.query_params.get('year',None)
+        if(utils.isNotNone(month,year)):
+            start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
+        else:
+            start_and_end_dates = utils.get_monthly_cycle(date.today(),Threshold=threshold)
+        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1])
+        if(emp_name is not None):
+            leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
+        leaves_ = leaves.annotate(
+            emp_name = F('leave_request__emp__emp_name'),
+        ).values('leave_request_id','emp_name','leave_on','day_leave_type','status')
+
+        # fuction for key
+        def key_func(k):
+            return k['leave_request_id']
+        
+        # sort INFO data by 'company' key.
+        LEAVES_INFO = sorted(list(leaves_), key=key_func)
+        output = []
+        for key, value in groupby(LEAVES_INFO, key_func):
+            value=list(value)
+            leave_q_details = LeaveRequest.objects.filter(id=key,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1]).annotate(
+                day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
+                    When(leave__day_leave_type='FIRST_HALF', then=0.5),
+                    When(leave__day_leave_type='SECOND_HALF', then=0.5),
+                    default=0.0,output_field=FloatField(),)),
+                req_status = Case( When(status=0, then=Value('Pending')),
+                    When(status=LeaveRequestStatus.Approved.value, then=Value('Approved')),
+                    When(status=LeaveRequestStatus.Rejected.value, then=Value('Rejected')),
+                    When(status=LeaveRequestStatus.AutoApprovedEmp.value, then=Value('AutoApprovedEmp')),
+                    When(status=LeaveRequestStatus.AutoApprovedMgr.value, then=Value('AutoApprovedMgr')),
+                    When(status=LeaveRequestStatus.EmployeeCancelled.value, then=Value('Cancelled')),output_field=CharField(),),
+                leave_type_name = F("leave_type_id__name"),
+                emp_name = F('emp__emp_name'),
+                emp_staff_no = F('emp__staff_no'),
+            )
+            leave_req_obj = leave_q_details[0]
+            day_count = leave_req_obj.day_count
+            if('.5' not in str(leave_req_obj.day_count)):
+                day_count = int(day_count)
+
+            output.append({'emp_name':leave_req_obj.emp_name,'emp':leave_req_obj.emp.emp_id,'day_count':day_count,'id':key,'req_status':leave_req_obj.req_status,'startdate':value[0]['leave_on'],'enddate':value[-1]['leave_on'],'leave_type_name':leave_req_obj.leave_type_name,'emp_staff_no':leave_req_obj.emp_staff_no,'emp_comments':leave_req_obj.emp_comments,'leave_reason':leave_req_obj.leave_reason,'leave_type':leave_req_obj.leave_type_id,'manager_comments':leave_req_obj.manager_comments,'requested_by':leave_req_obj.requested_by,'status':leave_req_obj.status,'uploads_invitation':leave_req_obj.uploads_invitation})
         return Response(output)
