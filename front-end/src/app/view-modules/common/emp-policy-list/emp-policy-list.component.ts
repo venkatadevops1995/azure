@@ -25,22 +25,6 @@ export class EmpPolicyListComponent implements OnInit {
 
   ngOnInit(): void {
 
-  // this.EMPLOYEE_FILTERED_DATA = [{ "emp_id": 1,"staff_no": 1, "emp_name": "a", "company": ["Atai"], "selected": false },
-  //   { "emp_id": 2,"staff_no": 2, "emp_name": "b", "company_list": ["Soctronics","Atai"], "selected": false },
-  //   { "emp_id": 3,"staff_no": 3, "emp_name": "c", "company_list": ["Atai"], "selected": false },
-  //   { "emp_id": 4,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   { "emp_id": 5,"staff_no": 4, "emp_name": "d", "company_list": ["Veda"], "selected": false },
-  //   { "emp_id": 6,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   { "emp_id": 7,"staff_no": 4, "emp_name": "d", "company_list": ["Atai"], "selected": false },
-  //   { "emp_id": 8,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   { "emp_id": 9,"staff_no": 4, "emp_name": "d", "company_list": ["Veda"], "selected": false },
-  //   { "emp_id": 10,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   { "emp_id": 11,"staff_no": 4, "emp_name": "d", "company_list": ["Veda"], "selected": false },
-  //   { "emp_id": 12,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   { "emp_id": 13,"staff_no": 4, "emp_name": "d", "company_list": ["Atai"], "selected": false },
-  //   { "emp_id": 14,"staff_no": 4, "emp_name": "d", "company_list": ["Veda"], "selected": false },
-  //   { "emp_id": 15,"staff_no": 4, "emp_name": "d", "company_list": ["Soctronics"], "selected": false },
-  //   ]
     this.getPolicies();
     console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
   }
@@ -60,12 +44,10 @@ export class EmpPolicyListComponent implements OnInit {
   openPolicyDetails(id){
     this.policyDetailModal.open()
 
-    // http://10.60.62.114:8000/api/policy/upload/?filename=id_card.pdf file-sample_100kB.docx
-    // vnd.openxmlformats-officedocument.wordprocessingml.document
-    // {responseType: 'arraybuffer'}
+
     this.http.request("GET","policy/upload/","policy_id="+id,"").subscribe(res=>{
       if(res.status = 200){
-        console.log("-----------------------",res.body)
+
         var file = new Blob([res["error"]["text"]], { type: 'application/pdf' });
         this.fileResponse = URL.createObjectURL(file);
         document.querySelector("iframe").src = this.fileResponse+"#toolbar=0";

@@ -373,25 +373,6 @@ export class PolicyConfigComponent implements OnInit {
 
   async getAllUser() {
 
-    // this.EMPLOYEE_DATA = [{ "emp_id": 1,"staff_no": 1, "emp_name": "a", "company": "Atai", "selected": false },
-    // { "emp_id": 2,"staff_no": 2, "emp_name": "b", "company": "Soctronics", "selected": false },
-    // { "emp_id": 3,"staff_no": 3, "emp_name": "c", "company": "Atai", "selected": false },
-    // { "emp_id": 4,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 5,"staff_no": 4, "emp_name": "d", "company": "Veda", "selected": false },
-    // { "emp_id": 6,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 7,"staff_no": 4, "emp_name": "d", "company": "Atai", "selected": false },
-    // { "emp_id": 8,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 9,"staff_no": 4, "emp_name": "d", "company": "Veda", "selected": false },
-    // { "emp_id": 10,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 11,"staff_no": 4, "emp_name": "d", "company": "Veda", "selected": false },
-    // { "emp_id": 12,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 13,"staff_no": 4, "emp_name": "d", "company": "Atai", "selected": false },
-    // { "emp_id": 14,"staff_no": 4, "emp_name": "d", "company": "Veda", "selected": false },
-    // { "emp_id": 15,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 16,"staff_no": 4, "emp_name": "d", "company": "Atai", "selected": false },
-    // { "emp_id": 17,"staff_no": 4, "emp_name": "d", "company": "Soctronics", "selected": false },
-    // { "emp_id": 18,"staff_no": 4, "emp_name": "d", "company": "Veda", "selected": false },
-    // ]
     this.EMPLOYEE_DATA = []
     var res = await this.http.request('GET', 'users/', 'type=hr&search=ALL', this.policyForm.value).toPromise()
     if (res.status == 200) {
