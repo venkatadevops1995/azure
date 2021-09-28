@@ -1,8 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
@@ -11,16 +13,16 @@ import { map, startWith } from 'rxjs/operators';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-
+import { MonthYearComponent } from '../month-year/month-year.component';
 @Component({
   selector: 'app-leave-history',
   templateUrl: './leave-history.component.html',
   styleUrls: ['./leave-history.component.scss']
 })
-export class LeaveHistoryComponent implements OnInit {
+export class LeaveHistoryComponent implements OnInit{
   // the sorting criteria for the historic leave applcn list
   sortHistoricKey: 'startDate' | 'endDate' | 'empName' | null = 'startDate'
-
+  side:boolean = true;
   sortDirection: 'asc' | 'desc' | null = 'desc'
   // sorting in the historical leaves
   sortHistoric: any = {
@@ -31,7 +33,7 @@ export class LeaveHistoryComponent implements OnInit {
 
   employeesOptions: Array<any> = []
   employeeSelected: { emp_id: number, emp_name: string } = null
-  leaveApplicationColumns: string[] = ['serial', 'staff_no', 'employee', 'startdate', 'enddate', 'day_count', 'leave_type', 'status'];
+  leaveApplicationColumns: string[] = ['serial', 'id', 'emp_name', 'startdate', 'enddate', 'day_count', 'leave_type', 'status'];
   historyLeavesFiltersApplied: boolean = false
 
   ranges: any = {
@@ -55,20 +57,21 @@ export class LeaveHistoryComponent implements OnInit {
   picker: DaterangepickerComponent;
   showMessage = false;
   @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
-
+  @ViewChild(MatSort) sort1: MatSort;
   constructor(private ss: SingletonService,
     private http: HttpClientService,
     private datepipe: DatePipe,
-    private fileDownload: FileDownloadService
+    private fileDownload: FileDownloadService,
   ) {
 
-
+    side : this.any;
     this.filteredManagers = this.managerCtrl.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
       );
   }
+ 
 
   filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
@@ -79,6 +82,8 @@ export class LeaveHistoryComponent implements OnInit {
   managerCtrl = new FormControl();
   value; any;
   filteredManagers: Observable<any>;
+  monthFrom : number;
+  yearFrom : number;
   employeeList: any[] = [];
   fgFilter = this.ss.fb.group({
     all: [''],
@@ -87,9 +92,8 @@ export class LeaveHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.setPickerToLast30Days()
     this.getEmployees()
-
-
   }
+  
   setPickerToLast30Days() {
     this.selectedHistoryRange["startDate"] = this.ranges['Last 30 Days'][0];
     this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
@@ -141,7 +145,7 @@ export class LeaveHistoryComponent implements OnInit {
       this.LEAVE_DATA_HISTORY = []
     }
   }
-
+  
   //  on clciking the export excel sheet of the resolved leave applications
   onClickExportResolved() {
     let mapping = {
@@ -246,12 +250,12 @@ export class LeaveHistoryComponent implements OnInit {
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }
-
-    this.http.request('get', 'leave/request/', params).subscribe(res => {
-      if (res.status == 200) {
-        res.body["results"].forEach(element => {
-          data.push(element)
-        })
+    if (this.side) {
+      this.http.request('get', 'leave/request/', params).subscribe(res => {
+        if (res.status == 200) {
+          res.body["results"].forEach(element => {
+            data.push(element)
+          })
         this.showMessage = true
       } else if (res.status == 204) {
 
@@ -262,6 +266,30 @@ export class LeaveHistoryComponent implements OnInit {
         this.historyLeavesFiltersApplied = true
       }
     })
+    } else {
+      let param = new HttpParams();
+      if (this.managerCtrl.value == "ALL" || this.managerCtrl.value == undefined || this.managerCtrl.value == "") {        
+      } else {
+        param = param.append('emp_name', this.managerCtrl.value);
+      }
+      param = param.append("month", `${this.monthFrom}`);
+      param = param.append("year", `${this.yearFrom}`);
+      this.http.request('get', `leave/monthlycycleleavereport`, param).subscribe(res => {
+        if (res.status == 200) {
+          res.body.forEach(element => {
+            data.push(element)
+          })
+        this.showMessage = true
+      } else if (res.status == 204) {
+
+      } else {
+        this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
+      }
+      if (isHistory) {
+        this.historyLeavesFiltersApplied = true
+      }
+    })
+    }
   }
   convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
@@ -285,5 +313,15 @@ export class LeaveHistoryComponent implements OnInit {
     }
     this.getLeaveApplications(true)
 }
-
+getSide(er) {
+  this.side = er; 
+}
+getTrigger(er) {
+  this.yearFrom = er.year;
+  this.monthFrom = er.month;
+  if (er) {
+    if(this.yearFrom)
+    this.getLeaveApplications(true);
+  }
+}
 }
