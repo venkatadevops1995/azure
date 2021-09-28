@@ -76,7 +76,7 @@
                     <app-button class="timesheet__approve pointer pointer mr-30" size='small' theme="blue-lite" (click)="onClickViewWSR(timesheet.emp_id)">View WSR</app-button>
                     <div *ngIf="enableFlag">
                         <div *ngIf="timesheet.status == 0 || timesheet.status == 3">
-                            <app-button class="timesheet__approve pointer ml-15" size='small' theme="success" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,1,ts_index)">Approve</app-button>
+                            <app-button class="timesheet__approve pointer ml-15" size='small' theme="success" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,1)">Approve</app-button>
                             <app-button class="timesheet__reject ml-15" size='small' theme="danger" (click)="onClickApprove(timesheet.week_number,timesheet.emp_id,timesheet.year,2)">Reject</app-button>
                         </div>
                         <div *ngIf="timesheet.status == 1" class="flex">

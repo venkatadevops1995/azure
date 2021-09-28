@@ -396,14 +396,15 @@ class WSTDownload(APIView):
         
         emp_hierarchy_obj = EmployeeHierarchy.objects.filter(emp_id=emp_id,status=1)
         emp_managers = list(map(lambda x: x.manager_id,emp_hierarchy_obj))
-
+        att_access_grp_individual=[]
         global_attendance_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='ATTENDANCE')
         if(len(global_attendance_access)>0):
             att_access_grp_obj = Employee.objects.filter(role_id=4,status=1)
         else:
             att_access_grp_obj = AttendanceAccessGroup.objects.filter(emp_id__in=emp_managers,status=1)
+            att_access_grp_individual = list(map(lambda x:x.emp_id,AttendanceAccessGroup.objects.filter(emp_id=emp_id,status=2)))
 
-        if(len(att_access_grp_obj)>0):
+        if(len(att_access_grp_obj)>0 or len(att_access_grp_individual)>0):
             sheet3_columns = ['Staff No','Name','Manager','Date','Day','Gross Hours','Net Hours']
             sheet3_data=[sheet3_columns]
         
@@ -477,7 +478,7 @@ class WSTDownload(APIView):
                     hrs_mis_or_vac,mins_mis_or_vac = divmod(total_time_mis_or_vac,60)
                     format_total_time_mis_or_vac = '{h:02d}:{m:02d}'.format(h=hrs_mis_or_vac,m=mins_mis_or_vac)
                     sheet2_data.append([each['staff_no'],each['emp_name'],each_mis_or_vac_proj,eh[0].manager.emp_name,format_total_time_mis_or_vac])
-        if(len(att_access_grp_obj)>0):
+        if(len(att_access_grp_obj)>0 or len(att_access_grp_individual)>0):
             e.defineMultipleWorksheets(['Weekly Timesheet Report','WTR Summary','Attendance'],[data,sheet2_data,sheet3_data])
         else:
             e.defineMultipleWorksheets(['Weekly Timesheet Report','WTR Summary'],[data,sheet2_data])
@@ -614,11 +615,12 @@ class ApproveEmpTimesheet(APIView):
                 comments = request.data.get('comments', '')
                 emp_obj = Employee.objects.prefetch_related('emp').filter(emp_id=emp_id).last()
                 global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-
+                individual_email_access_emps=[]
                 if(len(global_email_access)>0):
                     accessed_managers = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
                 else:
                     accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
+                    individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
                 managers_list=list(map(lambda x:x.manager_id,emp_obj.emp.filter(status=1,priority=3)))
                 comments_utf_format=smart_str(comments, encoding='utf-8', strings_only=False, errors='strict')
                 approve_status_data = EmployeeWorkApproveStatus.objects.filter(emp_id = emp_id,work_week=work_week)
@@ -631,7 +633,7 @@ class ApproveEmpTimesheet(APIView):
                     else:
                         EmployeeWorkApproveStatus.objects.filter(emp_id = emp_id,work_week=work_week).update(status = status)
                 
-                if(any(item in accessed_managers for item in managers_list) and status==WorkApprovalStatuses.Rejected.value):
+                if((any(item in accessed_managers for item in managers_list) or emp_id in individual_email_access_emps) and status==WorkApprovalStatuses.Rejected.value):
                     # template = get_template('reject.html')
                     ctx={
                         "work_week":work_week,
@@ -758,7 +760,6 @@ class getHistoricalData(APIView):
                     yearthree=str(weekdatesList[-1]).split('-')[0]
                 #taking all last three work weeks and year
                 work_weeks_years = [{'week':week_numberone,'year':yearone},{'week':week_numbertwo,'year':yeartwo},{'week':week_numberthree,'year':yearthree}]
-
                 manager_overall_work = []
                 #for all employees data
                 if (emp == '-1'):
@@ -786,7 +787,9 @@ class getHistoricalData(APIView):
                     # print('manager_overall_work',manager_overall_work)
                 else:
                     for each in work_weeks_years:
+                        
                         manager_work_his = ManagerWorkHistory.objects.filter(emp_id = emp,work_week = each['week'],created__year=each['year']).order_by('-work_week').values()
+                        # print(manager_work_his,"*************")
                         # print('manager_work_his',manager_work_his)
                         if len(manager_work_his)>0:
                             # manager_work = list(manager_work_his)

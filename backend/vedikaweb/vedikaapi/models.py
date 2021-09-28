@@ -8,6 +8,7 @@ from .constants import DefaultProjects
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from datetime import date
+from vedikaweb.vedikaapi.custom_lookups import CustomGTELookup,CustomLTELookup,CustomLTLookup,CustomGTLookup
 
 ## EMPLOYEE MODEL AND CUSTOM MANAGER,QUERYSET ## 
 class EmployeeQuerySet(models.QuerySet):

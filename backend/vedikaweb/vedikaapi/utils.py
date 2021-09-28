@@ -4,6 +4,7 @@ from rest_framework.response import Response
 import traceback
 #import datetime
 from datetime import datetime, timedelta, date
+import dateutil.relativedelta
 import logging
 import jwt
 import json
@@ -404,7 +405,38 @@ class utils():
             datesList.append(date)
             date += one_day
         return datesList
-        
+
+    def get_month(date,Thresold=1):
+        year = date.year
+        month = date.month-int(Thresold) #9-10 = -1
+        if(month==0):
+            year=year-1
+            month=12
+        while(month<0):
+            month=12 + month
+            year = year-1
+            if(month==0):
+                month=12
+                year=year-1
+        last_day_of_prev_month = date.replace(day=1,month=month,year=year)
+        return last_day_of_prev_month.month,last_day_of_prev_month.year
+    
+    def get_monthly_cycle(date,Threshold=1):
+        d = datetime.strptime(str(date), "%Y-%m-%d")
+        d2 = d - dateutil.relativedelta.relativedelta(months=int(Threshold),day=31)
+        if(d2.day>=settings.MONTH_CYCLE_START_DATE):#28>=31
+            d2 = (d - dateutil.relativedelta.relativedelta(months=int(Threshold))).replace(day = settings.MONTH_CYCLE_START_DATE)
+        end_month_value = int(Threshold)-1
+        if(settings.MONTH_CYCLE_START_DATE==1):
+            end_month_value = int(Threshold)
+        enddate = d - dateutil.relativedelta.relativedelta(months=end_month_value,day=31)
+        if(enddate.day>=settings.MONTH_CYCLE_START_DATE):
+            enddate = (d - dateutil.relativedelta.relativedelta(months=int(Threshold)-1)).replace(day=settings.MONTH_CYCLE_START_DATE-1)
+        return d2.date(),enddate.date()
+
+    def get_start_and_end_dates_based_on_month_year(month,year):
+        return datetime(int(year), int(month), settings.MONTH_CYCLE_START_DATE) - dateutil.relativedelta.relativedelta(months=1) , datetime(int(year), int(month), settings.MONTH_CYCLE_START_DATE)-timedelta(days=1)
+
     def getDateRangeFromWeek(p_year=datetime.today().year,p_week=1):
         firstdayofweek=datetime.strptime(f'{p_year}-W{int(p_week) -1 }-1',"%Y-W%W-%w").date()
         # lastdayofweek=firstdayofweek+timedelta(days=6.9)
@@ -439,3 +471,10 @@ class utils():
 
     def removeDuplicatesFromList(listobj):
         return [i for n, i in enumerate(listobj) if i not in listobj[:n]]
+    
+    def isNotNone(*argv):
+        return all(arg is not None for arg in argv)
+              
+    is_valid_leave_date = lambda x,y:x<=y if settings.TODAY_AS_HISTORY else x<y
+
+    default_date = lambda :datetime.now().strftime('%Y-%m-%dT%H:%M:%S') if settings.TODAY_AS_HISTORY else (datetime.now()-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')

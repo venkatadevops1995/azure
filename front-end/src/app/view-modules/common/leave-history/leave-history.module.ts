@@ -10,6 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { MatTableModule } from '@angular/material/table';
+import { MonthYearModule } from '../month-year/month-year.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
+import { ShowTableModule } from '../show-table/show-table.module';
 
 
 
@@ -27,7 +32,15 @@ import { MatTableModule } from '@angular/material/table';
     FileDownloadModule,
     MatTableModule,
     NgxDaterangepickerMd.forRoot(),
-    
+    MonthYearModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatSlideToggleModule,
+    MatSortModule,
+    ShowTableModule
   ]
 })
 export class LeaveHistoryModule { }
