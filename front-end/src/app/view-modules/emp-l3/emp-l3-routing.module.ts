@@ -18,6 +18,9 @@ import { EditUserComponent } from '../common/manage-user/edit-user/edit-user.com
 import { ImportExportLeaveComponent } from '../common/import-export-leave/import-export-leave.component';
 import { ReportComponent } from '../common/report/report.component';
 import { LeaveHistoryComponent } from '../common/leave-history/leave-history.component';
+import { PolicyConfigComponent } from '../common/policy-config/policy-config.component';
+import { PolicyListComponent } from '../common/policy-list/policy-list.component';
+import { EmpPolicyListComponent } from '../common/emp-policy-list/emp-policy-list.component';
 
 
 const routes: Routes = [
@@ -39,6 +42,9 @@ const routes: Routes = [
   {path:"import-export-leave",component:ImportExportLeaveComponent},
   {path:"report",component:ReportComponent},
   {path:"leave-history",component:LeaveHistoryComponent},
+  {path:"document-config",component:PolicyConfigComponent},
+  {path:"document-list",component:PolicyListComponent},
+  {path:"emp-document-list",component:EmpPolicyListComponent},
   {path:"dashboard",redirectTo:"history-dashboard",pathMatch:'full'},
 
 ];

@@ -146,7 +146,7 @@ export class SidebarComponent implements OnInit {
             this.menu.forEach(m=>{
               if(m.hasOwnProperty("submenu")){
                 if(!is_hr){
-              m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  )&& (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history"));
+              m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  )&& (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") &&(item.link!="document-config")&&(item.link!="document-list"));
                 }
                 if(!is_hr && this.user.getDataFromToken('role_id')==1){
                   m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"))

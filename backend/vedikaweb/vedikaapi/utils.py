@@ -274,6 +274,10 @@ class utils():
     def createDirIfNotExists(path):
         if not os.path.exists(path):
             os.makedirs(path)
+
+    def fileExists(path):
+        return os.path.exists(path)
+            
     
     def get_client_ip(request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -286,7 +290,7 @@ class utils():
     def _isNA(element):
         return int(0 if element is 'NA' else element)
 
-    def contentTypesResponce(filetype,name):
+    def contentTypesResponce(filetype,name,file_obj=None):
         if(filetype.upper()=='XL'):
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename='+str(name)
@@ -297,6 +301,20 @@ class utils():
             resp['Content-Disposition'] = f'attachment; filename=' + str(name)+ '.zip'
             resp['Access-Control-Expose-Headers'] = 'Content-Disposition'
             return resp
+        if(filetype.upper()=='PDF'):
+            resp = HttpResponse(file_obj,content_type="application/pdf")
+            resp['Content-Disposition'] = f'attachment; filename=' + str(name)+ '.pdf'
+            resp['Access-Control-Expose-Headers'] = 'inline;Content-Disposition'
+            resp['responseType'] = 'blob'
+            return resp
+        if(filetype.upper()=='DOCX'):
+            resp = HttpResponse(file_obj,content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            resp['Content-Disposition'] = f'attachment; filename=' + str(name)+ '.docx'
+            resp['Access-Control-Expose-Headers'] = 'Content-Disposition'
+            return resp
+
+            
+
     
     def getUsername(email):
         return email.replace("@","_").replace(".","_")

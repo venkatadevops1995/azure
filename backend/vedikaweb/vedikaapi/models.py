@@ -750,3 +750,56 @@ class EmployeeTimesheetApprovedHistory(models.Model):
     class Meta:
         managed = False
         db_table = 'employee_timesheet_approved_history'
+
+class PolicyType(models.Model):
+    name = models.CharField(max_length=255)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.IntegerField()
+    class Meta:
+        managed = False
+        db_table = 'policy_type'
+
+class PolicyDocument(models.Model):
+    policy_type = models.ForeignKey('PolicyType', models.DO_NOTHING)
+    policy_name = models.CharField(max_length=255)
+    display_name = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255)
+    enable_for = models.CharField(max_length=20)
+    enable_on = models.DateField()
+    expire_on = models.DateField()
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(default=1)
+    class Meta:
+        managed = False
+        db_table = 'policy_document'
+class PolicyCompany(models.Model):
+    company = models.ForeignKey('Company', models.DO_NOTHING)
+    policy = models.ForeignKey('PolicyDocument', models.DO_NOTHING)
+    status = models.IntegerField()
+    class Meta:
+        managed = False
+        db_table = 'policy_company'
+class PolicyDocumentEmployeeAccessPermission(models.Model):
+    policy_document = models.ForeignKey('PolicyDocument', models.DO_NOTHING)
+    emp = models.ForeignKey('Employee', models.DO_NOTHING)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.IntegerField()
+    class Meta:
+        managed = False
+        db_table = 'policy_document_employee_access_permission'
+class PolicyDocumentEmployeeAction(models.Model):
+    policy_document = models.ForeignKey('PolicyDocument', models.DO_NOTHING)
+    emp = models.ForeignKey('Employee', models.DO_NOTHING)
+    is_policy_accepted = models.BooleanField(default=False)
+    upload_status = models.BooleanField(default=False)
+    upload_policy_document = models.CharField(max_length=255, blank=True, null=True)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(default=1)
+
+    class Meta:
+        managed = False
+        db_table = 'policy_document_employee_action'

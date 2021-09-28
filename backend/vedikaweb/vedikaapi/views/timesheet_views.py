@@ -79,6 +79,9 @@ class WeeklyEmployeeData(APIView):
             year=str(weekdatesList[-1]).split('-')[0]
             data=json.loads(json.dumps(req_serializer.data))
             inputdata=[]
+            timesheetDiscrepancies = TimesheetDiscrepancy.objects.filter(leave_request__emp_id=emp_id,status=0)
+            tt_id_in_ts_des = timesheetDiscrepancies.values_list('employee_project_time_tracker_id',flat=True)
+
             for each in data:
                 ##Loop Through ACTIVE PROJECTS##
                 for eachproj in each['active_projects']:
@@ -89,6 +92,12 @@ class WeeklyEmployeeData(APIView):
                             if(eachdate in weekdatesList and eachdate<=datetime.now().date()):
                                 inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
                                         'employee_project':empproj.id,'status':1})
+                    ep_tt_id = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id=empproj.id) & Q(work_week=week_number) & Q(created__year=year)).order_by('work_date')
+
+                    for index,each_tt_id in enumerate(ep_tt_id):
+                        if(60*int(eachproj['work_hours'][index]['h'])+int(eachproj['work_hours'][index]['m'])==0 and  each_tt_id.id in tt_id_in_ts_des):
+                            timesheetDiscrepancies.filter(employee_project_time_tracker_id=each_tt_id.id).update(status=1)
+
 
                 default_non_projects=DefaultProjects.default_non_projects()
                 for eachnonproj in default_non_projects:

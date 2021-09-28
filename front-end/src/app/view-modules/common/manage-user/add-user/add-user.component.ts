@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
+import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import ValidateEmail from 'src/app/functions/validations/email';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
@@ -48,6 +49,8 @@ export function NoDate(): ValidatorFn {
   styleUrls: ['./add-user.component.scss']
 })
 export class AddUserComponent implements OnInit {
+
+  @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
 
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
@@ -375,6 +378,7 @@ export class AddUserComponent implements OnInit {
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
 
       }
+      this.confirmationModal.close()
     })
 
 
@@ -483,6 +487,14 @@ export class AddUserComponent implements OnInit {
   open(e){
     console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
     e.click()
+  }
+  openConfirmation(){
+    this.confirmationModal.open()
+
+  }
+  closeConfirmation(){
+    this.confirmationModal.close()
+    
   }
 
 
