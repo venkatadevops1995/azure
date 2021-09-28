@@ -299,3 +299,6 @@ IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti
 
 SENDEMAILTOALL=True
 CUSTOM_EMAILS = []
+
+MONTH_CYCLE_START_DATE = 26
+TODAY_AS_HISTORY = False
