@@ -38,7 +38,7 @@ class CommonFunctions:
         weeknumber=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
         emp_cnt=0
-        holiday_list=list(HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date__in=weekdatesList)&Q(status=1)).annotate(location=F('locationholidaycalendar__location')).values())
+        holiday_list=list(HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date__in=weekdatesList)&Q(status=1)).annotate(location=F('locationholidaycalendar__location'),location_status=F('locationholidaycalendar__status')).values())
         fms_of_emps = EmployeeHierarchy.objects.filter(emp_id__in = employeeList,priority=3 ).values('emp_id','manager_id')
         emp_leave_access_flags = {}
 
@@ -163,7 +163,7 @@ class CommonFunctions:
                                 ## setting holiday  hours
                                 
                                 # print("---------",eachday,location_id,holiday_list)
-                                hl = list(filter(lambda x:x['holiday_date']==eachday and x['location']==location_id,holiday_list))
+                                hl = list(filter(lambda x:x['holiday_date']==eachday and x['location']==location_id and x['location_status'] == 1,holiday_list))
                                 # print("holiday_list",hl)
                                 # hl =  HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date=eachday)&Q(status=1)&Q(locationholidaycalendar__location=location_id))
                                 # if(len(hl)>0):
