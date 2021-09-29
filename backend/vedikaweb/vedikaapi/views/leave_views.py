@@ -1346,6 +1346,7 @@ class MonthyCycleLeaveReportView(APIView):
 #SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
 class MonthyCycleLeaveReportRequestBasedView(APIView):
     def get(self,request,*args,**kwargs):
+        export_flag = self.request.query_params.get('export',False)
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
@@ -1355,7 +1356,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         else:
             start_and_end_dates = utils.get_monthly_cycle(date.today(),Threshold=threshold)
         leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1])
-        if(emp_name is not None):
+        if(emp_name is not None and emp_name.strip()!=''):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         leaves_ = leaves.annotate(
             emp_name = F('leave_request__emp__emp_name'),
@@ -1390,5 +1391,28 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
             if('.5' not in str(leave_req_obj.day_count)):
                 day_count = int(day_count)
 
-            output.append({'emp_name':leave_req_obj.emp_name,'emp':leave_req_obj.emp.emp_id,'day_count':day_count,'id':key,'req_status':leave_req_obj.req_status,'startdate':value[0]['leave_on'],'enddate':value[-1]['leave_on'],'leave_type_name':leave_req_obj.leave_type_name,'emp_staff_no':leave_req_obj.emp_staff_no,'emp_comments':leave_req_obj.emp_comments,'leave_reason':leave_req_obj.leave_reason,'leave_type':leave_req_obj.leave_type_id,'manager_comments':leave_req_obj.manager_comments,'requested_by':leave_req_obj.requested_by,'status':leave_req_obj.status,'uploads_invitation':leave_req_obj.uploads_invitation})
-        return Response(output)
+            output.append({'emp_name':leave_req_obj.emp_name,'emp':leave_req_obj.emp.emp_id,'day_count':day_count,'id':key,'req_status':leave_req_obj.req_status,'startdate':value[0]['leave_on'],'enddate':value[-1]['leave_on'],'leave_type_name':leave_req_obj.leave_type_name,'emp_staff_no':leave_req_obj.emp_staff_no,'emp_comments':leave_req_obj.emp_comments,'leave_reason':leave_req_obj.leave_reason,'leave_type':leave_req_obj.leave_type_id,'manager_comments':leave_req_obj.manager_comments,'requested_by':leave_req_obj.requested_by,'applied_on':str(datetime.strftime(leave_req_obj.created,'%d-%m-%Y')),'status':leave_req_obj.status,'uploads_invitation':leave_req_obj.uploads_invitation})
+        if(not export_flag):
+            return Response(output)
+        else:
+            excel_file = utils.contentTypesResponce('xl',emp_name+'_LeaveHistory_'+month+"_"+year+"_cycle.xlsx")
+            excel = ExcelServices(excel_file,in_memory=True,workSheetName='LeaveHistory')
+            columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']
+            excel_data= [columns]
+            
+            if len(output) == 0:
+                return Response(utils.StyleRes(True,'No Leave Applications available for the filter criteria'),status=StatusCode.HTTP_NO_CONTENT)
+            else:
+                # statuses = ['Pending','Approved','Rejected','Cancelled']
+                statuses = [s.name for s in LeaveRequestStatus]
+                for lr in output:
+                    if(lr['leave_type_name']=='Paid'):
+                        leave_type = 'General'
+                    excel_data.append([
+                        lr['emp_staff_no'],lr['emp_name'],lr['applied_on'],str(datetime.strftime(lr['startdate'],'%d-%m-%Y')),str(datetime.strftime(lr['enddate'],'%d-%m-%Y')),lr['day_count'],lr['leave_type'], statuses[lr['status']]
+                    ])
+
+                excel.writeExcel(excel_data,row_start=0)
+                excel.terminateExcelService()
+                del excel
+                return excel_file
