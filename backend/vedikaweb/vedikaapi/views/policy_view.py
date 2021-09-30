@@ -5,7 +5,7 @@ from django.http.request import QueryDict
 from vedikaweb.vedikaapi.decorators import jwttokenvalidator, custom_exceptions
 from rest_framework.views import APIView
 from vedikaweb.vedikaapi.serializers import PolicyDocumentSerializer,PolicyDocumentCreateSerializer, PolicyCompanySerializer, PolicyDocumentEmployeeAccessPermissionSerializer, PolicyDocumentEmployeeActionSerializer
-from vedikaweb.vedikaapi.models import Company, PolicyType, PolicyDocument, PolicyCompany, PolicyDocumentEmployeeAccessPermission
+from vedikaweb.vedikaapi.models import Company, Employee, PolicyType, PolicyDocument, PolicyCompany, PolicyDocumentEmployeeAccessPermission
 from hashlib import md5
 from rest_framework.response import Response
 
@@ -173,8 +173,9 @@ class EmployeePolicyView(APIView):
         if(auth_details['email']==""):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
-        policy_list = PolicyDocument.objects.prefetch_related('policydocumentemployeeaccesspermission_set','policydocumentemployeeaction_set').filter(
-        Q(status=1)&
+        emp_location = Employee.objects.get(emp_id=emp_id).company
+        policy_list = PolicyDocument.objects.prefetch_related('policydocumentemployeeaccesspermission_set','policydocumentemployeeaction_set','policycompany_set').filter(
+        Q(status=1)&Q(policycompany__company__name__iexact=emp_location)&Q(policycompany__status=1)&
         (Q(enable_for__iexact="ALL")|
         Q(policydocumentemployeeaccesspermission__emp_id=emp_id,policydocumentemployeeaccesspermission__status=1))
         ).distinct().order_by('-created')

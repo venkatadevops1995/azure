@@ -195,6 +195,8 @@ export class PolicyConfigComponent implements OnInit {
       } else {
         this.policyForm.removeControl('emp_list');
       }
+      // this.companyList.subtasks.forEach(t => t.completed = true);
+      // this.companyList.completed = true;
     }
   }
 
@@ -214,7 +216,7 @@ export class PolicyConfigComponent implements OnInit {
   async editSelectEmp() {
     if (!this.isFetched) {
       this.isFetched = true
-      this.emp_count = 0
+      // this.emp_count = 0
       await this.getAllUser()
     }
     console.log("====================", this.EMPLOYEE_DATA);
@@ -223,6 +225,15 @@ export class PolicyConfigComponent implements OnInit {
     this.updateFilterData()
     this.employeeSearchControl.reset('')
     this.selectEmpModal.open();
+
+    let selectedComps = []
+    this.companyList.subtasks.forEach(c => {
+      if (c.completed == true) {
+        selectedComps.push(c.name)
+      }
+    })
+
+    this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedComps.indexOf(emp.company) != -1) });
 
     this.subs = this.employeeSearchControl.valueChanges.subscribe(val => {
       let selectedCompanies = []
@@ -234,9 +245,9 @@ export class PolicyConfigComponent implements OnInit {
 
       this.searchKey = val.trim().toLowerCase()
       if (val.trim() == '') {
-        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp=> {return (selectedCompanies.indexOf(emp.company)!=-1)});
+        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) });
       } else {
-        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company)!=-1) && emp.emp_name.toLowerCase().includes(val) })
+        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(val) })
       }
       this.updateEmpSelection()
       console.log(this.EMPLOYEE_FILTERED_DATA)
@@ -247,29 +258,31 @@ export class PolicyConfigComponent implements OnInit {
     this.selectedEmpModal.open()
   }
 
-  closeSelectEmp() {
-    const uniqueCompanies = new Set();
-    this.SELECTED_EMPLOYEE_DATA = []
-    const selectedEmps = this.EMPLOYEE_DATA.filter(e => {
-      if (e.selected == true) {
-        this.SELECTED_EMPLOYEE_DATA.push(e)
-        uniqueCompanies.add(e.company); return true;
-      }
-    }).map(m => m.emp_id)
-    console.log("------------selectedEmps---------------", selectedEmps);
+  closeSelectEmp(isCancelled = false) {
+    if (isCancelled == false) {
+      const uniqueCompanies = new Set();
+      this.SELECTED_EMPLOYEE_DATA = []
+      const selectedEmps = this.EMPLOYEE_DATA.filter(e => {
+        if (e.selected == true) {
+          this.SELECTED_EMPLOYEE_DATA.push(e)
+          uniqueCompanies.add(e.company); return true;
+        }
+      }).map(m => m.emp_id)
+      console.log("------------selectedEmps---------------", selectedEmps);
 
-    this.companyList.subtasks.forEach(c => {
-      if (uniqueCompanies.has(c.name)) {
-        c.completed = true
-      } else {
-        c.completed = false
-      }
-    })
-    const allComplete = this.companyList.subtasks != null && this.companyList.subtasks.every(t => t.completed);
-    this.companyList.completed = allComplete
+      this.companyList.subtasks.forEach(c => {
+        if (uniqueCompanies.has(c.name)) {
+          c.completed = true
+        } else {
+          c.completed = false
+        }
+      })
+      const allComplete = this.companyList.subtasks != null && this.companyList.subtasks.every(t => t.completed);
+      this.companyList.completed = allComplete
 
-    this.emp_count = selectedEmps.length
-    this.policyForm.controls.emp_list.setValue(selectedEmps);
+      this.emp_count = selectedEmps.length
+      this.policyForm.controls.emp_list.setValue(selectedEmps);
+    }
     this.subs.unsubscribe()
   }
   selectAllEmp(e) {
