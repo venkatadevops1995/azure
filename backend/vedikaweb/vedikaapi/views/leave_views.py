@@ -1356,7 +1356,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         else:
             start_and_end_dates = utils.get_monthly_cycle(date.today(),Threshold=threshold)
         leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1])
-        if(emp_name is not None and emp_name.strip()!=''):
+        if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         leaves_ = leaves.annotate(
             emp_name = F('leave_request__emp__emp_name'),
