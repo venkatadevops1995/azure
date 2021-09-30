@@ -82,8 +82,8 @@ export class LeaveHistoryComponent implements OnInit{
   managerCtrl = new FormControl();
   value; any;
   filteredManagers: Observable<any>;
-  monthFrom : number;
-  yearFrom : number;
+  monthFrom : number=new Date().getMonth()+1;
+  yearFrom : number=new Date().getFullYear();
   employeeList: any[] = [];
   fgFilter = this.ss.fb.group({
     all: [''],
@@ -168,7 +168,7 @@ export class LeaveHistoryComponent implements OnInit{
         sort_dir: this.sortDirection || ''
       }
     })
-
+    let url ='export-resolved'
     // this.historyLeavesFiltersApplied =  true
     if (dp && dp['startDate'] && dp['endDate']) {
       let st_dt = new Date(dp["startDate"]._d);
@@ -176,7 +176,14 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }
-    this.http.noLoader(true).showProgress('download').request('get', 'leave/export-resolved/', params, "", {}, {
+    if(!this.side){
+      params = params.append('month',this.monthFrom.toString());
+      params = params.append('year',this.yearFrom.toString());
+      params = params.append('cyclewise',true.toString());
+      params = params.append('export',true.toString());
+      url = 'monthlycycleleavereport'
+    }
+    this.http.noLoader(true).showProgress('download').request('get', 'leave/'+url+'/', params, "", {}, {
       responseType: 'blob',
       progress: 'download'
     }).subscribe(res => {
@@ -245,8 +252,8 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }else{
-      let st_dt =this.selectedHistoryRange.value.startDate._d
-      let ed_dt = this.selectedHistoryRange.value.endDate._d
+      let st_dt =this.selectedHistoryRange.startDate._d
+      let ed_dt = this.selectedHistoryRange.endDate._d
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }
@@ -315,6 +322,7 @@ export class LeaveHistoryComponent implements OnInit{
 }
 getSide(er) {
   this.side = er; 
+  this.getLeaveApplications(true);
 }
 getTrigger(er) {
   this.yearFrom = er.year;
