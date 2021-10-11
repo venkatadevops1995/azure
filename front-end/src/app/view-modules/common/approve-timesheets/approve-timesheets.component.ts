@@ -134,7 +134,7 @@ export class ApproveTimesheetsComponent implements OnInit {
   // mat paginator settings
   paginator: any = {
     length: 3,
-    pageSize: 3,
+    pageSize: 9,
     pageSizeOptions: [3, 6, 9]
   }
 

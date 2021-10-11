@@ -251,7 +251,7 @@ class GetEmployeesWSTData(APIView):
         prev_week = self.request.query_params.get('previousweek', 1)
         statfilter = self.request.query_params.get('status',-1)
         page_number = int(self.request.query_params.get('page',1))
-        items_per_page = int(self.request.query_params.get('itms_per_page',3))
+        items_per_page = int(self.request.query_params.get('itms_per_page',9))
         final_resp={}
         common_fun_obj=CommonFunctions()
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
