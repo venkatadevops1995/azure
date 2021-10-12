@@ -26,7 +26,7 @@ attendance_ = attendance()
 
 
 class CommonFunctions:
-    def get_employees_weeklydata(self,employeeList,prev_week=0,statusFlag=False):
+    def get_employees_weeklydata(self,employeeList,prev_week=0,statusFlag=False,approve_status=-1):
         '''
             1.Function to get employee weekly time sheet for list of employees.
             2.By default it will give weekly time sheet of list of employees for the current week
@@ -39,6 +39,33 @@ class CommonFunctions:
         year=str(weekdatesList[-1]).split('-')[0]
         emp_cnt=0
         holiday_list=list(HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date__in=weekdatesList)&Q(status=1)).annotate(location=F('locationholidaycalendar__location'),location_status=F('locationholidaycalendar__status')).values())
+        empObj = Employee.objects.prefetch_related('profile').filter(emp_id__in=employeeList)
+        empObj_dict = {}
+        for each in empObj:
+            empObj_dict[each.emp_id]=each
+
+        submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndYear(employeeList,weekdatesList,weeknumber,year)
+        submitted_projs_dict={}
+        for eachemployee in employeeList:
+            submitted_projs_dict[eachemployee]=[]
+            for eachsub in submitted_projs:
+                if(eachsub['emp_id']==eachemployee):
+                    submitted_projs_dict[eachsub['emp_id']].append(eachsub['project_id'])
+        empproj_obj=EmployeeProject.objects.findByEmplistAndWeekdateslistAndWeeknumber(employeeList,weekdatesList,weeknumber)
+        emp_proj_dict={}
+        for eachemployee in employeeList:
+            emp_proj_dict[eachemployee]=[]
+            for each in empproj_obj:
+                if(each.emp_id==eachemployee):
+                    emp_proj_dict[eachemployee].append(each)
+        
+        emp_work_approvestatus_dict = {}
+        emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(employeeList,weeknumber,year)
+        for eachemployee in employeeList:
+            emp_work_approvestatus_dict[eachemployee]=[]
+            for each in emp_work_approvestatus_:
+                if(each.emp_id==eachemployee):
+                    emp_work_approvestatus_dict[eachemployee].append(each)        
         fms_of_emps = EmployeeHierarchy.objects.filter(emp_id__in = employeeList,priority=3 ).values('emp_id','manager_id')
         emp_leave_access_flags = {}
 
@@ -55,9 +82,10 @@ class CommonFunctions:
             for each_emp in leave_individ_access_list:
                 emp_leave_access_flags[each_emp]=True
 
-        for eachemployee in employeeList:
+        for i,eachemployee in enumerate(employeeList):
             emp_id=eachemployee
-            empObj=Employee.objects.prefetch_related('profile').get(emp_id=emp_id)
+            empObj=empObj_dict[emp_id]
+            #empObj=Employee.objects.prefetch_related('profile').get(emp_id=emp_id)
             location_id = empObj.profile.filter().first().location.id if empObj.profile.filter().first()!= None else None
             #TODO
             #CASE1: If MIS is uploaded and active projects changed between weeks and WTS is rejected--Inthis case we might get issue here we might get this week active projects not the lastweek.--Answer.We might look into WTS table for last week projects timesheets and get the project id's.
@@ -65,13 +93,17 @@ class CommonFunctions:
             #1. Query to get EmployeeProject data
             #empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & Q(project__status=1) & Q(status=1))
 
-            submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects(emp_id=emp_id,work_week=weeknumber,year=year).filter(sum_output_count__gt=0)
-            submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
-            empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & (Q(status=1) | Q(project_id__in=submitted_projs_list)))
+            # submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects(emp_id=emp_id,work_week=weeknumber,year=year).filter(sum_output_count__gt=0)
+            # submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
+            submitted_projs_list = submitted_projs_dict[emp_id]
+            # empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & (Q(status=1) | Q(project_id__in=submitted_projs_list)))
             enableSaveSubmit=True
-            wsr_data=map(lambda eachobj:len(list(eachobj.employeeweeklystatustracker_set.filter(wsr_date__in=weekdatesList,wsr_week=weeknumber))),empproj_obj)
+            wsr_data=map(lambda eachobj:eachobj.wsr_count,emp_proj_dict[emp_id])
+            # print(list(wsr_data),"********************",emp_proj_dict[emp_id], len(employeeList),i)
+            # wsr_data=map(lambda eachobj:len(list(eachobj.employeeweeklystatustracker_set.filter(wsr_date__in=weekdatesList,wsr_week=weeknumber))),empproj_obj)
             is_wsr_present=any(ele > 0 for ele in list(wsr_data))
-            emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,created__year=year)
+            # emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,created__year=year)
+            emp_work_approvestatus=emp_work_approvestatus_dict[emp_id]
 
             ## If WSR exists and it is not rejected, then disbale save&submit.
             if(is_wsr_present):
@@ -89,9 +121,8 @@ class CommonFunctions:
 
             emp_proj_timetracks=[]
             emp_projs=[]
-
             #2. Loop to get projects and to make List for Timetracking for the week
-            for eachobj in empproj_obj:
+            for eachobj in emp_proj_dict[emp_id]:
                 # cumulative_obj=list(eachobj.employeeprojecttimetracker_set.filter(work_week__lt=weeknumber).values('employee_project').annotate(sum_output_count=Sum('work_minutes')))
                 # if(len(cumulative_obj)>0):
                 #     cumulative_time['h'],cumulative_time['m']=utils.get_time_hms(timedelta(minutes=cumulative_obj[0]['sum_output_count']))
@@ -100,7 +131,9 @@ class CommonFunctions:
                 if(cumulative_mins>0):
                     cumulative_time['h'],cumulative_time['m']=utils.get_time_hms(timedelta(minutes=cumulative_mins))
                 emp_projs.append({'project_name':eachobj.project.name,'project_id':eachobj.project.id,'priority':eachobj.priority,'cumulative':cumulative_time})
-                emp_proj_timetracklist=list(eachobj.employeeprojecttimetracker_set.filter(work_date__in=weekdatesList))
+                q=eachobj.all_project_time_tracker
+                #emp_proj_timetracklist=list(eachobj.employeeprojecttimetracker_set.filter(work_date__in=weekdatesList))
+                emp_proj_timetracklist=list(q)
                 if(len(emp_proj_timetracklist)>0):
                     emp_proj_timetracks=emp_proj_timetracks+emp_proj_timetracklist
 
@@ -120,7 +153,7 @@ class CommonFunctions:
                 
                 if(is_vac_mis_hol(proj_name)):
                     resp[emp_cnt][proj_name]={'work_hours':[]}
-
+                
                 if(proj_name not in default_proj_without_Init):
                     # wsr_data=map(lambda eachobj:len(list(eachobj.employeeweeklystatustracker_set.filter(wsr_date__in=weekdatesList))),empproj_obj)
                     resp[emp_cnt]['active_projects'].append({**eachproj,**{'work_hours':[]}})
@@ -178,7 +211,6 @@ class CommonFunctions:
                                     resp[emp_cnt][proj_name]['work_hours'].append({'date':str(eachday),'h':0,'m':0,'enable':editEnable})
                     ##ASSIGNING VISIBILITY FLAG BASED ON WORK HOURS##
                     active_cnt=0
-                    # print(resp)
                     for each in resp[emp_cnt]['active_projects']:
                         totalhours=0
                         totalminutes=0

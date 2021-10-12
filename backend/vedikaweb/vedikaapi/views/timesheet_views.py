@@ -250,40 +250,26 @@ class GetEmployeesWSTData(APIView):
         
         prev_week = self.request.query_params.get('previousweek', 1)
         statfilter = self.request.query_params.get('status',-1)
-        page_number = self.request.query_params.get('page',1)
-        items_per_page = self.request.query_params.get('itms_per_page',3)
+        page_number = int(self.request.query_params.get('page',1))
+        items_per_page = int(self.request.query_params.get('itms_per_page',3))
         final_resp={}
         common_fun_obj=CommonFunctions()
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         week_number=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
         emp_of_manager=common_fun_obj.get_employees_list(emp_id)
-        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number)
+        if(int(statfilter)==-1):
+            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number)
+        else:
+            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number,status=int(statfilter))
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
-        response=common_fun_obj.get_employees_weeklydata(employee_approve_status_list,prev_week=prev_week,statusFlag=True)
+        response=common_fun_obj.get_employees_weeklydata(employee_approve_status_list[items_per_page*page_number-items_per_page:items_per_page*page_number],prev_week=prev_week,statusFlag=True)
         dayid,dayname=utils.findDay(datetime.now().date())
         enableFlag=False
         if(dayid in [0,1,6]):
             enableFlag=True
 
-        if(len(self.request.query_params)>0 and int(statfilter)!=-1):
-            filteredresp=filter(lambda x:x['status']==int(statfilter),response)
-            final_resp['results']=filteredresp
-            paginator = Paginator(list(filteredresp), items_per_page)
-            page_obj = paginator.page(page_number)
-            res = {'results': list(page_obj), 'enableFlag':enableFlag,'total': page_obj.paginator.count}
-            return Response(res,status=StatusCode.HTTP_OK)
-
-        elif(len(self.request.query_params)==0 and int(statfilter)==-1):
-            #With all data, there should be only one page with all data
-            paginator = Paginator(list(response), items_per_page)
-            page_obj = paginator.page(page_number)
-            res = {'results': list(response), 'enableFlag':enableFlag,'total': page_obj.paginator.count}
-            return Response(res, status=StatusCode.HTTP_OK)
-
-        paginator = Paginator(list(response), items_per_page)
-        page_obj = paginator.page(page_number)
-        res = {'results': list(page_obj), 'enableFlag':enableFlag,'total': page_obj.paginator.count}
+        res = {'results': list(response), 'enableFlag':enableFlag,'total': len(employee_approve_status_list)}
         return Response(res,status=StatusCode.HTTP_OK)
 
 class GetEmployeesWSRData(APIView):
