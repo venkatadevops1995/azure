@@ -91,7 +91,7 @@ class EmployeeProfile(models.Model):
 
 ## EMPLOYEE PROJECT MAPPING ##
 class EmployeeProjectQuerySet(models.QuerySet):
-    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber):
+    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber,submitted_projs_list):
         
         qs = self
         qs=qs.select_related('project').prefetch_related(pref(
@@ -102,7 +102,7 @@ class EmployeeProjectQuerySet(models.QuerySet):
             'employeeweeklystatustracker_set',
             queryset=EmployeeWeeklyStatusTracker.objects.filter(wsr_date__in=weekdatesList),
             to_attr='all_project_wsr_tracker'
-        )).order_by('priority').filter(emp__emp_id__in=empList,status=1).annotate(
+        )).order_by('priority').filter(Q(emp__emp_id__in=empList) & (Q(status=1) | Q(project_id__in=submitted_projs_list))).annotate(
                 wsr_count = Count('employeeweeklystatustracker__employee_project',filter=Q(employeeweeklystatustracker__wsr_date__in=weekdatesList,employeeweeklystatustracker__wsr_week=weeknumber)),
                 wtr_obj = F('employeeprojecttimetracker__employee_project')
 
@@ -115,8 +115,8 @@ class EmployeeProjectQuerySet(models.QuerySet):
 class EmployeeProjectManager(models.Manager):
     def get_queryset(self):
         return EmployeeProjectQuerySet(self.model,using=self._db)
-    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber):
-        return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumber(empList,weekdatesList,weeknumber)
+    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber,submitted_projs_list=[]):
+        return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumber(empList,weekdatesList,weeknumber,submitted_projs_list)
 
 class EmployeeProject(ExportModelOperationsMixin('employee_project'), models.Model):
     project = models.ForeignKey('Project', models.DO_NOTHING)

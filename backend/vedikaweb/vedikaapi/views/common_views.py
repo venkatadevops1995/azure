@@ -46,19 +46,19 @@ class CommonFunctions:
 
         submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndYear(employeeList,weekdatesList,weeknumber,year)
         submitted_projs_dict={}
+        submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
         for eachemployee in employeeList:
             submitted_projs_dict[eachemployee]=[]
             for eachsub in submitted_projs:
                 if(eachsub['emp_id']==eachemployee):
                     submitted_projs_dict[eachsub['emp_id']].append(eachsub['project_id'])
-        empproj_obj=EmployeeProject.objects.findByEmplistAndWeekdateslistAndWeeknumber(employeeList,weekdatesList,weeknumber)
+        empproj_obj=EmployeeProject.objects.findByEmplistAndWeekdateslistAndWeeknumber(employeeList,weekdatesList,weeknumber,submitted_projs_list)
         emp_proj_dict={}
         for eachemployee in employeeList:
             emp_proj_dict[eachemployee]=[]
             for each in empproj_obj:
                 if(each.emp_id==eachemployee):
                     emp_proj_dict[eachemployee].append(each)
-        
         emp_work_approvestatus_dict = {}
         emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(employeeList,weeknumber,year)
         for eachemployee in employeeList:
