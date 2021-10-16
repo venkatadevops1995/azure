@@ -111,6 +111,7 @@ export class ManageUserComponent implements OnInit {
   employeeListSearch: any = [];
   showMessage = false;
   selectedRoleValue: number=0;
+  PreviousRoleVlaue: number=0;
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -293,7 +294,7 @@ export class ManageUserComponent implements OnInit {
   }
 
 
-  selectRole(selectedRole, is_deselected) {
+  selectRole(selectedRole, is_deselected,onload=true) {
     this.selectedRoleValue=selectedRole+1;
 
     //setting role in the form
@@ -312,10 +313,12 @@ export class ManageUserComponent implements OnInit {
 
 
     if (this.newUserRoleValue <= this.ROLES[selectedRole].value) {
+      if(selectedRole>this.PreviousRoleVlaue){
       for (let i = selectedRole - 1; i > 0; i--) {
+        if(i+1!=this.PreviousRoleVlaue){
         this.ROLES[i].selected = !this.ROLES[selectedRole].selected;
-
         this.ROLES[i].disabled = !this.ROLES[selectedRole].selected;
+        }
       }
       if (this.ROLES[selectedRole].selected == false) {
         this.newUserRoleValue = this.ROLES[selectedRole].value;
@@ -323,16 +326,20 @@ export class ManageUserComponent implements OnInit {
         this.newUserRoleValue = 1;
       }
     }
-
+    }
+    
     this.ROLES[selectedRole].selected = !this.ROLES[selectedRole].selected;
-
+    if(onload){
+      this.PreviousRoleVlaue = this.ROLES[selectedRole].value;
+      this.ROLES[selectedRole].disabled = true;
+    }
 
 
 
     this.makeSelfFM = this.ROLES[3].disabled;
     this.makeSelfMM = this.ROLES[2].disabled;
     this.makeSelfRM = this.ROLES[1].disabled;
-
+    console.log(this.makeSelfFM,this.ROLES,selectedRole)
     // if (this.makeSelfFM) {
     //   // this.addUserForm.controls.fun_own.setValue('Self (' + this.newUserFirstName + ' ' + this.newUserLastName + ')');
     //   this.addUserForm.controls.fun_own.setValue(0);

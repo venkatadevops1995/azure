@@ -436,9 +436,9 @@
                         <ul>
                             <li *ngFor="let role of ROLES;let i=index">
                                 <!-- <div class="container"> -->
-                                <label class="container"> {{role.name}}
+                                <label class="container"> {{role.name}}---
                                 <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
-                                <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
+                                <input type="checkbox" (change)="selectRole(i,role.selected,false)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
                                 <span class="checkmark"></span>
                                 </label>
                                 <!-- </div> -->
