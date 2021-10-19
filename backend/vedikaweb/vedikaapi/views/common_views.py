@@ -548,11 +548,13 @@ class CommonFunctions:
 
     def get_employees_list(self,managerid,priority=1,priorityCheck=True):
         if(priorityCheck):
-            emp_hirarchy_obj=EmployeeHierarchy.objects.filter(manager_id=managerid,priority=priority,emp__status=1)
+            emp_hirarchy_obj=EmployeeHierarchy.objects.select_related('emp').filter(manager_id=managerid,priority=priority,emp__status=1)
         else:
-            emp_hirarchy_obj=EmployeeHierarchy.objects.filter(manager_id=managerid,emp__status=1)
+            emp_hirarchy_obj=EmployeeHierarchy.objects.select_related('emp').filter(manager_id=managerid,emp__status=1)
         emp_list_obj=map(lambda x:x.emp.emp_id,emp_hirarchy_obj)
-        return list(emp_list_obj)
+        res=[]
+        [res.append(x) for x in list(emp_list_obj) if x not in res]
+        return res
 
 
 
