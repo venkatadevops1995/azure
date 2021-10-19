@@ -26,7 +26,7 @@ attendance_ = attendance()
 
 
 class CommonFunctions:
-    def get_employees_weeklydata(self,employeeList,prev_week=0,statusFlag=False,approve_status=-1):
+    def get_employees_weeklydata(self,employeeList,prev_week=0,statusFlag=False,approve_status=-1,TimeTrackerdataFlag=True):
         '''
             1.Function to get employee weekly time sheet for list of employees.
             2.By default it will give weekly time sheet of list of employees for the current week
@@ -223,21 +223,22 @@ class CommonFunctions:
                         else:
                             resp[emp_cnt]['active_projects'][active_cnt]['visibilityFlag']=True
                         active_cnt=active_cnt+1
-            resp[emp_cnt]['gross_working_hours']=[]
-            resp[emp_cnt]['net_working_hours']=[]
-            attendance_data,attendance_flag,present_dates_list = attendance_.get_tt_final_datastructure(emp_id,weekdatesList[0],weekdatesList[-1])
-            resp[emp_cnt]['attendance_flag']=attendance_flag
-            for eachitem in weekdatesList:
-                matchflag=False
-                for eachone in attendance_data:
-                    if(str(eachitem)==eachone['Date'] and (str(eachone['Date']) in present_dates_list)):
-                        resp[emp_cnt]['gross_working_hours'].append({'date':str(eachitem),'h':int(eachone['GrossWorkingHours'].split(':')[0]),'m':int(eachone['GrossWorkingHours'].split(':')[1])})
-                        resp[emp_cnt]['net_working_hours'].append({'date':str(eachitem),'h':int(eachone['NetWorkingHours'].split(':')[0]),'m':int(eachone['NetWorkingHours'].split(':')[1])})
-                        matchflag = True
-                        break
-                if(not matchflag):
-                    resp[emp_cnt]['gross_working_hours'].append({'date':str(eachitem),'h':0,'m':0})
-                    resp[emp_cnt]['net_working_hours'].append({'date':str(eachitem),'h':0,'m':0})
+            if(TimeTrackerdataFlag):
+                resp[emp_cnt]['gross_working_hours']=[]
+                resp[emp_cnt]['net_working_hours']=[]
+                attendance_data,attendance_flag,present_dates_list = attendance_.get_tt_final_datastructure(emp_id,weekdatesList[0],weekdatesList[-1])
+                resp[emp_cnt]['attendance_flag']=attendance_flag
+                for eachitem in weekdatesList:
+                    matchflag=False
+                    for eachone in attendance_data:
+                        if(str(eachitem)==eachone['Date'] and (str(eachone['Date']) in present_dates_list)):
+                            resp[emp_cnt]['gross_working_hours'].append({'date':str(eachitem),'h':int(eachone['GrossWorkingHours'].split(':')[0]),'m':int(eachone['GrossWorkingHours'].split(':')[1])})
+                            resp[emp_cnt]['net_working_hours'].append({'date':str(eachitem),'h':int(eachone['NetWorkingHours'].split(':')[0]),'m':int(eachone['NetWorkingHours'].split(':')[1])})
+                            matchflag = True
+                            break
+                    if(not matchflag):
+                        resp[emp_cnt]['gross_working_hours'].append({'date':str(eachitem),'h':0,'m':0})
+                        resp[emp_cnt]['net_working_hours'].append({'date':str(eachitem),'h':0,'m':0})
             emp_cnt=emp_cnt+1
         return resp
 

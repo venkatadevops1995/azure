@@ -13,7 +13,7 @@ from vedikaweb.vedikaapi.serializers import  EmployeeWorkApproveStatusSerializer
 from vedikaweb.vedikaapi.constants import StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, GenderChoices, MaritalStatuses, LeaveRequestStatus, TimesheetDiscrpancyStatus
 from vedikaweb.vedikaapi.utils import utils
 from django.conf import settings
-from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator
+from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator, query_debugger
 from django.db.models import Q,F,Value as V, Case,When,Count, IntegerField, Sum, FloatField
 
 from openpyxl.utils.cell import get_column_letter
@@ -335,6 +335,7 @@ class WSTDownload(APIView):
         return time.strftime("%H:%M:%S",time.gmtime(seconds))
     @jwttokenvalidator
     @custom_exceptions
+    @query_debugger
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request)
         if(auth_details['email']==""):
@@ -359,9 +360,10 @@ class WSTDownload(APIView):
             if(len(emp_of_manager_obj)>0):
                 emp_of_manager=ast.literal_eval(emp_of_manager_obj[0].emp_list)
 
-        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=work_week)
+        
+        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
-        data_struct=common_fun_obj.get_employees_weeklydata(employee_approve_status_list,prev_week=prev_week,statusFlag=True)
+        data_struct=common_fun_obj.get_employees_weeklydata(employee_approve_status_list,prev_week=prev_week,statusFlag=True,TimeTrackerdataFlag=False)
         if(emp_id) == '-1':
             emp = {'emp_name':'All'}
         else:
@@ -393,10 +395,14 @@ class WSTDownload(APIView):
         if(len(att_access_grp_obj)>0 or len(att_access_grp_individual)>0):
             sheet3_columns = ['Staff No','Name','Manager','Date','Day','Gross Hours','Net Hours']
             sheet3_data=[sheet3_columns]
-        
-            for each in list(dict.fromkeys(emp_of_manager)):
-                eh=EmployeeHierarchy.objects.filter(emp_id=each,priority=1,
-                status=1)
+            eh=EmployeeHierarchy.objects.select_related('manager').filter(emp_id__in=emp_of_manager,priority=1,status=1)
+            eh_dict={}
+            for x in eh:
+                eh_dict[x.emp_id]=x.manager.emp_name
+            for each in emp_of_manager:
+                # eh=EmployeeHierarchy.objects.filter(emp_id=each,priority=1,
+                # status=1)
+                manager_name=eh_dict[each]
                 ####ADDING ATTENDANCE DATA####
                 
                 attendance_data,attendance_flag,present_dates_list = attendance_.get_tt_final_datastructure(each,weekdatesList[0],weekdatesList[-1])
@@ -412,21 +418,24 @@ class WSTDownload(APIView):
                                 gross_date_object = datetime.strptime(gross_format_time, "%H:%M")
                                 net_format_time='{:02d}:{:02d}'.format(*divmod(net_mins,60))
                                 net_date_object = datetime.strptime(net_format_time, "%H:%M")
-                                sheet3_data.append([eachone['staff_no'],eachone['emp_name'],eh[0].manager.emp_name,str(eachitem),str(calendar.day_name[datetime.strptime(str(eachitem), '%Y-%m-%d').weekday()]),gross_date_object,net_date_object])
+                                sheet3_data.append([eachone['staff_no'],eachone['emp_name'],manager_name,str(eachitem),str(calendar.day_name[datetime.strptime(str(eachitem), '%Y-%m-%d').weekday()]),gross_date_object,net_date_object])
                                 matchflag = True
                                 break
                         if(not matchflag):
                             empty_format_time_='{:02d}:{:02d}'.format(*divmod(0,60))
                             empty_date_object_ = datetime.strptime(empty_format_time_, "%H:%M")
-                            sheet3_data.append([eachone['staff_no'],eachone['emp_name'],eh[0].manager.emp_name,str(eachitem),str(calendar.day_name[datetime.strptime(str(eachitem), '%Y-%m-%d').weekday()]),empty_date_object_,empty_date_object_])
+                            sheet3_data.append([eachone['staff_no'],eachone['emp_name'],manager_name,str(eachitem),str(calendar.day_name[datetime.strptime(str(eachitem), '%Y-%m-%d').weekday()]),empty_date_object_,empty_date_object_])
                 ################################
 
         
-        
+        eh=EmployeeHierarchy.objects.findByEmplistAndPriorityAndStatus(emp_of_manager,1,1)
+        eh_dict={}
+        for x in eh:
+            eh_dict[x.emp_id]=x.manager.emp_name
         for each in data_struct:
-            eh=EmployeeHierarchy.objects.filter(emp_id=each['emp_id'],priority=1,
-            status=1)
-            
+            # eh=EmployeeHierarchy.objects.filter(emp_id=each['emp_id'],priority=1,
+            # status=1)
+            manager_name=eh_dict[each['emp_id']]
             for eachproj in each['active_projects']:
                 total_time_active = 0
                 # if(eachproj['visibilityFlag']):
@@ -440,11 +449,11 @@ class WSTDownload(APIView):
 
                             format_time='{:02d}:{:02d}'.format(*divmod(mins,60))
                             date_object = datetime.strptime(format_time, "%H:%M")
-                            data.append([eachday['date'],each['staff_no'],each['emp_name'],eachproj['project_name'],eh[0].manager.emp_name,date_object])
+                            data.append([eachday['date'],each['staff_no'],each['emp_name'],eachproj['project_name'],manager_name,date_object])
                 if(total_time_active>0):
                     hrs_active,mins_active = divmod(total_time_active,60)
                     format_total_time_active = '{h:02d}:{m:02d}'.format(h=hrs_active,m=mins_active)
-                    sheet2_data.append([each['staff_no'],each['emp_name'],eachproj['project_name'],eh[0].manager.emp_name,format_total_time_active])
+                    sheet2_data.append([each['staff_no'],each['emp_name'],eachproj['project_name'],manager_name,format_total_time_active])
             
             
             for each_mis_or_vac_proj in DefaultProjects.mis_vac_projs():
@@ -497,7 +506,7 @@ class WSRDownload(APIView):
             if(len(emp_of_manager_obj)>0):
                 emp_of_manager=ast.literal_eval(emp_of_manager_obj[0].emp_list)
 
-        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=work_week)
+        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         data_struct=common_fun_obj.get_weekly_statuses(employee_approve_status_list,prev_week=prev_week,statusFlag=True)
         if(emp_id) == '-1':
@@ -510,13 +519,18 @@ class WSRDownload(APIView):
         e=ExcelServices(response,in_memory=True,workSheetName="Weekly Status Report")
         columns=['Name','Staff No.','Project Name','Manager Name','WeeklyStatus']
         data=[columns]
+        
+        eh_dict={}
+        eh=EmployeeHierarchy.objects.findByEmplistAndPriorityAndStatus(employee_approve_status_list,1,1)
+        for each in eh:
+            eh_dict[each.emp_id]=each
         for each in data_struct:
-            eh=EmployeeHierarchy.objects.filter(emp_id=each['emp_id'],priority=1,status=1)
+            # eh=EmployeeHierarchy.objects.filter(emp_id=each['emp_id'],priority=1,status=1)
             for eachproj in each['active_projects']:
                 if(eachproj['work_report']!=''):
-                    data.append([each['emp_name'],each['staff_no'],eachproj['project_name'],eh[0].manager.emp_name,eachproj['work_report']])
+                    data.append([each['emp_name'],each['staff_no'],eachproj['project_name'],eh_dict.get(each['emp_id']).manager.emp_name,eachproj['work_report']])
             if(each[DefaultProjects.General.value]['work_report']!=''):
-                data.append([each['emp_name'],each['staff_no'],each[DefaultProjects.General.value]['project_name'],eh[0].manager.emp_name,each[DefaultProjects.General.value]['work_report']])
+                data.append([each['emp_name'],each['staff_no'],each[DefaultProjects.General.value]['project_name'],eh_dict.get(each['emp_id']).manager.emp_name,each[DefaultProjects.General.value]['work_report']])
         e.writeExcel(data,row_start=0,long_column_list=[2])
         del e
         return response
@@ -565,22 +579,48 @@ class NCRDownload(APIView):
         data=[columns]
         managers=Employee.objects.allmanagers()
         managers=list(map(lambda x:x.emp_id,managers))
+
+        emp_dict={}
+        empobj=Employee.objects.filter(emp_id__in=emp_of_manager)
+        for each in empobj:
+            emp_dict[each.emp_id]=each
+
+        eh_dict={}
+        eh=EmployeeHierarchy.objects.findByEmplistAndPriorityAndStatus(emp_of_manager,1,1)
+        for each in eh:
+            eh_dict[each.emp_id]=each
+        
+        entry_comp_dict={}
+        empEntryCompStatusObj = EmployeeEntryCompStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        for each in empEntryCompStatusObj:
+            entry_comp_dict[each.emp_id]=each
+        
+        approval_comp_dict = {}
+        empApprCompStatusObj = EmployeeApprovalCompStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        for each in empApprCompStatusObj:
+            approval_comp_dict[each.emp_id]=each
+
+
         for eachemp in emp_of_manager:
-            eh=EmployeeHierarchy.objects.filter(emp_id=eachemp,priority=1,status=1)
+            # eh=EmployeeHierarchy.objects.filter(emp_id=eachemp,priority=1,status=1)
+
             DataEntryComp="NO"
             DataApprovalCount=0
-            empobj=Employee.objects.get(emp_id=eachemp)
-            entry_comps=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp) & Q(work_week=work_week) & Q(created__year=year))
-            if(len(entry_comps)>0):
+            # empobj=Employee.objects.get(emp_id=eachemp)
+
+            # entry_comps=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp) & Q(work_week=work_week) & Q(created__year=year))
+            entry_comps = entry_comp_dict.setdefault(eachemp,None)
+            if(entry_comps is not None):
                 DataEntryComp="YES"
-            approval_comps=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachemp) & Q(work_week=work_week) & Q(created__year=year))
+            # approval_comps=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachemp) & Q(work_week=work_week) & Q(created__year=year))
+            approval_comps = approval_comp_dict.setdefault(eachemp,None)
             if(eachemp not in managers):
                 DataApprovalCount='NA'
             else:
-                if(len(approval_comps)>0):
-                    DataApprovalCount=approval_comps[0].cnt
+                if(approval_comps is not None):
+                    DataApprovalCount=approval_comps.cnt
 
-            data.append([empobj.emp_name,empobj.staff_no,empobj.company,eh[0].manager.emp_name,DataEntryComp,DataApprovalCount])
+            data.append([emp_dict.get(eachemp).emp_name,emp_dict.get(eachemp).staff_no,emp_dict.get(eachemp).company,eh_dict.get(eachemp).manager.emp_name,DataEntryComp,DataApprovalCount])
 
         e.writeExcel(data,row_start=0,long_column_list=[2])
         del e
