@@ -1013,7 +1013,7 @@ class LeaveDiscrepancyView(APIView):
         leave_discrepancies = LeaveRequest.objects.prefetch_related(
             Prefetch('leavediscrepancy',queryset=LeaveDiscrepancy.objects.all() ),
             Prefetch('leave_set',queryset=Leave.objects.all() )
-        ).filter(emp_id__in=employees,status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedMgr.value],leavediscrepancy__status=LeaveDiscrepancyStatus.Pending.value).annotate( 
+        ).filter(emp_id__in=employees,leavediscrepancy__status=LeaveDiscrepancyStatus.Pending.value).annotate( 
             day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
             When(leave__day_leave_type='FIRST_HALF', then=0.5),
             When(leave__day_leave_type='SECOND_HALF', then=0.5),
