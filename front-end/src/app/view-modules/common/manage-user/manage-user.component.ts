@@ -110,6 +110,7 @@ export class ManageUserComponent implements OnInit {
   value:any;
   employeeListSearch: any = [];
   showMessage = false;
+  selectedRoleValue: number=0;
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -293,8 +294,7 @@ export class ManageUserComponent implements OnInit {
 
 
   selectRole(selectedRole, is_deselected) {
-
-
+    this.selectedRoleValue=selectedRole+1;
 
     //setting role in the form
     if (is_deselected == true) {
@@ -642,7 +642,7 @@ export class ManageUserComponent implements OnInit {
     })
   }
   changeRole(){
-    this.changeRoleForm.controls.role_id.setValue(this.newUserRoleValue);
+    this.changeRoleForm.controls.role_id.setValue(this.selectedRoleValue);
     console.log("----------role---change",this.changeRoleForm.value)
 
     this.http.request('post', 'change-role/', '', this.changeRoleForm.value).subscribe(res => {

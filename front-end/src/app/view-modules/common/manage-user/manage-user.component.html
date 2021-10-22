@@ -417,7 +417,7 @@
     </p>
 
     <ng-container>
-        <div>
+        <div *ngIf="is_emp_admin">
             <mat-form-field>
                 <mat-label>Edit role/manager</mat-label>
                 <mat-select [formControl]="editableItem" (selectionChange)="getEffectedEmpList()">
