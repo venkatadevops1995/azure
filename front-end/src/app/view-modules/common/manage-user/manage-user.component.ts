@@ -332,7 +332,7 @@ export class ManageUserComponent implements OnInit {
     else{
       this.selectedRoleValue=this.PreviousRoleVlaue;
       // console.log(selectedRole,this.PreviousRoleVlaue,"%%%%%%%%%%%%")
-      for(let i=selectedRole-1;i>=this.PreviousRoleVlaue-1;i--){
+      for(let i=selectedRole-1;i>this.PreviousRoleVlaue-1;i--){
         this.ROLES[i].selected = false;
         this.ROLES[i].disabled = false;
       }
