@@ -438,7 +438,7 @@
                                 <!-- <div class="container"> -->
                                 <label class="container"> {{role.name}}
                                 <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
-                                <input type="checkbox" (change)="selectRole(i,role.selected,false)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
+                                <input type="checkbox" (change)="selectRole(i,$event,false)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
                                 <span class="checkmark"></span>
                                 </label>
                                 <!-- </div> -->
@@ -454,7 +454,7 @@
                 <!-- <div style="display: inline-block; text-align: center;margin:20px">
                     <app-button size='small' theme="danger" type="button" (click)="openTransferEmp()" [disabled]="effected_emp_count==0">Transfer All</app-button>
                 </div> -->
-                <div style="display: inline-block; text-align: center;margin:20px;">
+                <div style="text-align: center;margin:20px;">
                     <app-button size='small' theme="blue-lite" type="button" (click)="changeRole()" [disabled]="this.PreviousRoleVlaue>=selectedRoleValue">Update</app-button>
                 </div>
             </div>
