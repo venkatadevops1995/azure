@@ -436,7 +436,7 @@
                         <ul>
                             <li *ngFor="let role of ROLES;let i=index">
                                 <!-- <div class="container"> -->
-                                <label class="container"> {{role.name}}---
+                                <label class="container"> {{role.name}}
                                 <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
                                 <input type="checkbox" (change)="selectRole(i,role.selected,false)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
                                 <span class="checkmark"></span>
@@ -455,7 +455,7 @@
                     <app-button size='small' theme="danger" type="button" (click)="openTransferEmp()" [disabled]="effected_emp_count==0">Transfer All</app-button>
                 </div>
                 <div style="display: inline-block; text-align: center;">
-                    <app-button size='small' theme="blue-lite" type="button" (click)="changeRole()" [disabled]="this.changeRoleForm.controls.role_id.value==newUserRoleValue">Update</app-button>
+                    <app-button size='small' theme="blue-lite" type="button" (click)="changeRole()" [disabled]="this.PreviousRoleVlaue>=selectedRoleValue">Update</app-button>
                 </div>
             </div>
         </div>

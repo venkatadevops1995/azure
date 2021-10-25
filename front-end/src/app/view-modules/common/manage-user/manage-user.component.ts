@@ -300,6 +300,7 @@ export class ManageUserComponent implements OnInit {
     //setting role in the form
     if (is_deselected == true) {
       this.addUserForm.controls.role.setValue("1");
+      this.selectedRoleValue=this.PreviousRoleVlaue;
     } else {
       this.addUserForm.controls.role.setValue(this.ROLES[selectedRole].value);
     }
@@ -315,15 +316,16 @@ export class ManageUserComponent implements OnInit {
     if (this.newUserRoleValue <= this.ROLES[selectedRole].value) {
       if(selectedRole>this.PreviousRoleVlaue){
       for (let i = selectedRole - 1; i > 0; i--) {
-        if(i+1!=this.PreviousRoleVlaue){
+        // if(i+1!=this.PreviousRoleVlaue){
         this.ROLES[i].selected = !this.ROLES[selectedRole].selected;
         this.ROLES[i].disabled = !this.ROLES[selectedRole].selected;
-        }
+        // }
       }
       if (this.ROLES[selectedRole].selected == false) {
         this.newUserRoleValue = this.ROLES[selectedRole].value;
-      } else {
-        this.newUserRoleValue = 1;
+      } 
+      else{
+        this.newUserRoleValue=1;
       }
     }
     }
@@ -354,7 +356,7 @@ export class ManageUserComponent implements OnInit {
     // }
     console.log(this.makeSelfRM, this.makeSelfMM, this.makeSelfFM)
 
-
+    // console.log(this.PreviousRoleVlaue,"-------------",this.newUserRoleValue,"=====",this.selectedRoleValue)
 
 
 
@@ -631,7 +633,7 @@ export class ManageUserComponent implements OnInit {
   }
   async openTransferEmp(){
     // await this.getEffectedEmpList(this.editManagerForm.controls.emp_id.value)
-
+    this.newUserRoleValue = this.changeRoleForm.controls.role_id.value;
     this.transferEmpForm.controls.emp_id.setValue(this.editManagerForm.controls.emp_id.value);
     this.transferEmpPopUp.open();
   }
@@ -650,7 +652,7 @@ export class ManageUserComponent implements OnInit {
   }
   changeRole(){
     this.changeRoleForm.controls.role_id.setValue(this.selectedRoleValue);
-    console.log("----------role---change",this.changeRoleForm.value)
+    // console.log("----------role---change",this.changeRoleForm.value,this.addUserForm.controls.role)
 
     this.http.request('post', 'change-role/', '', this.changeRoleForm.value).subscribe(res => {
 
