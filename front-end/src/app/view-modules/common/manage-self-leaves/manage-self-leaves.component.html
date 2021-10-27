@@ -150,7 +150,7 @@
                     <div class="flex middle-xs start-xs">
                         <app-button theme="blue-lite" size="extra-small" title="View Details" type="button" style="border: none;background-color: transparent;" (click)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true}; showAppliedLeaveDialog.open()"> View
                         </app-button>
-                        <app-button theme="danger" size="extra-small" *ngIf="(element.status == leaveApplcnStatus.Approved  || element.status == leaveApplcnStatus.AutoApprovedMgr) && !element.discrepancy_raised" type="button" class="ml-5" style="border: none;background-color:transparent;"
+                        <app-button theme="danger" size="extra-small" *ngIf="!element.discrepancy_raised" type="button" class="ml-5" style="border: none;background-color:transparent;"
                             (click)="onClickRaiseDiscrepancy($event,element)">
                             Correction
                         </app-button>

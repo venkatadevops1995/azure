@@ -735,14 +735,14 @@ def ModifyProjectsCron():
     for emp_id in modify_emp_list:
         stage_projects_data = stage_data.filter(emp_id = emp_id ).order_by('priority')
         # getting the existing activated projects
-        existing_dict = EmployeeProject.objects.filter(Q(emp_id = emp_id),~Q(priority = 0)).order_by('priority')
+        existing_dict = EmployeeProject.objects.filter(Q(emp_id = emp_id),~Q(project__name__in = DefaultProjects.list())).order_by('priority')
         # putting existed projects into deleted list those are already there in staged table with same project id or same priotiry 
         deleted_list = existing_dict.filter(~Q(project_id__in=[ex.project_id for ex in stage_projects_data]),Q(priority__in=[ex.priority for ex in stage_projects_data]),Q(status=1))
         deleted_list_id = list(map(lambda x:[x.project_id,x.priority],deleted_list))
         for i in range(0,len(stage_projects_data)):
             # disabling the existing projects that has the same priority as those in the staged table with project 0
             if(stage_projects_data[i].project_id == 0):
-                existing_dict.filter(status =1,emp_id = emp_id,priority=stage_projects_data[i].priority).update(status=0)
+                existing_dict.filter(emp_id = emp_id,priority=stage_projects_data[i].priority).update(status=0,priority=0)
                 # deleted_list.update(status=0)
                 log.info("Deleted projects for employee_id:{} priority:{}".format(emp_id,stage_projects_data[i].priority))
             else:
@@ -755,9 +755,9 @@ def ModifyProjectsCron():
                     EmployeeProject(status =1,emp_id = emp_id,project_id=stage_projects_data[i].project_id,priority= stage_projects_data[i].priority).save()
                     log.info("Project has been added for employee_id:{} project_id:{} priority:{}".format(emp_id,stage_projects_data[i].project_id,stage_projects_data[i].priority))
         if(len(deleted_list)>0):
-            deleted_list.update(status=0)
+            deleted_list.update(status=0,priority=0)
             for each_dlt_prj in deleted_list_id:
-                log.info("Deleted projects employee_id:{} project_id:{} priority:{} ".format(emp_id,each_dlt_prj[0],each_dlt_prj[1]))
+                log.info("Deleted projects employee_id:{} project_id:{} priority:0 ".format(emp_id,each_dlt_prj[0]))
     stage_data.update(status = 0)
 
         

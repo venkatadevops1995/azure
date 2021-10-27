@@ -405,7 +405,7 @@
 </app-modal-popup>
 
 
-<app-modal-popup #editManagerDialog [w]="'350px'" [h]="'480px'">
+<app-modal-popup #editManagerDialog [w]="'350px'" [h]="is_emp_admin?'565px':'480px'">
     <div head>
         Transfer
     </div>
@@ -417,7 +417,7 @@
     </p>
 
     <ng-container>
-        <!-- <div>
+        <div *ngIf="is_emp_admin">
             <mat-form-field>
                 <mat-label>Edit role/manager</mat-label>
                 <mat-select [formControl]="editableItem" (selectionChange)="getEffectedEmpList()">
@@ -425,7 +425,7 @@
                     <mat-option [value]="'manager'">Managers</mat-option>
                 </mat-select>
             </mat-form-field>
-        </div> -->
+        </div>
 
         <div *ngIf="editableItem.value=='role'">
             <div style="padding: 0px 0px 17.5px;margin: 4px;">
@@ -438,7 +438,7 @@
                                 <!-- <div class="container"> -->
                                 <label class="container"> {{role.name}}
                                 <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
-                                <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
+                                <input type="checkbox" (change)="selectRole(i,$event,false)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
                                 <span class="checkmark"></span>
                                 </label>
                                 <!-- </div> -->
@@ -447,15 +447,15 @@
                         </ul>
                     </div>
                 </div>
-                <p style="color: red;">
+                <!-- <p style="color: red;">
                     Number of employees under selected manager: <b>{{effected_emp_count}}</b>
-                </p>
+                </p> -->
 
-                <div style="display: inline-block; text-align: center;margin:20px">
+                <!-- <div style="display: inline-block; text-align: center;margin:20px">
                     <app-button size='small' theme="danger" type="button" (click)="openTransferEmp()" [disabled]="effected_emp_count==0">Transfer All</app-button>
-                </div>
-                <div style="display: inline-block; text-align: center;">
-                    <app-button size='small' theme="blue-lite" type="button" (click)="changeRole()" [disabled]="this.changeRoleForm.controls.role_id.value==newUserRoleValue">Update</app-button>
+                </div> -->
+                <div style="text-align: center;margin:20px;">
+                    <app-button size='small' theme="blue-lite" type="button" (click)="changeRole()" [disabled]="this.PreviousRoleVlaue>=selectedRoleValue">Update</app-button>
                 </div>
             </div>
         </div>

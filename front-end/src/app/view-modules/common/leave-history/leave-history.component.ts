@@ -258,7 +258,7 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }
     if (this.side) {
-      this.http.request('get', 'leave/request/', params).subscribe(res => {
+      this.http.request('get', 'leave/monthlycycleleavereport/', params).subscribe(res => {
         if (res.status == 200) {
           res.body["results"].forEach(element => {
             data.push(element)

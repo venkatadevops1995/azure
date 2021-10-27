@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.query import Prefetch
 from django.utils import timezone
 from django.db.models import Sum
-from django.db.models import Q,F
+from django.db.models import Q,F,Count,Prefetch as pref
 from .constants import DefaultProjects
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
@@ -90,6 +90,34 @@ class EmployeeProfile(models.Model):
 
 
 ## EMPLOYEE PROJECT MAPPING ##
+class EmployeeProjectQuerySet(models.QuerySet):
+    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber,submitted_projs_list):
+        
+        qs = self
+        qs=qs.select_related('project').prefetch_related(pref(
+            'employeeprojecttimetracker_set',
+            queryset=EmployeeProjectTimeTracker.objects.filter(work_date__in=weekdatesList),
+            to_attr='all_project_time_tracker'
+        ),pref(
+            'employeeweeklystatustracker_set',
+            queryset=EmployeeWeeklyStatusTracker.objects.filter(wsr_date__in=weekdatesList),
+            to_attr='all_project_wsr_tracker'
+        )).order_by('priority').filter(Q(emp__emp_id__in=empList) & (Q(status=1) | Q(project_id__in=submitted_projs_list))).annotate(
+                wsr_count = Count('employeeweeklystatustracker__employee_project',filter=Q(employeeweeklystatustracker__wsr_date__in=weekdatesList,employeeweeklystatustracker__wsr_week=weeknumber)),
+                wtr_obj = F('employeeprojecttimetracker__employee_project')
+
+            )
+        
+        return qs
+
+
+
+class EmployeeProjectManager(models.Manager):
+    def get_queryset(self):
+        return EmployeeProjectQuerySet(self.model,using=self._db)
+    def findByEmplistAndWeekdateslistAndWeeknumber(self,empList,weekdatesList,weeknumber,submitted_projs_list=[]):
+        return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumber(empList,weekdatesList,weeknumber,submitted_projs_list)
+
 class EmployeeProject(ExportModelOperationsMixin('employee_project'), models.Model):
     project = models.ForeignKey('Project', models.DO_NOTHING)
     emp = models.ForeignKey(Employee, models.DO_NOTHING)
@@ -98,6 +126,8 @@ class EmployeeProject(ExportModelOperationsMixin('employee_project'), models.Mod
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
     status = models.IntegerField()
+
+    objects=EmployeeProjectManager()
 
     class Meta:
         managed = False
@@ -161,6 +191,14 @@ class EmployeeProjectTimeTrackerQuerySet(models.QuerySet):
                     sum_output_count=Sum('work_minutes'))
             return qs
         return qs
+    def findByEmplistAndWeekdateslistAndWeeknumberAndYear(self,empList,weekdatesList,weeknumber,year):
+        qs=self
+        qs=qs.filter(Q(work_week=weeknumber) & Q(created__year=year) & Q(work_date__in=weekdatesList)).values('employee_project').annotate(
+                    emp_id = F('employee_project__emp_id'),
+                    project_id = F('employee_project__project_id'),
+                    project_name = F('employee_project__project__name'),
+                    sum_output_count=Sum('work_minutes')).filter(sum_output_count__gt=0,employee_project__emp_id__in=empList)
+        return qs
 
 
             
@@ -175,7 +213,9 @@ class EmployeeProjectTimeTrackerManager(models.Manager):
         return self.get_queryset().get_submitted_projects(emp_id=emp_id,work_week=work_week,year=year)
     def get_submitted_projects_daterange(self,emp_id=None,start_date=None,last_date=None):
         return self.get_queryset().get_submitted_projects_daterange(emp_id=emp_id,start_date=start_date,last_date = last_date)
-
+    def findByEmplistAndWeekdateslistAndWeeknumberAndYear(self,empList,weekdatesList,weeknumber,year):
+        return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumberAndYear(empList,weekdatesList,weeknumber,year)
+	
 
 class EmployeeProjectTimeTracker(ExportModelOperationsMixin('employee_project_time_tracker'), models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -268,6 +308,10 @@ class EmployeeHierarchyQuerySet(models.QuerySet):
             qs = qs.filter(Q(manager_id=manager_id) & Q(emp__role_id__gt=2) & Q(emp__status=1))
             return qs
         return qs
+    def findByEmplistAndPriorityAndStatus(self,empList,priority,status):
+        qs=self
+        qs=qs.select_related('emp','manager').filter(emp_id__in=empList,priority=priority,status=status)
+        return qs
 class EmployeeHierarchyManager(models.Manager):
     def get_queryset(self):
         return EmployeeHierarchyQuerySet(self.model,using=self._db)
@@ -279,6 +323,8 @@ class EmployeeHierarchyManager(models.Manager):
         return self.get_queryset().direct_managers(manager_id=manager_id)
     def direct_managers_dashboard(self,manager_id = None):
         return self.get_queryset().direct_managers_dashboard(manager_id=manager_id)
+    def findByEmplistAndPriorityAndStatus(self,empList,priority,status):
+        return self.get_queryset().findByEmplistAndPriorityAndStatus(empList,priority,status)
 
 class EmployeeHierarchy(ExportModelOperationsMixin('employee_hierarchy'), models.Model):
     emp = models.ForeignKey('Employee', related_name='emp', on_delete=models.DO_NOTHING)
@@ -294,6 +340,20 @@ class EmployeeHierarchy(ExportModelOperationsMixin('employee_hierarchy'), models
 
 
 ## EMPLOYEE WORK APPROVE STATUS ##
+class EmployeeWorkApproveStatusQuerySet(models.QuerySet):
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
+        qs=qs.filter(look_up_query)
+        return qs
+   
+
+
+class EmployeeWorkApproveStatusManager(models.Manager):
+    def get_queryset(self):
+        return EmployeeWorkApproveStatusQuerySet(self.model,using=self._db)
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
 class EmployeeWorkApproveStatus(ExportModelOperationsMixin('employee_work_approve_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
     work_week = models.IntegerField()
@@ -301,6 +361,7 @@ class EmployeeWorkApproveStatus(ExportModelOperationsMixin('employee_work_approv
     status = models.IntegerField()
     comments = models.CharField(max_length=150,blank=True,null=True)
     created = models.DateTimeField(default=timezone.now)
+    objects=EmployeeWorkApproveStatusManager()
     class Meta:
         managed = False
         db_table = 'employee_work_approve_status'
@@ -322,13 +383,26 @@ class MisInfo(ExportModelOperationsMixin('mis_info'), models.Model):
 
 
 ## EMPLOYEE ENTRY COMPLAINCE STATUS ##
+class EmployeeEntryCompStatusQuerySet(models.QuerySet):
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
+        qs=qs.filter(look_up_query)
+        return qs
+
+class EmployeeEntryCompStatusManager(models.Manager):
+    def get_queryset(self):
+        return EmployeeEntryCompStatusQuerySet(self.model,using=self._db)
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
+		
 class EmployeeEntryCompStatus(ExportModelOperationsMixin('employee_entry_comp_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
     work_week = models.IntegerField()
     cnt = models.IntegerField()
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
-
+    objects=EmployeeEntryCompStatusManager()
     class Meta:
         managed = False
         db_table = 'employee_entry_comp_status'
@@ -336,13 +410,25 @@ class EmployeeEntryCompStatus(ExportModelOperationsMixin('employee_entry_comp_st
 
 
 ## EMPLOYEE APPROVAL COMPLAINCE STATUS ##
+class EmployeeApprovalCompStatusQuerySet(models.QuerySet):
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
+        qs=qs.filter(look_up_query)
+        return qs
+
+class EmployeeApprovalCompStatusManager(models.Manager):
+    def get_queryset(self):
+        return EmployeeApprovalCompStatusQuerySet(self.model,using=self._db)
+    def findByEmplistAndWeekAndYear(self,empList,work_week,year):
+        return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
 class EmployeeApprovalCompStatus(ExportModelOperationsMixin('employee_approval_comp_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
     work_week = models.IntegerField()
     cnt = models.IntegerField()
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
-
+    objects=EmployeeApprovalCompStatusManager()
     class Meta:
         managed = False
         db_table = 'employee_approval_comp_status'

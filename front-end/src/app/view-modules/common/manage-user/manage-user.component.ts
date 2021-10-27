@@ -110,6 +110,8 @@ export class ManageUserComponent implements OnInit {
   value:any;
   employeeListSearch: any = [];
   showMessage = false;
+  selectedRoleValue: number=0;
+  PreviousRoleVlaue: number=0;
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -292,13 +294,24 @@ export class ManageUserComponent implements OnInit {
   }
 
 
-  selectRole(selectedRole, is_deselected) {
-
-
+  selectRole(selectedRole, is_deselected,onload=true) {
+    
+    
+    if(onload){
+      this.PreviousRoleVlaue = this.ROLES[selectedRole].value;
+      // console.log(this.PreviousRoleVlaue,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+      this.ROLES[selectedRole].selected = true;
+      this.ROLES[selectedRole].disabled = true;
+    }
+    else{
+      is_deselected = is_deselected?.target?.checked;
+    }
+    this.selectedRoleValue=selectedRole+1;
 
     //setting role in the form
     if (is_deselected == true) {
       this.addUserForm.controls.role.setValue("1");
+      this.selectedRoleValue=this.PreviousRoleVlaue-1;
     } else {
       this.addUserForm.controls.role.setValue(this.ROLES[selectedRole].value);
     }
@@ -308,31 +321,50 @@ export class ManageUserComponent implements OnInit {
     this.addUserForm.controls.rep_manager.reset();
     this.MM_DATA = []
     this.RM_DATA = []
-
-
-
-    if (this.newUserRoleValue <= this.ROLES[selectedRole].value) {
-      for (let i = selectedRole - 1; i > 0; i--) {
-        this.ROLES[i].selected = !this.ROLES[selectedRole].selected;
-
-        this.ROLES[i].disabled = !this.ROLES[selectedRole].selected;
+    // console.log(this.PreviousRoleVlaue,"===================>>>>>>>>>>>>",this.ROLES,onload,is_deselected)
+    if(is_deselected){
+      this.selectedRoleValue = selectedRole+1;
+      for(let i=0;i<=selectedRole-1;i++){
+        this.ROLES[i].selected = true;
+        this.ROLES[i].disabled = true;
       }
-      if (this.ROLES[selectedRole].selected == false) {
-        this.newUserRoleValue = this.ROLES[selectedRole].value;
-      } else {
-        this.newUserRoleValue = 1;
+    }
+    else{
+      this.selectedRoleValue=this.PreviousRoleVlaue;
+      // console.log(selectedRole,this.PreviousRoleVlaue,"%%%%%%%%%%%%")
+      for(let i=selectedRole-1;i>this.PreviousRoleVlaue-1;i--){
+        this.ROLES[i].selected = false;
+        this.ROLES[i].disabled = false;
       }
     }
 
-    this.ROLES[selectedRole].selected = !this.ROLES[selectedRole].selected;
-
+    // if (this.newUserRoleValue <= this.ROLES[selectedRole].value) {
+    //   if(selectedRole>this.PreviousRoleVlaue){
+    //   for (let i = selectedRole - 1; i > this.PreviousRoleVlaue; i--) {
+    //     console.log(i,selectedRole,"*****")
+    //     // if(i+1!=this.PreviousRoleVlaue){
+    //     this.ROLES[i].selected = !this.ROLES[selectedRole].selected;
+    //     this.ROLES[i].disabled = !this.ROLES[selectedRole].selected;
+    //     // }
+    //   }
+    //   if (this.ROLES[selectedRole].selected == false) {
+    //     this.newUserRoleValue = this.ROLES[selectedRole].value;
+    //   } 
+    //   else{
+    //     this.newUserRoleValue=1;
+    //   }
+    // }
+    // }
+    
+    // this.ROLES[selectedRole].selected = !this.ROLES[selectedRole].selected;
+    
 
 
 
     this.makeSelfFM = this.ROLES[3].disabled;
     this.makeSelfMM = this.ROLES[2].disabled;
     this.makeSelfRM = this.ROLES[1].disabled;
-
+    console.log(this.makeSelfFM,this.ROLES,selectedRole)
     // if (this.makeSelfFM) {
     //   // this.addUserForm.controls.fun_own.setValue('Self (' + this.newUserFirstName + ' ' + this.newUserLastName + ')');
     //   this.addUserForm.controls.fun_own.setValue(0);
@@ -347,7 +379,7 @@ export class ManageUserComponent implements OnInit {
     // }
     console.log(this.makeSelfRM, this.makeSelfMM, this.makeSelfFM)
 
-
+    // console.log(this.PreviousRoleVlaue,"-------------",this.newUserRoleValue,"=====",this.selectedRoleValue)
 
 
 
@@ -624,7 +656,7 @@ export class ManageUserComponent implements OnInit {
   }
   async openTransferEmp(){
     // await this.getEffectedEmpList(this.editManagerForm.controls.emp_id.value)
-
+    this.newUserRoleValue = this.changeRoleForm.controls.role_id.value;
     this.transferEmpForm.controls.emp_id.setValue(this.editManagerForm.controls.emp_id.value);
     this.transferEmpPopUp.open();
   }
@@ -642,8 +674,9 @@ export class ManageUserComponent implements OnInit {
     })
   }
   changeRole(){
-    this.changeRoleForm.controls.role_id.setValue(this.newUserRoleValue);
-    console.log("----------role---change",this.changeRoleForm.value)
+    this.changeRoleForm.controls.role_id.setValue(this.selectedRoleValue);
+    console.log(this.changeRoleForm.value)
+    console.log("----------role---change",this.changeRoleForm.value,this.addUserForm.controls.role)
 
     this.http.request('post', 'change-role/', '', this.changeRoleForm.value).subscribe(res => {
 
