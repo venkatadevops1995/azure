@@ -295,10 +295,10 @@ LOGGING = {
 }
 ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
-IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com','gd@invecas.com']
+IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com','gd@invecas.com']
 
 SENDEMAILTOALL=True
 CUSTOM_EMAILS = []
 
 MONTH_CYCLE_START_DATE = 26
-TODAY_AS_HISTORY = False
+TODAY_AS_HISTORY = True
