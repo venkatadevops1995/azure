@@ -301,4 +301,4 @@ SENDEMAILTOALL=False
 CUSTOM_EMAILS = ['mahab@atai.ai','sravan@atai.ai','moulali@atai.ai','rhitam@atai.ai']
 
 MONTH_CYCLE_START_DATE = 26
-TODAY_AS_HISTORY = False
+TODAY_AS_HISTORY = True
