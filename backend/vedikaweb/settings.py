@@ -7,8 +7,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 config = configparser.SafeConfigParser(allow_no_value=True, interpolation=None)
 
 
-# config.read('%s/configs/dev.config' % (PROJECT_DIR))
-config.read('%s/configs/dipak.config' % (PROJECT_DIR))
+config.read('%s/configs/dev.config' % (PROJECT_DIR))
 logFolder =  '%s/logs' % (PROJECT_DIR)
 if not os.path.exists(logFolder):
     os.makedirs(logFolder)
