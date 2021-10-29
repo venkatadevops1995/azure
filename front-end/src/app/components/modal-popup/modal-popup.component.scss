@@ -75,7 +75,9 @@
  :host .modal-content .middle {
      flex-grow: 1;
      background: var(--color-blue-bg);
-     overflow: auto;
+     overflow-x: hidden;
+     overflow-y: auto;
+     
      position: relative;
      // max-height: 500px;
  }

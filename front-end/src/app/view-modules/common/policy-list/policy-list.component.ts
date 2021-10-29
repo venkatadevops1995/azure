@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-policy-list',
@@ -17,12 +18,18 @@ export class PolicyListComponent implements OnInit {
   employeePopupColumns = ["sno", "policy_name", "updated_date", "company", "view", "edit", "delete"]
   EMPLOYEE_FILTERED_DATA = []
   deleteId = 0
+  bearToken: any;
+  filepathUrl: any;
+
+  // for styling
+  policy_style: boolean = true
   constructor( private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
     private router: Router,
     private activatedRoute:ActivatedRoute,
-    private renderer: Renderer2) { }
+    private renderer: Renderer2,
+    private user:UserService) { }
 
   ngOnInit(): void {
 
@@ -45,20 +52,10 @@ export class PolicyListComponent implements OnInit {
   openPolicyDetails(id){
     this.policyDetailModal.open()
 
-
-    this.http.request("GET","policy/upload/","policy_id="+id,"").subscribe(res=>{
-      if(res.status = 200){
-        console.log("-----------------------",res.body)
-        var file = new Blob([res["error"]["text"]], { type: 'application/pdf' });
-
-        this.fileResponse = URL.createObjectURL(file);
-
-        document.querySelector("iframe").src = this.fileResponse+"#toolbar=0";
-
-        console.log("--------------------------------",document.getElementsByClassName("toolbar")[0]);
-
-        console.log(res)
-      }})
+    this.bearToken = this.user.getToken();
+    this.filepathUrl =this.ss.baseUrl+ "policy/upload?policy_id="+id+"&btoken="+this.bearToken
+   
+  
      
 
   }

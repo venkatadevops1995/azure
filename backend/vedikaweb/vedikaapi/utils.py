@@ -74,12 +74,18 @@ class utils():
         payload_response['token'] = token
         return payload_response
 
-    def validateJWTToken(request):
+    def validateJWTToken(request,is_qp_accepted=False):
         
         payload_response={'emp_no':'','customer_email':'','role_id':''}
-        token = request.META['HTTP_AUTHORIZATION']
-        token = token.replace(settings.TOKEN_TYPE, '').strip()
+        if(is_qp_accepted):
+            token = request.query_params.get('btoken', None)
+        else:
+            token = request.META['HTTP_AUTHORIZATION']
+            token = token.replace(settings.TOKEN_TYPE, '').strip()
 
+        if(token == None):
+            return payload_response
+            
         decode_details = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
         if('email' in decode_details):
             payload_response['message'] = 'Token is valid'

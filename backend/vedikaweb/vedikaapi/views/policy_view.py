@@ -1,4 +1,5 @@
 from os import access
+import os
 
 from django.db.models.fields import BooleanField
 from django.http.request import QueryDict
@@ -76,6 +77,7 @@ class CreatePolicyView(APIView):
 
     def post(self,request,*args,**kwargs):
         policy_serial_data = PolicyDocumentCreateSerializer(data=request.data)
+        
         if policy_serial_data.is_valid():
             # policy_serial_data.save()
 
@@ -103,7 +105,6 @@ class CreatePolicyView(APIView):
             
 
             return Response(utils.StyleRes(True,"Policy created successfully", policy_serial_data.data), status=StatusCode.HTTP_CREATED)
-
         return Response(utils.StyleRes(False,"Policy creation error", str(policy_serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
 
     def put(self,request,pk,*args,**kwargs):
@@ -236,18 +237,19 @@ class EmployeePolicyView(APIView):
 
 
 class PolicyUpload(APIView):
-    
+    @jwttokenvalidator
     def get(self,request,*args,**kwargs):
-        auth_details = utils.validateJWTToken(request)
+        auth_details = utils.validateJWTToken(request,is_qp_accepted=True)
         if(auth_details['email']==""):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         is_admin = auth_details['is_emp_admin']
-        # if 'filename' in request.query_params:
         if 'policy_id' in request.query_params:
             # file_name = request.data['filename']
             # file_name = request.query_params['filename']
             policy_id = request.query_params['policy_id']
+            btoken = request.query_params['btoken']
+            
         # print(file_name)
         # Q(file_name=file_name)
 
@@ -264,30 +266,35 @@ class PolicyUpload(APIView):
         file_name = policy_data[0]['file_name']
         display_name = policy_data[0]['display_name']
         try: 
-            with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
-                data = f.read()
-            response = HttpResponse(data,content_type="application/pdf")    
-            response['Content-Disposition'] = 'attachment; filename=%s' % display_name # force browser to download file    response.write(data)
+            # with open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb') as f:
+            #     data = f.read()
+            # response = HttpResponse(data,content_type="application/pdf")    
+            # response['Content-Disposition'] = 'attachment; filename=%s' % display_name # force browser to download file    response.write(data)
             #     # response=utils.contentTypesResponce('pdf',policy_data[0]['display_name'],f)
             # response['response-type'] = 'blob'
             # response.write(data)
-            # response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name, 'rb'), content_type='application/pdf')
+           
+            file_path = os.path.join(settings.BASE_POLICIES_PATH,file_name)
+            response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
             # response = FileResponse(open(settings.UPLOAD_PATH+'/policy/'+file_name,'rb'),content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
             # response["Access-Control-Allow-Origin"] = "*"
             # response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
             # response["Access-Control-Max-Age"] = "1000"
             # response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+            
             return response
+           
         except Exception as e:
             print(e)
             return Response(utils.StyleRes(False,"Employee Policy file download", "file does not exist"), status=StatusCode.HTTP_NOT_FOUND)
+    @custom_exceptions
     def post(self,request,*args,**kwargs):
         file_name = request.data['file']
         uploadedfilename = str(file_name).split('.')[0]
         uploadedfileext=str(file_name).split('.')[-1]
         filename=uploadedfilename+"_"+utils.getUniqueId() + '.'+ uploadedfileext
-        utils.createDirIfNotExists(settings.UPLOAD_PATH+'/policy/')
-        with open(settings.UPLOAD_PATH+'/policy/'+filename, 'wb') as f:
+        utils.createDirIfNotExists(settings.BASE_POLICIES_PATH)
+        with open(os.path.join(settings.BASE_POLICIES_PATH,filename), 'wb') as f:
             f.write(file_name.read())
         dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return Response(utils.StyleRes(True,"Employee Policy file upload", {"displayname":str(file_name),"filename":filename}), status=StatusCode.HTTP_OK)
