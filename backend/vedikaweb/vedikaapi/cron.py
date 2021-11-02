@@ -792,7 +792,7 @@ def LeaveUpdateCron():
             leave_access_individual_list = list(map(lambda x:x.emp_id, leave_access_individual_obj))
         maternal_leave_emps_list = list(maternal_leave_obj)
         for employee in employees:
-            if((employee.functional_manager in leave_access_managers_list) or (employee.emp in leave_access_individual_list)):
+            if((employee.functional_manager in leave_access_managers_list) or (employee.emp.emp_id in leave_access_individual_list)):
                 emp_id = employee.emp
                 if(emp_id.emp_id not in maternal_leave_emps_list):
                     category = employee.category
