@@ -175,6 +175,8 @@ export class LeaveHistoryComponent implements OnInit{
       let ed_dt = new Date(dp["endDate"]._d + 1);
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+      params = params.append('export',true.toString());
+      url = 'monthlycycleleavereport'
     }
     if(!this.side){
       params = params.append('month',this.monthFrom.toString());
