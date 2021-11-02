@@ -441,14 +441,14 @@ class WSTDownload(APIView):
                 total_time_active = 0
                 # if(eachproj['visibilityFlag']):
                 for eachday in eachproj['work_hours']:
-                    if(eachday['date'] not in day_wise_dict):
-                        if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
-                            day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
-                        else:
-                            day_wise_dict[eachday['date']]=0
-                    else:
-                        if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
-                            day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
+                    # if(eachday['date'] not in day_wise_dict):
+                    #     if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
+                    #         day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
+                    #     else:
+                    #         day_wise_dict[eachday['date']]=0
+                    # else:
+                    #     if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
+                    #         day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
                     
                     if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
                         mins=(60*eachday['h'])+eachday['m']
@@ -471,14 +471,14 @@ class WSTDownload(APIView):
             for each_mis_or_vac_proj in DefaultProjects.mis_vac_projs():
                 total_time_mis_or_vac = 0
                 for eachday in each[each_mis_or_vac_proj]['work_hours']:
-                    if(eachday['date'] not in day_wise_dict):
-                        if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
-                            day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
-                        else:
-                            day_wise_dict[eachday['date']]=0
-                    else:
-                        if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
-                            day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
+                    # if(eachday['date'] not in day_wise_dict):
+                    #     if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
+                    #         day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
+                    #     else:
+                    #         day_wise_dict[eachday['date']]=0
+                    # else:
+                    #     if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
+                    #         day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
                     if(self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0):
                         mins=(60*eachday['h'])+eachday['m']
                         if(mins!=0):
@@ -493,11 +493,11 @@ class WSTDownload(APIView):
                     format_total_time_mis_or_vac = '{h:02d}:{m:02d}'.format(h=hrs_mis_or_vac,m=mins_mis_or_vac)
                     sheet2_data.append([each['staff_no'],each['emp_name'],each_mis_or_vac_proj,eh[0].manager.emp_name,format_total_time_mis_or_vac])
         
-            for k,v in day_wise_dict.items():
-                if(datetime.strptime(k,"%Y-%m-%d").weekday()<=4 and v==0):
-                    format_time='{:02d}:{:02d}'.format(*divmod(v,60))
-                    date_object = datetime.strptime(format_time, "%H:%M")
-                    data.append([k,each['staff_no'],each['emp_name'],"",manager_name,date_object])
+            # for k,v in day_wise_dict.items():
+            #     if(datetime.strptime(k,"%Y-%m-%d").weekday()<=4 and v==0):
+            #         format_time='{:02d}:{:02d}'.format(*divmod(v,60))
+            #         date_object = datetime.strptime(format_time, "%H:%M")
+            #         data.append([k,each['staff_no'],each['emp_name'],"",manager_name,date_object])
 
         if(len(att_access_grp_obj)>0 or len(att_access_grp_individual)>0):
             e.defineMultipleWorksheets(['Weekly Timesheet Report','WTR Summary','Attendance'],[data,sheet2_data,sheet3_data])
@@ -953,12 +953,21 @@ class ReportApi(APIView):
         sheet2_data=[sheet2_columns]
 
         for each in data_struct:
+            day_wise_dict = {}
             eh=EmployeeHierarchy.objects.filter(emp_id=each['emp_id'],priority=1,
             status=1)
             for eachproj in each['active_projects']:
                 total_time_active = 0
                 # if(eachproj['visibilityFlag']):
                 for eachday in eachproj['work_hours']:
+                    if(eachday['date'] not in day_wise_dict):
+                        if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
+                            day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
+                        else:
+                            day_wise_dict[eachday['date']]=0
+                    else:
+                        if((self.sum_of_work_hours(eachproj['work_hours'])>0)):
+                            day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
                     if(self.sum_of_work_hours(eachproj['work_hours'])>0):
                         mins=(60*eachday['h'])+eachday['m']
                         if(mins!=0):
@@ -974,11 +983,18 @@ class ReportApi(APIView):
                     format_total_time_active = '{h:02d}:{m:02d}'.format(h=hrs_active,m=mins_active)
                     sheet2_data.append([each['staff_no'],each['emp_name'],"Active Projects",eh[0].manager.emp_name,format_total_time_active])
             
-            
             for each_mis_or_vac_proj in DefaultProjects.mis_vac_projs():
                 total_time_mis_or_vac = 0
 
                 for eachday in each[each_mis_or_vac_proj]['work_hours']:
+                    if(eachday['date'] not in day_wise_dict):
+                        if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
+                            day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
+                        else:
+                            day_wise_dict[eachday['date']]=0
+                    else:
+                        if((self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0)):
+                            day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
                     if(self.sum_of_work_hours(each[each_mis_or_vac_proj]['work_hours'])>0):
                         mins=(60*eachday['h'])+eachday['m']
                         if(mins!=0):
@@ -992,11 +1008,31 @@ class ReportApi(APIView):
                     hrs_mis_or_vac,mins_mis_or_vac = divmod(total_time_mis_or_vac,60)
                     format_total_time_mis_or_vac = '{h:02d}:{m:02d}'.format(h=hrs_mis_or_vac,m=mins_mis_or_vac)
                     sheet2_data.append([each['staff_no'],each['emp_name'],each_mis_or_vac_proj,eh[0].manager.emp_name,format_total_time_mis_or_vac])
+            
+           
+
+            for eachday in each['HOLIDAY']['work_hours']:
+                if(eachday['date'] not in day_wise_dict):
+                    if((self.sum_of_work_hours(each['HOLIDAY']['work_hours'])>0)):
+                        day_wise_dict[eachday['date']]=(60*eachday['h'])+eachday['m']
+                    else:
+                        day_wise_dict[eachday['date']]=0
+                else:
+                    if((self.sum_of_work_hours(each['HOLIDAY']['work_hours'])>0)):
+                        day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
+
+            for k,v in day_wise_dict.items():
+                if(datetime.strptime(k,"%Y-%m-%d").weekday()<=4 and v==0):
+                    format_time='{:02d}:{:02d}'.format(*divmod(v,60))
+                    date_object = datetime.strptime('00:00', "%H:%M")
+                    data.append([k,each['staff_no'],each['emp_name'],"",eh[0].manager.emp_name,'00:00'])
         
+        sorted_data = sorted(data[1:], key=lambda x: x[0])
+        sorted_data.insert(0,data[0])
         basename=('')+name+"_TimeSheet_"+str(start_date)+"_"+str(last_date)+".xlsx"
         response=utils.contentTypesResponce('xl',basename)
         e=ExcelServices(response,in_memory=True,multisheetFlag=True)
-        e.defineMultipleWorksheets(['Timesheet Report'],[data],reportFlag=True)
+        e.defineMultipleWorksheets(['Timesheet Report'],[sorted_data],reportFlag=True)
         del e
         return response
         ################################
