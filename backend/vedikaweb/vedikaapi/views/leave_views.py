@@ -1369,7 +1369,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
             start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
         else:
             start_and_end_dates = start_date,end_date
-        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1])
+        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value])
         if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         leaves_ = leaves.annotate(
@@ -1387,7 +1387,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         keys_list = []
         for key, value in grouped_leaves:
             keys_list.append(key)
-        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1]).annotate(
+        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1],status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value]).annotate(
                 day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
                     When(leave__day_leave_type='FIRST_HALF', then=0.5),
                     When(leave__day_leave_type='SECOND_HALF', then=0.5),
