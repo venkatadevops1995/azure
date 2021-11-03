@@ -1457,8 +1457,10 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
                 for lr in output:
                     if(lr['leave_type_name']=='Paid'):
                         leave_type = 'General'
+                    else:
+                        leave_type = lr['leave_type_name']
                     excel_data.append([
-                        lr['emp_staff_no'],lr['emp_name'],lr['applied_on'],str(datetime.strftime(lr['startdate'],'%d-%m-%Y')),str(datetime.strftime(lr['enddate'],'%d-%m-%Y')),lr['day_count'],lr['leave_type'], statuses[lr['status']]
+                        lr['emp_staff_no'],lr['emp_name'],lr['applied_on'],str(datetime.strftime(lr['startdate'],'%d-%m-%Y')),str(datetime.strftime(lr['enddate'],'%d-%m-%Y')),lr['day_count'],leave_type, statuses[lr['status']]
                     ])
                     if(lr['emp_staff_no'] in leave_summary_dict):
                         leave_summary_dict[lr['emp_staff_no']]['leave_count'] +=  lr['day_count']
