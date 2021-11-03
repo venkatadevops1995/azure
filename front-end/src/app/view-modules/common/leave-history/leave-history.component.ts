@@ -92,8 +92,8 @@ export class LeaveHistoryComponent implements OnInit{
   })
   ngOnInit(): void {
     this.checkHrAccessForreports();
-    this.setPickerToLast30Days()
-    this.getEmployees()
+    this.setPickerToLast30Days();
+    this.getEmployees();
   }
   
   setPickerToLast30Days() {
