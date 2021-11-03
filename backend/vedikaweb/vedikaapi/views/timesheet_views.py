@@ -924,9 +924,10 @@ class ReportApi(APIView):
             emp = [int(emp_id)]
             name=Employee.objects.get(emp_id=emp_id).emp_name
         emp_data = []
+        from_,to_,last_ = utils.dataUnavailabledates()
         for each in emp:
             emp_projects = EmployeeProject.objects.filter(Q(emp_id = each))
-            wtr_data = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id__in = emp_projects) & Q(work_date__gte = start_date) & Q(work_date__lte = last_date) & Q(work_minutes__gt = 0) & Q(employee_project__emp__emp__priority = 1)).values().annotate(
+            wtr_data = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id__in = emp_projects) & Q(work_date__gte = start_date) & Q(work_date__lt = from_) & Q(work_minutes__gt = 0) & Q(employee_project__emp__emp__priority = 1)).values().annotate(
                     Date = F('work_date'),
                     staff_no = F('employee_project__emp__staff_no'),
                     Name = F('employee_project__emp__emp_name'),
@@ -1022,7 +1023,7 @@ class ReportApi(APIView):
                         day_wise_dict[eachday['date']]+=(60*eachday['h'])+eachday['m']
 
             for k,v in day_wise_dict.items():
-                if(datetime.strptime(k,"%Y-%m-%d").weekday()<=4 and v==0):
+                if(datetime.strptime(k,"%Y-%m-%d").weekday()<=4 and v==0 and datetime.strptime(k,"%Y-%m-%d").date()<from_):
                     format_time='{:02d}:{:02d}'.format(*divmod(v,60))
                     date_object = datetime.strptime('00:00', "%H:%M")
                     data.append([k,each['staff_no'],each['emp_name'],"",eh[0].manager.emp_name,'00:00'])

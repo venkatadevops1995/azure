@@ -582,16 +582,9 @@ class DataAvailability(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
-        today = today = datetime.now().date()
-        dayid,dayname=utils.findDay(datetime.now().date())
-        weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(1)))
-        if(dayid in [6,0,1]):
-            weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(2)))
-            msg = {'msg':'Data will not be available from {} to {}'.format(weekdatesList[-1]+timedelta(days=1),today)}
-        else:
-            msg = {'msg':'Data will not be available from {} to {}'.format(weekdatesList[-1]+timedelta(days=1),today)}
-        # print(weekdatesList[-1])
-        res ={'msg':msg,'availbledate':weekdatesList[-1]}
+        from_,to_,last_ = utils.dataUnavailabledates()
+        msg = {'msg':'Data will not be available from {} to {}'.format(from_,to_)}
+        res ={'msg':msg,'availbledate':last_}
         return Response(res)
 
 

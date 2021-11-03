@@ -478,3 +478,12 @@ class utils():
     is_valid_leave_date = lambda x,y:x<=y if settings.TODAY_AS_HISTORY else x<y
 
     default_date = lambda :datetime.now().strftime('%Y-%m-%dT%H:%M:%S') if settings.TODAY_AS_HISTORY else (datetime.now()-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')
+
+    def dataUnavailabledates():
+        today = today = datetime.now().date()
+        dayid,dayname=utils.findDay(datetime.now().date())
+        weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(1)))
+        if(dayid in [6,0,1]):
+            weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(2)))
+            return weekdatesList[-1]+timedelta(days=1),today,weekdatesList[-1]
+        return weekdatesList[-1]+timedelta(days=1),today,weekdatesList[-1]
