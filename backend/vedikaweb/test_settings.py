@@ -302,3 +302,5 @@ CUSTOM_EMAILS = ['mahab@atai.ai','sravan@atai.ai','moulali@atai.ai','rhitam@atai
 
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
+
+ADMINS_TO_ACCESS_REPORTS = ['1sabita.koganti@invecas.com', '1moulali@atai.ai']

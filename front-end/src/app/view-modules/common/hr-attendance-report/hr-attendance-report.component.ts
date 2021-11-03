@@ -52,6 +52,7 @@ export class HrAttendanceReportComponent implements OnInit {
   selectedEmpId: any;
   value:any;
   filteredManagers: Observable<any>;
+  isPageAccessable: Boolean=false;
   constructor(private http: HttpClientService,public datepipe: DatePipe,private user:UserService,private ss:SingletonService) { 
     
     this.filteredManagers = this.option.valueChanges
@@ -70,7 +71,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.pickerDirective.open(e);
   }
   ngOnInit(): void {
- 
+    this.checkHrAccessForreports();
       this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
       this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
       this.selected["startDate"] = this.ranges['Last 30 Days'][0];
@@ -79,6 +80,15 @@ export class HrAttendanceReportComponent implements OnInit {
       this.getAttendenceData(this.fromdate,this.todate,this.user.getEmpId());
       this.getReporters();
 
+  }
+  checkHrAccessForreports(){
+    
+    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+      if (res.status == 200) {
+        this.isPageAccessable=res.body;
+      }
+      
+    });
   }
   
   getAttendenceData(fromdate,todate,emp_id) {

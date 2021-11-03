@@ -688,3 +688,15 @@ class SendWelcomeEmails(APIView):
                 else:
                     log.error("WELCOME EMAIL NOT SENT TO {} BECAUSE CORRESPONDING MANAGER SHOULD NOT HAVE EMAIL ACCESS TO SEND".format(eachemp))
         return Response({})
+
+class MajorAdmins(APIView):
+    @jwttokenvalidator
+    @custom_exceptions
+    def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        email = str(auth_details['email'])
+        if(email in settings.ADMINS_TO_ACCESS_REPORTS):
+            return Response(True)
+        return Response(False)

@@ -58,6 +58,7 @@ export class LeaveHistoryComponent implements OnInit{
   showMessage = false;
   @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   @ViewChild(MatSort) sort1: MatSort;
+  isPageAccessable: Boolean=false;
   constructor(private ss: SingletonService,
     private http: HttpClientService,
     private datepipe: DatePipe,
@@ -90,6 +91,7 @@ export class LeaveHistoryComponent implements OnInit{
     employeeName: ['']
   })
   ngOnInit(): void {
+    this.checkHrAccessForreports();
     this.setPickerToLast30Days()
     this.getEmployees()
   }
@@ -299,6 +301,15 @@ export class LeaveHistoryComponent implements OnInit{
       }
     })
     }
+  }
+  checkHrAccessForreports(){
+    
+    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+      if (res.status == 200) {
+        this.isPageAccessable=res.body;
+      }
+      
+    });
   }
   convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');

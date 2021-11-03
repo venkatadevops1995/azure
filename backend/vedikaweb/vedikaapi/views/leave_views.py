@@ -1461,7 +1461,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
                         lr['emp_staff_no'],lr['emp_name'],lr['applied_on'],str(datetime.strftime(lr['startdate'],'%d-%m-%Y')),str(datetime.strftime(lr['enddate'],'%d-%m-%Y')),lr['day_count'],lr['leave_type'], statuses[lr['status']]
                     ])
                     if(lr['emp_staff_no'] in leave_summary_dict):
-                        leave_summary_dict[lr['emp_staff_no']]['leave_count'] +=  int(lr['day_count'])
+                        leave_summary_dict[lr['emp_staff_no']]['leave_count'] +=  lr['day_count']
                     else:
                         leave_summary_dict[lr['emp_staff_no']]={'emp_name':lr['emp_name'], 'leave_count':lr['day_count']}
                 for key,value in leave_summary_dict.items():

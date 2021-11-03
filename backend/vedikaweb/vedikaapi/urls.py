@@ -116,6 +116,7 @@ urlpatterns = [
     url(r'^holiday/',holiday_views.HolidayView.as_view(),name="Holiday"),
     url(r'^statuswisetimesheetcount/',timesheet_views.StatusWiseTimesheetCount.as_view(),name='StatusWiseTimesheetCount'),
     url(r'^employeeData/',employees_and_project_views.EmployeeDetails.as_view(),name='EmployeeDetails'),
+    url(r'^reportsAccessableAdmins/',common_views.MajorAdmins.as_view(),name='MajorAdmins'),
     path('policy/',include([ 
             path('',policy_view.CreatePolicyView.as_view(),name='CreatePolicyView'),
             path('<int:pk>/',policy_view.CreatePolicyView.as_view(),name='UpdatePolicyView'),
