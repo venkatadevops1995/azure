@@ -1372,6 +1372,8 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value],leave_request__emp__status=1)
         if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
+        else:
+            emp_name='ALL'
         leaves_ = leaves.annotate(
             emp_name = F('leave_request__emp__emp_name'),
         ).values('leave_request_id','emp_name','leave_on','day_leave_type','status')
@@ -1440,9 +1442,12 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
             return Response(utils.StyleRes(200,"success",output))
         else:
             excel_file = utils.contentTypesResponce('xl',emp_name+'_LeaveHistory_'+str(start_date)+"_"+str(end_date)+"_cycle.xlsx")
-            excel = ExcelServices(excel_file,in_memory=True,workSheetName='LeaveHistory')
+            excel = ExcelServices(excel_file,in_memory=True,multisheetFlag=True)
             columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']
             excel_data= [columns]
+            sheet2_columns = ['Staff No', 'Name', 'Total Leaves']
+            sheets2_data=[sheet2_columns]
+            leave_summary_dict={}
             
             if len(output) == 0:
                 return Response(utils.StyleRes(True,'No Leave Applications available for the filter criteria'),status=StatusCode.HTTP_NO_CONTENT)
@@ -1455,8 +1460,15 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
                     excel_data.append([
                         lr['emp_staff_no'],lr['emp_name'],lr['applied_on'],str(datetime.strftime(lr['startdate'],'%d-%m-%Y')),str(datetime.strftime(lr['enddate'],'%d-%m-%Y')),lr['day_count'],lr['leave_type'], statuses[lr['status']]
                     ])
+                    if(lr['emp_staff_no'] in leave_summary_dict):
+                        leave_summary_dict[lr['emp_staff_no']]['leave_count'] +=  int(lr['day_count'])
+                    else:
+                        leave_summary_dict[lr['emp_staff_no']]={'emp_name':lr['emp_name'], 'leave_count':lr['day_count']}
+                for key,value in leave_summary_dict.items():
+                    sheets2_data.append([key,value['emp_name'],value['leave_count']])
 
-                excel.writeExcel(excel_data,row_start=0)
-                excel.terminateExcelService()
+                excel.defineMultipleWorksheets(['Leave History','Leave Summary'],[excel_data,sheets2_data],leaveFlag=True)
+                # excel.writeExcel(excel_data,row_start=0)
+                # excel.terminateExcelService()
                 del excel
                 return excel_file
