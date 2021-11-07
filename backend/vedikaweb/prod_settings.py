@@ -303,4 +303,4 @@ CUSTOM_EMAILS = []
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
-ADMINS_TO_ACCESS_REPORTS = []
+ADMINS_TO_ACCESS_REPORTS = ['sabita.koganti@invecas.com', 'moulali@atai.ai']
