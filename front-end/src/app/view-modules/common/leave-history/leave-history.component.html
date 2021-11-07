@@ -1,4 +1,4 @@
-<ng-container *ngIf="isPageAccessable;else not_access">
+<ng-container>
 <div class="bg-box mt-20">
     <div class="flex between-xs">
         <h2 style="color: var(--color-primary);">Leave History </h2>
@@ -147,9 +147,10 @@
 <!-- <app-leave-details #showAppliedLeaveDialog type='team' [requestId]="leaveDetailsRequestId"></app-leave-details> -->
 </ng-container>
 
+
+
+
 <ng-template #not_access>
     <div>Sorry, You Don't have access to this page</div>
 </ng-template>
-
-
   
