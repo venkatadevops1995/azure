@@ -1,3 +1,4 @@
+<ng-container *ngIf="isPageAccessable;else not_access">
 <div style="display: grid;grid-template-columns:1fr 1fr 1fr;grid-gap:10px">
     <div>
         <mat-form-field class="w-100 mr-10">
@@ -96,3 +97,8 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>
+</ng-container>
+
+<ng-template #not_access>
+    <div>Sorry, You Don't have access to this page</div>
+</ng-template>

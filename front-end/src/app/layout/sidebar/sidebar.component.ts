@@ -43,6 +43,7 @@ export class SidebarComponent implements OnInit {
   rejectedCount: number;
   panelOpenState: boolean = false;
   toggle:boolean[];
+  isReportsAccessable: Boolean=false;
   constructor(
     private ss: SingletonService,
     private user: UserService,
@@ -56,6 +57,7 @@ export class SidebarComponent implements OnInit {
     if (this.ss.loggedIn) {
       this.getInitData();
     }
+    this.checkHrAccessForreports();
     this.checkForRejectedTimesheet()
     // if not logged in subscribe so that on login we fetch the menu based on role
     this.ss.loggedIn$.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe(val => {
@@ -111,6 +113,16 @@ export class SidebarComponent implements OnInit {
     })
   }
 
+  checkHrAccessForreports(){
+    
+    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+      if (res.status == 200) {
+        
+        this.isReportsAccessable = res.body;
+      }
+    })
+  }
+
   ngOnDestroy() {
     this.destroy$.next()
   }
@@ -141,9 +153,8 @@ export class SidebarComponent implements OnInit {
           } if(!is_hr && this.user.getDataFromToken('role_id')==1){
             this.menu = this.menu.filter(item => item.text != "Employee Management" ); 
           }
-         if(!is_hr){
+         if(!is_hr || !this.isReportsAccessable){
             this.menu = this.menu.filter(item => item.text != "HR Reports" ); 
-            
           }
 
           // if(!is_hr){ 

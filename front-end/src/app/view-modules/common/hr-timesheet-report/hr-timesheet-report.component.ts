@@ -6,6 +6,7 @@ import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { HttpClientService } from 'src/app/services/http-client.service';
+import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -20,7 +21,9 @@ export class HrTimesheetReportComponent implements OnInit {
   date4;
   EMPS: any[];
   option = new FormControl('');
-  filteredManagers: Observable<any>;;
+  filteredManagers: Observable<any>;
+  isPageAccessable: Boolean=false;
+;
   @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ranges: any = {
@@ -39,7 +42,7 @@ export class HrTimesheetReportComponent implements OnInit {
   availableDate: any;
   selectedEmpId: any;
   value: any;
-  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService) {
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService,private ss:SingletonService) {
     this.filteredManagers = this.option.valueChanges
     .pipe(
       startWith(''),
@@ -57,7 +60,7 @@ export class HrTimesheetReportComponent implements OnInit {
     this.pickerDirective.open(e);
   }
   ngOnInit(): void {
-
+    this.checkHrAccessForreports();
     this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
     this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
     this.selected["startDate"] = this.ranges['Last 30 Days'][0];
@@ -68,7 +71,15 @@ export class HrTimesheetReportComponent implements OnInit {
     this.getStatus();
 
   }
-
+  checkHrAccessForreports(){
+    
+    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+      if (res.status == 200) {
+        this.isPageAccessable=res.body;
+      }
+      
+    });
+  }
 //  getAttendenceData(fromdate, todate, emp_id) {
 //   if (emp_id === 'all') {
 //      this.http.request("get", 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&all_emp=true').subscribe(res => {
