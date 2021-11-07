@@ -1445,7 +1445,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
             excel = ExcelServices(excel_file,in_memory=True,multisheetFlag=True)
             columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']
             excel_data= [columns]
-            sheet2_columns = ['Staff No', 'Name', 'Total Leavels']
+            sheet2_columns = ['Staff No', 'Name', 'Total Leaves']
             sheets2_data=[sheet2_columns]
             leave_summary_dict={}
             
