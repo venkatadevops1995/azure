@@ -103,7 +103,7 @@ def employee_time_entry_complaince(prev_week=1):
     for i,eachdata in enumerate(entry_complaince_data):
         vac_hol_list=[]
         l_ = Leave.objects.filter(leave_request__emp_id=eachdata['emp'],leave_on__in=eachdata['weekdatesList'],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value])
-        if(len(l_)==5):
+        if(len(l_)>=5):
             log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION".format(eachdata['emp']))
             complaince_cnt=complaince_cnt-1
         else:
@@ -114,7 +114,7 @@ def employee_time_entry_complaince(prev_week=1):
                 for eachdate in eachdata['weekdatesList']:
                     if((eachdate==each_holiday) and (eachdate not in vac_hol_list)):
                         vac_hol_list.append(eachdate)
-            if(len(vac_hol_list)==5):
+            if(len(vac_hol_list)>=5):
                 log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION/HOLIDAY".format(eachdata['emp']))
                 complaince_cnt=complaince_cnt-1
             else:
