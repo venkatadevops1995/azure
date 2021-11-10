@@ -7,7 +7,7 @@ import os
 import json
 from django.db.models import Sum
 # Modles
-from .models import Employee,EmployeeProject,EmployeeWeeklyStatusTracker,EmployeeProjectTimeTracker,Project,Role,EmployeeWorkApproveStatus,MisInfo, StageEmployeeProject, EmailQueue,Leave
+from .models import Employee,EmployeeProject,EmployeeWeeklyStatusTracker,EmployeeProjectTimeTracker,Project,Role,EmployeeWorkApproveStatus,MisInfo, StageEmployeeProject, EmailQueue,Leave, LocationHolidayCalendar
 from .models import EmployeeHierarchy,EmployeeEntryCompStatus,EmployeeApprovalCompStatus,AttendanceAccessGroup,EmailAccessGroup,GlobalAccessFlag, ManagerWorkHistory, LeaveRequest, LeaveConfig, LeaveBalance
 
 # Serialisers
@@ -37,7 +37,7 @@ def sentWelcomeEmail():
     log.info("Welcome email corn job.")
 
 def employee_time_entry_complaince(prev_week=1):
-    dayid,dayname=utils.findDay(datetime.now().date()) 
+    dayid,dayname=utils.findDay(datetime.now().date())
     if(dayid not in [2,6]):
         log.error("ENTRY COMPLAINCE CRONTAB RUNS ONLY ON SUNDAY AND WEDNESDAY")
         return
@@ -95,13 +95,35 @@ def employee_time_entry_complaince(prev_week=1):
                     log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
 
             work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'year':year,'status':WorkApprovalStatuses.EntryComplaince.value})
-            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':year,'cnt':1})
+            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':year,'cnt':1,'weekdatesList':weekdatesList})
             complaince_cnt=complaince_cnt+1
         i=i+1
-    
-    work_approval_serializer=EmployeeWorkApproveStatusPostSerializer(data=work_approval_data,many=True)
+    final_nc_list = []
+    final_work_approval_data = []
+    for i,eachdata in enumerate(entry_complaince_data):
+        vac_hol_list=[]
+        l_ = Leave.objects.filter(leave_request__emp_id=eachdata['emp'],leave_on__in=eachdata['weekdatesList'],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value])
+        if(len(l_)>=5):
+            log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION".format(eachdata['emp']))
+            complaince_cnt=complaince_cnt-1
+        else:
+            vac_hol_list = list(map(lambda x:x.leave_on.date(),l_))
+            holiday_obj = LocationHolidayCalendar.objects.getdetailedHolidayList(emp_id=eachdata['emp'])
+            holiday_list = list(map(lambda x:x.holiday_date,holiday_obj))
+            for each_holiday in holiday_list:
+                for eachdate in eachdata['weekdatesList']:
+                    if((eachdate==each_holiday) and (eachdate not in vac_hol_list)):
+                        vac_hol_list.append(eachdate)
+            if(len(vac_hol_list)>=5):
+                log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION/HOLIDAY".format(eachdata['emp']))
+                complaince_cnt=complaince_cnt-1
+            else:
+                final_nc_list.append(eachdata)
+                final_work_approval_data.append(work_approval_data[i])
+
+    work_approval_serializer=EmployeeWorkApproveStatusPostSerializer(data=final_work_approval_data,many=True)
     if(work_approval_serializer.is_valid()):
-        entry_comp_ser=EmployeeEntryCompStatusPostSerializer(data=entry_complaince_data,many=True)
+        entry_comp_ser=EmployeeEntryCompStatusPostSerializer(data=final_nc_list,many=True)
         if(entry_comp_ser.is_valid()):
             work_approval_serializer.save()
             entry_comp_ser.save()
