@@ -1,0 +1,10 @@
+<div class="mis__wrapper">
+    <h2 class="heading">Download Employee Details</h2>
+    <div class="dowload__btn__wrapper" >
+        <div class=" download__btn flex p-5 center-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">
+            <app-button>
+                Download MIS <span [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:15}" style="color:'#ffffff';" svg-fill="currentColor" class="ml-5 mt-3"></span>
+            </app-button>
+        </div>
+    </div>
+</div>

@@ -125,4 +125,7 @@ urlpatterns = [
             path('emp-policy/<int:policy_id>/', policy_view.EmployeePolicyView.as_view(),name='EmployeePolicyUpdateView'),
             path('upload/',policy_view.PolicyUpload.as_view(),name='PolicyUpload'),
     ])),
+    url(r'^projects-active-inactive/$', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='projects-active-inactive'),
+    url(r'^save-project/', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='save-project'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

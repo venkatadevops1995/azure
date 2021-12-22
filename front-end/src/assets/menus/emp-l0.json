@@ -85,7 +85,22 @@
             }
 
         ]
+    },
+    {
+        "text": "MIS",
+        "link": "",
+        "submenu": [
+            {
+                "text": "Add Project",
+                "link": "mis-add-project"
+            },
+            {
+                "text": "Download MIS",
+                "link": "mis-download"
+            }
+
+        ]
     }
     
-
+    
 ]

@@ -37,6 +37,8 @@ import { ConfirmDialogModule } from './components/confirm-dialog/confirm-dialog.
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HeaderSearchModule } from './components/header-search/header-search.module';
+import { AddProjectComponent } from './view-modules/common/add-project/add-project.component';
+import { DownloadMisComponent } from './view-modules/common/download-mis/download-mis.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { HeaderSearchModule } from './components/header-search/header-search.mod
     SidebarComponent,
     FooterComponent ,
     ProgressBarComponent,
-    ConfigGridComponent
+    ConfigGridComponent,
+    AddProjectComponent,
+    DownloadMisComponent
   ],
   imports: [
     BrowserModule,  

@@ -868,3 +868,40 @@ class EmployeeDetails(APIView):
         response[0]['day_leave_type']=day_leave_type
         response[0]['multi_leave']=multi_leave
         return Response(response,status=200)
+
+class AllActiveInActiveProjects(APIView):
+    # get api for getting all active and inactive projects
+    @jwttokenvalidator
+    @custom_exceptions
+    def get(self,request):
+        project_serialized_data = ProjectSerializer(Project.objects.filter(), many=True)
+        return Response(utils.StyleRes(True,"All project list",project_serialized_data.data), status=StatusCode.HTTP_OK)
+
+    # post api for saving new projects
+    @jwttokenvalidator
+    @custom_exceptions
+    # @is_manager
+    def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        emp_id=auth_details['emp_id']
+        is_hr = auth_details['is_emp_admin']
+        if(is_hr):
+            exitingProject = Project.objects.filter(name = request.data['name']).exists()
+            if (exitingProject):
+                return Response(utils.StyleRes(False,settings.VALID_ERROR_MESSAGES['project_exitst'],{}), status=StatusCode.HTTP_BAD_REQUEST)
+            else :
+                validated_data = ProjectSerializer(data=request.data)
+                if(validated_data.is_valid()):
+                    proj = Project(name = validated_data['name'].value)
+                    proj.save()
+                    return Response(utils.StyleRes(True,"New project saved",[]), status=StatusCode.HTTP_CREATED)
+                else:
+                    return Response(utils.StyleRes(False,validated_data.errors,{}), status = StatusCode.HTTP_NOT_ACCEPTABLE)
+        else:
+            return Response(utils.StyleRes(False,'Unautherized User',{}), status = StatusCode.HTTP_UNAUTHORIZED)
+
+
+
+  

@@ -1,0 +1,22 @@
+<div style="margin-top: 100px;">
+    <h2 class="heading mt-40" style="margin-left: 25%; margin-bottom: 40px;">Add Project</h2>
+    <div class="flex" style="justify-content:center;align-items: center;">
+
+        <div class="flex w-50">
+            <mat-form-field class="w-50 mr-10">
+                <input matInput placeholder="Add Project" aria-label="Leader" [matAutocomplete]="auto"  [formControl]="projectInputField" >
+                <button style="background: none;border:none;" mat-button type='button' matSuffix mat-icon-button aria-label="Clear"(click)="clear()">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                  </button>
+                <mat-autocomplete #auto="matAutocomplete" class="single-autocomplete" (optionSelected)='optionSelectChange($event.option.value)'>
+                    <mat-option *ngFor="let project of filterAllActiveInactiveProject" [value]="project.name">
+                        {{project.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="flex end-xs middle-xs" style="margin-top: -25px;">
+                <app-button [disabled]="isDisabledSave" (click)=saveProject() >Save
+                </app-button>
+            </div>
+    </div>
+</div>

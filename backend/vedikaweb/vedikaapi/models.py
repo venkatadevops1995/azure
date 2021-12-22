@@ -255,10 +255,10 @@ class EmployeeWeeklyStatusTracker(ExportModelOperationsMixin('employee_weekly_st
 ## PROJECT MODEL ##
 class Project(ExportModelOperationsMixin('project'), models.Model):
     name = models.CharField(max_length=255)
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, blank=True)
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
-    status = models.IntegerField()
+    status = models.IntegerField(default=1)
 
     class Meta:
         managed = False

@@ -67,7 +67,7 @@
         </div>
         <ng-container *ngFor="let day of config?.HOLIDAY?.work_hours;let i=index;">
             <div *ngIf="day?.date != 'Total'">
-                <app-time-field [index]="i" [formControl]="fgTimeFields['controls']['HOLIDAY']['controls'][i]" [editable]="!disable" [disabled]="!day?.enable"></app-time-field>
+                <app-time-field [index]="i" [formControl]="fgTimeFields['controls']['HOLIDAY']['controls'][i]" [editable]="true" [disabled]="false"></app-time-field>
             </div>
             <div *ngIf="day?.date == 'Total'">{{day.h | number:'2.'}} : {{day.m | number:'2.'}}</div>
         </ng-container>

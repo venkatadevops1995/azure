@@ -78,7 +78,7 @@ export class SidebarComponent implements OnInit {
           }
           if (item.link == 'leave-policy-config') {
             if (is_hr ) {
-              leave_config_index =index
+              leave_config_index =index;
             }
           }
         })
@@ -149,12 +149,13 @@ export class SidebarComponent implements OnInit {
           
           let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
           if (res.body.attendance_flag == false) {
-            this.menu = this.menu.filter(item => item.link != "attendance");      
+            this.menu = this.menu.filter(item => item.link != "attendance"); 
           } if(!is_hr && this.user.getDataFromToken('role_id')==1){
             this.menu = this.menu.filter(item => item.text != "Employee Management" ); 
           }
          if(!is_hr || !this.isReportsAccessable){
-            this.menu = this.menu.filter(item => item.text != "HR Reports" ); 
+            this.menu = this.menu.filter(item => item.text != "HR Reports" );
+            this.menu = this.menu.filter(item => item.text != "MIS" );
           }
 
           // if(!is_hr){ 
