@@ -86,7 +86,6 @@ export class EditUserComponent implements OnInit {
     'gender' : ['',Validators.required],
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
-    'status' : [''],
   })
   getCategories() {
     let category = []
@@ -208,7 +207,6 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
-    this.editUserForm.controls.status.setValue('0');
     console.log(this.editUserForm);
     this.disableEmp();
   }
