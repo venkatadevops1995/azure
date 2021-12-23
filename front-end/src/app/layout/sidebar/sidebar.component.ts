@@ -145,7 +145,7 @@ export class SidebarComponent implements OnInit {
             if (leave_res.status == 200) {
           console.log(res.body.attendance_flag == false, res.body.attendance_flag)
           this.ss.attendanceFlag = res.body.attendance_flag;
-          console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
+          // console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
           
           let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
           if (res.body.attendance_flag == false) {
