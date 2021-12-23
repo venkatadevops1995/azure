@@ -48,7 +48,7 @@ const routes: Routes = [
   {path:"hr-attendance-reports",component:HrAttendanceReportComponent},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent},
   {path:"mis-add-project",component:AddProjectComponent},
-  {path:"download-mis", component:DownloadMisComponent}
+  {path:"mis-download", component:DownloadMisComponent}
 ];
 
 @NgModule({
