@@ -32,10 +32,13 @@ export interface UserData {
 })
 export class EditUserComponent implements OnInit {
 
-
+  @ViewChild('refModalDisable') modalDisable: ModalPopupComponent
+  @ViewChild('refModalDisableError') modalDisableError: ModalPopupComponent
+  @ViewChild('refModalDisableSuccess') modalDisableSuccess: ModalPopupComponent
+  
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -50,11 +53,13 @@ export class EditUserComponent implements OnInit {
     }
   USERS_DATA: UserData[] = [];
   ALL_CATEGORIES = [];
+  id : number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
   ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
   show_message = false;
   filteredManagers: Observable<any>;
+  errorMessage : string = "";
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -185,5 +190,61 @@ export class EditUserComponent implements OnInit {
     })
 
   }
+  // diable user 
 
+  disableUser(i){
+    console.log(i);
+    let payload = {
+      emp_id : this.USERS_DATA[i]["emp_id"]
+    }
+    this.  getCompanies() 
+    this.getCategories()
+    
+    this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
+    this.editUserForm.controls.emp_name.setValue(this.USERS_DATA[i]["emp_name"]);
+    this.editUserForm.controls.staff_no.setValue(this.USERS_DATA[i]["staff_no"]);
+    this.editUserForm.controls.company.setValue(this.USERS_DATA[i]["company"]);
+    this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
+    this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
+    this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
+    console.log(this.editUserForm);
+    this.disableEmp();
+  }
+  disableEmp() {
+    this.editUserForm.value['disable'] = true
+
+    this.http.request("put", "users/",'', this.editUserForm.value).subscribe(res => {
+      if (res.status == 400) {
+          this.errorMessage = res.error.message + ". First update employee's manager";
+        this.modalDisableError.open()
+        return;
+      }
+      if (res.body["success"] == true) {
+  
+          console.log("-------------------------")
+          this.modalDisableSuccess.open()
+          this.close()
+          this.getAllReportes()
+          this
+      } else {
+        alert(res.body.message)
+
+        this.errorMessage = res.body.message;
+        this.modalDisableError.open()
+        return;
+        
+      }
+    })
+  }
+  setId(id : number) {
+    this.id = id;
+    
+  }
+
+   proeceedDisable(i) {
+     this.modalDisable.close();
+     if (this.id != -1) {
+       this.disableUser(this.id);
+     }
+  }
 }

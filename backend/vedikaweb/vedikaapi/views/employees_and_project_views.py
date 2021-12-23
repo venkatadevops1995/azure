@@ -117,11 +117,22 @@ class Users(APIView):
     
     @jwttokenvalidator
     @custom_exceptions
+    @is_manager
     def put(self,request,*args,**kargs):
-        # print(request.data)
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
-            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
+            emp_id = serial_data.validated_data['emp_id'].emp_id
+            if 'disable' in serial_data.validated_data:
+                role_id = Employee.objects.only('role_id').get(emp_id = emp_id).role_id
+                if (role_id > 1): 
+                    manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                    if (manager_id['cnt'] > 0):
+                        return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                else:
+                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0)
+                    return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+            else:
+                EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
         else:
             return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
 

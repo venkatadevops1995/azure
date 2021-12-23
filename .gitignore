@@ -72,6 +72,8 @@ backend/vedikaweb/configs/moulali.config
 .dccache
 backend/MIS-files/
 backend/EMP-files/
+backend/package-lock.json
+front-end/package-lock.json
  
 /front-end/package-lock.json
 
