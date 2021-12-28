@@ -405,7 +405,7 @@
 </app-modal-popup>
 
 
-<app-modal-popup #editManagerDialog [w]="'350px'" [h]="is_emp_admin?'565px':'480px'">
+<app-modal-popup #editManagerDialog [w]="'350px'" [h]="is_emp_admin || user_role_id === 4 ?'565px':'480px'">
     <div head>
         Transfer
     </div>

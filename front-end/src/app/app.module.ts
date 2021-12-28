@@ -38,7 +38,6 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HeaderSearchModule } from './components/header-search/header-search.module';
 import { AddProjectComponent } from './view-modules/common/add-project/add-project.component';
-import { DownloadMisComponent } from './view-modules/common/download-mis/download-mis.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +51,6 @@ import { DownloadMisComponent } from './view-modules/common/download-mis/downloa
     ProgressBarComponent,
     ConfigGridComponent,
     AddProjectComponent,
-    DownloadMisComponent
   ],
   imports: [
     BrowserModule,  

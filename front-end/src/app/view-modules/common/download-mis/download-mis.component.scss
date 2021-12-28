@@ -1,11 +1,39 @@
 .mis__wrapper{
-    text-align: center;
-    margin-top: 100px;
-
+    h2.heading{
+        // text-align: center;
+    }
+    .mis__body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 100px;
+        .mis__checkbox{
+            margin: 40px;
+        }
+        .mis__datepicker{
+            margin: 40px;
+            max-width: 300px;
+            .datepicker__input{
+                border: none !important;
+                background: none !important;
+                color: #3a7bca !important;
+            }
+        }
+    }
     .dowload__btn__wrapper{
         display: flex;
         justify-content: center;
         align-items: center;
         margin-top: 40px;
     }
+}
+
+.disable{
+    background-color: rgb(184, 180, 180);
+}
+// .disable--input,.disable--icon{
+//     color: red !important;
+// }
+.calender-icon{
+    color: #3a7bca;
 }

@@ -10,7 +10,7 @@ import { NotNull, NoDate } from '../manage-user.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -41,6 +41,7 @@ export class EditUserComponent implements OnInit {
   displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
+    private datepipe : DatePipe,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
@@ -51,6 +52,10 @@ export class EditUserComponent implements OnInit {
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
     }
+    deleteUserForm = this.fb.group({
+      'dol': ['', [Validators.required, NoDate()]],
+    })
+  
   USERS_DATA: UserData[] = [];
   ALL_CATEGORIES = [];
   id : number = -1;
@@ -60,6 +65,7 @@ export class EditUserComponent implements OnInit {
   show_message = false;
   filteredManagers: Observable<any>;
   errorMessage : string = "";
+  disableEmpName: string = '';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -181,7 +187,6 @@ export class EditUserComponent implements OnInit {
     this.http.request("put", "users/",'', this.editUserForm.value).subscribe(res => {
 
       if (res.body["success"] == true) {
-  
           console.log("-------------------------")
           this.close()
           this.getAllReportes()
@@ -194,26 +199,17 @@ export class EditUserComponent implements OnInit {
 
   disableUser(i){
     console.log(i);
-    let payload = {
-      emp_id : this.USERS_DATA[i]["emp_id"]
-    }
     this.  getCompanies() 
-    this.getCategories()
-    
+    this.getCategories();
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
-    this.editUserForm.controls.emp_name.setValue(this.USERS_DATA[i]["emp_name"]);
-    this.editUserForm.controls.staff_no.setValue(this.USERS_DATA[i]["staff_no"]);
-    this.editUserForm.controls.company.setValue(this.USERS_DATA[i]["company"]);
-    this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
-    this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
-    this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
-    console.log(this.editUserForm);
     this.disableEmp();
   }
   disableEmp() {
-    this.editUserForm.value['disable'] = true
-
-    this.http.request("put", "users/",'', this.editUserForm.value).subscribe(res => {
+    let  obj = {
+      emp_id : this.editUserForm.value.emp_id,
+      relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
+    }
+    this.http.request("put", "delete/",'', obj).subscribe(res => {
       if (res.status == 400) {
           this.errorMessage = res.error.message + ". First update employee's manager";
         this.modalDisableError.open()
@@ -238,13 +234,18 @@ export class EditUserComponent implements OnInit {
   }
   setId(id : number) {
     this.id = id;
-    
+    this.disableEmpName = this.USERS_DATA[0]["emp_name"]    
   }
 
    proeceedDisable(i) {
+    
      this.modalDisable.close();
      if (this.id != -1) {
        this.disableUser(this.id);
      }
+  }
+  open(e){
+    console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
+    e.click()
   }
 }

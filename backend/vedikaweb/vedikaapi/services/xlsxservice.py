@@ -2,6 +2,8 @@ import xlsxwriter
 from django.http import HttpResponse
 
 header_format = {'font_size': 10,'bold':True,'font_name':'Arial','align':'center','bg_color':'#4FA67B','border':1}
+disable_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'center','bg_color':'red','border':1}
+
 cell_format = {'font_size': 10,'font_name':'Arial','align':'center'}
 merge_format = {
     'bold': 1,
@@ -11,9 +13,10 @@ merge_format = {
     'fg_color': 'yellow'}
 cust_cell_special_format = {'fg_color':'gray','border':1,'text_wrap':True}
 
+# here is one extra column for checking status = 0 or one at last 
 class ExcelServices:
     def __init__(self,filename,workSheetName='MainWorksheet',in_memory=False,header_format=header_format,cell_format=cell_format,merge_rane=None
-                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False):
+                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format):
         self.filenameWithExt = filename
         if in_memory:
             self.workbook = xlsxwriter.Workbook(self.filenameWithExt, {'in_memory': True})
@@ -22,6 +25,7 @@ class ExcelServices:
             self.workbook = xlsxwriter.Workbook(self.filenameWithExt)
         
         self.header_format=self.workbook.add_format(header_format)
+        self.disable_format=self.workbook.add_format(disable_format)
         self.cell_format=self.workbook.add_format(cell_format)
         self.cust_cell_special_format=self.workbook.add_format(cust_cell_special_format)
         self.merge_format=self.workbook.add_format(merge_format)
@@ -67,29 +71,34 @@ class ExcelServices:
             row_nums=row_num+row_start
             col=col_start
             for each in range(0,len(regra)):
-                if(row_nums==row_start):
-                    worksheet.write(row_nums,col,regra[each],self.header_format)
+                if(regra[len(regra) - 1] == 0 and regra[each] != "Isdisable"):
+                    if (each != len(regra) - 1):
+                        worksheet.write(row_nums,col,regra[each],self.disable_format)
+                elif(row_nums==row_start):
+                    if(regra[each] != "Isdisable"):
+                        worksheet.write(row_nums,col,regra[each],self.header_format)
                 else:
-                    if(len(colListForCellFormat)>0):
-                        if col in colListForCellFormat:
+                    if (each != len(regra) - 1):
+                        if(len(colListForCellFormat)>0):
+                            if col in colListForCellFormat:
 
-                            worksheet.write(row_nums, col , regra[each],self.cust_cell_special_format)
-                        else:
-                            worksheet.write(row_nums, col , regra[each],self.cell_format)
+                                worksheet.write(row_nums, col , regra[each],self.cust_cell_special_format)
+                            else:
+                                worksheet.write(row_nums, col , regra[each],self.cell_format)
 
-                    elif(len(datetimeColList)>0):
-                        if col in datetimeColList:
-                            worksheet.write_datetime(row_nums, col , regra[each],customFormat)
-                        else:
+                        elif(len(datetimeColList)>0):
+                            if col in datetimeColList:
+                                worksheet.write_datetime(row_nums, col , regra[each],customFormat)
+                            else:
+                                worksheet.write(row_nums, col , regra[each],self.cell_format)
+                        elif(len(formulaColms)>0):
+                            
+                            if col in formulaColms:
+                                worksheet.write_formula(row_nums, col , "=SUMIFS('Weekly Timesheet Report'!F:F,'Weekly Timesheet Report'!D:D,\""+regra[2]+"\",'Weekly Timesheet Report'!C:C,\""+regra[1]+"\")",self.workbook.add_format({'num_format':'[HH]:MM'}))
+                            else:
+                                worksheet.write(row_nums, col , regra[each],self.cell_format)
+                        else:        
                             worksheet.write(row_nums, col , regra[each],self.cell_format)
-                    elif(len(formulaColms)>0):
-                        
-                        if col in formulaColms:
-                            worksheet.write_formula(row_nums, col , "=SUMIFS('Weekly Timesheet Report'!F:F,'Weekly Timesheet Report'!D:D,\""+regra[2]+"\",'Weekly Timesheet Report'!C:C,\""+regra[1]+"\")",self.workbook.add_format({'num_format':'[HH]:MM'}))
-                        else:
-                            worksheet.write(row_nums, col , regra[each],self.cell_format)
-                    else:        
-                        worksheet.write(row_nums, col , regra[each],self.cell_format)
                 col=col+1
         if(closeFlag):
             self.workbook.close()

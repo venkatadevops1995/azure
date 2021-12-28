@@ -20,6 +20,10 @@ class EmployeeQuerySet(models.QuerySet):
         qs=self.prefetch_related('employeeproject_set','emp').filter(
             Q(status=1) )
         return qs
+    def allenabledisableemployee(self):
+        qs=self.prefetch_related('employeeproject_set','emp').filter(
+            Q(status=1) | ~Q(relieved = None))
+        return qs
     def allprojects(self):
         qs=self.prefetch_related(Prefetch('employeeproject_set', queryset=EmployeeProject.objects.filter(status=1)),Prefetch('empl',queryset=StageEmployeeProject.objects.filter(status=1) )).filter(Q(status=1))
         return qs
@@ -46,6 +50,7 @@ class Employee(ExportModelOperationsMixin('employee'), models.Model):
     role = models.ForeignKey('Role', models.DO_NOTHING)
     added_by = models.CharField(max_length=10, default='mis')
     status = models.IntegerField()
+    relieved = models.DateField(blank=True, null=True)
 
     objects = EmployeeManager()
     class Meta:

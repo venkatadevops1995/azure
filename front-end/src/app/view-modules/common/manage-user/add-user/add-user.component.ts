@@ -365,7 +365,9 @@ export class AddUserComponent implements OnInit {
         this.newUserFirstName = '';
         this.newUserLastName = '';
         this.newUserRoleValue = 1;
-
+        for (let i = 1; i < this.ROLES.length; i++) {
+          this.ROLES[i].selected = false
+        }
         this.getAllReportes();
         this.addUserForm.reset({ 'role': 1 });
       } else if (res.error) {

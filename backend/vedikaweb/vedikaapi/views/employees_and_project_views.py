@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from vedikaweb.vedikaapi.models import Employee,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup
 
-from vedikaweb.vedikaapi.serializers import  EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
+from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
 
 from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
@@ -44,6 +44,31 @@ class EmpProjects(APIView):
         for eachobj in empproj_obj:
             emp_projs.append({'id':eachobj.project.id,'name':eachobj.project.name,'priority':eachobj.priority})
         return Response(utils.StyleRes(True,'successfully retrived projects',emp_projs))
+
+class Usersdelete(APIView):
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_manager
+    def put(self,request,*args,**kargs):
+        serial_data = EmployeeDisableSerializer(data=request.data)
+        if(serial_data.is_valid()):
+            emp_id = serial_data.validated_data['emp_id'].emp_id
+            relieved = serial_data.validated_data['relieved']
+            role_id = Employee.objects.only('role_id').get(emp_id = emp_id).role_id
+            if (role_id > 1): 
+                manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                if (manager_id['cnt'] > 0):
+                    return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                else:
+                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+  
+            else:
+                obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+        else:
+            return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+
 
 
 class Users(APIView):

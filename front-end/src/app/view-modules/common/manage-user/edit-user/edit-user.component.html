@@ -235,13 +235,29 @@
 
     </div>
 </app-modal-popup>
-<app-modal-popup [w]="500" [h]="250" #refModalDisable>
+<app-modal-popup [w]="500" [h]="500" #refModalDisable>
     <div head="">
         Confirm
     </div>
     <div class="p-15">
-        Are you sure you want to disable this employee?
-        <div class="mt-30 flex end-xs">
+        <div class="delete__emp">
+            <p>You want to delete : <span> {{ disableEmpName ? disableEmpName : '' }}</span> </p>
+        </div>
+       <form [formGroup]="deleteUserForm" >
+        <mat-form-field class="custompicker">
+            <mat-label>Date of Leaving</mat-label>
+            <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
+                formControlName="dol" [closeOnAutoApply]="true" [autoApply]="true" readonly>
+            <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
+                <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
+              </button> -->
+            <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" (click)="open(picker)">date_range</mat-icon>
+            <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+                Please select Date of Leaving
+            </mat-error>
+        </mat-form-field>
+       </form>
+        <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
             <app-button theme="black" class="mr-30 zeros-project-cancel" (click)="modalDisable.close()">Cancel</app-button>
             <app-button class="zeros-project-proceed" (click)="proeceedDisable(0)">Proceed</app-button>
         </div>

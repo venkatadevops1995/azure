@@ -1,7 +1,26 @@
 <div class="mis__wrapper">
     <h2 class="heading">Download Employee Details</h2>
+
+        <div class="mis__body">
+            
+            
+            <div class="mis__datepicker" [ngClass]= "Ischecked ? '' :'disable'" class="dateinput" style="max-width: 300px;margin: 30px 0;">
+
+                <input [disabled]="Ischecked ? false : true" [ngClass]= "Ischecked ? '' :'disable__input'" type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
+                    [maxDate]='maxDate' class="ngx-daterangepicker-action datepicker__input" (datesUpdated)="updateRange($event)" style="background: none; border: none;">
+                <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)" style="background: none; border: none;cursor: pointer;">
+                    <mat-icon role="img" (click)="open($event)" [ngClass]= "Ischecked ? '' :'disable--icon'" class="mat-icon material-icons calender-icon ngx-daterangepicker-action">date_range</mat-icon>
+                </button>
+            </div>
+            <div class="mis__checkbox">
+                <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onIsDisableClick($event)"> 
+                   <label style="font-size: 16px;"> Disabled Employee</label>
+                </mat-checkbox>
+            </div>
+            
+        </div>
     <div class="dowload__btn__wrapper" >
-        <div class=" download__btn flex p-5 center-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">
+        <div class=" download__btn flex p-5 center-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'downloadmis/?'+'disable='+ Ischecked+'&startdate='+fromdate+'&enddate='+todate ,responseType:'blob'}">
             <app-button>
                 Download MIS <span [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:15}" style="color:'#ffffff';" svg-fill="currentColor" class="ml-5 mt-3"></span>
             </app-button>
