@@ -214,6 +214,10 @@ export class EditUserComponent implements OnInit {
           this.errorMessage = res.error.message + ". First update employee's manager";
         this.modalDisableError.open()
         return;
+      }else if(res.status == 406){
+        this.errorMessage = res.error.message;
+        this.modalDisableError.open()
+        return;
       }
       if (res.body["success"] == true) {
   
