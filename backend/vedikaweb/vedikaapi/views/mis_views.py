@@ -817,7 +817,7 @@ class DownloadMIS(APIView):
                     gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
                     location=F('profile__location__name'),
                     doj=F('profile__date_of_join'),   
-                )           )
+                )
         resp=[columns]
         for each in emp_data:
             managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
