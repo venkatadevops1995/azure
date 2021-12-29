@@ -730,7 +730,6 @@ class EmployeeDetailsSerializer(serializers.Serializer):
     category =  serializers.PrimaryKeyRelatedField(queryset=Category.objects.filter(status=1))
     company = serializers.CharField()
     category_name = serializers.CharField(read_only=True)
-    disable = serializers.BooleanField(required=False)
     # is_married = serializers.BooleanField()
     # patentry_maternity_cnt = serializers.IntegerField()
     gender = serializers.IntegerField()

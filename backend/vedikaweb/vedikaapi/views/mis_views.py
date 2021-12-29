@@ -779,6 +779,10 @@ class DownloadMIS(APIView):
     def get(self,request):
         disable = request.GET.get('disable')
         if (disable is not None):
+            response=utils.contentTypesResponce('xl',"MIS"+"_"+str(datetime.strftime(datetime.now().date(), '%d%m%Y'))+".xlsx")
+            e=ExcelServices(response,in_memory=True,workSheetName="MIS")
+            columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved"]
+            resp=[columns]
             if (disable.lower() == "true"):
                 startdate = request.GET.get('startdate')
                 enddate = request.GET.get('enddate')
@@ -789,9 +793,6 @@ class DownloadMIS(APIView):
                 if (serialize_data_date.is_valid()):
                     startdate = serialize_data_date.validated_data['startdate']
                     enddate = serialize_data_date.validated_data['enddate']
-                    response=utils.contentTypesResponce('xl',"MIS"+"_"+str(datetime.strftime(datetime.now().date(), '%d%m%Y'))+".xlsx")
-                    e=ExcelServices(response,in_memory=True,workSheetName="MIS")
-                    columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved", "Isdisable"]
                     emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0, relieved__range = [startdate, enddate])).annotate(
                         category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
                         gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
@@ -799,7 +800,6 @@ class DownloadMIS(APIView):
                         doj=F('profile__date_of_join'),
                         
                     ).order_by('-status')
-                    resp=[columns]
                     for each in emp_data:
                         managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
                         projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
@@ -811,16 +811,12 @@ class DownloadMIS(APIView):
                     return Response(utils.StyleRes(False,str(serialize_data_date.errors)), status=StatusCode.HTTP_BAD_REQUEST)
                 
             elif(disable.lower() == "false"):
-                response=utils.contentTypesResponce('xl',"MIS"+"_"+str(datetime.strftime(datetime.now().date(), '%d%m%Y'))+".xlsx")
-                e=ExcelServices(response,in_memory=True,workSheetName="MIS")
-                columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email"]
                 emp_data = Employee.objects.prefetch_related('profile').allmanagersprojects().filter().annotate(
                 category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
                 gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
                 location=F('profile__location__name'),
                 doj=F('profile__date_of_join')
                 )
-                resp=[columns]
                 
                 for each in emp_data:
 

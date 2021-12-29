@@ -58,7 +58,7 @@ export class EditUserComponent implements OnInit {
   
   USERS_DATA: UserData[] = [];
   ALL_CATEGORIES = [];
-  id : number = -1;
+  index : number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
   ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
@@ -195,11 +195,11 @@ export class EditUserComponent implements OnInit {
     })
 
   }
-  // diable user 
+  // disable user 
 
   disableUser(i){
     console.log(i);
-    this.  getCompanies() 
+    this.getCompanies() 
     this.getCategories();
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
     this.disableEmp();
@@ -232,16 +232,15 @@ export class EditUserComponent implements OnInit {
       }
     })
   }
-  setId(id : number) {
-    this.id = id;
-    this.disableEmpName = this.USERS_DATA[0]["emp_name"]    
+  setId(i : number) {
+    this.index = i;
+    this.disableEmpName = this.USERS_DATA[i]["emp_name"]    
   }
 
-   proeceedDisable(i) {
-    
+   proeceedDisable() {
      this.modalDisable.close();
-     if (this.id != -1) {
-       this.disableUser(this.id);
+     if (this.index != -1) {
+       this.disableUser(this.index);
      }
   }
   open(e){
