@@ -782,7 +782,7 @@ class DownloadMIS(APIView):
         s_date = date(e_date.year, e_date.month, 1)
         startdate = request.GET.get('startdate', s_date)
         enddate = request.GET.get('enddate', e_date)
-        if (startdate == "null" or startdate == None) or (enddate == "null" or endate == None)   :
+        if (startdate == "null" or startdate == None) or (enddate == "null" or enddate == None)   :
             startdate = s_date
             enddate = e_date
         data = {'startdate' : startdate, 'enddate' : enddate}
