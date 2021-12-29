@@ -739,6 +739,10 @@ class EmployeeDetailsSerializer(serializers.Serializer):
             raise serializers.ValidationError("Company with name \"{}\" does not exist".format(data),code=409)
         return data
 
+class EmployeeDisableSerializer(serializers.Serializer):
+    emp_id = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.filter(status=1))
+    relieved = serializers.DateField()
+
 class SubmittedTimeTrackerSerializer(serializers.ModelSerializer):
     project_name = serializers.CharField()
     class Meta:
@@ -841,3 +845,10 @@ class PolicyDocumentEmployeeActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PolicyDocumentEmployeeAction
         fields = '__all__'
+class MisDonloadDisableWithDate(serializers.Serializer):
+    startdate = serializers.DateField()
+    enddate = serializers.DateField()
+    def validate(self, data):
+        if data['startdate'] > data['enddate']:
+            raise serializers.ValidationError("finish must occur after start")
+        return data

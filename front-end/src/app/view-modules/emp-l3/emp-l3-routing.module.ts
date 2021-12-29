@@ -23,6 +23,8 @@ import { PolicyListComponent } from '../common/policy-list/policy-list.component
 import { EmpPolicyListComponent } from '../common/emp-policy-list/emp-policy-list.component';
 import { HrAttendanceReportComponent } from '../common/hr-attendance-report/hr-attendance-report.component';
 import { HrTimesheetReportComponent } from '../common/hr-timesheet-report/hr-timesheet-report.component';
+import { AddProjectComponent } from '../common/add-project/add-project.component';
+import { DownloadMisComponent } from '../common/download-mis/download-mis.component';
 
 
 const routes: Routes = [
@@ -50,6 +52,8 @@ const routes: Routes = [
   {path:"dashboard",redirectTo:"history-dashboard",pathMatch:'full'},
   {path:"hr-attendance-reports",component:HrAttendanceReportComponent},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent},
+  {path:"mis-add-project",component:AddProjectComponent},
+  {path:"mis-download", component:DownloadMisComponent}
 ];
 
 @NgModule({

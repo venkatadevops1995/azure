@@ -23,6 +23,7 @@ import { PolicyConfigModule } from '../common/policy-config/policy-config.module
 import { PolicyListModule } from '../common/policy-list/policy-list.module';
 import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-attendance-report.module';
 import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
+import { DownloadMisModule } from '../common/download-mis/download-mis.module';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesh
     PolicyListModule,
     EmpPolicyListModule,
     HrAttendenceReportModule,
-    HrTimesheetReportModule
+    HrTimesheetReportModule,
+    DownloadMisModule
 
 
   ]

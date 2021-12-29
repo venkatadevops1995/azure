@@ -405,7 +405,7 @@
 </app-modal-popup>
 
 
-<app-modal-popup #editManagerDialog [w]="'350px'" [h]="is_emp_admin?'565px':'480px'">
+<app-modal-popup #editManagerDialog [w]="'350px'" [h]="is_emp_admin || user_role_id === 4 ?'565px':'480px'">
     <div head>
         Transfer
     </div>
@@ -417,7 +417,7 @@
     </p>
 
     <ng-container>
-        <div *ngIf="is_emp_admin">
+        <div *ngIf="is_emp_admin || user_role_id === 4">
             <mat-form-field>
                 <mat-label>Edit role/manager</mat-label>
                 <mat-select [formControl]="editableItem" (selectionChange)="getEffectedEmpList()">

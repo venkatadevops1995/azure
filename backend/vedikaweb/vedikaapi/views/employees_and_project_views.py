@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from vedikaweb.vedikaapi.models import Employee,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup
 
-from vedikaweb.vedikaapi.serializers import  EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
+from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
 
 from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
@@ -44,6 +44,44 @@ class EmpProjects(APIView):
         for eachobj in empproj_obj:
             emp_projs.append({'id':eachobj.project.id,'name':eachobj.project.name,'priority':eachobj.priority})
         return Response(utils.StyleRes(True,'successfully retrived projects',emp_projs))
+
+class Usersdelete(APIView):
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_manager
+    def put(self,request,*args,**kargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        emp_id=auth_details['emp_id']
+        is_hr = auth_details['is_emp_admin']
+        if(is_hr):
+            serial_data = EmployeeDisableSerializer(data=request.data)
+
+            if(serial_data.is_valid()):
+                emp_id = serial_data.validated_data['emp_id'].emp_id
+                relieved = serial_data.validated_data['relieved']
+
+                obj = Employee.objects.only('role_id', 'created').get(emp_id = emp_id)
+                role_id = obj.role_id
+                created = obj.created
+                if (created.date() > relieved):
+                    return Response(utils.StyleRes(False,'Relieve date must be greater than joining date',{"Joining date": created , "Relieving date":relieved}), status = StatusCode.HTTP_NOT_ACCEPTABLE)
+                if (role_id > 1): 
+                    manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                    if (manager_id['cnt'] > 0):
+                        return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                    else:
+                        obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                        return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+    
+                else:
+                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+            else:
+                return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+        else:
+            return Response(utils.StyleRes(False,'Unautherized User',{}), status = StatusCode.HTTP_UNAUTHORIZED)
 
 
 class Users(APIView):
@@ -117,8 +155,8 @@ class Users(APIView):
     
     @jwttokenvalidator
     @custom_exceptions
+    @is_manager
     def put(self,request,*args,**kargs):
-        # print(request.data)
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
             EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
@@ -868,3 +906,40 @@ class EmployeeDetails(APIView):
         response[0]['day_leave_type']=day_leave_type
         response[0]['multi_leave']=multi_leave
         return Response(response,status=200)
+
+class AllActiveInActiveProjects(APIView):
+    # get api for getting all active and inactive projects
+    @jwttokenvalidator
+    @custom_exceptions
+    def get(self,request):
+        project_serialized_data = ProjectSerializer(Project.objects.filter(), many=True)
+        return Response(utils.StyleRes(True,"All project list",project_serialized_data.data), status=StatusCode.HTTP_OK)
+
+    # post api for saving new projects
+    @jwttokenvalidator
+    @custom_exceptions
+    # @is_manager
+    def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        emp_id=auth_details['emp_id']
+        is_hr = auth_details['is_emp_admin']
+        if(is_hr):
+            exitingProject = Project.objects.filter(name = request.data['name']).exists()
+            if (exitingProject):
+                return Response(utils.StyleRes(False,settings.VALID_ERROR_MESSAGES['project_exitst'],{}), status=StatusCode.HTTP_BAD_REQUEST)
+            else :
+                validated_data = ProjectSerializer(data=request.data)
+                if(validated_data.is_valid()):
+                    proj = Project(name = validated_data['name'].value)
+                    proj.save()
+                    return Response(utils.StyleRes(True,"New project saved",[]), status=StatusCode.HTTP_CREATED)
+                else:
+                    return Response(utils.StyleRes(False,validated_data.errors,{}), status = StatusCode.HTTP_NOT_ACCEPTABLE)
+        else:
+            return Response(utils.StyleRes(False,'Unautherized User',{}), status = StatusCode.HTTP_UNAUTHORIZED)
+
+
+
+  

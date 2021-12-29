@@ -10,7 +10,7 @@ import { NotNull, NoDate } from '../manage-user.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -32,12 +32,16 @@ export interface UserData {
 })
 export class EditUserComponent implements OnInit {
 
-
+  @ViewChild('refModalDisable') modalDisable: ModalPopupComponent
+  @ViewChild('refModalDisableError') modalDisableError: ModalPopupComponent
+  @ViewChild('refModalDisableSuccess') modalDisableSuccess: ModalPopupComponent
+  
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
+    private datepipe : DatePipe,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
@@ -48,13 +52,20 @@ export class EditUserComponent implements OnInit {
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
     }
+    deleteUserForm = this.fb.group({
+      'dol': ['', [Validators.required, NoDate()]],
+    })
+  
   USERS_DATA: UserData[] = [];
   ALL_CATEGORIES = [];
+  index : number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
   ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
   show_message = false;
   filteredManagers: Observable<any>;
+  errorMessage : string = "";
+  disableEmpName: string = '';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -176,7 +187,6 @@ export class EditUserComponent implements OnInit {
     this.http.request("put", "users/",'', this.editUserForm.value).subscribe(res => {
 
       if (res.body["success"] == true) {
-  
           console.log("-------------------------")
           this.close()
           this.getAllReportes()
@@ -185,5 +195,60 @@ export class EditUserComponent implements OnInit {
     })
 
   }
+  // disable user 
 
+  disableUser(i){
+    console.log(i);
+    this.getCompanies() 
+    this.getCategories();
+    this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
+    this.disableEmp();
+  }
+  disableEmp() {
+    let  obj = {
+      emp_id : this.editUserForm.value.emp_id,
+      relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
+    }
+    this.http.request("put", "delete/",'', obj).subscribe(res => {
+      if (res.status == 400) {
+          this.errorMessage = res.error.message + ". First update employee's manager";
+        this.modalDisableError.open()
+        return;
+      }else if(res.status == 406){
+        this.errorMessage = res.error.message;
+        this.modalDisableError.open()
+        return;
+      }
+      if (res.body["success"] == true) {
+  
+          console.log("-------------------------")
+          this.modalDisableSuccess.open()
+          this.close()
+          this.getAllReportes()
+          this
+      } else {
+        alert(res.body.message)
+
+        this.errorMessage = res.body.message;
+        this.modalDisableError.open()
+        return;
+        
+      }
+    })
+  }
+  setId(i : number) {
+    this.index = i;
+    this.disableEmpName = this.USERS_DATA[i]["emp_name"]    
+  }
+
+   proeceedDisable() {
+     this.modalDisable.close();
+     if (this.index != -1) {
+       this.disableUser(this.index);
+     }
+  }
+  open(e){
+    console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
+    e.click()
+  }
 }
