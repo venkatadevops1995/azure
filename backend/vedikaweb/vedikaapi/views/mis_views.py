@@ -782,6 +782,9 @@ class DownloadMIS(APIView):
         s_date = date(e_date.year, e_date.month, 1)
         startdate = request.GET.get('startdate', s_date)
         enddate = request.GET.get('enddate', e_date)
+        if (startdate == "null" or startdate == None) or (enddate == "null" or endate == None)   :
+            startdate = s_date
+            enddate = e_date
         data = {'startdate' : startdate, 'enddate' : enddate}
         serialize_data_date = MisDonloadDisableWithDate(data=data)
         if (not serialize_data_date.is_valid()):
@@ -793,6 +796,13 @@ class DownloadMIS(APIView):
         response=utils.contentTypesResponce('xl',"MIS"+"_"+str(datetime.strftime(datetime.now().date(), '%d%m%Y'))+".xlsx")
         e=ExcelServices(response,in_memory=True,workSheetName="MIS")
         columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved Date"]
+        # emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0 + int(not isdisable), relieved__range = [startdate, enddate])).annotate(
+        #         category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
+        #         gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
+        #         location=F('profile__location__name'),
+        #         doj=F('profile__date_of_join'),
+                    
+        #         ).order_by('-status')
         if(isdisable):
             emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0, relieved__range = [startdate, enddate])).annotate(
                 category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
