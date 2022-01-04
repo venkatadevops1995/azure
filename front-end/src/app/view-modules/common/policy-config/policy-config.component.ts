@@ -244,10 +244,12 @@ export class PolicyConfigComponent implements OnInit {
       })
 
       this.searchKey = val.trim().toLowerCase()
+      
       if (val.trim() == '') {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) });
       } else {
-        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(val) })
+        this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => {
+           return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(this.searchKey) })
       }
       this.updateEmpSelection()
       console.log(this.EMPLOYEE_FILTERED_DATA)

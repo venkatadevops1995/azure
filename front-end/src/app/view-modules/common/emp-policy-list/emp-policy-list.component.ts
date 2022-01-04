@@ -1,9 +1,11 @@
 import { DatePipe } from '@angular/common';
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-emp-policy-list',
@@ -17,11 +19,13 @@ export class EmpPolicyListComponent implements OnInit {
   employeePopupColumns = ["sno", "policy_name", "updated_date", "view"]
   EMPLOYEE_FILTERED_DATA = []
   deleteId = 0
+  filepathUrl: any;
   constructor( private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
     private router: Router,
-    private activatedRoute:ActivatedRoute) { }
+    private activatedRoute:ActivatedRoute,
+    private user:UserService) { }
 
   ngOnInit(): void {
 
@@ -41,19 +45,13 @@ export class EmpPolicyListComponent implements OnInit {
   }
 
   fileResponse:any;
+  bearToken:any;  
+  
   openPolicyDetails(id){
     this.policyDetailModal.open()
-
-
-    this.http.request("GET","policy/upload/","policy_id="+id,"").subscribe(res=>{
-      if(res.status = 200){
-
-        var file = new Blob([res["error"]["text"]], { type: 'application/pdf' });
-        this.fileResponse = URL.createObjectURL(file);
-        document.querySelector("iframe").src = this.fileResponse+"#toolbar=0";
-        // window.open(this.fileResponse);
-        console.log(res)
-      }})
+    this.bearToken = this.user.getToken();
+    this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken
+   
      
 
   }

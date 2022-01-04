@@ -17,6 +17,7 @@ from django.conf import settings
 from rest_framework.exceptions import ErrorDetail
 import logging
 from django.db.models import When, Case
+import os
 log = logging.getLogger(__name__)
 
 class LoginSerializer(serializers.Serializer):
@@ -798,7 +799,7 @@ class PolicyDocumentCreateSerializer(serializers.Serializer):
 
         if data['enable_for'] == 'FEW' and (('emp_list' not in data) or len(data['emp_list'])==0):
             raise ValidationError({'emp_list':[ErrorDetail(string='This field is required.', code='required')]})
-        fileExists = utils.fileExists(settings.UPLOAD_PATH+'/policy/'+data['file_name'])
+        fileExists = utils.fileExists(os.path.join(settings.BASE_POLICIES_PATH,data['file_name']))
         
         if(not fileExists):
             raise ValidationError({'file_name':'file "{}" does not exist'.format(data['file_name'])})

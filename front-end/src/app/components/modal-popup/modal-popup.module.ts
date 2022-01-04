@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 // import { ScrollBarModule } from '../scroll-bar/scroll-bar.module';
+
 @NgModule({
     declarations: [
         ModalPopupComponent

@@ -112,6 +112,9 @@ export class ModalPopupComponent {
     // timer reference to help in clearing and setting
     timer;
 
+    // for policy list styling
+     @Input() policy_style: boolean 
+
     minHeight;
 
     widthToSet: string = "80%";

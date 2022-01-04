@@ -31,13 +31,13 @@ BASE_MIS_FILES = config.get('general', 'BASE_MIS_FILES')
 BASE_LEAVE_BALANCE = config.get('general', 'BASE_LEAVE_BALANCE')
 BASE_INVITATIONS = config.get('general', 'BASE_INVITATIONS')
 BASE_PROFILE = config.get('general', 'BASE_PROFILE')
-
+BASE_POLICIES = config.get('general','BASE_POLICIES')
 #File System paths to upload files
 UPLOAD_PATH = os.path.join(UPLOAD_MIS_PATH,BASE_MIS_FILES)
 UPLOAD_LEAVE_BALANCE_PATH = os.path.join(UPLOAD_MIS_PATH,BASE_LEAVE_BALANCE)
 UPLOAD_INVITATIONS_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_INVITATIONS)
 UPLOAD_PROFILE_PIC_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_PROFILE)
-
+BASE_POLICIES_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_POLICIES)
 #URLS TO access http or https
 INVITATION_IMAGE_URL =  os.path.join(config.get('general', 'IMAGE_URL'),BASE_INVITATIONS)
 PROFILE_IMAGE_URL =  os.path.join(config.get('general', 'IMAGE_URL'),BASE_PROFILE)

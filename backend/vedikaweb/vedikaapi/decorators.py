@@ -38,7 +38,11 @@ def jwttokenvalidator(viewfunction):
     def validator(*args, **kwargs):
         request=args[1]
         try:
-            token = request.META['HTTP_AUTHORIZATION']
+            btoken = request.query_params.get('btoken', None)
+            if(btoken is not None):
+                token = "Bearer "+btoken                
+            else: 
+                token = request.META['HTTP_AUTHORIZATION']
             if(str(settings.TOKEN_TYPE) not in token):
                 return Response({'Message':"Token Missing"},status=400)
             d=jwt.decode(token.replace(settings.TOKEN_TYPE, '').strip(), settings.SECRET_KEY, algorithms=['HS256'])
