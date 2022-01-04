@@ -8,7 +8,7 @@ import time
 from vedikaweb.vedikaapi.models import Employee,EmployeeProject,EmployeeWeeklyStatusTracker,EmployeeProjectTimeTracker,Project,EmployeeWorkApproveStatus,MisInfo,ManagerWorkHistory,EmployeeAdmin, Project, Location,EmployeeHierarchy,EmployeeEntryCompStatus,EmployeeApprovalCompStatus, AttendanceAccessGroup,GlobalAccessFlag, WelcomeEmailNotification, EmailAccessGroup,ServiceAccount, Category , LeaveRequest, TimesheetDiscrepancy
 
 # Serialisers
-from vedikaweb.vedikaapi.serializers import  EmployeeWorkApproveStatusSerializer,RejectedTimesheetEmailNotificationSerializer,EmployeeProfileSerializer,EmployeeProjectTimeTrackerReqSerializer, EmployeeProjectTimeTrackerSerializer, WeeklyStatusReqSerializer, WeeklyStatusPostSerializer, EmployeeWorkApproveStatusPostSerializer, EmployeeTimesheetApprovedHistorySerializer
+from vedikaweb.vedikaapi.serializers import  EmployeeWorkApproveStatusSerializer,RejectedTimesheetEmailNotificationSerializer,EmployeeProfileSerializer,EmployeeProjectTimeTrackerReqSerializer, EmployeeProjectTimeTrackerSerializer, WeeklyStatusReqSerializer, WeeklyStatusPostSerializer, EmployeeWorkApproveStatusPostSerializer, EmployeeWorkApproveStatusMultipleYearsPostSerializer, EmployeeTimesheetApprovedHistorySerializer
 
 from vedikaweb.vedikaapi.constants import StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, GenderChoices, MaritalStatuses, LeaveRequestStatus, TimesheetDiscrpancyStatus
 from vedikaweb.vedikaapi.utils import utils
@@ -45,8 +45,8 @@ class WeeklyEmployeeData(APIView):
         for each in data:
             sum_total=sum_total+each['h']+each['m']
         return sum_total
-    def project_exists_in_projtrack(self,empprojid,work_week,year):
-        emp_proj_timetrack = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id=empprojid) & Q(work_week=work_week) & Q(created__year=year))
+    def project_exists_in_projtrack(self,empprojid,work_week,years):
+        emp_proj_timetrack = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id=empprojid) & Q(work_week=work_week) & Q(created__year__in=years))
         if(len(emp_proj_timetrack)>0):
             return True
         return False
@@ -77,6 +77,7 @@ class WeeklyEmployeeData(APIView):
             weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
             week_number=weekdatesList[-1].isocalendar()[1]
             year=str(weekdatesList[-1]).split('-')[0]
+            years = [year,str(int(year)+1)]
             data=json.loads(json.dumps(req_serializer.data))
             inputdata=[]
             timesheetDiscrepancies = TimesheetDiscrepancy.objects.filter(leave_request__emp_id=emp_id,status=0)
@@ -86,13 +87,13 @@ class WeeklyEmployeeData(APIView):
                 ##Loop Through ACTIVE PROJECTS##
                 for eachproj in each['active_projects']:
                     empproj=EmployeeProject.objects.get(project_id=eachproj['project_id'],emp_id=emp_id)
-                    if(self.sum_of_work_hours(eachproj['work_hours'])>0 or self.project_exists_in_projtrack(empproj.id,week_number,year)):
+                    if(self.sum_of_work_hours(eachproj['work_hours'])>0 or self.project_exists_in_projtrack(empproj.id,week_number,years)):
                         for eachday in eachproj['work_hours']:
                             eachdate=datetime.strptime(eachday['date'], "%Y-%m-%d").date()
                             if(eachdate in weekdatesList and eachdate<=datetime.now().date()):
                                 inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
                                         'employee_project':empproj.id,'status':1})
-                    ep_tt_id = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id=empproj.id) & Q(work_week=week_number) & Q(created__year=year)).order_by('work_date')
+                    ep_tt_id = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id=empproj.id) & Q(work_week=week_number) & Q(created__year__in=years)).order_by('work_date')
 
                     for index,each_tt_id in enumerate(ep_tt_id):
                         if(60*int(eachproj['work_hours'][index]['h'])+int(eachproj['work_hours'][index]['m'])==0 and  each_tt_id.id in tt_id_in_ts_des):
@@ -102,7 +103,7 @@ class WeeklyEmployeeData(APIView):
                 default_non_projects=DefaultProjects.default_non_projects()
                 for eachnonproj in default_non_projects:
                     emp_non_proj=EmployeeProject.objects.get(project__name=eachnonproj,emp_id=emp_id,status=1)
-                    if(self.sum_of_work_hours(each[eachnonproj]['work_hours'])>0 or self.project_exists_in_projtrack(emp_non_proj.id,week_number,year)):
+                    if(self.sum_of_work_hours(each[eachnonproj]['work_hours'])>0 or self.project_exists_in_projtrack(emp_non_proj.id,week_number,years)):
                         for eachday in each[eachnonproj]['work_hours']:
                             eachdate=datetime.strptime(eachday['date'], "%Y-%m-%d").date()
                             inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),'employee_project':emp_non_proj.id,'status':1})
@@ -160,10 +161,11 @@ class WeeklyStatus(APIView):
             weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
             week_number=weekdatesList[-1].isocalendar()[1]
             year=str(weekdatesList[-1]).split('-')[0]
+            years = [int(year), int(year) + 1]
             for each in data['weekly_status']:
                 empproj=EmployeeProject.objects.get(project_id=each['project_id'],emp_id=emp_id)
                 if(each['report']==""):
-                    wd=EmployeeWeeklyStatusTracker.objects.filter(employee_project_id=empproj.id,wsr_week=week_number,created__year=year)
+                    wd=EmployeeWeeklyStatusTracker.objects.filter(employee_project_id=empproj.id,wsr_week=week_number,created__year__in=years)
                     if(len(wd)>0):
 
                         inputdata.append({'wsr_date':data['wsr_date'],'year':year,'wsr_week':week_number,'work_report':each['report'],'employee_project':empproj.id,'status':1})
@@ -175,8 +177,8 @@ class WeeklyStatus(APIView):
             week_status_post_serializer=WeeklyStatusPostSerializer(data=inputdata,many=True)
             if(week_status_post_serializer.is_valid()):
                 if(data['is_final_submit']==True):
-                    workweekstatus_data={'emp':emp_id,'work_week':week_number,'year':year,'status':WorkApprovalStatuses.Pending.value}
-                    workweek_approval_ser=EmployeeWorkApproveStatusPostSerializer(data=workweekstatus_data)
+                    workweekstatus_data={'emp':emp_id,'work_week':week_number,'year':years,'status':WorkApprovalStatuses.Pending.value}
+                    workweek_approval_ser=EmployeeWorkApproveStatusMultipleYearsPostSerializer(data=workweekstatus_data)
                     if(workweek_approval_ser.is_valid()):
                         week_status_post_serializer.save()
                         workweek_approval_ser.save()
@@ -205,8 +207,9 @@ class StatusBasedTimeSheets(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         week_number=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [str(year),str(int(year)-1)]
 
-        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,created__year=year,work_week=week_number)
+        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,created__year__in=years,work_week=week_number)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         if(len(employee_approve_status_list)>0):
             response=commonfunc_obj.get_employees_weeklydata([emp_id],prev_week=prev_week,statusFlag=True)
@@ -257,11 +260,12 @@ class GetEmployeesWSTData(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         week_number=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year, str(int(year) + 1)]
         emp_of_manager=common_fun_obj.get_employees_list(emp_id)
         if(int(statfilter)==-1):
-            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number)
+            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year__in=years,work_week=week_number)
         else:
-            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number,status=int(statfilter))
+            employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year__in=years,work_week=week_number,status=int(statfilter))
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         response=common_fun_obj.get_employees_weeklydata(employee_approve_status_list[items_per_page*page_number-items_per_page:items_per_page*page_number],prev_week=prev_week,statusFlag=True)
         dayid,dayname=utils.findDay(datetime.now().date())
@@ -348,6 +352,7 @@ class WSTDownload(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year, str(int(year) + 1)]
         emp_of_manager=[]
         if(len(self.request.query_params)==0):
             emp_of_manager=common_fun_obj.get_employees_list(emp_id,priorityCheck=False)
@@ -356,12 +361,12 @@ class WSTDownload(APIView):
             for emp in all_emp:
                 emp_of_manager.append(emp['emp_id'])
         else:
-            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year=year))
+            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years))
             if(len(emp_of_manager_obj)>0):
                 emp_of_manager=ast.literal_eval(emp_of_manager_obj[0].emp_list)
 
         
-        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndMultipleYears(emp_of_manager,work_week,years)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         data_struct=common_fun_obj.get_employees_weeklydata(employee_approve_status_list,prev_week=prev_week,statusFlag=True,TimeTrackerdataFlag=False)
         if(emp_id) == '-1':
@@ -520,6 +525,7 @@ class WSRDownload(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year,str(int(year)+1)]
         emp_of_manager=[]
         if(len(self.request.query_params)==0):
             emp_of_manager=common_fun_obj.get_employees_list(emp_id,priorityCheck=False)
@@ -528,11 +534,11 @@ class WSRDownload(APIView):
             for emp in all_emp:
                 emp_of_manager.append(emp['emp_id'])
         else:
-            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year=year))
+            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years))
             if(len(emp_of_manager_obj)>0):
                 emp_of_manager=ast.literal_eval(emp_of_manager_obj[0].emp_list)
 
-        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        employee_approve_status=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndMultipleYears(emp_of_manager,work_week,years)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         data_struct=common_fun_obj.get_weekly_statuses(employee_approve_status_list,prev_week=prev_week,statusFlag=True)
         if(emp_id) == '-1':
@@ -1218,7 +1224,8 @@ class StatusWiseTimesheetCount(APIView):
         week_number=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
         emp_of_manager=common_fun_obj.get_employees_list(emp_id)
-        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year=year,work_week=week_number).aggregate(
+        years =  [year, str(int(year)+1)]
+        employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id__in=emp_of_manager,created__year__in=years,work_week=week_number).aggregate(
             pending_cnt = Sum(Case(
                             When(status=0, then=1),
                             output_field=IntegerField(),

@@ -11,7 +11,7 @@ from .models import Employee,EmployeeProject,EmployeeWeeklyStatusTracker,Employe
 from .models import EmployeeHierarchy,EmployeeEntryCompStatus,EmployeeApprovalCompStatus,AttendanceAccessGroup,EmailAccessGroup,GlobalAccessFlag, ManagerWorkHistory, LeaveRequest, LeaveConfig, LeaveBalance
 
 # Serialisers
-from .serializers import EmployeeWorkApproveStatusSerializer,EmployeeApprovalCompStatusPostSerializer,EmployeeEntryCompStatusPostSerializer
+from .serializers import EmployeeWorkApproveStatusSerializer,EmployeeApprovalCompStatusPostSerializer,EmployeeEntryCompStatusPostSerializer, EmployeeWorkApproveStatusMultipleYearsPostSerializer
 
 from .serializers import EmployeeProjectTimeTrackerReqSerializer, EmployeeProjectTimeTrackerSerializer, WeeklyStatusReqSerializer, WeeklyStatusPostSerializer, EmployeeWorkApproveStatusPostSerializer,ManagerWorkHistoryPostSerializer
 from .serializers import EmployeeManagerSerializer, PunchLogsSerializer
@@ -44,6 +44,7 @@ def employee_time_entry_complaince(prev_week=1):
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
     work_week=weekdatesList[-1].isocalendar()[1]
     year=str(weekdatesList[-1]).split('-')[0]
+    years = [year, str(int(year) + 1)] 
     employee_objs=Employee.objects.filter(status=1)
     work_approval_data=[]
     entry_complaince_data=[]
@@ -53,10 +54,10 @@ def employee_time_entry_complaince(prev_week=1):
     for each in employee_objs:
         ## If the employee dont have wsrapproval data or it is in rejected state then it is employee_entry_complaince
         if(dayid==6):
-            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & ~Q(status=2) & Q(created__year=year))
+            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & ~Q(status=2) & Q(created__year__in=years))
 
         elif(dayid==2):
-            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(created__year=year))
+            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(created__year__in=years))
 
         
         if((len(eas)==0 and dayid==2) or (len(eas)>0 and dayid==6)):
@@ -65,8 +66,8 @@ def employee_time_entry_complaince(prev_week=1):
         elif((len(eas)>0 and dayid==2) or (len(eas)==0 and dayid==6)):
             log.info("EMPLOYEE ID {} has not submitted the status for the week{}".format(each.emp_id,work_week))
 
-            emp_proj_time_track=EmployeeProjectTimeTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,work_week=work_week,created__year=year)
-            emp_wsr=EmployeeWeeklyStatusTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,wsr_week=work_week,created__year=year)
+            emp_proj_time_track=EmployeeProjectTimeTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,work_week=work_week,created__year__in=years)
+            emp_wsr=EmployeeWeeklyStatusTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,wsr_week=work_week,created__year__in=years)
             weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
 
             if(len(emp_proj_time_track)<=0):
@@ -93,9 +94,9 @@ def employee_time_entry_complaince(prev_week=1):
                 if(wsr_post_serializer.is_valid()):
                     wsr_post_serializer.save()
                     log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
-
-            work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'year':year,'status':WorkApprovalStatuses.EntryComplaince.value})
-            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':year,'cnt':1,'weekdatesList':weekdatesList})
+            # we need to pass years to handing if the week data fall in between two years
+            work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'status':WorkApprovalStatuses.EntryComplaince.value})
+            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'cnt':1,'weekdatesList':weekdatesList})
             complaince_cnt=complaince_cnt+1
         i=i+1
     final_nc_list = []
@@ -121,7 +122,7 @@ def employee_time_entry_complaince(prev_week=1):
                 final_nc_list.append(eachdata)
                 final_work_approval_data.append(work_approval_data[i])
 
-    work_approval_serializer=EmployeeWorkApproveStatusPostSerializer(data=final_work_approval_data,many=True)
+    work_approval_serializer=EmployeeWorkApproveStatusMultipleYearsPostSerializer(data=final_work_approval_data,many=True)
     if(work_approval_serializer.is_valid()):
         entry_comp_ser=EmployeeEntryCompStatusPostSerializer(data=final_nc_list,many=True)
         if(entry_comp_ser.is_valid()):
@@ -139,10 +140,11 @@ def update_total_time(prev_week=1):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=int(str(weekdatesList[-1]).split('-')[0])
+        years = [year, str(int(year) + 1)] 
         employee_objs=Employee.objects.filter(status=1)
         i=1
         for each in employee_objs:
-            empproj_time_track = EmployeeProjectTimeTracker.objects.get_cumulative_of_week(emp_id=each.emp_id,work_week=work_week,year=year)
+            empproj_time_track = EmployeeProjectTimeTracker.objects.get_cumulative_of_week_multiple_years(emp_id=each.emp_id,work_week=work_week,years=years)
             for eachempproj in empproj_time_track:
                 EmployeeProject.objects.filter(id=eachempproj['employee_project']).update(total_work_minutes=F('total_work_minutes')+eachempproj['sum_output_count'])
 
@@ -155,6 +157,7 @@ def manager_work_history_mapping(prev_week=1):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(1)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=int(str(weekdatesList[-1]).split('-')[0])
+        years = [year, str(int(year) + 1)] 
         managers=Employee.objects.allmanagers()
         final_list=[]
         for each in managers:
@@ -168,27 +171,28 @@ def manager_work_history_mapping(prev_week=1):
             
             #For all Employees
             for eachemp in eh:
-                entry_comp=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp['emp_id']) & Q(work_week=work_week) & Q(created__year=year)).aggregate(total_cnt=Coalesce(Sum('cnt'),0))
+                entry_comp=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp['emp_id']) & Q(work_week=work_week) & Q(created__year__in=years)).aggregate(total_cnt=Coalesce(Sum('cnt'),0))
                 if(entry_comp['total_cnt']>0):
                     entry_comp_emp_list.append(eachemp['emp_id'])
-                empproj_time_track=EmployeeProjectTimeTracker.objects.get_cumulative_of_week_without_vacation_holiday(emp_id=eachemp['emp_id'],work_week=work_week,year=year)
+                empproj_time_track=EmployeeProjectTimeTracker.objects.get_cumulative_of_week_without_vacation_holiday_multiple_years(emp_id=eachemp['emp_id'],work_week=work_week,years=years)
                 for eachproj in empproj_time_track:
                     total_work_minutes=total_work_minutes+int(eachproj['sum_output_count'])
                 entry_comp_cnt=entry_comp_cnt+entry_comp['total_cnt']
                 
             # For Functional & ManagersManagers
             for eachmanager in ehd:
-                approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachmanager['emp_id']) & Q(work_week=work_week) & Q(created__year=year))
+                approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachmanager['emp_id']) & Q(work_week=work_week) & Q(created__year__in=years))
                 if(len(approval_comp)>0 and eachmanager['emp_id']!=each.emp_id):
                     approve_comp_emp_list.append(eachmanager['emp_id'])
                     approval_comp_cnt=approval_comp_cnt+int(approval_comp[0].cnt)
                     
-            approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(created__year=year))
+            approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(created__year__in=years))
             if(len(approval_comp)>0):
                 approve_comp_emp_list.append(each.emp_id)
                 approval_comp_cnt=approval_comp_cnt+int(approval_comp[0].cnt)
             
             
+            #No need to pass years  only pass year
             final_list.append({'emp':each.emp_id,'work_week':work_week,'entry_comp_cnt':entry_comp_cnt,'approval_comp_cnt':approval_comp_cnt,'emp_cnt':len(eh),'emp_list':str(list(map(lambda x:x['emp_id'],eh))),'entry_comp_list':str(entry_comp_emp_list),'approval_comp_list':str(approve_comp_emp_list),'total_work_minutes':total_work_minutes,'year':year})
         
 
@@ -214,6 +218,7 @@ def employee_approval_complaince(prev_week=1):
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
     work_week=weekdatesList[-1].isocalendar()[1]
     year=int(str(weekdatesList[-1]).split('-')[0])
+    years = [year, str(int(year) + 1)]
     employee_objs=Employee.objects.filter(status=1)
     approval_complaince_data=[]
     approval_complaince_cnt=0
@@ -221,7 +226,7 @@ def employee_approval_complaince(prev_week=1):
 
     for each in employee_objs:
         # eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(created__year=year))
-        eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & (Q(status=0) | Q(status=3)) & Q(created__year=year))
+        eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & (Q(status=0) | Q(status=3)) & Q(created__year__in=years))
         if(len(eas)==0):
             pass
         else:
@@ -229,7 +234,7 @@ def employee_approval_complaince(prev_week=1):
             if(len(eh)==0):
                 log.error("Employee Id {} has no P1 manager".format(str(each.emp_id)))
             else:
-                approval_complaince_data.append({'emp':eh[0].manager_id,'work_week':work_week,'year':year,'cnt':1})
+                approval_complaince_data.append({'emp':eh[0].manager_id,'work_week':work_week,'year':years,'cnt':1})
                 approval_complaince_cnt=approval_complaince_cnt+1
         i=i+1
     
@@ -243,7 +248,7 @@ def employee_approval_complaince(prev_week=1):
         
     else:
         log.error(ser.errors)
-
+# We are not using  this cron function
 def sync_timetracker():
 
     last_emp_id = 0 # get last id from database default 0

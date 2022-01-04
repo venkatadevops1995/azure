@@ -150,6 +150,17 @@ class EmployeeProjectTimeTrackerQuerySet(models.QuerySet):
                 qs=qs.filter(employee_project__emp_id=emp_id).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
             return qs
         return qs
+    
+    def get_cumulative_of_week_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        qs=self
+        if emp_id is not None:
+            if work_week is not None:
+                qs=qs.filter(Q(employee_project__emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years)).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
+            else:
+                qs=qs.filter(employee_project__emp_id=emp_id).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
+            return qs
+        return qs
+
     ## To get Cumulative Sum of projects excluding Vacation ##
     def get_cumulative_of_week_without_vacation_holiday(self,emp_id=None,work_week=None,year=None):
         qs=self
@@ -160,12 +171,38 @@ class EmployeeProjectTimeTrackerQuerySet(models.QuerySet):
                 qs=qs.filter(Q(employee_project__emp_id=emp_id) & ~Q(employee_project__project__name=DefaultProjects.Vacation.value) & ~Q(employee_project__project__name=DefaultProjects.Holiday.value)).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
             return qs
         return qs
+    def get_cumulative_of_week_without_vacation_holiday_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        qs=self
+        if emp_id is not None:
+            if work_week is not None:
+                qs=qs.filter(Q(employee_project__emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years) & ~Q(employee_project__project__name=DefaultProjects.Vacation.value) & ~Q(employee_project__project__name=DefaultProjects.Holiday.value)).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
+            else:
+                qs=qs.filter(Q(employee_project__emp_id=emp_id) & ~Q(employee_project__project__name=DefaultProjects.Vacation.value) & ~Q(employee_project__project__name=DefaultProjects.Holiday.value)).values('employee_project').annotate(sum_output_count=Sum('work_minutes'))
+            return qs
+        return qs
     
     def get_submitted_projects(self,emp_id=None,work_week=None,year=None):
         qs=self
         if emp_id is not None:
             if work_week is not None:
                 qs=qs.filter(Q(employee_project__emp_id=emp_id) & Q(work_week=work_week) & Q(created__year=year)).values('employee_project').annotate(
+                    emp_id = F('employee_project__emp_id'),
+                    project_id = F('employee_project__project_id'),
+                    project_name = F('employee_project__project__name'),
+                    sum_output_count=Sum('work_minutes'))
+            else:
+                qs=qs.filter(employee_project__emp_id=emp_id).values('employee_project').annotate(
+                    emp_id = F('employee_project__emp_id'),
+                    project_id = F('employee_project__project_id'),
+                    project_name = F('employee_project__project__name'),
+                    sum_output_count=Sum('work_minutes'))
+            return qs
+        return qs
+    def get_submitted_projects_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        qs=self
+        if emp_id is not None:
+            if work_week is not None:
+                qs=qs.filter(Q(employee_project__emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years)).values('employee_project').annotate(
                     emp_id = F('employee_project__emp_id'),
                     project_id = F('employee_project__project_id'),
                     project_name = F('employee_project__project__name'),
@@ -204,6 +241,15 @@ class EmployeeProjectTimeTrackerQuerySet(models.QuerySet):
                     project_name = F('employee_project__project__name'),
                     sum_output_count=Sum('work_minutes')).filter(sum_output_count__gt=0,employee_project__emp_id__in=empList)
         return qs
+    
+    def findByEmplistAndWeekdateslistAndWeeknumberAndMultipleYears(self,empList,weekdatesList,weeknumber,years):
+        qs=self
+        qs=qs.filter(Q(work_week=weeknumber) & Q(created__year__in=years) & Q(work_date__in=weekdatesList)).values('employee_project').annotate(
+                    emp_id = F('employee_project__emp_id'),
+                    project_id = F('employee_project__project_id'),
+                    project_name = F('employee_project__project__name'),
+                    sum_output_count=Sum('work_minutes')).filter(sum_output_count__gt=0,employee_project__emp_id__in=empList)
+        return qs
 
 
             
@@ -212,14 +258,22 @@ class EmployeeProjectTimeTrackerManager(models.Manager):
         return EmployeeProjectTimeTrackerQuerySet(self.model,using=self._db)
     def get_cumulative_of_week(self,emp_id=None,work_week=None,year=None):
         return self.get_queryset().get_cumulative_of_week(emp_id=emp_id,work_week=work_week,year=year)
+    def get_cumulative_of_week_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        return self.get_queryset().get_cumulative_of_week_multiple_years(emp_id=emp_id,work_week=work_week,years=years)
     def get_cumulative_of_week_without_vacation_holiday(self,emp_id=None,work_week=None,year=None):
         return self.get_queryset().get_cumulative_of_week_without_vacation_holiday(emp_id=emp_id,work_week=work_week,year=year)
+    def get_cumulative_of_week_without_vacation_holiday_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        return self.get_queryset().get_cumulative_of_week_without_vacation_holiday_multiple_years(emp_id=emp_id,work_week=work_week,years=years)
     def get_submitted_projects(self,emp_id=None,work_week=None,year=None):
         return self.get_queryset().get_submitted_projects(emp_id=emp_id,work_week=work_week,year=year)
+    def get_submitted_projects_multiple_years(self,emp_id=None,work_week=None,years=[]):
+        return self.get_queryset().get_submitted_projects_multiple_years(emp_id=emp_id,work_week=work_week,years=years)
     def get_submitted_projects_daterange(self,emp_id=None,start_date=None,last_date=None):
         return self.get_queryset().get_submitted_projects_daterange(emp_id=emp_id,start_date=start_date,last_date = last_date)
     def findByEmplistAndWeekdateslistAndWeeknumberAndYear(self,empList,weekdatesList,weeknumber,year):
         return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumberAndYear(empList,weekdatesList,weeknumber,year)
+    def findByEmplistAndWeekdateslistAndWeeknumberAndMultipleYears(self,empList,weekdatesList,weeknumber,years):
+        return self.get_queryset().findByEmplistAndWeekdateslistAndWeeknumberAndMultipleYears(empList,weekdatesList,weeknumber,years)
 	
 
 class EmployeeProjectTimeTracker(ExportModelOperationsMixin('employee_project_time_tracker'), models.Model):
@@ -351,6 +405,11 @@ class EmployeeWorkApproveStatusQuerySet(models.QuerySet):
         look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
         qs=qs.filter(look_up_query)
         return qs
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,years):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year__in=years))
+        qs=qs.filter(look_up_query)
+        return qs
    
 
 
@@ -359,6 +418,8 @@ class EmployeeWorkApproveStatusManager(models.Manager):
         return EmployeeWorkApproveStatusQuerySet(self.model,using=self._db)
     def findByEmplistAndWeekAndYear(self,empList,work_week,year):
         return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,years):
+        return self.get_queryset().findByEmplistAndWeekAndMultipleYears(empList,work_week,years)
 class EmployeeWorkApproveStatus(ExportModelOperationsMixin('employee_work_approve_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
     work_week = models.IntegerField()
@@ -394,12 +455,20 @@ class EmployeeEntryCompStatusQuerySet(models.QuerySet):
         look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
         qs=qs.filter(look_up_query)
         return qs
+    
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,years):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year__in=years))
+        qs=qs.filter(look_up_query)
+        return qs
 
 class EmployeeEntryCompStatusManager(models.Manager):
     def get_queryset(self):
         return EmployeeEntryCompStatusQuerySet(self.model,using=self._db)
     def findByEmplistAndWeekAndYear(self,empList,work_week,year):
         return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,year):
+        return self.get_queryset().findByEmplistAndWeekAndMultipleYears(empList,work_week,year)
 		
 class EmployeeEntryCompStatus(ExportModelOperationsMixin('employee_entry_comp_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
@@ -421,12 +490,20 @@ class EmployeeApprovalCompStatusQuerySet(models.QuerySet):
         look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year=year))
         qs=qs.filter(look_up_query)
         return qs
+    
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,years):
+        qs = self
+        look_up_query = (Q(emp_id__in=empList) & Q(work_week=work_week) & Q(created__year__in=years))
+        qs=qs.filter(look_up_query)
+        return qs
 
 class EmployeeApprovalCompStatusManager(models.Manager):
     def get_queryset(self):
         return EmployeeApprovalCompStatusQuerySet(self.model,using=self._db)
     def findByEmplistAndWeekAndYear(self,empList,work_week,year):
         return self.get_queryset().findByEmplistAndWeekAndYear(empList,work_week,year)
+    def findByEmplistAndWeekAndMultipleYears(self,empList,work_week,years):
+        return self.get_queryset().findByEmplistAndWeekAndMultipleYears(empList,work_week,years)
 class EmployeeApprovalCompStatus(ExportModelOperationsMixin('employee_approval_comp_status'), models.Model):
     emp = models.ForeignKey('Employee', models.DO_NOTHING)
     work_week = models.IntegerField()

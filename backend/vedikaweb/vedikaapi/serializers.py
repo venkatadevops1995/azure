@@ -208,12 +208,24 @@ class EmployeeWorkApproveStatusPostSerializer(serializers.ModelSerializer):
     class Meta:
         model=EmployeeWorkApproveStatus
         fields='__all__'
+class EmployeeWorkApproveStatusMultipleYearsPostSerializer(serializers.ModelSerializer):
+    year=serializers.ListField(child=serializers.CharField())
+    
+    def create(self,validated_data):
+        obj,created=EmployeeWorkApproveStatus.objects.update_or_create(
+            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
+            defaults=utils.removekey(validated_data,"year")
+        )
+        return validated_data
+    class Meta:
+        model=EmployeeWorkApproveStatus
+        fields='__all__'
 
 class EmployeeEntryCompStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.IntegerField()
+    year=serializers.ListField(child=serializers.CharField())
     def create(self,validated_data):
         obj,created=EmployeeEntryCompStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year=validated_data['year'],
+            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
             defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'cnt':validated_data['cnt']}
         )
         return obj
@@ -222,13 +234,13 @@ class EmployeeEntryCompStatusPostSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 class EmployeeApprovalCompStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.IntegerField()
+    year=serializers.ListField(child=serializers.CharField())
     def create(self,validated_data):
-        emp_comp=EmployeeApprovalCompStatus.objects.filter(emp_id=validated_data['emp'],work_week=validated_data['work_week'],created__year=validated_data['year'])
+        emp_comp=EmployeeApprovalCompStatus.objects.filter(emp_id=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'])
         if(len(emp_comp)>0):
             validated_data['cnt']=emp_comp[0].cnt+validated_data['cnt']
         obj,created=EmployeeApprovalCompStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year=validated_data['year'],
+            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
             defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'cnt':validated_data['cnt']}
         )
         return obj
