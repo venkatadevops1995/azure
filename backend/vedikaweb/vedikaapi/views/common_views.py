@@ -37,6 +37,7 @@ class CommonFunctions:
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         weeknumber=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year, str(int(year) + 1)] 
         emp_cnt=0
         holiday_list=list(HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date__in=weekdatesList)&Q(status=1)).annotate(location=F('locationholidaycalendar__location'),location_status=F('locationholidaycalendar__status')).values())
         empObj = Employee.objects.prefetch_related('profile').filter(emp_id__in=employeeList)
@@ -44,7 +45,7 @@ class CommonFunctions:
         for each in empObj:
             empObj_dict[each.emp_id]=each
 
-        submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndYear(employeeList,weekdatesList,weeknumber,year)
+        submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndMultipleYears(employeeList,weekdatesList,weeknumber,years)
         submitted_projs_dict={}
         submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
         for eachemployee in employeeList:
@@ -60,7 +61,7 @@ class CommonFunctions:
                 if(each.emp_id==eachemployee):
                     emp_proj_dict[eachemployee].append(each)
         emp_work_approvestatus_dict = {}
-        emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(employeeList,weeknumber,year)
+        emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndMultipleYears(employeeList,weeknumber,years)
         for eachemployee in employeeList:
             emp_work_approvestatus_dict[eachemployee]=[]
             for each in emp_work_approvestatus_:
@@ -421,20 +422,21 @@ class CommonFunctions:
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         weeknumber=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year, str(int(year)+1)]
         emp_cnt=0
         for emp_id in employeeList:
             resp.append([])
             empObj=Employee.objects.get(emp_id=emp_id)
             #2. Query to get EmployeeProject data
             # empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & Q(project__status=1) & Q(status=1))
-            submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects(emp_id=emp_id,work_week=weeknumber,year=year).filter(sum_output_count__gt=0)
+            submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects_multiple_years(emp_id=emp_id,work_week=weeknumber,years=years).filter(sum_output_count__gt=0)
             submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
             empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & (Q(status=1) | Q(project_id__in=submitted_projs_list)))
             resp[emp_cnt]={'emp_id':emp_id,'staff_no':empObj.staff_no,'emp_name':empObj.emp_name,'week_number':weekdatesList[-1].isocalendar()[1],'active_projects':[]}
 
 
             if(statusFlag):
-                emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,created__year=year)
+                emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,created__year__in=years)
                 if(len(emp_work_approvestatus)>0):
                     resp[emp_cnt]['status']=emp_work_approvestatus[0].status
 
