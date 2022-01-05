@@ -1,7 +1,10 @@
 <div>
   <h2 class="heading">Document</h2>
+  <div class="not--exsiting-policy"  *ngIf="EMPLOYEE_FILTERED_DATA.length == 0" >
+      <p>There are no policies available</p>
+  </div>
   <div>
-    <table
+      <table
       mat-table
       [dataSource]="EMPLOYEE_FILTERED_DATA"
       *ngIf="EMPLOYEE_FILTERED_DATA.length != 0"

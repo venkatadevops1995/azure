@@ -207,8 +207,7 @@ class StatusBasedTimeSheets(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         week_number=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
-        years = [str(year),str(int(year)-1)]
-
+        years = [str(year),str(int(year)+1)]
         employee_approve_status=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,created__year__in=years,work_week=week_number)
         employee_approve_status_list=list(map(lambda x:x.emp_id,employee_approve_status))
         if(len(employee_approve_status_list)>0):
@@ -580,6 +579,7 @@ class NCRDownload(APIView):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
+        years = [year,str(int(year)+1)]
         emp_of_manager=[]
         if(len(self.request.query_params)==0):
             emp=Employee.objects.get(emp_id=emp_id)
@@ -594,7 +594,7 @@ class NCRDownload(APIView):
                 emp_of_manager.append(emp['emp_id'])
         else:
             emp=Employee.objects.get(emp_id=emp_id)
-            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year=year))
+            emp_of_manager_obj=ManagerWorkHistory.objects.filter(Q(emp_id=emp_id) & Q(work_week=work_week) & Q(created__year__in=years))
             if(len(emp_of_manager_obj)>0):
                 emp_of_manager=ast.literal_eval(emp_of_manager_obj[0].emp_list)
         if(emp_id) == '-1':
@@ -623,12 +623,12 @@ class NCRDownload(APIView):
             eh_dict[each.emp_id]=each
         
         entry_comp_dict={}
-        empEntryCompStatusObj = EmployeeEntryCompStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        empEntryCompStatusObj = EmployeeEntryCompStatus.objects.findByEmplistAndWeekAndMultipleYears(emp_of_manager,work_week,years)
         for each in empEntryCompStatusObj:
             entry_comp_dict[each.emp_id]=each
         
         approval_comp_dict = {}
-        empApprCompStatusObj = EmployeeApprovalCompStatus.objects.findByEmplistAndWeekAndYear(emp_of_manager,work_week,year)
+        empApprCompStatusObj = EmployeeApprovalCompStatus.objects.findByEmplistAndWeekAndMultipleYears(emp_of_manager,work_week,years)
         for each in empApprCompStatusObj:
             approval_comp_dict[each.emp_id]=each
 
@@ -800,12 +800,16 @@ class getHistoricalData(APIView):
                     weekendthree = weekdatesList[-1]
                     week_numberthree=weekdatesList[-1].isocalendar()[1]
                     yearthree=str(weekdatesList[-1]).split('-')[0]
+
+
+
                 else:
                     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(2)))
                     weekstartone = weekdatesList[0]
                     weekendone = weekdatesList[-1]
                     week_numberone=weekdatesList[-1].isocalendar()[1]
                     yearone=str(weekdatesList[-1]).split('-')[0]
+
                     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(3)))
                     week_numbertwo=weekdatesList[-1].isocalendar()[1]
                     weekstarttwo = weekdatesList[0]
@@ -816,8 +820,12 @@ class getHistoricalData(APIView):
                     weekendthree = weekdatesList[-1]
                     week_numberthree=weekdatesList[-1].isocalendar()[1]
                     yearthree=str(weekdatesList[-1]).split('-')[0]
+                
+                yearoneArray =  [str(yearone),str(int(yearone)+1)]
+                yeartwoArray =  [str(yeartwo),str(int(yeartwo)+1)]
+                yearthreeArray =  [str(yearthree),str(int(yearthree)+1)]
                 #taking all last three work weeks and year
-                work_weeks_years = [{'week':week_numberone,'year':yearone},{'week':week_numbertwo,'year':yeartwo},{'week':week_numberthree,'year':yearthree}]
+                work_weeks_years = [{'week':week_numberone,'year':yearoneArray},{'week':week_numbertwo,'year':yeartwoArray},{'week':week_numberthree,'year':yearthreeArray}]
                 manager_overall_work = []
                 #for all employees data
                 if (emp == '-1'):
@@ -826,7 +834,7 @@ class getHistoricalData(APIView):
                     for emp in l3_emp_list:
                         all_l3_emp_list.append(emp['emp_id'])
                     for each in work_weeks_years:
-                        manager_work_his = ManagerWorkHistory.objects.filter(emp_id__in = all_l3_emp_list,work_week = each['week'],created__year=each['year']).values()
+                        manager_work_his = ManagerWorkHistory.objects.filter(emp_id__in = all_l3_emp_list,work_week = each['week'],created__year__in=each['year']).values()
                         # print('manager_work_his',manager_work_his)
 
                         if len(manager_work_his)>0:
@@ -846,7 +854,7 @@ class getHistoricalData(APIView):
                 else:
                     for each in work_weeks_years:
                         
-                        manager_work_his = ManagerWorkHistory.objects.filter(emp_id = emp,work_week = each['week'],created__year=each['year']).order_by('-work_week').values()
+                        manager_work_his = ManagerWorkHistory.objects.filter(emp_id = emp,work_week = each['week'],created__year__in=each['year']).order_by('-work_week').values()
                         # print(manager_work_his,"*************")
                         # print('manager_work_his',manager_work_his)
                         if len(manager_work_his)>0:
