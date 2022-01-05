@@ -73,7 +73,7 @@
 <app-modal-popup #policyDetailsRef [w]="'900px'" [h]="'700px'" [policy_style] ="true" >
   <div head>Policy</div>
   <div style="text-align: center">
-    <pdf-viewer [src]="filepathUrl" [render-text]="true" style="display: block">
+    <pdf-viewer  [src]="filepathUrl" [render-text]="true" style="display: block;position: inherit;">
     </pdf-viewer>
     <!-- <app-secured-file [src]="filepathUrl"></app-secured-file> -->
 

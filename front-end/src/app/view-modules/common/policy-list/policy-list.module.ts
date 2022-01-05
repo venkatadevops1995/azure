@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { ButtonModule } from 'src/app/components/button/button.module';
-import { NgxDocViewerModule } from 'ngx-doc-viewer';
+// import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 
@@ -18,7 +18,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     SvgIconModule,
     ModalPopupModule,
     ButtonModule,
-    NgxDocViewerModule,
+    // NgxDocViewerModule,
     PdfViewerModule
   ]
 })

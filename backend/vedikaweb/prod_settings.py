@@ -209,6 +209,7 @@ VALID_ERROR_MESSAGES = {
     'invalid_email':'invalid_email',
     'valid_token':'valid_token',
     'password_rest_success':'password_rest_success',
+    'project_exitst':'project is already exist'
 
    
     # 'username': 'invalid_username',

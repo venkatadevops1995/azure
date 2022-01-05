@@ -208,6 +208,7 @@ VALID_ERROR_MESSAGES = {
     'invalid_email':'invalid_email',
     'valid_token':'valid_token',
     'password_rest_success':'password_rest_success',
+    'project_exitst':'project is already exist'
 
    
     # 'username': 'invalid_username',
@@ -293,14 +294,15 @@ LOGGING = {
         }
     }
 }
-
 ENABLE_SUPPORT_EMAIL = False
 SUPPORT_EMAIL = 'atwork@atai.ai'
+
 IGNORE_ADMIN_EMAILS=[]
 SENDEMAILTOALL=False
 CUSTOM_EMAILS = ['mahab@atai.ai','sravan@atai.ai','moulali@atai.ai','rhitam@atai.ai']
 
+
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
-ADMINS_TO_ACCESS_REPORTS = ['1sabita.koganti@invecas.com', '1moulali@atai.ai']
+ADMINS_TO_ACCESS_REPORTS = ['1moulali@atai.ai','1prerana@atai.ai']
