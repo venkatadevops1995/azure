@@ -305,6 +305,7 @@ def EmployeeNotificationOne():
         week_year = str(weekend).split('-')[0]
         if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
             week_year = str(weekstart).split('-')[0]
+        week_years= [week_year, str(int(week_year)+1)]
         
         if(n<=0):
             lastyear_last_week_=weekend.isocalendar()[1]
@@ -316,7 +317,7 @@ def EmployeeNotificationOne():
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
             if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
+                entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ],created__year__in=week_years).values().annotate(
                     cnt = Count('cnt'),
                     week_and_year = Concat(
                             'work_week', V('_'),ExtractYear('created'),
@@ -340,7 +341,9 @@ def EmployeeNotificationOne():
                             validweek=True
                     
                     for each_compliance in entry_complaince_statues:
-                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])):
+                        # TODO: temp fix by adding new condition with OR statement
+                        # TODO: (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1))
+                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
                             weekFound=True
                             cnt=each_compliance['cnt']
                        
@@ -407,6 +410,7 @@ def ManagerNotificationThree():
 
         if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
             week_year = str(weekstart).split('-')[0]
+        week_years = [week_year, str(int(week_year)+1)]
 
         if(n<=0):
             lastyear_last_week_=weekend.isocalendar()[1]      
@@ -417,7 +421,7 @@ def ManagerNotificationThree():
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
             if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
+                manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
                     approval_comp_cnt = F('cnt'),
                     week_and_year = Concat(
                             'work_week', V('_'),ExtractYear('created'),
@@ -446,7 +450,9 @@ def ManagerNotificationThree():
                             validweek=True
 
                     for each_compliance in manager_history_obj:
-                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])):
+                        # TODO: temp fix by adding new condition with OR statement
+                        # TODO: | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1))
+                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
                             weekFound=True
                             cnt=each_compliance['approval_comp_cnt']
 
@@ -520,6 +526,7 @@ def EmployeeNotificationTwo():
 
         if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
             week_year = str(weekstart).split('-')[0]
+        week_years= [week_year, str(int(week_year)+1)]
             
         if(n<=0):
             lastyear_last_week_=weekend.isocalendar()[1]
@@ -533,7 +540,7 @@ def EmployeeNotificationTwo():
             if(eachemp.emp_id not in time_submitted_employees_list):
                 managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
                 if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
+                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ],created__year__in=week_years).values().annotate(
                         cnt = Count('cnt'),
                         week_and_year = Concat(
                                 'work_week', V('_'),ExtractYear('created'),
@@ -557,7 +564,9 @@ def EmployeeNotificationTwo():
                                 validweek=True
 
                         for each_compliance in entry_complaince_statues:
-                            if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])):
+                            # TODO: temp fix by adding new condition with OR statement
+                            # TODO: | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year']+1)))
+                            if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
                                 weekFound=True
                                 cnt=each_compliance['cnt']
 
@@ -649,6 +658,7 @@ def ManagerNotificationOneTwo():
         week_year = str(weekend).split('-')[0]
         if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
             week_year = str(weekstart).split('-')[0]
+        week_years = [week_year, str(int(week_year)+1)]
 
         if(n<=0):
             lastyear_last_week_=weekend.isocalendar()[1]      
@@ -677,7 +687,7 @@ def ManagerNotificationOneTwo():
                     
                     resp = []
                     each_emp_comp = []
-                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=each_emp['emp_id'],work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
+                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=each_emp['emp_id'],work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
                         cnt = Count('cnt'),
                         week_and_year = Concat(
                                 'work_week', V('_'),ExtractYear('created'),
@@ -710,7 +720,7 @@ def ManagerNotificationOneTwo():
 
                         for each_compliance in entry_complaince_statues:
                             
-                            if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])):
+                            if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
                                 weekFound=True
                                 cnt=each_compliance['cnt']
                         if(weekFound):
