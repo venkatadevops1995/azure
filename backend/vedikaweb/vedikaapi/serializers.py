@@ -248,6 +248,7 @@ class EmployeeApprovalCompStatusPostSerializer(serializers.ModelSerializer):
         model=EmployeeApprovalCompStatus
         fields='__all__'
 class ManagerWorkHistoryPostSerializer(serializers.ModelSerializer):
+    #No need to pass years  only pass year
     year=serializers.IntegerField()
     def removekey(self,d,key):
         r=dict(d)

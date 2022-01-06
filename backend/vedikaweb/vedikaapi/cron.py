@@ -497,10 +497,11 @@ def EmployeeNotificationTwo():
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
     weekyear = str(weekdatesList[-1]).split('-')[0]
+    weeekyears = [str(weekyear), str(int(weekyear)+1)]
 
     ###TO GET EMPLOYEES WHO HAS SUBMITTED THIS WEEK TIME SHEET####
     
-    time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year=weekyear)).values('emp_id')
+    time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year__in=weeekyears)).values('emp_id')
 
     
     time_submitted_employees_list = list(map(lambda x:x['emp_id'],time_submitted_employees_obj))
@@ -619,6 +620,7 @@ def ManagerNotificationOneTwo():
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
     weekyear = str(weekdatesList[-1]).split('-')[0]
+    weekyears = [str(weekyear), str(int(weekyear)+1)]
     template = get_template('manager_saturday.html')
     last5Weeks=[]
 
@@ -629,10 +631,11 @@ def ManagerNotificationOneTwo():
     previous_week_year = str(previous_weekdatesList[-1]).split('-')[0]
 
     if(dayid==5):
-        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year=weekyear)).values('emp_id')
+        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year__in=weekyears)).values('emp_id')
         condition = lambda emp,list_emp: True if emp not in list_emp else False
         
     if(dayid==6):
+        # Moulali-- Just hoding to consider the previous_week_year to previous_week_year+1
         time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=previous_weeknumber) & Q(created__year=previous_week_year) & Q(status=3)).values('emp_id')
         condition = lambda emp,list_emp: True if emp in list_emp else False
 

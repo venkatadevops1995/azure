@@ -307,7 +307,9 @@ export class PolicyConfigComponent implements OnInit {
     if (this.policyUploadControl.value instanceof File) {
       console.log("file upload", this.policyUploadControl.value);
       const formData = new FormData();
-      formData.append('file', this.policyUploadControl.value)
+      let file__type = this.policyUploadControl.value.type
+      if(file__type === 'application/pdf'){
+        formData.append('file', this.policyUploadControl.value)
       this.http.request('POST', 'policy/upload/', '', formData).subscribe(res => {
         if (res.status == 200) {
           this.ss.statusMessage.showStatusMessage(true, "File has been uploaded successfully");
@@ -322,6 +324,12 @@ export class PolicyConfigComponent implements OnInit {
           this.policyUploadControl.reset()
         }
       })
+      }else{
+        this.ss.statusMessage.showStatusMessage(false, "Only pdf files allowed");
+        this.policyForm.controls.file_name.reset()
+        this.policyForm.controls.display_name.reset()
+        this.policyUploadControl.reset()
+      }
     } else {
 
 
@@ -333,6 +341,7 @@ export class PolicyConfigComponent implements OnInit {
     }
 
   }
+
 
 
   publishPolicy() {

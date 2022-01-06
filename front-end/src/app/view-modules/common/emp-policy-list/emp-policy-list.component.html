@@ -1,6 +1,9 @@
 <div>
   <h2 class="heading">Document</h2>
   <div>
+    <div class="not--exsiting-policy"  *ngIf="EMPLOYEE_FILTERED_DATA.length == 0" >
+      <p>There are no policies available</p>
+  </div>
     <table
       mat-table
       [dataSource]="EMPLOYEE_FILTERED_DATA"
@@ -73,7 +76,7 @@
 <app-modal-popup #policyDetailsRef [w]="'900px'" [h]="'700px'" [policy_style] ="true" >
   <div head>Policy</div>
   <div style="text-align: center">
-    <pdf-viewer [src]="filepathUrl" [render-text]="true" style="display: block">
+    <pdf-viewer  [src]="filepathUrl" [render-text]="true" style="display: block;position: inherit;">
     </pdf-viewer>
     <!-- <app-secured-file [src]="filepathUrl"></app-secured-file> -->
 
