@@ -109,9 +109,10 @@ export class AddProjectComponent implements OnInit {
   saveProject(){ 
     console.log("Save project......");
     console.log(this.projectInputField.value);
-    let formData = {name : this.projectInputField.value}
+    let formData = {name : this.projectInputField.value.trim()}
     this.http.request('post', 'save-project/', '', formData).subscribe(res => {
       if (res.status == 201) {
+        this.project_list_search = []
         this.getAllActiveInActiveProjects();  
         this.ss.statusMessage.showStatusMessage(true, "Project has been created successfully")
       } else if (res.status == 400) {
