@@ -20,9 +20,7 @@ export class PolicyListComponent implements OnInit {
   deleteId = 0
   bearToken: any;
   filepathUrl: any;
-  atai_employee_count :number = 0;
-  soct_employee_count :number = 0;
-  invecas_employee_count :number = 0;
+  group_emp_count:any = {}
 
   // for styling
   policy_style: boolean = true
@@ -45,36 +43,40 @@ export class PolicyListComponent implements OnInit {
       this.http.request("GET","policy/","","").subscribe(res=>{
         if(res.status = 200){
           this.EMPLOYEE_FILTERED_DATA = res.body["results"];
-          let emp_list
-          let count 
-          this.EMPLOYEE_FILTERED_DATA.map((result,i) =>{
-            emp_list = result.emp_list
-            this.atai_employee_count  = 0;
-          this.soct_employee_count  = 0;
-          this.invecas_employee_count  = 0;
-            emp_list.map(emp =>{
-              if(emp.emp_company === 'atai'){
-                this.atai_employee_count += 1 
+          this.EMPLOYEE_FILTERED_DATA.map((pol,i) =>{
+            pol.company_list.map(com =>{
+              if(Object.keys(this.group_emp_count).length === 0){
+                this.group_emp_count[com.company_name] = 0
               }
-              else if(emp.emp_company === 'SoCtronics'){
-                this.soct_employee_count += 1;
-              }
-              else if(emp.emp_company === 'INVECAS'){
-                this.invecas_employee_count += 1;
+              else {
+                Object.keys(this.group_emp_count).map(comp =>{
+                  if(comp === com.company_name){
+                  }else{
+                    this.group_emp_count[com.company_name] = 0
+                  }
+                })
               }
             })
-            result.company_list.map((c_list,j) =>{
-              if(c_list.company_name == 'SoCtronics'){
-                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.soct_employee_count
-              }else if(c_list.company_name == 'atai'){
-                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.atai_employee_count
-              }
-              else if(c_list.company_name == 'INVECAS'){
-                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.invecas_employee_count
-              }
+
+            pol.emp_list.map(emp =>{
+              Object.keys(this.group_emp_count).map(company =>{
+                if(company === emp.emp_company){
+                  this.group_emp_count[company] = this.group_emp_count[company] + 1
+                }
+              })
+
+            })
+            pol.company_list.map((c_list ,j)=>{
+              Object.keys(this.group_emp_count).map(c_name =>{
+                if(c_list.company_name === c_name){
+                  this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.group_emp_count[c_name]
+                }
+              })
+              
             })
             
-          })
+          })         
+          console.log("After all modification :%%%%",this.EMPLOYEE_FILTERED_DATA)
         
         }else{
           this.ss.statusMessage.showStatusMessage(false,"Error while getting policies")
