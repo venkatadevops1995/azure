@@ -44,6 +44,7 @@
         <td mat-cell *matCellDef="let element">
           <div class="company" *ngFor="let com of element.company_list">
             {{ com.company_name }}
+            <button class="badge--custom">{{com.count}} </button>
           </div>
         </td>
       </ng-container>
