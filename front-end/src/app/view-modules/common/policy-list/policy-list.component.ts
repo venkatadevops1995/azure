@@ -20,6 +20,9 @@ export class PolicyListComponent implements OnInit {
   deleteId = 0
   bearToken: any;
   filepathUrl: any;
+  atai_employee_count :number = 0;
+  soct_employee_count :number = 0;
+  invecas_employee_count :number = 0;
 
   // for styling
   policy_style: boolean = true
@@ -41,7 +44,38 @@ export class PolicyListComponent implements OnInit {
     this.EMPLOYEE_FILTERED_DATA = []
       this.http.request("GET","policy/","","").subscribe(res=>{
         if(res.status = 200){
-          this.EMPLOYEE_FILTERED_DATA = res.body["results"]
+          this.EMPLOYEE_FILTERED_DATA = res.body["results"];
+          let emp_list
+          let count 
+          this.EMPLOYEE_FILTERED_DATA.map((result,i) =>{
+            emp_list = result.emp_list
+            this.atai_employee_count  = 0;
+          this.soct_employee_count  = 0;
+          this.invecas_employee_count  = 0;
+            emp_list.map(emp =>{
+              if(emp.emp_company === 'atai'){
+                this.atai_employee_count += 1 
+              }
+              else if(emp.emp_company === 'SoCtronics'){
+                this.soct_employee_count += 1;
+              }
+              else if(emp.emp_company === 'INVECAS'){
+                this.invecas_employee_count += 1;
+              }
+            })
+            result.company_list.map((c_list,j) =>{
+              if(c_list.company_name == 'SoCtronics'){
+                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.soct_employee_count
+              }else if(c_list.company_name == 'atai'){
+                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.atai_employee_count
+              }
+              else if(c_list.company_name == 'INVECAS'){
+                this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.invecas_employee_count
+              }
+            })
+            
+          })
+        
         }else{
           this.ss.statusMessage.showStatusMessage(false,"Error while getting policies")
         }

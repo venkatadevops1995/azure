@@ -48,9 +48,9 @@ class CreatePolicyView(APIView):
             each_data = {}
             each_data.update(PolicyDocumentSerializer(each_policy).data)
             each_data.update({'company_list':list(each_policy.policycompany_set.filter(status=1).annotate(company_name=F('company__name'),cmpny_id=F('company__id')).values('company_name','cmpny_id'))})
-            emp_list = list(each_policy.policydocumentemployeeaccesspermission_set.filter(status=1).annotate(emp_name=F('emp__emp_name')).values('emp_name','emp_id'))
+            emp_list = list(each_policy.policydocumentemployeeaccesspermission_set.filter(status=1).annotate(emp_company = F('emp__company'), emp_name=F('emp__emp_name')).values('emp_name','emp_id', 'emp_company'))
             if(pk is None):
-                emp_action = list(each_policy.policydocumentemployeeaction_set.filter(status=1).annotate(emp_name=F('emp__emp_name')).values('emp_name','is_policy_accepted','upload_status','upload_policy_document','emp_id'))
+                emp_action = list(each_policy.policydocumentemployeeaction_set.filter(status=1).annotate(emp_company = F('emp__company'), emp_name=F('emp__emp_name')).values('emp_name','is_policy_accepted','upload_status','upload_policy_document','emp_id','emp_company'))
             else:
                 emp_action = []
             # emps = list(map(lambda x: x.update(emp) for emp in emp_list if emp.emp_id == x.emp_id else x,emp_action))
@@ -281,7 +281,7 @@ class PolicyUpload(APIView):
             # response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
             # response["Access-Control-Max-Age"] = "1000"
             # response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
-            
+
             return response
            
         except Exception as e:
