@@ -45,19 +45,8 @@ export class PolicyListComponent implements OnInit {
           this.EMPLOYEE_FILTERED_DATA = res.body["results"];
           this.EMPLOYEE_FILTERED_DATA.map((pol,i) =>{
             pol.company_list.map(com =>{
-              if(Object.keys(this.group_emp_count).length === 0){
-                this.group_emp_count[com.company_name] = 0
-              }
-              else {
-                Object.keys(this.group_emp_count).map(comp =>{
-                  if(comp === com.company_name){
-                  }else{
-                    this.group_emp_count[com.company_name] = 0
-                  }
-                })
-              }
+              this.group_emp_count[com.company_name] = 0
             })
-
             pol.emp_list.map(emp =>{
               Object.keys(this.group_emp_count).map(company =>{
                 if(company === emp.emp_company){
