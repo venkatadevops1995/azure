@@ -66,14 +66,23 @@ export class PolicyListComponent implements OnInit {
               })
 
             })
-            pol.company_list.map((c_list ,j)=>{
-              Object.keys(this.group_emp_count).map(c_name =>{
-                if(c_list.company_name === c_name){
-                  this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.group_emp_count[c_name]
-                }
+            if(pol.enable_for === 'ALL'){
+              pol.company_list.map((c_list ,j)=>{
+                Object.keys(this.group_emp_count).map(c_name =>{
+                    this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = 'ALL'
+                })
+                
               })
-              
-            })
+            }else{
+              pol.company_list.map((c_list ,j)=>{
+                Object.keys(this.group_emp_count).map(c_name =>{
+                  if(c_list.company_name === c_name){
+                    this.EMPLOYEE_FILTERED_DATA[i].company_list[j].count = this.group_emp_count[c_name]
+                  }
+                })
+                
+              })
+            }
             
           })         
           console.log("After all modification :%%%%",this.EMPLOYEE_FILTERED_DATA)
