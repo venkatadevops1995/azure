@@ -26,10 +26,11 @@ export class DownloadMisComponent implements OnInit {
     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
     'This Month': [moment().startOf('month'), moment().endOf('month')],
     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
     // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
   }
-  maxDate = moment();
+  // maxDate = moment().subtract(0, 'days');
+  minDate = moment().subtract(2, 'year');
   selected :any = {} ;
   selectedEmpId: any;
   value:any;
@@ -76,10 +77,6 @@ export class DownloadMisComponent implements OnInit {
     }
       console.log(this.fromdate,this.todate)
 
-      this.getAllDate()
-  }
-  getAllDate(){
-    console.log(`From date : ${this.fromdate} to date : ${this.todate} and disabaleEmployee is : ${this.Ischecked}`)
   }
   
 

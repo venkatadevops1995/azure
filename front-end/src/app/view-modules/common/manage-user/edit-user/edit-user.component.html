@@ -241,11 +241,11 @@
     </div>
     <div class="p-15">
         <div class="delete__emp">
-            <p>You want to delete : <span> {{ disableEmpName ? disableEmpName : '' }}</span> </p>
+            <p>You want to disable : <span> {{ disableEmpName ? disableEmpName : '' }}</span> </p>
         </div>
        <form [formGroup]="deleteUserForm" >
         <mat-form-field class="custompicker">
-            <mat-label>Date of Leaving</mat-label>
+            <mat-label>Relivied Date</mat-label>
             <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
                 formControlName="dol" [closeOnAutoApply]="true" [autoApply]="true" readonly>
             <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
@@ -253,7 +253,7 @@
               </button> -->
             <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" (click)="open(picker)">date_range</mat-icon>
             <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
-                Please select Date of Leaving
+                Please select Relivied Date
             </mat-error>
         </mat-form-field>
        </form>

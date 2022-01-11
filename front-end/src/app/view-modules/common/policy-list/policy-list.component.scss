@@ -32,12 +32,15 @@ tr.mat-row, tr.mat-footer-row {
     color: white;
     border: none;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     text-align: center;
     position: absolute;
     top: -20px;
-    font-size: 8px;
+    font-size: 14px;
     left: -20px;
     font-weight: bold;
+}
+.badge--custom--sm{
+    font-size: 10px !important;
 }
