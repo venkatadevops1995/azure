@@ -106,6 +106,13 @@ def employee_time_entry_complaince(prev_week=1):
         l_ = Leave.objects.filter(leave_request__emp_id=eachdata['emp'],leave_on__in=eachdata['weekdatesList'],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value])
         if(len(l_)>=5):
             log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION".format(eachdata['emp']))
+            proj=Project.objects.get(name=DefaultProjects.General.value)
+            wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION"}]}
+            wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
+            wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
+            if(wsr_post_serializer.is_valid()):
+                wsr_post_serializer.save()
+                log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
             complaince_cnt=complaince_cnt-1
         else:
             vac_hol_list = list(map(lambda x:x.leave_on.date(),l_))
@@ -116,8 +123,18 @@ def employee_time_entry_complaince(prev_week=1):
                     if((eachdate==each_holiday) and (eachdate not in vac_hol_list)):
                         vac_hol_list.append(eachdate)
             if(len(vac_hol_list)>=5):
+                proj=Project.objects.get(name=DefaultProjects.General.value)
+                wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION/HOLIDAY"}]}
+                wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
+                wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
+                if(wsr_post_serializer.is_valid()):
+                    wsr_post_serializer.save()
+                    log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
                 log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION/HOLIDAY".format(eachdata['emp']))
-                complaince_cnt=complaince_cnt-1
+                # complaince_cnt=complaince_cnt-1
+                eachdata['status'] = 3
+                final_nc_list.append(eachdata)
+                final_work_approval_data.append(work_approval_data[i])
             else:
                 final_nc_list.append(eachdata)
                 final_work_approval_data.append(work_approval_data[i])
