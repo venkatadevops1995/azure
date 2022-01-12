@@ -44,13 +44,13 @@
         <td mat-cell *matCellDef="let element">
           <div class="company" *ngFor="let com of element.company_list">
             {{ com.company_name }}
-            <button class="badge--custom">{{com.count}} </button>
+            <button class="badge--custom" [ngClass] = " com.count > 99 || com.count == 'ALL' ? 'badge--custom--sm ': ''">{{com.count}} </button>
           </div>
         </td>
       </ng-container>
       <ng-container matColumnDef="view">
-        <th mat-header-cell *matHeaderCellDef>View</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef  >View</th>
+        <td mat-cell *matCellDef="let element" title="View Policy">
           <span
             class="ml-5"
             [svgIcon]="{ url: './assets/icons-sprite.svg#info', w: 20, h: 20 }"
@@ -65,24 +65,17 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef>Edit</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef >Edit</th>
+        <td mat-cell *matCellDef="let element" title="Edit Policy">
           <span
-            class="ml-5"
+            class="ml-5 material-icons"
             (click)="navigateToEdit(element.id, element.policy_type)"
-            [svgIcon]="{ url: './assets/icons-sprite.svg#edit', w: 20, h: 20 }"
-            style="
-              color: var(--color-tertiary);
-              margin-top: 0px;
-              cursor: pointer;
-            "
-            svg-fill="#CCCCCC"
-          ></span>
+             style="color: black;cursor: pointer;margin-bottom: 10px;"><span style="font-size: 16px">mode_edit</span></span>
         </td>
       </ng-container>
       <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef >Delete</th>
+        <td mat-cell *matCellDef="let element" title="Delete Policy">
           <span
             class="ml-5"
             [svgIcon]="{
