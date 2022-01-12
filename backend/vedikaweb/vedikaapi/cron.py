@@ -93,7 +93,7 @@ def employee_time_entry_complaince(prev_week=1):
                 wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
                 if(wsr_post_serializer.is_valid()):
                     wsr_post_serializer.save()
-                    log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
+                    log.info("WSR ADDED FOR EMPID {}".format(each.emp_id))
             # we need to pass years to handing if the week data fall in between two years
             work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'status':WorkApprovalStatuses.EntryComplaince.value})
             entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'cnt':1,'weekdatesList':weekdatesList})
@@ -108,12 +108,13 @@ def employee_time_entry_complaince(prev_week=1):
             log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION".format(eachdata['emp']))
             proj=Project.objects.get(name=DefaultProjects.General.value)
             wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION"}]}
-            wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
+            wsr_req=c.get_post_req_for_wsr(eachdata['emp'],wsr_dummy_data,prev_week=prev_week)
             wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
             work_approval_data[i]['status'] = 0
             if(wsr_post_serializer.is_valid()):
                 wsr_post_serializer.save()
-                log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
+                final_work_approval_data.append(work_approval_data[i])
+                log.info("WSR ADDED FOR EMPID {}".format(eachdata['emp']))
             complaince_cnt=complaince_cnt-1
         else:
             vac_hol_list = list(map(lambda x:x.leave_on.date(),l_))
@@ -127,11 +128,12 @@ def employee_time_entry_complaince(prev_week=1):
                 work_approval_data[i]['status'] = 0
                 proj=Project.objects.get(name=DefaultProjects.General.value)
                 wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION/HOLIDAY"}]}
-                wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
+                wsr_req=c.get_post_req_for_wsr(eachdata['emp'],wsr_dummy_data,prev_week=prev_week)
                 wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
                 if(wsr_post_serializer.is_valid()):
                     wsr_post_serializer.save()
-                    log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
+                    final_work_approval_data.append(work_approval_data[i])
+                    log.info("WSR ADDED FOR EMPID {}".format(eachdata['emp']))
                 log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION/HOLIDAY".format(eachdata['emp']))
                 complaince_cnt=complaince_cnt-1
             else:
