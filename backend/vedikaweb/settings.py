@@ -7,7 +7,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 config = configparser.SafeConfigParser(allow_no_value=True, interpolation=None)
 
 
-config.read('%s/configs/madan.config' % (PROJECT_DIR))
+config.read('%s/configs/dev.config' % (PROJECT_DIR))
 logFolder =  '%s/logs' % (PROJECT_DIR)
 if not os.path.exists(logFolder):
     os.makedirs(logFolder)
@@ -94,18 +94,18 @@ MIDDLEWARE = [
 ]
 
 CRONJOBS = [
-    # ('30 * * * *', 'vedikaweb.vedikaapi.cron.sentWelcomeEmail'),
+    ('30 * * * *', 'vedikaweb.vedikaapi.cron.sentWelcomeEmail'),
     ('5 0 * * 0', 'vedikaweb.vedikaapi.cron.employee_time_entry_complaince'),
-    # ('5 0 * * 3', 'vedikaweb.vedikaapi.cron.employee_approval_complaince'),
-    # ('5 0 * * 2', 'vedikaweb.vedikaapi.cron.ManagerNotificationThree'),#EVERY TUESDAY MANAGER MAIL
-    # ('5 0 * * 5', 'vedikaweb.vedikaapi.cron.EmployeeNotificationOne'),#EVERY FRIDAY EMPLOYEE MAIL
-    # ('5 0 * * 6', 'vedikaweb.vedikaapi.cron.EmployeeNotificationTwo'),#EVERY SATURDAY EMPLOYEE REMAINDER MAIL
-    # ('5 1 * * 6', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SATURDAY MANAGER MAIL
-    # ('5 1 * * 0', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SUNDAY MANAGER MAIL
-    # ('5 1 * * 3', 'vedikaweb.vedikaapi.cron.ModifyProjectsCron'), #EVERY WEDNESDAY PROJECT UPDATE 
-    # ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
-    # ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
-    # ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
+    ('5 0 * * 3', 'vedikaweb.vedikaapi.cron.employee_approval_complaince'),
+    ('5 0 * * 2', 'vedikaweb.vedikaapi.cron.ManagerNotificationThree'),#EVERY TUESDAY MANAGER MAIL
+    ('5 0 * * 5', 'vedikaweb.vedikaapi.cron.EmployeeNotificationOne'),#EVERY FRIDAY EMPLOYEE MAIL
+    ('5 0 * * 6', 'vedikaweb.vedikaapi.cron.EmployeeNotificationTwo'),#EVERY SATURDAY EMPLOYEE REMAINDER MAIL
+    ('5 1 * * 6', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SATURDAY MANAGER MAIL
+    ('5 1 * * 0', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SUNDAY MANAGER MAIL
+    ('5 1 * * 3', 'vedikaweb.vedikaapi.cron.ModifyProjectsCron'), #EVERY WEDNESDAY PROJECT UPDATE 
+    ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
+    ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
+    ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
 ]
 
 ROOT_URLCONF = 'vedikaweb.urls'

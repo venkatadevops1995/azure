@@ -75,5 +75,6 @@ backend/EMP-files/
 /front-end/package-lock.json
 
 backend/vedikaweb/configs/dipak.config
+backend/vedikaweb/configs/madan.config
 
 
