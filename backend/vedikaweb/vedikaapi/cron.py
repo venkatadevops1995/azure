@@ -110,6 +110,7 @@ def employee_time_entry_complaince(prev_week=1):
             wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION"}]}
             wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
             wsr_post_serializer=WeeklyStatusPostSerializer(data=wsr_req,many=True)
+            work_approval_data[i]['status'] = 0
             if(wsr_post_serializer.is_valid()):
                 wsr_post_serializer.save()
                 log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
@@ -123,6 +124,7 @@ def employee_time_entry_complaince(prev_week=1):
                     if((eachdate==each_holiday) and (eachdate not in vac_hol_list)):
                         vac_hol_list.append(eachdate)
             if(len(vac_hol_list)>=5):
+                work_approval_data[i]['status'] = 0
                 proj=Project.objects.get(name=DefaultProjects.General.value)
                 wsr_dummy_data={'wsr_date':str(weekdatesList[-1]),'weekly_status':[{'project_id':proj.id,'report':"ALL WORKING DAYS ARE VACATION/HOLIDAY"}]}
                 wsr_req=c.get_post_req_for_wsr(each.emp_id,wsr_dummy_data,prev_week=prev_week)
