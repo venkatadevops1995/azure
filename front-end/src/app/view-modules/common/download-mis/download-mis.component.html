@@ -6,8 +6,8 @@
             
             <div class="mis__datepicker" [ngClass]= "Ischecked ? '' :'disable'" class="dateinput" style="max-width: 300px;margin: 30px 0;">
 
-                <input [disabled]="Ischecked ? false : true" [ngClass]= "Ischecked ? '' :'disable__input'" type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
-                    [maxDate]='maxDate' class="ngx-daterangepicker-action datepicker__input" (datesUpdated)="updateRange($event)" style="background: none; border: none;">
+                <input  [minDate]='minDate' [disabled]="Ischecked ? false : true" [ngClass]= "Ischecked ? '' :'disable__input'" type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
+                 class="ngx-daterangepicker-action datepicker__input" (datesUpdated)="updateRange($event)" style="background: none; border: none;">
                 <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)" style="background: none; border: none;cursor: pointer;">
                     <mat-icon role="img" (click)="open($event)" [ngClass]= "Ischecked ? '' :'disable--icon'" class="mat-icon material-icons calender-icon ngx-daterangepicker-action">date_range</mat-icon>
                 </button>
