@@ -26,7 +26,7 @@ class WorkApprovalStatuses(IntEnum):
     Pending = 0
     Approved = 1
     Rejected = 2
-    EntryComplaince = 3
+    EntryComplaince = 0
     ApprovalComplaince = 4
     
 

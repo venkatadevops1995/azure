@@ -131,10 +131,7 @@ def employee_time_entry_complaince(prev_week=1):
                     wsr_post_serializer.save()
                     log.info("WSR ADDED FOR EMPID{}".format(each.emp_id))
                 log.info("NO NC FOR EMP ID {} BEACUSE ALL WORKING DAYS ARE VACATION/HOLIDAY".format(eachdata['emp']))
-                # complaince_cnt=complaince_cnt-1
-                eachdata['status'] = 3
-                final_nc_list.append(eachdata)
-                final_work_approval_data.append(work_approval_data[i])
+                complaince_cnt=complaince_cnt-1
             else:
                 final_nc_list.append(eachdata)
                 final_work_approval_data.append(work_approval_data[i])
