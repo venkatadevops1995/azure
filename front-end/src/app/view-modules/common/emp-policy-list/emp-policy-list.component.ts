@@ -18,7 +18,8 @@ export class EmpPolicyListComponent implements OnInit {
   
   employeePopupColumns = ["sno", "policy_name", "updated_date", "view"]
   EMPLOYEE_FILTERED_DATA = []
-  deleteId = 0
+  deleteId = 0;
+  clicked_policy_name:string
   filepathUrl: any;
   constructor( private http: HttpClientService,
     private ss: SingletonService,
@@ -47,7 +48,8 @@ export class EmpPolicyListComponent implements OnInit {
   fileResponse:any;
   bearToken:any;  
   
-  openPolicyDetails(id){
+  openPolicyDetails(policy_name,id){
+    this.clicked_policy_name = policy_name
     this.policyDetailModal.open()
     this.bearToken = this.user.getToken();
     this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken

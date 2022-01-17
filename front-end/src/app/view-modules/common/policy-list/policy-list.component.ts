@@ -24,6 +24,7 @@ export class PolicyListComponent implements OnInit {
 
   // for styling
   policy_style: boolean = true
+  clicked_policy_name:string
   constructor( private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
@@ -83,7 +84,8 @@ export class PolicyListComponent implements OnInit {
   }
 
   fileResponse:any;
-  openPolicyDetails(id){
+  openPolicyDetails(policy_name,id){
+    this.clicked_policy_name = policy_name
     this.policyDetailModal.open()
 
     this.bearToken = this.user.getToken();
