@@ -77,5 +77,6 @@ backend/EMP-files/
 backend/vedikaweb/configs/dipak.config
 backend/vedikaweb/configs/madan.config
 backend/upload-local/EMP-files/policy
-
+/app/node_modules/
+/app/templates/
 

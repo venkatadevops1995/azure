@@ -699,7 +699,9 @@ class EmployeeEntryComplianceStatus(APIView):
             if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
                 week_year = str(weekstart).split('-')[0]
             week_years = [week_year, str(int(week_year)+1)]
-            if(n<=0):
+            if(n>=0):
+                n=n+1
+            if(n<0):
                 lastyear_last_week_=weekend.isocalendar()[1]
                 n=lastyear_last_week_
             last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
