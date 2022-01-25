@@ -21,6 +21,7 @@ export class EmpPolicyListComponent implements OnInit {
   deleteId = 0;
   clicked_policy_name:string
   filepathUrl: any;
+  isLoaderVisible:boolean = true
   constructor( private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
@@ -33,7 +34,10 @@ export class EmpPolicyListComponent implements OnInit {
     this.getPolicies();
     console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
   }
-  
+  loader(){
+    this.isLoaderVisible = false
+    console.log("Pdf is after load complete")
+    }
   getPolicies(){
     this.EMPLOYEE_FILTERED_DATA = []
       this.http.request("GET","policy/emp-policy/","","").subscribe(res=>{
@@ -51,6 +55,7 @@ export class EmpPolicyListComponent implements OnInit {
   openPolicyDetails(policy_name,id){
     this.clicked_policy_name = policy_name
     this.policyDetailModal.open()
+    this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
     this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken
    

@@ -5,3 +5,12 @@
     font-size: 20px;
     margin-top: 100px;
 }
+// style for loader
+.loader--string{
+    display: block;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}

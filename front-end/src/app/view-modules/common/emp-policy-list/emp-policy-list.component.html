@@ -74,6 +74,9 @@
 </div>
 
 <app-modal-popup #policyDetailsRef [w]="'900px'" [h]="'700px'" [policy_style] ="true" >
+  <div class="loader--string" *ngIf="isLoaderVisible" >
+    Loading....
+  </div>
   <div head>{{clicked_policy_name}}</div>
   <div style="text-align: center">
     <pdf-viewer  [src]="filepathUrl" [render-text]="true" style="display: block;position: inherit;">
