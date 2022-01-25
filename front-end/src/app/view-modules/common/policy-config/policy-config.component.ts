@@ -364,6 +364,10 @@ export class PolicyConfigComponent implements OnInit {
           this.policyForm.reset({ 'policy_type': policy_type, 'enable_for': 'ALL' })
           this.policyUploadControl.reset()
           this.publishPolicyModal.close()
+          this.SELECTED_EMPLOYEE_DATA = [];
+          this.emp_count = 0;
+          this.companyList.completed = true;
+          this.companyList.subtasks.forEach(t => t.completed = true);
         } else {
           this.ss.statusMessage.showStatusMessage(false, "Issue while creating policy");
 

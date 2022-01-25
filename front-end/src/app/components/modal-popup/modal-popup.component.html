@@ -16,7 +16,7 @@
       <ng-content select="[head]"></ng-content>
       <div class="close" #content>
         <!-- <mat-icon class="white-icon">close</mat-icon> -->
-        <div
+        <div *ngIf ="!iscloseBtnVisible"
           (click)="close()"
           [svgIcon]="{ url: './assets/icons-sprite.svg#close-circle', w: 30 }"
           style="fill: #fff; cursor: pointer"
