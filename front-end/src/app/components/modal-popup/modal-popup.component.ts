@@ -114,6 +114,8 @@ export class ModalPopupComponent {
 
     // for policy list styling
      @Input() policy_style: boolean 
+    // for hide the close button in policy updation popup
+     @Input()iscloseBtnVisible:boolean;
 
     minHeight;
 

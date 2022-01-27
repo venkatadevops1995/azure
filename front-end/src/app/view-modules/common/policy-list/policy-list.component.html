@@ -104,10 +104,13 @@
 </div>
 
 <app-modal-popup #policyDetailsRef [w]="'900px'" [h]="'700px'" [policy_style] ="true" >
+  <div class="loader--string" *ngIf="isLoaderVisible" >
+    Loading....
+  </div>
   <div head>{{clicked_policy_name}}</div>
   <div style="text-align: center">
     <!-- ===================== {{fileResponse}}============ -->
-    <pdf-viewer [src]="filepathUrl" [render-text]="true" style="display: block ; position: inherit;">
+    <pdf-viewer [src]="filepathUrl" (page-rendered)="pageRendered($event)" (after-load-complete) ="loader()" [render-text]="true" style="display: block ; position: inherit;">
     </pdf-viewer>
     <!-- <pdf-viewer [src]="pdfSrc" [render-text]="true" style="display: block;"></pdf-viewer> -->
 
