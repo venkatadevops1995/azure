@@ -688,8 +688,8 @@ class EmployeeEntryComplianceStatus(APIView):
         resp=[]
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
         weeknumber=weekdatesList[-1].isocalendar()[1]
-        if(datetime.now().weekday() <2 or datetime.now().weekday() >5):
-            weeknumber = weeknumber -1
+        # if(datetime.now().weekday() >5):
+        #     weeknumber = weeknumber -1
         last5Weeks=[]
         for  i in range(1,6):
             n=weeknumber-i
@@ -699,9 +699,9 @@ class EmployeeEntryComplianceStatus(APIView):
             if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
                 week_year = str(weekstart).split('-')[0]
             week_years = [week_year, str(int(week_year)+1)]
-            if(n>=0):
-                n=n+1
-            if(n<0):
+            # if(n>=0):
+            #     n=n+1
+            if(n<=0):
                 lastyear_last_week_=weekend.isocalendar()[1]
                 n=lastyear_last_week_
             last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
