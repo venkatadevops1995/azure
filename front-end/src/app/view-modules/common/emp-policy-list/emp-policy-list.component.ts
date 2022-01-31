@@ -58,7 +58,7 @@ export class EmpPolicyListComponent implements OnInit {
     this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
     this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken
-   
+    this.isLoaderVisible = false
      
 
   }
