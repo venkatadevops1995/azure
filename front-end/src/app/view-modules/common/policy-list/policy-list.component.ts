@@ -40,12 +40,13 @@ export class PolicyListComponent implements OnInit {
     console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
   }
   loader(){
-  this.isLoaderVisible = false
-  console.log("Pdf is after load complete")
+    this.isLoaderVisible = true
   }
   pageRendered(e: CustomEvent) {
-    console.log('(page-rendered)', e);
-    // this.isLoaderVisible = !this.isLoaderVisible
+    this.isLoaderVisible = false
+  }
+  pageInitialized(e: CustomEvent) {
+    this.isLoaderVisible = false
   }
   
   getPolicies(){
@@ -96,12 +97,8 @@ export class PolicyListComponent implements OnInit {
   openPolicyDetails(policy_name,id){
     this.clicked_policy_name = policy_name
     this.policyDetailModal.open()
-    this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
     this.filepathUrl =this.ss.baseUrl+ "policy/upload?policy_id="+id+"&btoken="+this.bearToken
-    this.isLoaderVisible = false
-  
-     
 
   }
   openDeletePolicy(id){
