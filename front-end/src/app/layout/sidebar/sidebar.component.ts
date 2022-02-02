@@ -20,19 +20,19 @@ import { KeyValue } from '@angular/common';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  // the array to hold the menu  
+  // the array to hold the menu
   menu: Array<any> = [
 
   ]
   originalOrder = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
     return 0;
   }
-  
+
   menu_array = {"Dashboard":[],"TimeSheet":["Entry","Resolve","Rejected"],"Attendance":[],"EmployeeManagement":["Add","Edit","Transfer","Projects"],"Holiday":[],"LeaveManagement":["ApplyLeave","Policy","Team Leaves","leave"]}
   // subject helpful in clearning all subscriptions
   destroy$: Subject<any> = new Subject();
 
-  // prop to hold username 
+  // prop to hold username
   username: string = "Vedika";
 
   // the route prefix which is unique for each role
@@ -114,10 +114,10 @@ export class SidebarComponent implements OnInit {
   }
 
   checkHrAccessForreports(){
-    
+
     this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
       if (res.status == 200) {
-        
+
         this.isReportsAccessable = res.body;
       }
     })
@@ -146,23 +146,27 @@ export class SidebarComponent implements OnInit {
           console.log(res.body.attendance_flag == false, res.body.attendance_flag)
           this.ss.attendanceFlag = res.body.attendance_flag;
           // console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
-          
+
           let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
           if (res.body.attendance_flag == false) {
-            this.menu = this.menu.filter(item => item.link != "attendance"); 
+            this.menu = this.menu.filter(item => item.link != "attendance");
           } if(!is_hr && this.user.getDataFromToken('role_id')==1){
-            this.menu = this.menu.filter(item => item.text != "Employee Management" ); 
+            this.menu = this.menu.filter(item => item.text != "Employee Management" );
           }
-         if(!is_hr || !this.isReportsAccessable){
+         if(!is_hr){
             this.menu = this.menu.filter(item => item.text != "HR Reports" );
+
+          }
+          if(!this.isReportsAccessable){
+
             this.menu = this.menu.filter(item => item.text != "MIS" );
           }
 
-          // if(!is_hr){ 
+          // if(!is_hr){
             this.menu.forEach(m=>{
               if(m.hasOwnProperty("submenu")){
                 if(!is_hr){
-                  
+
               m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  )&& (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") &&(item.link!="document-config")&&(item.link!="document-list"));
                 }
                 if(!is_hr && this.user.getDataFromToken('role_id')==1){
@@ -175,7 +179,7 @@ export class SidebarComponent implements OnInit {
 
             })
             // this.menu = this.menu.filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  && (item.link != "add-user")));
-            
+
           // }
           if(leave_res.body.leave_flag == false){
             this.menu = this.menu.filter(item => (item.text != "Leave Management" &&  item.text != "Holidays" && item.text != "Employee Management") );
@@ -183,7 +187,7 @@ export class SidebarComponent implements OnInit {
         }
         })
         }
-      
+
     })
       if (this.ss.loggedIn) {
         this.checkForRejectedTimesheet();
@@ -194,7 +198,7 @@ export class SidebarComponent implements OnInit {
         //   item.showDot = (res.body.length > 0);
         // }
         console.log("-----------------------",item);
-          
+
         if(item.text=="Timesheet" && item.hasOwnProperty("submenu")){
           console.log("-----------------------",item);
         item["submenu"].forEach(e=>{
@@ -206,7 +210,7 @@ export class SidebarComponent implements OnInit {
         })
 
       }
-        
+
       });
       console.log(res);
     })
@@ -225,7 +229,7 @@ export class SidebarComponent implements OnInit {
         // append the show error flag to the rejected time sheets menu item
         this.menu.forEach(item => {
 
-          
+
           if(item.text=="Timesheet" && item.hasOwnProperty("submenu")){
 
           item["submenu"].forEach(e=>{
@@ -237,7 +241,7 @@ export class SidebarComponent implements OnInit {
 
         }
         })
-        
+
       }
       else if (res.status == 400) {
         console.log(res.error.Message);
