@@ -930,7 +930,8 @@ class AllActiveInActiveProjects(APIView):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         is_hr = auth_details['is_emp_admin']
-        if(is_hr):
+        email = str(auth_details['email'])
+        if(is_hr | email in settings.ADMINS_TO_ACCESS_REPORTS):
             exitingProject = Project.objects.filter(name = request.data['name']).exists()
             if (exitingProject):
                 return Response(utils.StyleRes(False,settings.VALID_ERROR_MESSAGES['project_exitst'],{}), status=StatusCode.HTTP_BAD_REQUEST)
