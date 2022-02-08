@@ -153,12 +153,9 @@ export class SidebarComponent implements OnInit {
           } if(!is_hr && this.user.getDataFromToken('role_id')==1){
             this.menu = this.menu.filter(item => item.text != "Employee Management" );
           }
-         if(!is_hr ){
-            this.menu = this.menu.filter(item => item.text != "HR Reports" );
-          }
-
-          if(!this.isReportsAccessable){
-            this.menu = this.menu.filter(item => item.text != "MIS" );
+         if(!is_hr ||!this.isReportsAccessable ){
+          this.menu = this.menu.filter(item => item.text != "HR Reports" );
+          this.menu = this.menu.filter(item => item.text != "MIS" );
           }
 
           // if(!is_hr){
