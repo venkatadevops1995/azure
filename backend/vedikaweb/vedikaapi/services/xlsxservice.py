@@ -2,7 +2,7 @@ import xlsxwriter
 from django.http import HttpResponse
 
 header_format = {'font_size': 10,'bold':True,'font_name':'Arial','align':'center','bg_color':'#4FA67B','border':1}
-disable_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'center','bg_color':'red','border':1}
+disable_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'center','bg_color':'red','border':1,'num_format': 'yyyy-mm-dd'}
 
 cell_format = {'font_size': 10,'font_name':'Arial','align':'center'}
 merge_format = {
@@ -53,6 +53,8 @@ class ExcelServices:
                     self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,closeFlag=False,formulaColms=[4])
                 else:
                     self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,datetimeColList=[5],customFormat={'num_format':'HH:MM'},closeFlag=False)
+            elif(i == 2):
+                self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,closeFlag=False)
             else:
                 self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,datetimeColList=[5,6],customFormat={'num_format':'[HH]:MM'},closeFlag=False)
         self.workbook.close()
@@ -90,6 +92,7 @@ class ExcelServices:
 
                     elif(len(datetimeColList)>0):
                         if col in datetimeColList:
+                            customFormat.__dict__['font_size'] = 10
                             worksheet.write_datetime(row_nums, col , regra[each],customFormat)
                         else:
                             worksheet.write(row_nums, col , regra[each],self.cell_format)

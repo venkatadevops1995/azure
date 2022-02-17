@@ -971,3 +971,11 @@ class PolicyDocumentEmployeeAction(models.Model):
     class Meta:
         managed = False
         db_table = 'policy_document_employee_action'
+
+class StageEmpolyee(models.Model):
+    emp_id = models.IntegerField()
+    status = models.IntegerField(default=1)
+    relieved = models.DateField()
+    class Meta:
+        managed = False
+        db_table = 'stage_employee'

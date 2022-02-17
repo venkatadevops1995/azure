@@ -8,7 +8,8 @@ from datetime import date
 from itertools import groupby
 
 from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded
-
+from django.core.mail import EmailMessage
+import os
 # Serialisers
 from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireLeaveConfigSerializer, LeaveConfigSerializer,  LeaveBalanceSerializer, LeaveRequestSerializer, LeaveDetailsSerializer, LeaveTypeSerializer, UpdateLeaveConfigSerializer,  IdOnlySerializer, EmployeeProjectTimeTrackerSerializer, LeaveBalanceUploadedSerializer
 
@@ -752,16 +753,24 @@ class ExportResolvedLeaves(APIView):
         excel_data= [columns]
         sheet2_columns = ['Staff No', 'Name', 'Total Leavels']
         sheets2_data=[sheet2_columns]
+        hr_columns = ['Staff No', 'Name', 'Leave Credits', 'Modified On','Comments']
+        hr_data = [hr_columns]
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
+        year = date.today().year 
+        is_download = True
+        leave_balances = leave_service.get_leave_added_by_hr(year, emp_id) #leave_service.get_leave_balance(year,emp_id,is_hr, is_download)
+        # print("Leave blance:",leave_balances)
         if errors:
             return Response(utils.StyleRes(False,"Invalid parameters",errors),status=StatusCode.HTTP_OK)
         else:
-            if len(leave_requests) == 0:
-                return Response(utils.StyleRes(True,'No Leave Applications available for the filter criteria'),status=StatusCode.HTTP_NO_CONTENT)
-            else:
+            # if len(leave_requests) == 0:
+            #     return Response(utils.StyleRes(True,'No Leave Applications available for the filter criteria'),status=StatusCode.HTTP_NO_CONTENT)
+            # else:
                 # statuses = ['Pending','Approved','Rejected','Cancelled']
                 statuses = [s.name for s in LeaveRequestStatus]
-                leave_summary_dict={}
+                leave_summary_dict={}         
+                for leave_balance in leave_balances:
+                    hr_data.append([leave_balance['staff_no'], leave_balance['emp_name'], leave_balance['total_leave_bal'], leave_balance['createddate'].strftime("%d-%m-%Y"), leave_balance['comments'] ])
                 for leave_request in leave_requests:
                     lr = leave_request
                     leave_type = lr.leave_type_name
@@ -777,7 +786,7 @@ class ExportResolvedLeaves(APIView):
                 for key,value in leave_summary_dict.items():
                     sheets2_data.append([key,value['emp_name'],value['leave_count']])
 
-                excel.defineMultipleWorksheets(['Leave History','Leave Summary'],[excel_data,sheets2_data],leaveFlag=True)
+                excel.defineMultipleWorksheets(['Leave History','Leave Summary', 'Hr Modifications'],[excel_data,sheets2_data, hr_data],leaveFlag=True)
                 # excel.writeExcel(excel_data,row_start=0)
                 # excel.terminateExcelService()
                 del excel

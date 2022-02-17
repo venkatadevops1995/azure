@@ -248,3 +248,16 @@ def getLeaveperiod(req_id,startdate,enddate):
             leave_period = leave_period + leave_end_date
 
     return leave_period
+
+def get_leave_added_by_hr(year,emp_id):
+    all_emp_leaves_balance = []
+    emp_leaves_balance = Employee.objects.filter(emp_id = emp_id).prefetch_related(Prefetch(
+                "leavebalance_set",
+                queryset=LeaveBalance.objects.filter(Q(year=year) &  Q(acted_by = 'hr')) 
+            )).filter(leavebalance__year = year, leavebalance__acted_by = 'hr').annotate(total_leave_bal = Coalesce(Sum(Case(When(Q(leavebalance__year=year),then=F'leavebalance__leave_credits'),default=0.0)),V(0)), comments = F('leavebalance__comments') , month = F('leavebalance__month'),createddate = F('leavebalance__created'))
+    
+    for each_emp_leave_bal in emp_leaves_balance.values('staff_no','emp_name', 'total_leave_bal', 'comments', 'month', 'createddate'):
+        each_emp_leave_bal.update({'year':year})
+        all_emp_leaves_balance.append(each_emp_leave_bal)    
+
+    return all_emp_leaves_balance

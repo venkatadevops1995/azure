@@ -3,7 +3,7 @@ from django.db.models.query import Prefetch
 from vedikaweb.vedikaapi.services.email_service import email_service
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from vedikaweb.vedikaapi.models import Employee,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup
+from vedikaweb.vedikaapi.models import Employee,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup, StageEmpolyee
 
 from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
 
@@ -65,19 +65,36 @@ class Usersdelete(APIView):
                 obj = Employee.objects.only('role_id', 'created').get(emp_id = emp_id)
                 role_id = obj.role_id
                 created = obj.created
+                current_date = datetime.now().date()
                 if (created.date() > relieved):
                     return Response(utils.StyleRes(False,'Relieve date must be greater than joining date',{"Joining date": created , "Relieving date":relieved}), status = StatusCode.HTTP_NOT_ACCEPTABLE)
-                if (role_id > 1): 
-                    manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
-                    if (manager_id['cnt'] > 0):
-                        return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                if(relieved <= current_date):
+                    if (role_id > 1): 
+                        manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                        if (manager_id['cnt'] > 0):
+                            return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                        else:
+                            obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                            return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+    
                     else:
                         obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                         return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
-    
                 else:
-                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
-                    return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+                    # added the data to stage_employee table.
+                    if(role_id > 1):
+                        manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                        if(manager_id['cnt'] > 0):
+                            return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+                        else:
+                            # in stagged update the employee status as 0
+                            staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
+                            staged_emp.save()
+                            return Response(utils.StyleRes(True,"Disbale Employee Stagging","{} added to staged".format(serial_data.validated_data.get("emp_name"))) , status=StatusCode.HTTP_OK)
+                    else:
+                        staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
+                        staged_emp.save()
+                        return Response(utils.StyleRes(True,"Disbale Employee Stagging","{} added to staged".format(serial_data.validated_data.get("emp_name"))) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
         else:
@@ -140,11 +157,15 @@ class Users(APIView):
             elif is_emp_admin == True and emp_type == "hr":
                 if(search.lower()=="all"):
                     emp_data=Employee.objects.prefetch_related('profile').filter( Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+                    # dis_emp_data=StageEmpolyee.objects.filter(Q(status=1))
+                    # print("Data Check ....",emp_data.values())
+                    # print("Check Data ....",dis_emp_data.values())
                 else:
                     emp_data=Employee.objects.prefetch_related('profile').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
-                emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
-                
-                return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)
+                # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
+                emp_serial_data = emp_data.values()
+                # print("Data Check ....",emp_serial_data)
+                return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
             else:
                 
                 return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
@@ -947,5 +968,3 @@ class AllActiveInActiveProjects(APIView):
             return Response(utils.StyleRes(False,'Unautherized User',{}), status = StatusCode.HTTP_UNAUTHORIZED)
 
 
-
-  

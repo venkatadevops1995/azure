@@ -8,6 +8,7 @@ from django.db import connection, reset_queries
 import time
 import functools
 from .utils import utils
+from .models import Employee
 log = logging.getLogger(__name__)
 
 
@@ -47,6 +48,8 @@ def jwttokenvalidator(viewfunction):
                 return Response({'Message':"Token Missing"},status=400)
             d=jwt.decode(token.replace(settings.TOKEN_TYPE, '').strip(), settings.SECRET_KEY, algorithms=['HS256'])
             if('gender' not in d):
+                return Response({'Message':settings.VALID_ERROR_MESSAGES['token_expired']},status=400)
+            if Employee.objects.filter(emp_id = d['emp_id'], status = 0).exists() :
                 return Response({'Message':settings.VALID_ERROR_MESSAGES['token_expired']},status=400)
 
             return viewfunction(*args,**kwargs)

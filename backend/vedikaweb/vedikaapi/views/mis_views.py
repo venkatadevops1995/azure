@@ -11,7 +11,8 @@ from vedikaweb.vedikaapi.models import Employee,EmployeeProject,Project,MisInfo,
 # Serialisers
 from vedikaweb.vedikaapi.serializers import EmployeeProfileSerializer,MisDonloadDisableWithDate
 
-
+from django.core.mail import EmailMessage
+import os
 
 from vedikaweb.vedikaapi.constants import StatusCode, ExcelHeadings, DefaultProjects, MailConfigurations, GenderChoices, MaritalStatuses
 from vedikaweb.vedikaapi.utils import utils
@@ -822,7 +823,7 @@ class DownloadMIS(APIView):
         for each in emp_data:
             managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
             projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
-            resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y/%m/%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
-        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd'})
+            resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
+        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})
         del e
         return response
