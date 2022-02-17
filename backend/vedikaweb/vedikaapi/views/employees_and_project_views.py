@@ -62,8 +62,11 @@ class Usersdelete(APIView):
                 emp_id = serial_data.validated_data['emp_id'].emp_id
                 relieved = serial_data.validated_data['relieved']
 
-                obj = Employee.objects.only('role_id', 'created').get(emp_id = emp_id)
+                # obj = Employee.objects.only('role_id', 'created').get(emp_id = emp_id)
+                # role_id = obj.role_id
+                obj = Employee.objects.all().get(emp_id = emp_id)
                 role_id = obj.role_id
+                emp_name = obj.emp_name
                 created = obj.created
                 current_date = datetime.now().date()
                 if (created.date() > relieved):
@@ -76,7 +79,7 @@ class Usersdelete(APIView):
                 
                 if(relieved < current_date):
                     obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
-                    return Response(utils.StyleRes(True,"Employee disable","disable profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+                    return Response(utils.StyleRes(True,"Employee disable","{} disable successfully.{}".format(emp_name)), status=StatusCode.HTTP_OK)
                 else:
                     # staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
                     # staged_emp.save()
@@ -84,7 +87,7 @@ class Usersdelete(APIView):
                         emp_id=emp_id,
                         defaults={'status': 1,'relieved':relieved},
                     )
-                    return Response(utils.StyleRes(True,"Disbale Employee Stagging","{} added to staged".format(serial_data.validated_data.get("emp_name"))) , status=StatusCode.HTTP_OK)
+                    return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} will be disable on {}".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
         else:
@@ -147,15 +150,10 @@ class Users(APIView):
             elif is_emp_admin == True and emp_type == "hr":
                 if(search.lower()=="all"):
                     emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
-                    # dis_emp_data=StageEmpolyee.objects.filter(Q(status=1))
-                    # print("Data Check ....",emp_data.values())
-                    # print("Check Data ....",dis_emp_data.values())
                 else:
-                    # emp_data=Employee.objects.prefetch_related('profile').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
                     emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
                 # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
                 emp_serial_data = emp_data.values()
-                # print("Data Check ....",emp_serial_data)
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
             else:
                 

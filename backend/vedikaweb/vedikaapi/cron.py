@@ -1039,4 +1039,4 @@ def relieveEmployee():
                 StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
         log.info("All Stagged Employee updated in Employee table")
     else:
-        log.info("There are stagged employees not available for this date...")
+        log.info("There are no any stagged employees available for this date.")

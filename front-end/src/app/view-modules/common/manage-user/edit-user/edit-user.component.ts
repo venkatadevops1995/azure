@@ -66,6 +66,7 @@ export class EditUserComponent implements OnInit {
   filteredManagers: Observable<any>;
   errorMessage : string = "";
   disableEmpName: string = '';
+  delete_emp_success_msg:string ='';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -125,10 +126,8 @@ export class EditUserComponent implements OnInit {
         console.log('----------------emp_list--',emp_list)
 
         this.USERS_DATA = emp_list;
-        console.log("Dipajk$$$$$$$$$$$$$$$$", this.USERS_DATA)
         this.employeeList = [...this.USERS_DATA]
         let employeeList = [...this.USERS_DATA];
-        console.log("Dipajk$$$$$$$$$$$$$$$$", employeeList)
         this.employeeListSearch.push({emp_id:-1,emp_name:'ALL'});
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
@@ -228,6 +227,7 @@ export class EditUserComponent implements OnInit {
           this.close()
           this.getAllReportes()
           this
+          this.delete_emp_success_msg = res.body.results
       } else {
         alert(res.body.message)
 
