@@ -973,7 +973,7 @@ class PolicyDocumentEmployeeAction(models.Model):
         db_table = 'policy_document_employee_action'
 
 class StageEmpolyee(models.Model):
-    emp_id = models.IntegerField()
+    emp = models.ForeignKey(Employee, models.DO_NOTHING,related_name='stage_employee')
     status = models.IntegerField(default=1)
     relieved = models.DateField()
     class Meta:

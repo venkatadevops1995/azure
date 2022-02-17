@@ -924,11 +924,15 @@ def sendMail(email,mail_subject,mail_content,file_name):
 
 # Function to generate montly MIS details with disbale employees and send  to PMO 
 def sendMisMail():
-        mail_subject = "MIS details"
+        current_year =datetime.strftime(datetime.now().date(), '%Y')
+        current_month_num = datetime.strftime(datetime.now().date(), '%m')
+        currrent_month_obj = datetime.strptime(current_month_num, "%m")
+        current_month_name= currrent_month_obj.strftime("%b")
+        mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_num) #As Atwork Report_MIS_2022_Jan
         mail_content = "<html> <head> </head><body>Please find the attachment below. </body></html>"
-        mail_List = ['moulali@atai.ai','dipak@atai.ai']
+        mail_List = mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
 
-        file_name = "MIS"+"_"+str(datetime.strftime(datetime.now().date(), '%d%m%Y'))
+        file_name = "Atwork_report_MIS"+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork_report_MIS_2022Jan
         file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH , file_name)
         utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
 
@@ -961,15 +965,21 @@ def sendMisMail():
         # mail.send()
         for i in range(len(mail_List)):
             sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+            # log.info("Mail sent successfully.....")
         return True
 
 # Function to generate montly leave balance  and send to PMO 
 def sendLeaveBalanceEmail():
-    mail_subject = "Leave Blance details"
+    current_day = datetime.strftime(datetime.now().date(), '%d')
+    current_year =datetime.strftime(datetime.now().date(), '%Y')
+    current_month_num = datetime.strftime(datetime.now().date(), '%m')
+    currrent_month_obj = datetime.strptime(current_month_num, "%m")
+    current_month_name= currrent_month_obj.strftime("%b")
+    mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
     mail_content = "Please find the attachment"
-    mail_List = ['moulali@atai.ai','dipak@atai.ai']
-        
-    file_name = 'All_Employees_LeaveBalance_'+str(datetime.strftime(datetime.now().date(), '%Y-%m-%d'))
+    mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
+   
+    file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
     file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH, file_name)
     utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
 
@@ -1024,6 +1034,7 @@ def relieveEmployee():
                     mail_subject = "{},Employee  Reprting To This Stagged Manager.".format(manager_id['cnt'])
                     mail_content = "<html> <head> </head><body>This manager <b style='color:blue'>{}</b>, has <b style='color:red'>{}</b> employee. <p style='background-color:yellow'>Please Transfer  the employee/ employees to another manger. Then disable him/her</p>.</body></html>".format(emp_name,manager_id['cnt'])
                     send_mail(mail_subject, mail_content, settings.EMAIL_FROM, mail_list,html_message=mail_content)
+                    # log.info("Mail sent successfully.....")
                 else:
                     Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                     StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)

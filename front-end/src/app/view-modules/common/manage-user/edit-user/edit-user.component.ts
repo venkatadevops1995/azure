@@ -38,7 +38,7 @@ export class EditUserComponent implements OnInit {
   
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
     private datepipe : DatePipe,
@@ -125,8 +125,10 @@ export class EditUserComponent implements OnInit {
         console.log('----------------emp_list--',emp_list)
 
         this.USERS_DATA = emp_list;
+        console.log("Dipajk$$$$$$$$$$$$$$$$", this.USERS_DATA)
         this.employeeList = [...this.USERS_DATA]
         let employeeList = [...this.USERS_DATA];
+        console.log("Dipajk$$$$$$$$$$$$$$$$", employeeList)
         this.employeeListSearch.push({emp_id:-1,emp_name:'ALL'});
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);

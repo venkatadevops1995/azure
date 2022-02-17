@@ -84,6 +84,8 @@ class MailConfigurations(Enum):
     Sub_EmployeeDisabled = "Employee disabled"
     Sub_EmployeeTransfer = "Employee Transfer"
     Sub_LeaveBalanceChange = "Leave Balance Change"
+    Sub_MIS_Report="Atwork Report MIS"
+    Sub_CLB_Report="Atwork Report CLB"
 
 class MaxRequestsForLeaveType(Enum):
     Marriage=1

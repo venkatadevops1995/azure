@@ -71,7 +71,7 @@ export class ManageUserComponent implements OnInit {
   @ViewChild('updateMis') updateMisPopUp:ModalPopupComponent;
 
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
-  displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
+  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
   data: UserData[] = [];
   USERS_DATA: any = [];
   RM_DATA: UserData[] = [];
