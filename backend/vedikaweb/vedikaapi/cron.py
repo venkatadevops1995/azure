@@ -929,8 +929,8 @@ def sendMisMail():
         currrent_month_obj = datetime.strptime(current_month_num, "%m")
         current_month_name= currrent_month_obj.strftime("%b")
         mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_num) #As Atwork Report_MIS_2022_Jan
-        mail_content = "<html> <head> </head><body>Please find the attachment below. </body></html>"
-        mail_List = mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
+        mail_content = "Please find MIS for the current month as an attachment."
+        mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
 
         file_name = "Atwork_report_MIS"+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork_report_MIS_2022Jan
         file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH , file_name)
@@ -954,19 +954,12 @@ def sendMisMail():
             resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
         e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})          
 
-        # def sendMail(email):
-        #     mail = EmailMessage(subject=mail_subject, body=mail_content, from_email=settings.EMAIL_FROM,to =[email])
-        #     mail.attach_file(file_name + '.xlsx')
-            # mail.send()
-        # mail = EmailMessage(subject=mail_subject, body=mail_content, from_email=settings.EMAIL_FROM)
-        # print("attach file name before:",file_name + '.xlsx')
-        # mail.attach_file(file_name + '.xlsx')
-        # print("attach file name after:",file_name + '.xlsx')
-        # mail.send()
         for i in range(len(mail_List)):
-            sendMail(mail_List[i],mail_subject,mail_content,file_name) 
-            # log.info("Mail sent successfully.....")
-        return True
+            try:
+                ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+                log.info("Monthly MIS Mail sent successfully to {} ".format(mail_List[i]))
+            except Exception as e:
+                log.info("Issue to send mail to :",mail_List[i])
 
 # Function to generate montly leave balance  and send to PMO 
 def sendLeaveBalanceEmail():
@@ -976,7 +969,7 @@ def sendLeaveBalanceEmail():
     currrent_month_obj = datetime.strptime(current_month_num, "%m")
     current_month_name= currrent_month_obj.strftime("%b")
     mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
-    mail_content = "Please find the attachment"
+    mail_content = "Please find CLB for the current month as an attachment."
     mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
    
     file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
@@ -999,15 +992,13 @@ def sendLeaveBalanceEmail():
     excel.writeExcel(excel_data,row_start=0)
     excel.terminateExcelService()
     del excel
-
-    # def sendMail(email,mail_subject,mail_content,file_name):
-    #     mail = EmailMessage(subject=mail_subject, body=mail_content, from_email=settings.EMAIL_FROM,to =[email])
-    #     mail.attach_file(file_name + '.xlsx')
-    #     # mail.send()    
         
-    for i in range(len(mail_List)):
-        sendMail(mail_List[i],mail_subject,mail_content,file_name)    
-    return True      
+    for i in range(len(mail_List)):   
+        try:
+            ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+            log.info("Monthly CLB Mail sent successfully to {}".format(mail_List[i]))
+        except Exception as e:
+            log.info("Issue to send mail to :",mail_List[i]) 
     # return Response(utils.StyleRes(True,'Leave Balance Details','Successfully  send mail'), status=200)
 def relieveEmployee():
     current_date = datetime.now().date()
@@ -1032,9 +1023,12 @@ def relieveEmployee():
                 if (manager_id['cnt'] > 0):
                     # send mail to STAGED_EMPLOYEE_INFO_EMAILS Mail List
                     mail_subject = "{},Employee  Reprting To This Stagged Manager.".format(manager_id['cnt'])
-                    mail_content = "<html> <head> </head><body>This manager <b style='color:blue'>{}</b>, has <b style='color:red'>{}</b> employee. <p style='background-color:yellow'>Please Transfer  the employee/ employees to another manger. Then disable him/her</p>.</body></html>".format(emp_name,manager_id['cnt'])
-                    send_mail(mail_subject, mail_content, settings.EMAIL_FROM, mail_list,html_message=mail_content)
-                    # log.info("Mail sent successfully.....")
+                    mail_content = "This manager {}, has {} employee. Please Transfer  the employee/ employees to another manger. Then disable him/her".format(emp_name,manager_id['cnt'])
+                    try:
+                        ret_val = send_mail(mail_subject, mail_content, settings.EMAIL_FROM, mail_list,html_message=mail_content)
+                        log.info("Stagged Manager has {} employee/employees , please Update him/her".format(manager_id['cnt']))
+                    except Exception as e:
+                        log.info("Issue to send mail to :",mail_list) 
                 else:
                     Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                     StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
