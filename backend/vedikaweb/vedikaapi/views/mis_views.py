@@ -11,9 +11,6 @@ from vedikaweb.vedikaapi.models import Employee,EmployeeProject,Project,MisInfo,
 # Serialisers
 from vedikaweb.vedikaapi.serializers import EmployeeProfileSerializer,MisDonloadDisableWithDate
 
-from django.core.mail import EmailMessage
-import os
-
 from vedikaweb.vedikaapi.constants import StatusCode, ExcelHeadings, DefaultProjects, MailConfigurations, GenderChoices, MaritalStatuses
 from vedikaweb.vedikaapi.utils import utils
 from django.conf import settings

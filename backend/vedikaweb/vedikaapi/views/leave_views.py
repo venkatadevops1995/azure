@@ -8,8 +8,6 @@ from datetime import date
 from itertools import groupby
 
 from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded
-from django.core.mail import EmailMessage
-import os
 # Serialisers
 from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireLeaveConfigSerializer, LeaveConfigSerializer,  LeaveBalanceSerializer, LeaveRequestSerializer, LeaveDetailsSerializer, LeaveTypeSerializer, UpdateLeaveConfigSerializer,  IdOnlySerializer, EmployeeProjectTimeTrackerSerializer, LeaveBalanceUploadedSerializer
 

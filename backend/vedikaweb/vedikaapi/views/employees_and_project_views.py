@@ -62,9 +62,7 @@ class Usersdelete(APIView):
                 emp_id = serial_data.validated_data['emp_id'].emp_id
                 relieved = serial_data.validated_data['relieved']
 
-                # obj = Employee.objects.only('role_id', 'created').get(emp_id = emp_id)
-                # role_id = obj.role_id
-                obj = Employee.objects.all().get(emp_id = emp_id)
+                obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
                 role_id = obj.role_id
                 emp_name = obj.emp_name
                 created = obj.created

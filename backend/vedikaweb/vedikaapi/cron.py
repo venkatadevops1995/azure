@@ -1010,7 +1010,7 @@ def relieveEmployee():
 
         for stg_emp in stagged_employee:
             emp_id = stg_emp['emp_id']
-            obj = Employee.objects.all().get(emp_id = emp_id)
+            obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
             role_id = obj.role_id
             emp_name = obj.emp_name
             relieved = stg_emp['relieved']
