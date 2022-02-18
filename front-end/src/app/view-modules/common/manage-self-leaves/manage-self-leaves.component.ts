@@ -47,7 +47,7 @@ export class ManageSelfLeavesComponent implements OnInit {
     todate: any;
     maxDate = moment().subtract(0, 'days');
 
-    minDate = moment().subtract(30, 'days')
+    // minDate = moment().subtract(5, 'years')
     leaveCategories = ["Half Day", "Single Day", "Multiple Days"];
     // leaveTypes = ["Paid", "Unpaid", "Marriage", "Maternity/Paternity"];
     leaveTypes = []
@@ -135,6 +135,8 @@ export class ManageSelfLeavesComponent implements OnInit {
         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
         'This Month': [moment().startOf('month'), moment().endOf('month')],
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        'Last 3 Months': [moment().subtract(89, 'days'), moment()],
+        // 'Last 3 Months': [moment().subtract(3, 'month'), moment().endOf('month')],
         // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
         // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
     }
