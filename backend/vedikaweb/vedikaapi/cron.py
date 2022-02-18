@@ -928,7 +928,7 @@ def sendMisMail():
         current_month_num = datetime.strftime(datetime.now().date(), '%m')
         currrent_month_obj = datetime.strptime(current_month_num, "%m")
         current_month_name= currrent_month_obj.strftime("%b")
-        mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_num) #As Atwork Report_MIS_2022_Jan
+        mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork Report_MIS_2022_Jan
         mail_content = "Please find MIS for the current month as an attachment."
         mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
 
