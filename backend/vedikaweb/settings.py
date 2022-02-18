@@ -32,6 +32,7 @@ BASE_LEAVE_BALANCE = config.get('general', 'BASE_LEAVE_BALANCE')
 BASE_INVITATIONS = config.get('general', 'BASE_INVITATIONS')
 BASE_PROFILE = config.get('general', 'BASE_PROFILE')
 BASE_POLICIES = config.get('general','BASE_POLICIES')
+ADMIN_EMAIL_ATTACHMENT = config.get('general','ADMIN_EMAIL_ATTACHMENT')
 
 #File System paths to upload files
 UPLOAD_PATH = os.path.join(UPLOAD_MIS_PATH,BASE_MIS_FILES)
@@ -39,6 +40,7 @@ UPLOAD_LEAVE_BALANCE_PATH = os.path.join(UPLOAD_MIS_PATH,BASE_LEAVE_BALANCE)
 UPLOAD_INVITATIONS_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_INVITATIONS)
 UPLOAD_PROFILE_PIC_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_PROFILE)
 BASE_POLICIES_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_POLICIES)
+UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH = os.path.join(UPLOAD_MIS_PATH,ADMIN_EMAIL_ATTACHMENT)
 
 #URLS TO access http or https
 INVITATION_IMAGE_URL =  os.path.join(config.get('general', 'IMAGE_URL'),BASE_INVITATIONS)
@@ -106,6 +108,9 @@ CRONJOBS = [
     ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
     ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
     ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
+    # ('5 * * * *','vedikaweb.vedikaapi.cron.sendMisMail'),
+    # ('5 * * * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),
+    # ('5 * * * *','vedikaweb.vedikaapi.cron.relieveEmployee')
 ]
 
 ROOT_URLCONF = 'vedikaweb.urls'
@@ -308,3 +313,6 @@ MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
 ADMINS_TO_ACCESS_REPORTS = ['1moulali@atai.ai','1prerana@atai.ai']
+STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
+MIS_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']
+CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']

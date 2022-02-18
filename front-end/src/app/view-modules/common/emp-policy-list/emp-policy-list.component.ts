@@ -35,9 +35,14 @@ export class EmpPolicyListComponent implements OnInit {
     console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
   }
   loader(){
-    this.isLoaderVisible = false
-    console.log("Pdf is after load complete")
-    }
+    this.isLoaderVisible = true;
+  }
+  pageRendered(e: CustomEvent) {
+    this.isLoaderVisible = false;
+  }
+  pageInitialized(e: CustomEvent) {
+    this.isLoaderVisible = false;
+  }
   getPolicies(){
     this.EMPLOYEE_FILTERED_DATA = []
       this.http.request("GET","policy/emp-policy/","","").subscribe(res=>{
@@ -51,14 +56,12 @@ export class EmpPolicyListComponent implements OnInit {
 
   fileResponse:any;
   bearToken:any;  
-  
+
   openPolicyDetails(policy_name,id){
     this.clicked_policy_name = policy_name
     this.policyDetailModal.open()
-    this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
-    this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken
-    this.isLoaderVisible = false
+    this.filepathUrl = this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken   
      
 
   }

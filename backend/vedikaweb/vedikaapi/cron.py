@@ -1,5 +1,8 @@
 from django.conf import settings
-from .models import Employee, EmployeeMaster, EmployeeProfile, LeaveAccessGroup,PunchLogs
+from vedikaweb.vedikaapi.services import leave_service
+
+from vedikaweb.vedikaapi.services.xlsxservice import ExcelServices
+from .models import Employee, EmployeeMaster, EmployeeProfile, LeaveAccessGroup,PunchLogs, StageEmpolyee
 import traceback
 import logging
 import datetime
@@ -17,7 +20,7 @@ from .serializers import EmployeeProjectTimeTrackerReqSerializer, EmployeeProjec
 from .serializers import EmployeeManagerSerializer, PunchLogsSerializer
 from vedikaweb.vedikaapi.services.email_service import email_service
 
-from .constants import EmpStatus, LeaveDayStatus, StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, LeaveRequestStatus, LeaveMailTypes
+from .constants import EmpStatus, LeaveDayStatus, LeaveExcelHeadings, StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, LeaveRequestStatus, LeaveMailTypes
 from .utils import utils,StringOptimize
 from .decorators import custom_exceptions,jwttokenvalidator, query_debugger
 from django.db.models import Q,F,Count,Prefetch,CharField, Value as V
@@ -28,7 +31,8 @@ from django.db.models.functions import Concat,ExtractYear
 from django.db.models import Count
 from django.template.loader import get_template,render_to_string
 from django.core.mail import send_mail
-
+from django.core.mail import EmailMessage
+from django.db.models import When, Case 
 
 log = logging.getLogger(__name__)
 
@@ -910,3 +914,129 @@ def emailCron():
                 log.error(traceback.format_exc())        
     else:
         log.info("No pending emails to sent")
+
+
+# Funtion to send mail to multiple mail id from mail_list with  attachment
+def sendMail(email,mail_subject,mail_content,file_name):
+            mail = EmailMessage(subject=mail_subject, body=mail_content, from_email=settings.EMAIL_FROM,to =[email])
+            mail.attach_file(file_name + '.xlsx')
+            mail.send()    
+
+# Function to generate montly MIS details with disbale employees and send  to PMO 
+def sendMisMail():
+        current_year =datetime.strftime(datetime.now().date(), '%Y')
+        current_month_num = datetime.strftime(datetime.now().date(), '%m')
+        currrent_month_obj = datetime.strptime(current_month_num, "%m")
+        current_month_name= currrent_month_obj.strftime("%b")
+        mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_num) #As Atwork Report_MIS_2022_Jan
+        mail_content = "Please find MIS for the current month as an attachment."
+        mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
+
+        file_name = "Atwork_report_MIS"+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork_report_MIS_2022Jan
+        file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH , file_name)
+        utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
+
+        # Fetch the data from backend and write in excel sheet and store into backend
+        isdisable = True
+        enddate = date.today()
+        startdate = date(enddate.year, enddate.month, 1)
+        e=ExcelServices(file_name,in_memory=False,workSheetName="MIS")
+        columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved Date"]
+        emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0, relieved__range = [startdate, enddate])).annotate(
+        category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
+        gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
+        location=F('profile__location__name'),
+        doj=F('profile__date_of_join'),).order_by('-status')
+        resp=[columns]
+        for each in emp_data:
+            managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
+            projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
+            resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
+        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})          
+
+        for i in range(len(mail_List)):
+            try:
+                ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+                log.info("Monthly MIS Mail sent successfully to {} ".format(mail_List[i]))
+            except Exception as e:
+                log.info("Issue to send mail to :",mail_List[i])
+
+# Function to generate montly leave balance  and send to PMO 
+def sendLeaveBalanceEmail():
+    current_day = datetime.strftime(datetime.now().date(), '%d')
+    current_year =datetime.strftime(datetime.now().date(), '%Y')
+    current_month_num = datetime.strftime(datetime.now().date(), '%m')
+    currrent_month_obj = datetime.strptime(current_month_num, "%m")
+    current_month_name= currrent_month_obj.strftime("%b")
+    mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
+    mail_content = "Please find CLB for the current month as an attachment."
+    mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
+   
+    file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
+    file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH, file_name)
+    utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
+
+    excel = ExcelServices(file_name,in_memory=False,workSheetName='LeaveBalance')
+    columns = []
+    for each in LeaveExcelHeadings:
+        columns.append(utils.strip_value(each.value))
+    excel_data= [columns]
+    balance_year = datetime.today().year
+    emp_id = None
+    all_emp_leaves_balance = leave_service.get_leave_balance(balance_year, emp_id, 'true')
+       
+    for emp_leaves_balance in all_emp_leaves_balance:
+        excel_data.append([
+        emp_leaves_balance['emp_name'],emp_leaves_balance['staff_no'],emp_leaves_balance['outstanding_leave_bal']
+            ])
+    excel.writeExcel(excel_data,row_start=0)
+    excel.terminateExcelService()
+    del excel
+        
+    for i in range(len(mail_List)):   
+        try:
+            ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+            log.info("Monthly CLB Mail sent successfully to {}".format(mail_List[i]))
+        except Exception as e:
+            log.info("Issue to send mail to :",mail_List[i]) 
+    # return Response(utils.StyleRes(True,'Leave Balance Details','Successfully  send mail'), status=200)
+def relieveEmployee():
+    current_date = datetime.now().date()
+    stagged_employee =StageEmpolyee.objects.filter(status=1, relieved = current_date)
+    stagged_employee = stagged_employee.values()
+    mail_list = settings.STAGED_EMPLOYEE_INFO_EMAILS
+
+    if(stagged_employee):
+
+        for stg_emp in stagged_employee:
+            emp_id = stg_emp['emp_id']
+            obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
+            role_id = obj.role_id
+            emp_name = obj.emp_name
+            relieved = stg_emp['relieved']
+
+            # ##checking that emplyoee is manager or not
+            if (role_id > 1): 
+                manager_id = EmployeeHierarchy.objects.filter(manager_id = emp_id).filter(Q(emp__status = 1) & ~Q(emp__emp_id = emp_id)).aggregate(cnt = Count('emp_id', distinct=True))
+                
+                # ##if any employees are reporting to that manger the send a warning mail to HR. 
+                if (manager_id['cnt'] > 0):
+                    # send mail to STAGED_EMPLOYEE_INFO_EMAILS Mail List
+                    mail_subject = "{},Employee  Reprting To This Stagged Manager.".format(manager_id['cnt'])
+                    mail_content = "This manager {}, has {} employee. Please Transfer  the employee/ employees to another manger. Then disable him/her".format(emp_name,manager_id['cnt'])
+                    try:
+                        ret_val = send_mail(mail_subject, mail_content, settings.EMAIL_FROM, mail_list,html_message=mail_content)
+                        log.info("Stagged Manager has {} employee/employees , please Update him/her".format(manager_id['cnt']))
+                    except Exception as e:
+                        log.info("Issue to send mail to :",mail_list) 
+                else:
+                    Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
+
+            # ##Employee is not any manager // so update him/her
+            else:
+                Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
+        log.info("All Stagged Employee updated in Employee table")
+    else:
+        log.info("There are no any stagged employees available for this date.")

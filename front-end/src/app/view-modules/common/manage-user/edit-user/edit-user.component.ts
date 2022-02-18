@@ -38,7 +38,7 @@ export class EditUserComponent implements OnInit {
   
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
     private datepipe : DatePipe,
@@ -66,6 +66,7 @@ export class EditUserComponent implements OnInit {
   filteredManagers: Observable<any>;
   errorMessage : string = "";
   disableEmpName: string = '';
+  delete_emp_success_msg:string ='';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -226,6 +227,7 @@ export class EditUserComponent implements OnInit {
           this.close()
           this.getAllReportes()
           this
+          this.delete_emp_success_msg = res.body.results
       } else {
         alert(res.body.message)
 
