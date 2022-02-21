@@ -28,7 +28,7 @@
     <!-- The content for the main content area of the pop up -->
     <div class="middle" [style.overflow]="policy_style ? 'hidden' : 'auto'">
       <!-- <wyniki-scroll-bar [takeMinParentHeight]="true" [autoUpdate]="true" style="height:100%;" idd="test" #scrollbar> -->
-      <div [style.padding]="policy_style ? '30px 0 30px 0' : ''"  [ngClass] = "policy_style ? '' : 'p-30'" style="height: 100%">
+      <div class="model__content" [style.padding]="policy_style ? '30px 0 30px 0' : ''"  [ngClass] = "policy_style ? '' : 'p-30'" style="height: 100%">
         <ng-content></ng-content>
       </div>
       <!-- </wyniki-scroll-bar> -->

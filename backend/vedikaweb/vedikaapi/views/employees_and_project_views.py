@@ -85,7 +85,7 @@ class Usersdelete(APIView):
                         emp_id=emp_id,
                         defaults={'status': 1,'relieved':relieved},
                     )
-                    return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} account will be disable on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
+                    return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} account will be disabled on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
         else:
