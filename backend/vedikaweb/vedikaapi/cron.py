@@ -927,7 +927,7 @@ def sendMisMail():
         today = date.today()
         tomorrow = today + timedelta(days = 1) 
         if(tomorrow.day != 1):
-            log.info("Today is not last day of this month, today's date is :",str(today))
+            log.info("Today is not last day of this month, today's date is :"+today.strftime("%d-%b-%Y"))
             return
 
         current_year =datetime.strftime(datetime.now().date(), '%Y')
@@ -974,7 +974,7 @@ def sendLeaveBalanceEmail():
     today = date.today()
     tomorrow = today + timedelta(days = 1) 
     if(tomorrow.day != 1):
-        log.info("Today is not last day of this month, today's date is :",str(today))
+        log.info("Today is not last day of this month, today's date is: "+today.strftime("%d-%b-%Y") )
         return
     
     current_day = datetime.strftime(datetime.now().date(), '%d')
