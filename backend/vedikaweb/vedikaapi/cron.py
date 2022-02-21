@@ -924,8 +924,8 @@ def sendMail(email,mail_subject,mail_content,file_name):
 
 # Function to generate montly MIS details with disbale employees and send  to PMO 
 def sendMisMail():
-        today = datetime.date.today()
-        tomorrow = today + datetime.timedelta(days = 1) 
+        today = date.today()
+        tomorrow = today + timedelta(days = 1) 
         if(tomorrow.day == 1):
             current_year =datetime.strftime(datetime.now().date(), '%Y')
             current_month_num = datetime.strftime(datetime.now().date(), '%m')
@@ -964,12 +964,12 @@ def sendMisMail():
                 except Exception as e:
                     log.info("Issue to send mail to :",mail_List[i])
         else:
-            log.info("Today is not last day of this month, date is :",today)
+            log.info("Today is not last day of this month, date is :",str(today))
 
 # Function to generate montly leave balance  and send to PMO 
 def sendLeaveBalanceEmail():
-    today = datetime.date.today()
-    tomorrow = today + datetime.timedelta(days = 1) 
+    today = date.today()
+    tomorrow = today + timedelta(days = 1) 
     if(tomorrow.day == 1):
         current_day = datetime.strftime(datetime.now().date(), '%d')
         current_year =datetime.strftime(datetime.now().date(), '%Y')
@@ -1009,7 +1009,7 @@ def sendLeaveBalanceEmail():
                 log.info("Issue to send mail to :",mail_List[i]) 
         # return Response(utils.StyleRes(True,'Leave Balance Details','Successfully  send mail'), status=200)
     else:
-            log.info("Today is not last day of this month, date is :",today)
+            log.info("Today is not last day of this month, date is :",str(today))
 def relieveEmployee():
     current_date = datetime.now().date()
     stagged_employee =StageEmpolyee.objects.filter(status=1, relieved = current_date)
