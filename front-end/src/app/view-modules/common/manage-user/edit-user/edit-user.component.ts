@@ -214,14 +214,12 @@ export class EditUserComponent implements OnInit {
       if (res.status == 400) {
           this.errorMessage = res.error.message + ". First update employee's manager";
         this.modalDisableError.open();
-        this.deleteUserForm.controls.dol.setValue('');
-        this.deleteUserForm.controls.dol.untouched
+        this.deleteUserForm.controls.dol.setValue('')
         return;
       }else if(res.status == 406){
         this.errorMessage = res.error.message;
         this.modalDisableError.open()
         this.deleteUserForm.controls.dol.setValue('');
-
         return;
       }
       if (res.body["success"] == true) {
@@ -233,14 +231,12 @@ export class EditUserComponent implements OnInit {
           this
           this.delete_emp_success_msg = res.body.results
           this.deleteUserForm.controls.dol.setValue('');
-  
       } else {
         alert(res.body.message)
 
         this.errorMessage = res.body.message;
         this.modalDisableError.open()
         this.deleteUserForm.controls.dol.setValue('');
-
         return;
         
       }
