@@ -924,6 +924,13 @@ def sendMail(email,mail_subject,mail_content,file_name):
 
 # Function to generate montly MIS details with disbale employees and send  to PMO 
 def sendMisMail():
+        today = date.today()
+        tomorrow = today + timedelta(days = 1) 
+        if(tomorrow.day != 1):
+            log.info("Today is not last day of this month, today's date is :",str(today))
+            return
+
+        current_year =datetime.strftime(datetime.now().date(), '%Y')
         current_year =datetime.strftime(datetime.now().date(), '%Y')
         current_month_num = datetime.strftime(datetime.now().date(), '%m')
         currrent_month_obj = datetime.strptime(current_month_num, "%m")
@@ -960,9 +967,16 @@ def sendMisMail():
                 log.info("Monthly MIS Mail sent successfully to {} ".format(mail_List[i]))
             except Exception as e:
                 log.info("Issue to send mail to :",mail_List[i])
+            
 
 # Function to generate montly leave balance  and send to PMO 
 def sendLeaveBalanceEmail():
+    today = date.today()
+    tomorrow = today + timedelta(days = 1) 
+    if(tomorrow.day != 1):
+        log.info("Today is not last day of this month, today's date is :",str(today))
+        return
+    
     current_day = datetime.strftime(datetime.now().date(), '%d')
     current_year =datetime.strftime(datetime.now().date(), '%Y')
     current_month_num = datetime.strftime(datetime.now().date(), '%m')
@@ -971,7 +985,7 @@ def sendLeaveBalanceEmail():
     mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
     mail_content = "Please find CLB for the current month as an attachment."
     mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
-   
+    
     file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
     file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH, file_name)
     utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
@@ -984,7 +998,7 @@ def sendLeaveBalanceEmail():
     balance_year = datetime.today().year
     emp_id = None
     all_emp_leaves_balance = leave_service.get_leave_balance(balance_year, emp_id, 'true')
-       
+    
     for emp_leaves_balance in all_emp_leaves_balance:
         excel_data.append([
         emp_leaves_balance['emp_name'],emp_leaves_balance['staff_no'],emp_leaves_balance['outstanding_leave_bal']
@@ -992,14 +1006,13 @@ def sendLeaveBalanceEmail():
     excel.writeExcel(excel_data,row_start=0)
     excel.terminateExcelService()
     del excel
-        
+            
     for i in range(len(mail_List)):   
         try:
             ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
             log.info("Monthly CLB Mail sent successfully to {}".format(mail_List[i]))
         except Exception as e:
-            log.info("Issue to send mail to :",mail_List[i]) 
-    # return Response(utils.StyleRes(True,'Leave Balance Details','Successfully  send mail'), status=200)
+            log.info("Issue to send mail to :",mail_List[i])        
 def relieveEmployee():
     current_date = datetime.now().date()
     stagged_employee =StageEmpolyee.objects.filter(status=1, relieved = current_date)
