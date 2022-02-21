@@ -27,7 +27,7 @@ def exception_decorator():
 """ API view method decorator to check if a user is a manager """
 def is_manager(func):
     def check_is_manager(self,request,*args,**kwargs): 
-        print(request)
+        # print(request)
         auth_details = utils.validateJWTToken(request)
         if auth_details['role_id'] == 1 and not auth_details['is_emp_admin']:
             return Response({"message":'you are forbidden to make this request'},status=403)

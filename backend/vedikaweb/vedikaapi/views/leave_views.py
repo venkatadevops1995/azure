@@ -768,7 +768,7 @@ class ExportResolvedLeaves(APIView):
                 statuses = [s.name for s in LeaveRequestStatus]
                 leave_summary_dict={}         
                 for leave_balance in leave_balances:
-                    hr_data.append([leave_balance['staff_no'], leave_balance['emp_name'], leave_balance['total_leave_bal'], leave_balance['createddate'].strftime("%d-%m-%Y"), leave_balance['comments'] ])
+                    hr_data.append([leave_balance['staff_no'], leave_balance['emp_name'], leave_balance['total_leave_bal'], leave_balance['createddate'].strftime("%Y-%m-%d"), leave_balance['comments'] ])
                 for leave_request in leave_requests:
                     lr = leave_request
                     leave_type = lr.leave_type_name
@@ -779,7 +779,7 @@ class ExportResolvedLeaves(APIView):
                     else:
                         leave_summary_dict[lr.emp_staff_no]={'emp_name':lr.emp_name, 'leave_count':lr.day_count}
                     excel_data.append([
-                        lr.emp_staff_no,lr.emp_name,str(datetime.strftime(lr.created,'%d-%m-%Y')),str(datetime.strftime(lr.startdate,'%d-%m-%Y')),str(datetime.strftime(lr.enddate,'%d-%m-%Y')),lr.day_count,leave_type, statuses[lr.status]
+                        lr.emp_staff_no,lr.emp_name,str(datetime.strftime(lr.created,'%Y-%m-%d')),str(datetime.strftime(lr.startdate,'%Y-%m-%d')),str(datetime.strftime(lr.enddate,'%Y-%m-%d')),lr.day_count,leave_type, statuses[lr.status]
                     ])
                 for key,value in leave_summary_dict.items():
                     sheets2_data.append([key,value['emp_name'],value['leave_count']])
