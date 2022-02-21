@@ -926,90 +926,93 @@ def sendMail(email,mail_subject,mail_content,file_name):
 def sendMisMail():
         today = date.today()
         tomorrow = today + timedelta(days = 1) 
-        if(tomorrow.day == 1):
-            current_year =datetime.strftime(datetime.now().date(), '%Y')
-            current_month_num = datetime.strftime(datetime.now().date(), '%m')
-            currrent_month_obj = datetime.strptime(current_month_num, "%m")
-            current_month_name= currrent_month_obj.strftime("%b")
-            mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork Report_MIS_2022_Jan
-            mail_content = "Please find MIS for the current month as an attachment."
-            mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
+        if(tomorrow.day != 1):
+            log.info("Today is not last day of this month, today's date is :",str(today))
+            return
 
-            file_name = "Atwork_report_MIS"+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork_report_MIS_2022Jan
-            file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH , file_name)
-            utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
+        current_year =datetime.strftime(datetime.now().date(), '%Y')
+        current_year =datetime.strftime(datetime.now().date(), '%Y')
+        current_month_num = datetime.strftime(datetime.now().date(), '%m')
+        currrent_month_obj = datetime.strptime(current_month_num, "%m")
+        current_month_name= currrent_month_obj.strftime("%b")
+        mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork Report_MIS_2022_Jan
+        mail_content = "Please find MIS for the current month as an attachment."
+        mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
 
-            # Fetch the data from backend and write in excel sheet and store into backend
-            isdisable = True
-            enddate = date.today()
-            startdate = date(enddate.year, enddate.month, 1)
-            e=ExcelServices(file_name,in_memory=False,workSheetName="MIS")
-            columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved Date"]
-            emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0, relieved__range = [startdate, enddate])).annotate(
-            category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
-            gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
-            location=F('profile__location__name'),
-            doj=F('profile__date_of_join'),).order_by('-status')
-            resp=[columns]
-            for each in emp_data:
-                managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
-                projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
-                resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
-            e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})          
+        file_name = "Atwork_report_MIS"+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork_report_MIS_2022Jan
+        file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH , file_name)
+        utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
 
-            for i in range(len(mail_List)):
-                try:
-                    ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
-                    log.info("Monthly MIS Mail sent successfully to {} ".format(mail_List[i]))
-                except Exception as e:
-                    log.info("Issue to send mail to :",mail_List[i])
-        else:
-            log.info("Today is not last day of this month, date is :",str(today))
+        # Fetch the data from backend and write in excel sheet and store into backend
+        isdisable = True
+        enddate = date.today()
+        startdate = date(enddate.year, enddate.month, 1)
+        e=ExcelServices(file_name,in_memory=False,workSheetName="MIS")
+        columns=["Status","Company", "Vendor", "Work Location", "Staff No.", "Name", "Qual","Designation", "DOJ","Marital Status", "Gender", "Actual Project 1", "Code", "Actual Project 2", "Code", "Actual Project 3", "Code", "Billing", "Customer 1", "Customer 2", "Business Segment", "Group", "Domain", "Functional Owner", "Manager's Manager", "Reporting Manager", "Email", "Relieved Date"]
+        emp_data = Employee.objects.prefetch_related('profile').allenabledisableemployee().filter(Q(status = 1) | Q(status = 0, relieved__range = [startdate, enddate])).annotate(
+        category=F('profile__category__name'),marital_status = Case(When(profile__is_married=1,then=V('Married')),default=V('Unmarried'),output_field=CharField()),
+        gender = Case(When(profile__gender_id=1,then=V('Male')),When(profile__gender_id=2,then=V('Female')),default=V('Other'),output_field=CharField()),
+        location=F('profile__location__name'),
+        doj=F('profile__date_of_join'),).order_by('-status')
+        resp=[columns]
+        for each in emp_data:
+            managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
+            projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
+            resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
+        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})          
+
+        for i in range(len(mail_List)):
+            try:
+                ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+                log.info("Monthly MIS Mail sent successfully to {} ".format(mail_List[i]))
+            except Exception as e:
+                log.info("Issue to send mail to :",mail_List[i])
+            
 
 # Function to generate montly leave balance  and send to PMO 
 def sendLeaveBalanceEmail():
     today = date.today()
     tomorrow = today + timedelta(days = 1) 
-    if(tomorrow.day == 1):
-        current_day = datetime.strftime(datetime.now().date(), '%d')
-        current_year =datetime.strftime(datetime.now().date(), '%Y')
-        current_month_num = datetime.strftime(datetime.now().date(), '%m')
-        currrent_month_obj = datetime.strptime(current_month_num, "%m")
-        current_month_name= currrent_month_obj.strftime("%b")
-        mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
-        mail_content = "Please find CLB for the current month as an attachment."
-        mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
+    if(tomorrow.day != 1):
+        log.info("Today is not last day of this month, today's date is :",str(today))
+        return
     
-        file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
-        file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH, file_name)
-        utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
+    current_day = datetime.strftime(datetime.now().date(), '%d')
+    current_year =datetime.strftime(datetime.now().date(), '%Y')
+    current_month_num = datetime.strftime(datetime.now().date(), '%m')
+    currrent_month_obj = datetime.strptime(current_month_num, "%m")
+    current_month_name= currrent_month_obj.strftime("%b")
+    mail_subject = MailConfigurations.Sub_CLB_Report.value +"_"+ str(current_day)+"_"+str(current_month_name)+"_"+str(current_year) #As Atwork Report_CLB_18_Jan_2022
+    mail_content = "Please find CLB for the current month as an attachment."
+    mail_List = settings.CLB_REPORT_RECEIVER_EMAILS
+    
+    file_name = "Atwork_report_CLB"+"_"+str(current_year)+"_"+str(current_month_name)#As Atwork_report_CLB_2022_March
+    file_name = os.path.join(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH, file_name)
+    utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
 
-        excel = ExcelServices(file_name,in_memory=False,workSheetName='LeaveBalance')
-        columns = []
-        for each in LeaveExcelHeadings:
-            columns.append(utils.strip_value(each.value))
-        excel_data= [columns]
-        balance_year = datetime.today().year
-        emp_id = None
-        all_emp_leaves_balance = leave_service.get_leave_balance(balance_year, emp_id, 'true')
-        
-        for emp_leaves_balance in all_emp_leaves_balance:
-            excel_data.append([
-            emp_leaves_balance['emp_name'],emp_leaves_balance['staff_no'],emp_leaves_balance['outstanding_leave_bal']
-                ])
-        excel.writeExcel(excel_data,row_start=0)
-        excel.terminateExcelService()
-        del excel
+    excel = ExcelServices(file_name,in_memory=False,workSheetName='LeaveBalance')
+    columns = []
+    for each in LeaveExcelHeadings:
+        columns.append(utils.strip_value(each.value))
+    excel_data= [columns]
+    balance_year = datetime.today().year
+    emp_id = None
+    all_emp_leaves_balance = leave_service.get_leave_balance(balance_year, emp_id, 'true')
+    
+    for emp_leaves_balance in all_emp_leaves_balance:
+        excel_data.append([
+        emp_leaves_balance['emp_name'],emp_leaves_balance['staff_no'],emp_leaves_balance['outstanding_leave_bal']
+            ])
+    excel.writeExcel(excel_data,row_start=0)
+    excel.terminateExcelService()
+    del excel
             
-        for i in range(len(mail_List)):   
-            try:
-                ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
-                log.info("Monthly CLB Mail sent successfully to {}".format(mail_List[i]))
-            except Exception as e:
-                log.info("Issue to send mail to :",mail_List[i]) 
-        # return Response(utils.StyleRes(True,'Leave Balance Details','Successfully  send mail'), status=200)
-    else:
-            log.info("Today is not last day of this month, date is :",str(today))
+    for i in range(len(mail_List)):   
+        try:
+            ret_val = sendMail(mail_List[i],mail_subject,mail_content,file_name) 
+            log.info("Monthly CLB Mail sent successfully to {}".format(mail_List[i]))
+        except Exception as e:
+            log.info("Issue to send mail to :",mail_List[i])        
 def relieveEmployee():
     current_date = datetime.now().date()
     stagged_employee =StageEmpolyee.objects.filter(status=1, relieved = current_date)
