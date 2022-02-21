@@ -77,7 +77,7 @@ class Usersdelete(APIView):
                 
                 if(relieved < current_date):
                     obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
-                    return Response(utils.StyleRes(True,"Employee disable","{} disable successfully.{}".format(emp_name)), status=StatusCode.HTTP_OK)
+                    return Response(utils.StyleRes(True,"Employee disable","{} disable successfully.".format(emp_name)), status=StatusCode.HTTP_OK)
                 else:
                     # staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
                     # staged_emp.save()
@@ -85,7 +85,7 @@ class Usersdelete(APIView):
                         emp_id=emp_id,
                         defaults={'status': 1,'relieved':relieved},
                     )
-                    return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} will be disable on {}".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
+                    return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} will be disable on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
         else:
