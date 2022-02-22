@@ -149,7 +149,7 @@
     <div head>
         Edit Employee
     </div>
-    <div>
+    <div style="padding:30px;">
         <form [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
             <div class="grid-container">
 
@@ -243,11 +243,11 @@
     <div head="">
         Confirm
     </div>
-    <div class="p-15">
+    <div class="p-15" style="padding-top: 45px;">
         <div class="delete__emp">
             <p>You want to disable : <span> {{ disableEmpName ? disableEmpName : '' }}</span> </p>
         </div>
-       <form [formGroup]="deleteUserForm" >
+       <form [formGroup]="deleteUserForm" style="padding: 0 20px 10px 20px;" >
         <mat-form-field class="custompicker">
             <mat-label>Relieved Date</mat-label>
             <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
@@ -256,7 +256,7 @@
                 <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
               </button> -->
             <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" (click)="open(picker)">date_range</mat-icon>
-            <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+            <mat-error *ngIf="deleteUserForm.get('dol').hasError('required')">
                 Please select Relieved Date
             </mat-error>
         </mat-form-field>
@@ -275,7 +275,7 @@
     <div head="">
         Disable Employee
     </div>
-   <h1>{{errorMessage}}</h1>
+   <h1 class="disable__emp_msg">{{errorMessage}}</h1>
 </app-modal-popup>
 
 
@@ -283,5 +283,5 @@
     <div head="">
         Disable Employee
     </div>
-    <h1>{{delete_emp_success_msg}}</h1>
+    <h1 class="disable__emp_msg">{{delete_emp_success_msg}}</h1>
  </app-modal-popup>
