@@ -255,6 +255,12 @@ export class ApproveTimesheetsComponent implements OnInit {
         let timesheetsData = res.body;
         this.pendingApprovalCount = timesheetsData.pending_cnt + timesheetsData.entry_complaince_cnt;
         this.rejectedCount = timesheetsData.rejected_cnt;
+        this.filterArray = 
+        [{ 'Name': 'All ', value: -1 }, 
+        { 'Name': 'Pending ' + '('+this.pendingApprovalCount + ')', value: 0 }, 
+        { 'Name': 'Approved '+ '('+(timesheetsData.approved_cnt?? 0 )+ ')', value: 1 }, 
+        { 'Name': 'Rejected '+ '('+this.rejectedCount + ')', value: 2 }, 
+        { 'Name': 'NC ' + '('+(timesheetsData.entry_complaince_cnt?? 0 )+ ')', value: 3 }]
         
         this.ss.resTimeSheet$.next({
           rc: this.rejectedCount,
@@ -264,6 +270,7 @@ export class ApproveTimesheetsComponent implements OnInit {
     })
 
   }
+
 
   //on clicking view wsr show wsr of emp
   onClickViewWSR(emp_id){
