@@ -22,8 +22,8 @@
     <div style="display: grid;grid-template-columns:1fr 1fr;grid-gap:10px">
         <div class="dateinput" style="max-width: 250px;">
 
-            <input type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
-                [maxDate]='maxDate' class="ngx-daterangepicker-action" (datesUpdated)="updateRange($event)" style="border: none;background: none;color: #5dcbdc;">
+            <!-- <input type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
+                [maxDate]='maxDate' class="ngx-daterangepicker-action" (datesUpdated)="updateRange($event)" style="border: none;background: none;color: #5dcbdc;"> -->
             <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)" style="background: none; border: none;cursor: pointer;">
     <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #5dcbdc;">date_range</mat-icon>
   </button>

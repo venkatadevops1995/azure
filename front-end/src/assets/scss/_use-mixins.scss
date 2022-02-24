@@ -1,0 +1,32 @@
+@import 'mixins';
+
+
+@include palette-classes('primary',$md-primary);
+@include palette-classes('accent',$md-accent);
+@include palette-classes('warn',$md-warn);
+@include col-classes('primary',$md-primary);
+@include col-classes('accent',$md-accent);
+@include col-classes('warn',$md-warn);
+
+
+// font sizes from 1 to 40
+@include attr-x('font-size','fs-', 40, 1, 'px');
+
+.fw-100{
+    font-weight: 100;
+}
+.fw-300{
+    font-weight: 300;
+}
+.fw-500{
+    font-weight: 500;
+}
+.fw-700{
+    font-weight: 700;
+}
+
+// generate the width classes
+
+// width classes for w-5 to w-100 %
+@include attr-x('width','w-', 20, 5, '%');
+ 

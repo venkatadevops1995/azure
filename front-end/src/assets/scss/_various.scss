@@ -1,9 +1,0 @@
-
-@import './mixins.scss';
-
-// width classes for w-5 to w-100 %
-@include attr-x('width','w-', 20, 5, '%');
-
-// font size classes for 10 to 25 px
-@include attr-x('font-size','fs-', 25, 1, 'px',10);
-

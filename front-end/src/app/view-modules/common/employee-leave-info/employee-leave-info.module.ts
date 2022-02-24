@@ -40,6 +40,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     FileDownloadModule,
     TooltipModule,
     MatAutocompleteModule
-  ]
+  ],
+  exports:[EmployeeLeaveInfoComponent]
 })
 export class EmployeeLeaveInfoModule { }

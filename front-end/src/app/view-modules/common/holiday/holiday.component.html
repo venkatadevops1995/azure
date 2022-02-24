@@ -133,9 +133,9 @@
                                     <span *ngIf="alias.controls.date.hasError('invalidYear')">Selected date year should be {{this.selectedYear}}</span>
                                     <span *ngIf="alias.controls.date.hasError('notWeekend')">Selected date should not be weekend</span>
                                 </div>
-                                <input style="width:'160px';" matInput type="text" formControlName="date" ngxDaterangepickerMd #ref (datesUpdated)="getDay(i)" [minDate]="minSelectDate" [maxDate]="maxSelectDate" [locale]="{applyLabel: 'Select', format: 'DD-MM-YYYY'}" />
+                                <!-- <input style="width:'160px';" matInput type="text" formControlName="date" ngxDaterangepickerMd #ref (datesUpdated)="getDay(i)" [minDate]="minSelectDate" [maxDate]="maxSelectDate" [locale]="{applyLabel: 'Select', format: 'DD-MM-YYYY'}" /> -->
                                 <!-- <div class="date_range_after" ></div>  -->
-                                <mat-icon role="img" (click)="elClick(ref)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
+                                <!-- <mat-icon role="img" (click)="elClick(ref)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon> -->
                                 <!-- <input   [matDatepicker]="picker" >
                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker> -->

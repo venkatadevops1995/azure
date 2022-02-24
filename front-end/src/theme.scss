@@ -1,5 +1,45 @@
-@import '~@angular/material/theming';
-@include mat-core();
-@import './assets/scss/material';
+@use '@angular/material'as mat;
+@import './assets/scss/ng-palette';
 
-// @import 
+@include mat.core();
+
+// dark theme
+$dark-primary : mat.define-palette($md-primary);
+$dark-accent : mat.define-palette($md-accent);
+$dark-warn : mat.define-palette($md-warn);
+$dark-theme : mat.define-dark-theme((color:(primary:$dark-primary,
+      accent:$dark-accent,
+      warn:$dark-warn)));
+
+// Emit theme-dependent styles for common features used across multiple components.
+@include mat.core-theme($dark-theme);
+
+@include mat.button-theme($dark-theme);
+
+@include mat.all-component-themes($dark-theme);
+
+
+body{
+    color:#fff;
+}
+
+/* Material theme styling */
+.mat-form-field-appearance-legacy {
+  .mat-form-field-label {
+    color: var(--col-primary-300);
+  }
+}
+
+.mat-form-field {
+  color: #fff;
+
+  &.mat-focused {
+    .mat-form-field-ripple {
+      background-color: var(--col-accent-500);
+    }
+
+    .mat-form-field-label {
+      color: var(--col-accent-500);
+    }
+  }
+}

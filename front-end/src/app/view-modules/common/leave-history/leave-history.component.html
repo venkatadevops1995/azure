@@ -23,12 +23,12 @@
         </div>
         <div class="ml-15" style="margin-left: 55px;">
             <div class="dateinput change">
-                <input [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
+                <!-- <input [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
                     #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: red;" (datesUpdated)="onSubmitResolvedLeaveFilter($event)" [opens]="'left'"
-                    [drops]="'down'" readonly>
+                    [drops]="'down'" readonly> -->
 
                 <button [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-                            <mat-icon  role="img" (click)="pickerDirective.open()"
+                            <mat-icon  role="img" 
                         class="mat-icon material-icons ngx-daterangepicker-action" [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" >date_range</mat-icon>
                         </button>
             </div>

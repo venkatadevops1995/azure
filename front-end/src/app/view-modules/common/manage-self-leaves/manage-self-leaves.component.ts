@@ -8,7 +8,7 @@ import { MatRadioChange } from '@angular/material/radio';
 import { split } from 'lodash';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
 // import { start } from 'repl';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class ManageSelfLeavesComponent implements OnInit {
     todate: any;
     maxDate = moment().subtract(0, 'days');
 
-    // minDate = moment().subtract(5, 'years')
+    minDate = moment().subtract(30, 'days')
     leaveCategories = ["Half Day", "Single Day", "Multiple Days"];
     // leaveTypes = ["Paid", "Unpaid", "Marriage", "Maternity/Paternity"];
     leaveTypes = []
@@ -135,8 +135,6 @@ export class ManageSelfLeavesComponent implements OnInit {
         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
         'This Month': [moment().startOf('month'), moment().endOf('month')],
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        'Last 3 Months': [moment().subtract(89, 'days'), moment()],
-        // 'Last 3 Months': [moment().subtract(3, 'month'), moment().endOf('month')],
         // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
         // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
     }
@@ -149,7 +147,7 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     @ViewChild('refPicker1') datePickerStartDate: MatDatepicker<any>;
 
-    @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+    // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
 
     @ViewChild('timesheetDiscrepancyDialog') timesheetDiscrepancyPopup: ModalPopupComponent;
 
@@ -157,7 +155,7 @@ export class ManageSelfLeavesComponent implements OnInit {
     applied_heading = ""
     appliedCount = 0;
     historyCount = 0;
-    picker: DaterangepickerComponent;
+    // picker: DaterangepickerComponent;
     applyForm: FormGroup;
     @ViewChild('f') applyFormNgForm: NgForm;
     applyFormSubmitted: boolean = false;
@@ -293,14 +291,14 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.pickerDirective.clear()
+            // this.pickerDirective.clear()
         })
         console.log("===================================",this.applyForm);
         
     }
 
     ngOnDestroy() {
-        this.destroy$.next()
+        this.destroy$.next(null)
         this.destroy$.complete();
     }
 
@@ -833,7 +831,8 @@ export class ManageSelfLeavesComponent implements OnInit {
             startDate: 'startdate',
             endDate: 'enddate'
         }
-        let dp: any = this.pickerDirective.value
+        // let dp: any = this.pickerDirective.value
+        let dp:any = {}
         // get the sorting
         let params = new HttpParams({
             fromObject: {

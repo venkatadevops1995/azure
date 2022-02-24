@@ -38,7 +38,7 @@ export class EditUserComponent implements OnInit {
   
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
     private datepipe : DatePipe,
@@ -66,7 +66,6 @@ export class EditUserComponent implements OnInit {
   filteredManagers: Observable<any>;
   errorMessage : string = "";
   disableEmpName: string = '';
-  delete_emp_success_msg:string ='';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -213,13 +212,11 @@ export class EditUserComponent implements OnInit {
     this.http.request("put", "delete/",'', obj).subscribe(res => {
       if (res.status == 400) {
           this.errorMessage = res.error.message + ". First update employee's manager";
-        this.modalDisableError.open();
-        this.deleteUserForm.controls.dol.setValue('')
+        this.modalDisableError.open()
         return;
       }else if(res.status == 406){
         this.errorMessage = res.error.message;
         this.modalDisableError.open()
-        this.deleteUserForm.controls.dol.setValue('');
         return;
       }
       if (res.body["success"] == true) {
@@ -229,14 +226,11 @@ export class EditUserComponent implements OnInit {
           this.close()
           this.getAllReportes()
           this
-          this.delete_emp_success_msg = res.body.results
-          this.deleteUserForm.controls.dol.setValue('');
       } else {
         alert(res.body.message)
 
         this.errorMessage = res.body.message;
         this.modalDisableError.open()
-        this.deleteUserForm.controls.dol.setValue('');
         return;
         
       }

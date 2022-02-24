@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DownloadMisComponent } from './download-mis.component';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { MatInputModule } from '@angular/material/input';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,7 +24,7 @@ import { ButtonModule } from 'src/app/components/button/button.module';
     MatTableModule,
     MatInputModule,
     FormsModule,
-    NgxDaterangepickerMd.forRoot(),
+    // NgxDaterangepickerMd.forRoot(),
     FileDownloadModule,
     MatInputModule,
     FormsModule,

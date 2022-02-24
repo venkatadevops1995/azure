@@ -35,7 +35,7 @@ export class ManageProjectComponent implements OnInit {
   PROJECTS = [] //["ab","bc","ca","ad"]
   PROJECTS_LIST = {}
   EMP_PROJECTS_DATA: ProjectData[] = [];
-  displayedColumns = ['serial_no','staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
+  displayedColumns = ['staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
   loading_emp_data = true;
   EMP_PROJECTS_FILTERED_DATA: ProjectData[] = [];
   filteredOptions: Observable<any[]>;

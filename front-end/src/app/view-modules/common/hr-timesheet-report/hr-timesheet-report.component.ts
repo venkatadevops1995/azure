@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -24,7 +24,7 @@ export class HrTimesheetReportComponent implements OnInit {
   filteredManagers: Observable<any>;
   isPageAccessable: Boolean=false;
 ;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ranges: any = {
     // 'Today': [moment(), moment()],
@@ -57,7 +57,7 @@ export class HrTimesheetReportComponent implements OnInit {
   }
 
   open(e) {
-    this.pickerDirective.open(e);
+    // this.pickerDirective.open(e);
   }
   ngOnInit(): void {
     this.checkHrAccessForreports();
@@ -119,6 +119,7 @@ export class HrTimesheetReportComponent implements OnInit {
 
     return diffDays;
   }
+  
   convertDatefmt(date) {
     console.log(date);
 

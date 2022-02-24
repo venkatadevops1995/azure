@@ -15,14 +15,10 @@
 
   <app-sidebar style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-sidebar>
 
-  <main>
+  <main style="background-color: #000;">
     <div>
       <router-outlet></router-outlet> 
     </div>
   </main>
   <app-footer *ngIf="!isPreSignIn"></app-footer>
-</div> 
-
-<!-- <ng-template #templateIsPreSignIn>
-  <router-outlet></router-outlet>
-</ng-template> -->
+</div>

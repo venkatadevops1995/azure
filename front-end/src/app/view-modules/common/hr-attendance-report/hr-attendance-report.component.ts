@@ -4,7 +4,7 @@ import { HttpParams } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Moment } from 'moment';
 import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
 import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
@@ -32,7 +32,7 @@ export class HrAttendanceReportComponent implements OnInit {
   date4;
   EMPS :any[];
   option = new FormControl('');
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ATTENDENCE_DATA: AttendanceInterface[] = [];
   displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net','posted'];
@@ -68,7 +68,7 @@ export class HrAttendanceReportComponent implements OnInit {
   }
 
   open(e) {
-    this.pickerDirective.open(e);
+    // this.pickerDirective.open(e);
   }
   ngOnInit(): void {
     this.checkHrAccessForreports();

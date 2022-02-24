@@ -73,14 +73,13 @@
   </div>
 </div>
 
-<app-modal-popup #policyDetailsRef [w]="'80vw'" [h]="'90vh'" [policy_style] ="true" >
+<app-modal-popup #policyDetailsRef [w]="'900px'" [h]="'700px'" [policy_style] ="true" >
   <div class="loader--string" *ngIf="isLoaderVisible" >
     Loading....
   </div>
   <div head>{{clicked_policy_name}}</div>
   <div style="text-align: center">
-    <pdf-viewer [src]="filepathUrl"(pages-initialized)="pageInitialized($event)" (page-rendered)="pageRendered($event)"
-    (after-load-complete) ="loader()"[zoom]="1.30"[zoom-scale]="'page-width'"[fit-to-page]="true"[render-text]="true" style="display: block ; position: inherit;">
+    <pdf-viewer  [src]="filepathUrl" (after-load-complete) ="loader()" [render-text]="true" style="display: block;position: inherit;">
     </pdf-viewer>
     <!-- <app-secured-file [src]="filepathUrl"></app-secured-file> -->
 

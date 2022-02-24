@@ -6,14 +6,14 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
-import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-import { MonthYearComponent } from '../month-year/month-year.component';
+// import { MonthYearComponent } from '../month-year/month-year.component';
 @Component({
   selector: 'app-leave-history',
   templateUrl: './leave-history.component.html',
@@ -54,9 +54,9 @@ export class LeaveHistoryComponent implements OnInit{
   selectedHistoryRange: any = {};
   selectedAppliedRange: any = {};
   LEAVE_DATA_HISTORY = []
-  picker: DaterangepickerComponent;
+  // picker: DaterangepickerComponent;
   showMessage = false;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   @ViewChild(MatSort) sort1: MatSort;
   isPageAccessable: Boolean=false;
   constructor(private ss: SingletonService,
@@ -99,7 +99,7 @@ export class LeaveHistoryComponent implements OnInit{
   setPickerToLast30Days() {
     this.selectedHistoryRange["startDate"] = this.ranges['Last 30 Days'][0];
     this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
-    this.pickerDirective.writeValue(this.selectedHistoryRange)
+    // this.pickerDirective.writeValue(this.selectedHistoryRange)
     
   }
   onSubmitResolvedLeaveFilter(e) {
@@ -108,7 +108,7 @@ export class LeaveHistoryComponent implements OnInit{
     
     console.log(fgValue, e);
     this.getLeaveApplications(true, fgValue)
-    let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
+    // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
 
   }
   getEmployees() {
@@ -156,7 +156,8 @@ export class LeaveHistoryComponent implements OnInit{
       startDate: 'startdate',
       endDate: 'enddate'
     }
-    let dp: any = this.pickerDirective.value
+    // let dp: any = this.pickerDirective.value
+    let dp = {}
     // get the sorting
     let params = new HttpParams({
       fromObject: {
@@ -217,7 +218,8 @@ export class LeaveHistoryComponent implements OnInit{
     }
     let data;
     
-    let dp: any = this.pickerDirective.value
+    // let dp: any = this.pickerDirective.value
+    let dp = {}
     
     if (isHistory) {
       data = this.LEAVE_DATA_HISTORY = []

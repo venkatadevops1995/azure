@@ -99,10 +99,7 @@
 
 
 <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8">
-    <ng-container matColumnDef="serial_no">
-        <th mat-header-cell *matHeaderCellDef> S.NO </th>
-        <td mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
-    </ng-container>
+
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
@@ -295,8 +292,8 @@
 
                     <mat-form-field class="custompicker">
                         <mat-label>Date of joining</mat-label>
-                        <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
-                            formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly>
+                        <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
+                            formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
                         <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
                             <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
                           </button> -->

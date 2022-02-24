@@ -323,6 +323,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
         }
       }
     }
+    return true
   }
 
 

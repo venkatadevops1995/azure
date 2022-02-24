@@ -3,6 +3,12 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { WindowReferenceService } from 'src/app/services/window-reference.service';
 
+declare global {
+    interface Navigator {
+        msSaveBlob?: (blob: any, defaultName?: string) => boolean
+        msSaveOrOpenBlob?: any
+    }
+}
 
 // interface for the FileDownload type
 interface dbdFileDownload {
@@ -79,8 +85,8 @@ export class FileDownloadDirective {
                 payload = dataUrlToBlob(payload);
                 mimeType = payload.type || defaultMime;
             } else {
-                return navigator.msSaveBlob ?  // IE10 can't do a[download], only Blobs:
-                    navigator.msSaveBlob(dataUrlToBlob(payload), fileName) :
+                return (<any>navigator).msSaveBlob ?  // IE10 can't do a[download], only Blobs:
+                    (<any>navigator).msSaveBlob(dataUrlToBlob(payload), fileName) :
                     saver(payload); // everyone else can save dataURLs un-processed
             }
 
@@ -145,14 +151,14 @@ export class FileDownloadDirective {
             }
             f.src = url;
             setTimeout(function () { document.body.removeChild(f); }, 333);
-
+            return false
         }//end saver
 
 
 
 
-        if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
-            return navigator.msSaveBlob(blob, fileName);
+        if ((<any>navigator).msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+            return (<any>navigator).msSaveBlob(blob, fileName);
         }
 
         if (self.URL) { // simple fast and modern way using Blob and URL:
@@ -230,7 +236,7 @@ export class FileDownloadDirective {
                     this.onFinish.emit(false);
                 }
 
-            }); 
+            });
 
     }
 
@@ -259,9 +265,8 @@ export class FileDownloadDirective {
             //console.log(fileName[1].replace(/\"/g, ''));
 
             return fileName[1].replace(/\"/g, '');
-        } else {
-            return;
         }
+        return undefined;
 
     }
 
@@ -277,7 +282,7 @@ export class FileDownloadDirective {
 
     public openPopUp(data, fileName) {
         // if IE Browser
-        if (window.navigator.msSaveBlob) {
+        if ((<any>window.navigator).msSaveBlob) {
             window.navigator.msSaveOrOpenBlob(data, fileName);
             // if non-IE browser
         } else {

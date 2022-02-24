@@ -3,10 +3,10 @@ import { NgModule } from '@angular/core';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PreSignInComponent } from './pre-sign-in.component';
 import { LoginComponent } from './login/login.component';
-import { Routes, RouterModule } from '@angular/router'; 
+import { Routes, RouterModule } from '@angular/router';  
 
 const PRE_SIGNIN_ROUTES: Routes = [
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent }, 
     // { path: 'register', component: RegisterComponent },
     // { path: 'confirm-email', component: ConfirmEmailComponent },
     { path: 'forgot-password', component: ForgotPasswordComponent  },

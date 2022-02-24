@@ -14,7 +14,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { FileUploadModule } from 'src/app/components/input-file/input-file.module';
 import { AddUserComponent } from './add-user/add-user.component';
@@ -41,7 +41,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     TooltipModule,
     FileUploadModule,
     MatAutocompleteModule,
-    NgxDaterangepickerMd.forRoot()
+    // NgxDaterangepickerMd.forRoot()
   ]
 })
 export class ManageUserModule { }

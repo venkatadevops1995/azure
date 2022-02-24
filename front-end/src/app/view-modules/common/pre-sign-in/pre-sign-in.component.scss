@@ -1,20 +1,37 @@
 .presignin {
   display: grid;
-  grid-template-columns: 1fr minmax(500px,600px) 100px;
+  grid-template-columns: 1fr minmax(500px, 600px) 100px;
   min-height: 100vh;
   background: var(--color-tertiary);
+
   .presignin__form {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    div {
+    background: var(--col-primary-A100);
+
+    >div {
       padding: 50px;
-      border-radius: 50px;
+      border-radius: 25px;
       width: 100%;
-      max-width: 400px;
+      max-width: 450px;
+      border: 1px solid var(--col-primary-500);
+      /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#424242+2,3a3a3a+100 */
+      background: radial-gradient(136.73% 141.36% at -27.27% -33.33%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%);
+
     }
   }
+
+  .presignin__logo {
+    img {
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+      max-width: 70%;
+      max-height: 50%;
+    }
+  }
+
   .presignin__bg {
     position: absolute;
     width: 100%;

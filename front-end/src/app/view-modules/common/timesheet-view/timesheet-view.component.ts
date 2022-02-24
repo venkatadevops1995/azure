@@ -87,7 +87,7 @@ export class TimesheetViewComponent implements OnInit {
   holderRejected: { timesheet: any, wsr: any } = { timesheet: null, wsr: null }
 
   // boolean to indicate whether rejected timesheet value has changed
-  hasRejectedValueChange = this.timeSheetType != 'rejected';
+  hasRejectedValueChange ;
 
   // boolean to indicate if it has all zeros filled in any of the projects in timesheet
   hasAllZerosInProject: boolean = false;
@@ -118,6 +118,7 @@ export class TimesheetViewComponent implements OnInit {
       active_projects: this.ss.fb.array([]),
       general: new FormControl('')
     });
+    this.hasRejectedValueChange = this.timeSheetType != 'rejected';
   }
 
   ngOnInit(): void {
@@ -167,7 +168,7 @@ export class TimesheetViewComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.destroy$.next();
+    this.destroy$.next(null);
   }
 
   // event listener on document to check if active mins is clicked

@@ -9,15 +9,14 @@ import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import * as moment from 'moment';
-import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 
 import { LeaveApplcnStatus } from 'src/app/constants'
 import { Observable, Subject } from 'rxjs';
 import { ConfirmRejectLeaveComponent } from './confirm-reject-leave/confirm-reject-leave.component';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
-import { stringify } from 'querystring';
+import { FileDownloadService } from 'src/app/directives/file-download/file-download.service'; 
 
 @Component({
     selector: 'app-manage-team-leaves',
@@ -90,8 +89,8 @@ export class ManageTeamLeavesComponent implements OnInit {
 
     selectedHistoryRange: any = {};
     selectedAppliedRange: any = {};
-    picker: DaterangepickerComponent;
-    @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+    // picker: DaterangepickerComponent;
+    // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
 
     @ViewChild('showAppliedLeaveDialog') showAppliedLeavePopup: ModalPopupComponent;
 
@@ -187,14 +186,14 @@ export class ManageTeamLeavesComponent implements OnInit {
     }
 
     ngOnDestroy() {
-        this.destroy$.next()
+        this.destroy$.next(null)
         this.destroy$.complete()
     }
 
     setPickerToLast30Days() {
         this.selectedHistoryRange["startDate"] = this.ranges['Last 30 Days'][0];
         this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
-        this.pickerDirective.writeValue(this.selectedHistoryRange)
+        // this.pickerDirective.writeValue(this.selectedHistoryRange)
     }
 
     // display function for auto complete to filter options
@@ -212,7 +211,7 @@ export class ManageTeamLeavesComponent implements OnInit {
         let fgValue: any = this.managerCtrl.value
         console.log(fgValue,e);
         
-        let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
+        // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
         if (fgValue == 'ALL' || fgValue) {
             this.getLeaveApplications(true, fgValue)
             this.showMessage = true
@@ -335,7 +334,8 @@ export class ManageTeamLeavesComponent implements OnInit {
             endDate: 'enddate'
         }
         let data;
-        let dp: any = this.pickerDirective.value
+        // let dp: any = this.pickerDirective.value
+        let dp = {}
         if (isHistory) {
             data = this.LEAVE_DATA_HISTORY = []
         } else {
@@ -440,7 +440,8 @@ export class ManageTeamLeavesComponent implements OnInit {
             startDate: 'startdate',
             endDate: 'enddate'
         }
-        let dp: any = this.pickerDirective.value
+        // let dp: any = this.pickerDirective.value
+        let dp = {}
         // get the sorting
         let params = new HttpParams({
             fromObject: {

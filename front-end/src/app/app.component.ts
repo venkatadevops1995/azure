@@ -1,13 +1,12 @@
-import { UserService } from 'src/app/services/user.service';
-import { SvgComponent } from './layout/svg/svg.component';
-import { StatusMessageComponent } from './components/status-message/status-message.component';
-import { LoaderComponent } from './components/loader/loader.component';
-import { Component, HostListener, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { SingletonService } from './services/singleton.service';
-import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
-import { takeUntil, debounce, debounceTime } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { LoaderComponent } from './components/loader/loader.component';
+import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { StatusMessageComponent } from './components/status-message/status-message.component';
+import { SvgComponent } from './layout/svg/svg.component';
+import { SingletonService } from './services/singleton.service';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
+  
   // ref to the global loader compoonent
   @ViewChild(LoaderComponent, /* TODO: add static flag */   { static: false }) loader;
 
@@ -62,9 +61,9 @@ export class AppComponent {
   // 
   ngOnDestroy() {
     // emit using destroy subject to unsubscribe all subscriptions
-    this.destroy$.next();
+    this.destroy$.next(null);
     // emit using  destroy subject to unsubscribe all subscriptions
-    this.ss.destroy$.next();
+    this.ss.destroy$.next(null);
   }
 
 
@@ -82,8 +81,8 @@ export class AppComponent {
   redirectBasedOnSession() {
     if (!this.ss.isPreSignIn) {
       if (!this.user.validateSession()) {
-        this.user.logout();
-        this.router.navigate(['login']);
+        // this.user.logout();
+        // this.router.navigate(['login']);
       }
     } else { 
       if (this.user.validateSession()) {

@@ -7,24 +7,24 @@ import { CommonModule } from '@angular/common';
 import { EmpL0RoutingModule } from './emp-l0-routing.module';
 import { EmpL0Component } from './emp-l0.component';
 import { L0DashboardComponent } from './l0-dashboard/l0-dashboard.component';
-import { L0TimesheetComponent } from './l0-timesheet/l0-timesheet.component';
-import { TimeSheetModule } from '../common/time-sheet/time-sheet.module'; 
+import { L0TimesheetComponent } from './l0-timesheet/l0-timesheet.component'; 
 import { AttendenceSheetModule } from '../common/attendence-sheet/attendence-sheet.module';
-import { ManageSelfLeavesModule } from '../common/manage-self-leaves/manage-self-leaves.module';
 import { HolidayModule } from '../common/holiday/holiday.module';
 import { ReportModule } from '../common/report/report.module';
-import { ImportExportLeaveModule } from '../common/import-export-leave/import-export-leave.module';
-import { EmployeeLeaveInfoModule } from '../common/employee-leave-info/employee-leave-info.module';
+import { ManageSelfLeavesModule } from '../common/manage-self-leaves/manage-self-leaves.module';
 import { LeavePolicyConfigModule } from '../common/leave-policy-config/leave-policy-config.module';
+import { EmployeeLeaveInfoModule } from '../common/employee-leave-info/employee-leave-info.module';
+import { ImportExportLeaveModule } from '../common/import-export-leave/import-export-leave.module';
 import { LeaveHistoryModule } from '../common/leave-history/leave-history.module';
 import { ManageUserModule } from '../common/manage-user/manage-user.module';
 import { ManageProjectModule } from '../common/manage-project/manage-project.module';
-import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
 import { PolicyConfigModule } from '../common/policy-config/policy-config.module';
 import { PolicyListModule } from '../common/policy-list/policy-list.module';
+import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.module';
 import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-attendance-report.module';
 import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
+import { TimeSheetModule } from '../common/time-sheet/time-sheet.module';
 
 
 @NgModule({
@@ -32,6 +32,7 @@ import { DownloadMisModule } from '../common/download-mis/download-mis.module';
   imports: [
     CommonModule,
     EmpL0RoutingModule,
+    TimesheetViewModule,
     TimeSheetModule,
     ButtonModule,
     SvgIconModule,

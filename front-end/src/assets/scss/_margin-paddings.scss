@@ -8,11 +8,11 @@
 @include attr-x('margin-bottom','mb-', 4, 1, 'px');
 
 
-// generate classes .ml-5 to .ml-30 with margin-left values. similar for remaining sides
-@include attr-x('margin-left','ml-', 6, 5, 'px');
-@include attr-x('margin-right','mr-', 6, 5, 'px');
-@include attr-x('margin-top','mt-', 6, 5, 'px');
-@include attr-x('margin-bottom','mb-', 6, 5, 'px');
+// generate classes .ml-5 to .ml-60 with margin-left values. similar for remaining sides
+@include attr-x('margin-left','ml-', 12, 5, 'px');
+@include attr-x('margin-right','mr-', 12, 5, 'px');
+@include attr-x('margin-top','mt-', 12, 5, 'px');
+@include attr-x('margin-bottom','mb-', 12, 5, 'px');
 
 
 // generate classes .pl-1 to .pl-4 with padding-left values. similar for remaining sides
@@ -22,19 +22,19 @@
 @include attr-x('padding-top','pt-', 4, 1, 'px');
 @include attr-x('padding-bottom','pb-', 4, 1, 'px');
 
-// generate classes .pl-5 to .pl-30 with padding-left values. similar for remaining sides
-@include attr-x('padding','p-', 6, 5, 'px');
-@include attr-x('padding-left','pl-', 6, 5, 'px');
-@include attr-x('padding-right','pr-', 6, 5, 'px');
-@include attr-x('padding-top','pt-', 6, 5, 'px');
-@include attr-x('padding-bottom','pb-', 6, 5, 'px');
+// generate classes .pl-5 to .pl-60 with padding-left values. similar for remaining sides
+@include attr-x('padding','p-', 12, 5, 'px');
+@include attr-x('padding-left','pl-', 12, 5, 'px');
+@include attr-x('padding-right','pr-', 12, 5, 'px');
+@include attr-x('padding-top','pt-', 12, 5, 'px');
+@include attr-x('padding-bottom','pb-', 12, 5, 'px');
 
 // generate classes .pl-30 to .pl-180 with padding-left values. similar for remaining sides
-@include attr-x('padding','p-', 30, 6, 'px');
-@include attr-x('padding-left','pl-', 30, 6, 'px');
-@include attr-x('padding-right','pr-', 30, 6, 'px');
-@include attr-x('padding-top','pt-', 30, 6, 'px');
-@include attr-x('padding-bottom','pb-', 30, 6, 'px');
+// @include attr-x('padding','p-', 30, 6, 'px');
+// @include attr-x('padding-left','pl-', 30, 6, 'px');
+// @include attr-x('padding-right','pr-', 30, 6, 'px');
+// @include attr-x('padding-top','pt-', 30, 6, 'px');
+// @include attr-x('padding-bottom','pb-', 30, 6, 'px');
 
 
 // generate classes .pl-30 to .pl-180 with padding-left values. similar for remaining sides

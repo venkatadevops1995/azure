@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HrAttendanceReportComponent } from './hr-attendance-report.component';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { MatInputModule } from '@angular/material/input';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,7 +22,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     MatTableModule,
     MatInputModule,
     FormsModule,
-    NgxDaterangepickerMd.forRoot(),
+    // NgxDaterangepickerMd.forRoot(),
     FileDownloadModule,
     MatInputModule,
     FormsModule,

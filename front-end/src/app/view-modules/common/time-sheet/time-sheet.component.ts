@@ -415,7 +415,7 @@ export class TimeSheetComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
-		this.destroy$.next();
+		this.destroy$.next(null);
 	}
 
 	// event listener on document to check if active mins is clicked

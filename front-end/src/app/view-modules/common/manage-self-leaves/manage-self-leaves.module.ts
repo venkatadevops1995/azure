@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ManageSelfLeavesComponent } from './manage-self-leaves.component';
 import { ButtonModule } from 'src/app/components/button/button.module';
 import { MatTableModule } from '@angular/material/table';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +35,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NgxDaterangepickerMd.forRoot(),
+    // NgxDaterangepickerMd.forRoot(),
     MatCheckboxModule,
     ConfirmDialogModule,
     StripTableModule,

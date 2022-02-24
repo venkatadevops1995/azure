@@ -4,7 +4,7 @@ import { HttpParams } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Moment } from 'moment';
 import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
 import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
@@ -17,7 +17,7 @@ export interface AttendanceInterface {
   firstIn: any;
   lastOut: any;
   gross: any;
-  net:any
+  net: any
 }
 
 @Component({
@@ -30,12 +30,12 @@ export class AttendenceSheetComponent implements OnInit {
   downloadable = false;
   showMessage = false;
   date4;
-  EMPS :any[];
+  EMPS: any[];
   option = new FormControl('');
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ATTENDENCE_DATA: AttendanceInterface[] = [];
-  displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net','posted'];
+  displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net', 'posted'];
   dataSource = this.ATTENDENCE_DATA;
   ranges: any = {
     'Today': [moment(), moment()],
@@ -48,17 +48,17 @@ export class AttendenceSheetComponent implements OnInit {
     // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
   }
   maxDate = moment();
-  selected :any = {} ;
+  selected: any = {};
   selectedEmpId: any;
-  value:any;
+  value: any;
   filteredManagers: Observable<any>;
-  constructor(private http: HttpClientService,public datepipe: DatePipe,private user:UserService,private ss:SingletonService) { 
-    
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
+
     this.filteredManagers = this.option.valueChanges
-        .pipe(
-          startWith(''),
-          map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
-        );
+      .pipe(
+        startWith(''),
+        map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
+      );
   }
   private filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
@@ -67,22 +67,18 @@ export class AttendenceSheetComponent implements OnInit {
   }
 
   open(e) {
-    this.pickerDirective.open(e);
+    // this.pickerDirective.open(e);
   }
   ngOnInit(): void {
- 
-      this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
-      this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
-      this.selected["startDate"] = this.ranges['Last 30 Days'][0];
-      this.selected["endDate"] = this.ranges['Last 30 Days'][1];
-      // this.option.setValue(this.user.getEmpId());
-      this.getAttendenceData(this.fromdate,this.todate,this.user.getEmpId());
-      this.getReporters();
+
+    // this.option.setValue(this.user.getEmpId());
+    this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    this.getReporters();
 
   }
-  
-  getAttendenceData(fromdate,todate,emp_id) {
-    if(emp_id === 'all'){
+
+  getAttendenceData(fromdate, todate, emp_id) {
+    if (emp_id === 'all') {
       // this.http.request("get",'attendance/?from='+this.fromdate+'&to='+this.todate+'&all_emp=true').subscribe(res=>{
       //   if (res.status == 200) {
       //     console.log(res.body['results'])
@@ -91,44 +87,32 @@ export class AttendenceSheetComponent implements OnInit {
       //      }
       //    })
       this.downloadable = true
-    }else if(emp_id!== undefined){
-    this.http.request("get", 'attendance/?from='+fromdate+'&to='+todate+'&emp_id='+emp_id,).subscribe(res => {
-      if (res.status == 200) {
-       console.log(res.body['results'])
-        this.ATTENDENCE_DATA = res.body['results'];
-        this.downloadable =false;
-        this.showMessage = true;
+    } else if (emp_id !== undefined) {
+      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
+        if (res.status == 200) {
+          console.log(res.body['results'])
+          this.ATTENDENCE_DATA = res.body['results'];
+          this.downloadable = false;
+          this.showMessage = true;
         }
       })
     }
   }
- 
-  convertDatefmt(date){
+
+  convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
-  updateRange(event){
-    if(event.startDate){
-      this.fromdate = this.convertDatefmt(event.startDate._d);
+  getDownloadEndPoint() {
+    if (this.selectedEmpId === 'all') {
+      return 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&download=' + true + '&all_emp=true'
+    } else {
+      return 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&download=' + true + '&emp_id=' + this.selectedEmpId
     }
-    if(event.endDate){
-      this.todate = this.convertDatefmt(event.endDate._d);
-    }
-      console.log(this.fromdate,this.todate)
-
-      this.getAttendenceData(this.fromdate,this.todate,this.selectedEmpId)
-  
-      }
-  getDownloadEndPoint(){
-    if(this.selectedEmpId === 'all'){
-    return 'attendance/?from='+this.fromdate+'&to='+this.todate+'&download='+true+'&all_emp=true'
-  }else{
-    return 'attendance/?from='+this.fromdate+'&to='+this.todate+'&download='+true+'&emp_id='+this.selectedEmpId
-  }
   }
 
   selectEmp(value) {
-    this.selectedEmpId = this.EMPS.filter(x=>{
-      if(x.emp_name == value){
+    this.selectedEmpId = this.EMPS.filter(x => {
+      if (x.emp_name == value) {
         return x['emp_id'];
       }
     });
@@ -136,38 +120,40 @@ export class AttendenceSheetComponent implements OnInit {
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
   }
 
-  clear(){
+  clear() {
     this.option.reset();
     this.option.setValue('');
-   }
+  }
   // selectEmp(){
   //   this.getAttendenceData(this.fromdate,this.todate,this.option.value)
   // }
-  getReporters(){
-    if(this.user.getRoleId()>1){
-    this.EMPS = [{ 'emp_id': 'all','emp_name': 'ALL'}];
-    }else{
+  getReporters() {
+    if (this.user.getRoleId() > 1) {
+      this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
+    } else {
       this.EMPS = [];
     }
     this.http.request("get", 'mgr-reporters/?indirect=true',).subscribe(res => {
       if (res.status == 200) {
-        this.EMPS.push({'email': res.body['results']['email'],
-        'emp_id': res.body['results']['emp_id'],
-        'emp_name': res.body['results']['emp_name']})
-        res.body['results']['reporters'].forEach(each=>{
-          if(each['emp_id'] !== res.body['results']['emp_id']){
-          this.EMPS.push(each);
+        this.EMPS.push({
+          'email': res.body['results']['email'],
+          'emp_id': res.body['results']['emp_id'],
+          'emp_name': res.body['results']['emp_name']
+        })
+        res.body['results']['reporters'].forEach(each => {
+          if (each['emp_id'] !== res.body['results']['emp_id']) {
+            this.EMPS.push(each);
           }
-          console.log(this.EMPS,"-------------------------")
+          console.log(this.EMPS, "-------------------------")
         })
         this.EMPS.forEach(element => {
-          if(element.emp_id == this.user.getEmpId()){
+          if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
             console.log(emp_name);
-            
+
             this.selectEmp(emp_name);
             this.option.setValue(emp_name);
-         }
+          }
         });
       }
     })

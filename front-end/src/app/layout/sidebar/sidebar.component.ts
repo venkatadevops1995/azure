@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.destroy$.next()
+    this.destroy$.next(null)
   }
 
   // get the initial data once the login is confirmed
@@ -154,9 +154,11 @@ export class SidebarComponent implements OnInit {
             this.menu = this.menu.filter(item => item.text != "Employee Management" );
           }
          if(!is_hr){
-          this.menu = this.menu.filter(item => item.text != "HR Reports" );
+            this.menu = this.menu.filter(item => item.text != "HR Reports" );
+
           }
-         if(!this.isReportsAccessable){
+          if(!this.isReportsAccessable){
+
             this.menu = this.menu.filter(item => item.text != "MIS" );
           }
 

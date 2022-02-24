@@ -77,12 +77,12 @@
     <div class="flex middle-xs">
         <div style="display: inline-block;">
             <div class="dateinput">
-                <input type="daterange" placeholder="Select Date Range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
-                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: #3a7bca;" [opens]="'right'" [drops]="'up'" readonly
-                    (datesUpdated)="getLeaveHistory($event)" />
+                <!-- <input type="daterange" placeholder="Select Date Range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
+                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [minDate]="minDate" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: #3a7bca;" [opens]="'right'" [drops]="'up'" readonly
+                    (datesUpdated)="getLeaveHistory($event)" /> -->
 
                 <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-          <mat-icon role="img" (click)="pickerDirective.open()"
+          <mat-icon role="img"  
             class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
         </button>
             </div>

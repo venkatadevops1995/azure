@@ -1,0 +1,105 @@
+app-atai-date-range {
+  position: relative;
+
+  .mat-form-field-appearance-legacy .mat-form-field-underline {
+    padding-bottom: 0;
+    display: none;
+  }
+
+  .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    padding-bottom: 0px;
+  }
+
+  .mat-form-field-flex {
+    position: relative;
+    top: 0.6em;
+  }
+
+  .mat-icon {
+    position: absolute;
+    right: 0px;
+    top: 0.6em;
+  }
+}
+
+.atai-calendar {
+  background: rgba(0, 0, 0, 1);
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  width: 350px;
+
+//   .mat-calendar-body tr:first-child {
+//     // display: none;
+//     // visibility: hidden;
+//   }
+
+  .mat-calendar-previous-button,
+  .mat-calendar-next-button {
+    color: var(--col-accent-500);
+  }
+
+  .mat-calendar-body-selected {
+    background: var(--col-accent-500);
+    color: var(--on-accent-500);
+  }
+
+  .mat-calendar-body-in-range::before {
+    background: var(--col-accent-400);
+    opacity: 0.5;
+  }
+
+  .mat-calendar-body-in-preview {
+    color: var(--col-accent-700);
+  }
+
+  .mat-calendar-table-header {
+    color: var(--col-accent-900)
+  }
+}
+
+
+.atai-date-range__input {
+  display: block;
+  float: left;
+  clear: both;
+  align-items: center;
+  position: relative;
+
+  input {
+    padding-right: 40px;
+  }
+}
+
+.atai-date-range__calendar {
+  display: flex;
+  flex-direction: column;
+  max-width: 350px;
+
+  .selection-presets {
+    display: flex;
+    // flex-direction: column;
+    font-size: 12px;
+    // min-width: 140px;
+
+    >.selection-preset {
+      //   margin: 7px 0; 
+      cursor: pointer;
+      padding: 4px;
+      background-color: var(--col-primary-900);
+      color: var(--on-primary-900);
+      border-radius: 3px;
+      margin: 10px 5px 0;
+      //   border-right: 1px solid #666;
+
+      &.selected {
+        background-color: var(--col-accent-500);
+        color: var(--on-accent-500);
+      }
+    }
+  }
+}
+
+.mat-menu-panel.atai-calendar {
+  max-width: 500px;
+  width: 100%;
+}

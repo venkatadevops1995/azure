@@ -2,7 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { DatePipe, formatDate } from '@angular/common';
 import { Moment } from 'moment';
 import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class DownloadMisComponent implements OnInit {
   downloadable = false;
   showMessage = false;
   date4;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ranges: any = {
     'Today': [moment(), moment()],
@@ -38,7 +38,7 @@ export class DownloadMisComponent implements OnInit {
   constructor(public datepipe: DatePipe) { }
   
   open(e) {
-    this.pickerDirective.open(e);
+    // this.pickerDirective.open(e);
   }
   ngOnInit(): void {
     console.log("Is Checked ::::", this.Ischecked);
