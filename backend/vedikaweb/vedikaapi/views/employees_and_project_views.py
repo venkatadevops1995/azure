@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 import ast
 import logging
 from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.email_service import email_service 
 from django.db.models import When, Case
 log = logging.getLogger(__name__)
 from vedikaweb.vedikaapi.views.common_views import CommonFunctions
@@ -75,8 +76,9 @@ class Usersdelete(APIView):
                     if (manager_id['cnt'] > 0):
                         return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
                 
-                if(relieved < current_date):
+                if((((relieved == current_date) and datetime.now().hour >= 21)) or( relieved < current_date)):
                     obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    email_service.informManagerEmpDisable(emp_id,relieved,stagging = False)
                     return Response(utils.StyleRes(True,"Employee disable","{} account disabled successfully.".format(emp_name)), status=StatusCode.HTTP_OK)
                 else:
                     # staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
@@ -85,6 +87,8 @@ class Usersdelete(APIView):
                         emp_id=emp_id,
                         defaults={'status': 1,'relieved':relieved},
                     )
+                    # adding email_details to EmailQueue  # emp_id, relieved=str(datetime.now().date()), stagging=False
+                    email_service.informManagerEmpDisable(emp_id,relieved,stagging=True)
                     return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} account will be disabled on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
@@ -358,15 +362,16 @@ class EmployeeProjects(APIView):
         is_hr = auth_details['is_emp_admin']
         common_fun_obj=CommonFunctions()
         if(is_hr):
-             emp_data = Employee.objects.allprojects().filter(status=1).order_by('staff_no')
+             emp_data = Employee.objects.allprojects().prefetch_related('emp','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved')).order_by('staff_no')
         else:
             emp_of_manager=common_fun_obj.get_employees_list(emp_id)
-            emp_data = Employee.objects.allprojects().filter(emp_id__in=emp_of_manager).order_by('staff_no')
+            emp_data = Employee.objects.allprojects().prefetch_related('emp','stage_employee').filter(Q(status=1),emp_id__in=emp_of_manager).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved')).order_by('staff_no')
+
         resp=[]
         for each in emp_data:
             projects = {str(proj.priority):proj.project_id for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()))}
             staged = {str(empl.priority):empl.project_id for empl in each.empl.filter()}
-            resp.append({"emp_id":each.emp_id,"staff_no":each.staff_no,"emp_name":each.emp_name,"company":each.company,"p1":projects['1'] if '1' in projects.keys() else "","p2":projects['2'] if '2' in projects.keys() else "","p3":projects['3'] if '3' in projects.keys() else "","staged":{"p1":staged['1'] if '1' in staged.keys() else "","p2":staged['2'] if '2' in staged.keys() else "","p3":staged['3'] if '3' in staged.keys() else ""}})
+            resp.append({"emp_id":each.emp_id,"staff_no":each.staff_no,"emp_name":each.emp_name,"company":each.company,"p1":projects['1'] if '1' in projects.keys() else "","p2":projects['2'] if '2' in projects.keys() else "","p3":projects['3'] if '3' in projects.keys() else "","staged":{"p1":staged['1'] if '1' in staged.keys() else "","p2":staged['2'] if '2' in staged.keys() else "","p3":staged['3'] if '3' in staged.keys() else ""}, 'staging_status':each.staging_status ,'staging_relieved':each.staging_relieved})
         return Response(utils.StyleRes(True,"Employee project list",resp),status=StatusCode.HTTP_OK)
 
     @jwttokenvalidator
@@ -465,16 +470,16 @@ class EmpManagers(APIView):
         # emp_type = self.request.query_params.get('type',None)
         # if(emp_type == 'hr'):
         if(is_emp_admin == True):
-            emp_list=Employee.objects.prefetch_related('emp').filter(status=1)
+            emp_list=Employee.objects.prefetch_related('emp','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'))
         else:
             # auth_details = utils.validateJWTToken(request)
             # if(auth_details['email']==""):
             #     return Response(auth_details, status=400)
             # emp_id=auth_details['emp_id']
             direct_indirect_emps = EmployeeHierarchy.objects.direct_indirect_employees(manager_id=emp_id).values('emp_id')
-            emp_list=Employee.objects.prefetch_related('emp').filter(status=1,emp_id__in=direct_indirect_emps)
+            emp_list=Employee.objects.prefetch_related('emp','stage_employee').filter(status=1,emp_id__in=direct_indirect_emps).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'))
         for each in emp_list:
-            emp_manager_list.append({ 'emp_id':each.emp_id, 'email':each.email, 'staff_no':each.staff_no,'emp_name':each.emp_name, 'company':each.company, 'role':each.role_id, 'managers': { man.priority : { 'emp_id': man.manager_id,'emp_name':man.manager.emp_name } for man in each.emp.all()} 
+            emp_manager_list.append({ 'emp_id':each.emp_id, 'email':each.email, 'staff_no':each.staff_no,'emp_name':each.emp_name, 'company':each.company, 'role':each.role_id, 'managers': { man.priority : { 'emp_id': man.manager_id,'emp_name':man.manager.emp_name } for man in each.emp.all()} ,'staging_status':each.staging_status,'staging_relieved' : each.staging_relieved
              })
 
         return Response(utils.StyleRes(True,"All employee managers list",emp_manager_list), status=StatusCode.HTTP_OK)

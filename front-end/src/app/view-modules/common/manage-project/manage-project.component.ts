@@ -310,7 +310,7 @@ export class ManageProjectComponent implements OnInit {
         res.body["results"].forEach(element => {
 
           emp_projects.push({
-            emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],
+            emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],staging_status:element['staging_status'],staging_relieved:element['staging_relieved'],
             company: element["company"], proj1: this.getProjectById(element["p1"]), proj2: this.getProjectById(element["p2"]), proj3: this.getProjectById(element["p3"]), staged_proj1: this.getProjectById(element["staged"]["p1"]), staged_proj2: this.getProjectById(element["staged"]["p2"]), staged_proj3: this.getProjectById(element["staged"]["p3"])
           });
 

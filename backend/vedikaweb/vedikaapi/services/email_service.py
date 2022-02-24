@@ -327,7 +327,7 @@ class email_service():
             else:
                 log.info("Not sending {} Mail Send to {}".format(mail_type,emp))
 
-    def informManagerEmpDisable(emp_id):
+    def informManagerEmpDisable(emp_id, relieved=str(datetime.now().date()), stagging=False):
         '''
         Inform Managers about employee disable
         '''
@@ -338,12 +338,30 @@ class email_service():
         mail_type =  "Employee disabled"
         subject = MailConfigurations.Sub_EmployeeDisabled.value+":"+str(emp_list[0].emp_name)+"("+str(emp_list[0].staff_no)+")"
         log.info(subject)
+        if(stagging):
+            manager_str = "HR initiated relieving date of"
+        else:
+            manager_str = "HR relieved "
+        relieved = str(relieved)
         ctx={
             "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
-            "email":emp_list[0].email
+            "email":emp_list[0].email,
+            "relieved":relieved,
+            "manager_str":manager_str
         }
+        if(stagging):
+            if(email_service.isValidReceiver(emp_id)):
+                emp_queue_obj = {'emp':emp_id,'email':emp_list[0].email,'email_subject':'Atwork access','email_type':"disable_info_emp",'required_inputs':str(json.dumps(ctx))}
+                emp_queue_ser_obj = EmailQueueSerializer(data=emp_queue_obj)
+                if(emp_queue_ser_obj.is_valid()):
+                    emp_queue_ser_obj.save()
+                    log.info("Employee Disabled mail for {}--Added to cron successfully".format(emp_list[0].email))
+                else:
+                    log.info(emp_queue_ser_obj.errors)
+            else:
+                log.info("No access to send mail to {}".format(emp_list[0].email))
 
-        manager_ids,manager_emails = email_service.getUniqueManagers(emp_id, False)
+        manager_ids,manager_emails = email_service.getUniqueManagers(emp_id, True)
         if(len(manager_emails)==0):
             log.info("Manager details not available for emp-id:{}, While sending {} email".format(emp_id, mail_type))
         
@@ -355,11 +373,11 @@ class email_service():
         for mgr_id,mgr_email in zip(manager_ids,manager_emails):
             emailList=[mgr_email]
             if(email_service.isValidReceiver(mgr_id)):
-                emp_queue_obj = {'emp':mgr_id,'email':mgr_email,'email_subject':subject,'email_type':"employee_disabled",'required_inputs':str(json.dumps(ctx))}
+                emp_queue_obj = {'emp':mgr_id,'email':mgr_email,'email_subject':subject,'email_type':"disable_info_mgr",'required_inputs':str(json.dumps(ctx))}
                 emp_queue_ser_obj = EmailQueueSerializer(data=emp_queue_obj)
                 if(emp_queue_ser_obj.is_valid()):
                     emp_queue_ser_obj.save()
-                    log.info("Leave Application mail for manager email {}--Added to cron successfully".format(mgr_email))
+                    log.info("Employee Disabled mail for manager email {}--Added to cron successfully".format(mgr_email))
                 else:
                     log.info(emp_queue_ser_obj.errors)
             else:
