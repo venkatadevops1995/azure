@@ -78,16 +78,15 @@ class Usersdelete(APIView):
                 
                 if((((relieved == current_date) and datetime.now().hour >= 21)) or( relieved < current_date)):
                     obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    # adding email_details to EmailQueue 
                     email_service.informManagerEmpDisable(emp_id,relieved,stagging = False)
                     return Response(utils.StyleRes(True,"Employee disable","{} account disabled successfully.".format(emp_name)), status=StatusCode.HTTP_OK)
                 else:
-                    # staged_emp = StageEmpolyee(emp_id = emp_id,status=1,relieved =relieved)
-                    # staged_emp.save()
                     obj, created = StageEmpolyee.objects.update_or_create(
                         emp_id=emp_id,
                         defaults={'status': 1,'relieved':relieved},
                     )
-                    # adding email_details to EmailQueue  # emp_id, relieved=str(datetime.now().date()), stagging=False
+                    # adding email_details to EmailQueue 
                     email_service.informManagerEmpDisable(emp_id,relieved,stagging=True)
                     return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} account will be disabled on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
