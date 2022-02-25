@@ -109,7 +109,7 @@ CRONJOBS = [
     ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
     ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
     ('5 20 28-31 * *','vedikaweb.vedikaapi.cron.sendMisMail'),#  Cron to Send MIS Mail on the end of the month at 20:05
-    ('5 20 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 20:05
+    ('10 20 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 20:05
     ('5 19 * * *','vedikaweb.vedikaapi.cron.relieveEmployee')#Cron to Run  Every day at 19:05 to disable the employee from staged table
 ]
 
