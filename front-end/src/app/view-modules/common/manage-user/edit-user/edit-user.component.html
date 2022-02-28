@@ -121,7 +121,7 @@
     <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef> Edit</th>
         <td mat-cell *matCellDef="let element;let i = index">
-            <button type="button" style="border: none;background-color: #f6fafd;" (click)="editUser(i)"><span class="material-icons">
+            <button type="button" class="action--btn" style="border: none;" (click)="editUser(i)"><span class="material-icons">
                 mode_edit
                 </span></button>
         </td>
@@ -129,7 +129,7 @@
     <ng-container matColumnDef="disable">
         <th mat-header-cell *matHeaderCellDef> Disable</th>
         <td mat-cell *matCellDef="let element;let i = index" >
-            <button [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}" [disabled]="element.staging_status !== null ? true : false"  type="button" style="border: none;background-color: #f6fafd;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
+            <button class="action--btn" [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}" [disabled]="element.staging_status !== null ? true : false"  type="button" style="border: none;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
                 delete 
                 </span></button>
         </td>
