@@ -15,7 +15,7 @@ export class ButtonComponent implements OnInit {
 
   @Input() disabled: boolean = false;
 
-  @Input() theme: "default" | "grey" | "blue-lite" | "black" | "blue-lite-extra" | "success" | "danger";
+  @Input() theme: "default" | "grey" | "blue-lite" | "black" | "blue-lite-extra" | "success" | "danger" | 'red';
 
   colors: { start: any, stop: any } = { start: 'var(--col-accent-500)', stop: 'rgba(19, 155, 72, 0.1)' }
 
@@ -30,6 +30,9 @@ export class ButtonComponent implements OnInit {
     if (this.theme == 'grey') {
       this.colors.start = 'var(--col-primary-300)';
       this.colors.stop = 'rgba(128,128,128,0.2)';
+    }else if(this.theme == 'red'){
+      this.colors.start = 'var(--col-warn-500)';
+      this.colors.stop = 'var(--col-warn-A100)';
     }
   }
 

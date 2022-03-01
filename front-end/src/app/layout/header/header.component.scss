@@ -2,6 +2,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    background:linear-gradient(to right,var(--col-primary-A200),var(--col-primary-900));
     .change-password {
         color: var(--color-tertiary);
         font-size: 15px;
@@ -25,14 +26,30 @@
     align-items: center;
 }
 
+.compliances{
+    display: flex; 
+    .compliances__item{
+        position: relative;
+        margin-right: 15px;
+        span{
+            color:var(--on-primary-900);
+            font-size: 10px;
+            position: absolute;
+            top:calc(50% - 2px);
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+    }
+}
+
 .l0-grid {
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 250px 180px 1fr;
 }
 
 .l2-l3-grid {
-    grid-template-columns: 300px 0.5fr 100px;
+    grid-template-columns: 200px 180px 180px;
 }
 
 .hr-grid {
-    grid-template-columns: 300px 0.5fr 100px 100px;
+    grid-template-columns: 250px 0.5fr 180px;
 }

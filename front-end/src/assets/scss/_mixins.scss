@@ -23,6 +23,15 @@
         .col-on-#{$attr}-#{$key} {
              color:$val;
         } 
+        .col-secondary-text-#{$attr}-#{$key}{
+            color:transparentize($val, 0.3);
+        }
+        .col-hint-text-#{$attr}-#{$key}{
+            color:transparentize($val, 0.5);
+        }
+        .col-pale-text-#{$attr}-#{$key}{
+            color:transparentize($val, 0.7);
+        }
     } 
     .col-#{$attr}{
          color:map-get($palette-new,A500);
@@ -42,6 +51,9 @@
              .hint-text{
                  color:transparentize(map-get($palette-contrast,$key), 0.5);
              }
-        } 
+             .pale-text{
+                 color:transparentize(map-get($palette-contrast,$key), 0.7);
+             }
+        }
     }  
 }

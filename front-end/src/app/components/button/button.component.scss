@@ -1,7 +1,7 @@
 :host {
   button {
     background-color: transparent;
-    color: var(--on-primary-A100);
+    color: #eee;
     padding: 0 40px;
     height: 50px;
     line-height: 52px;
@@ -9,6 +9,7 @@
     border: none;
     cursor: pointer;
     width: 100%;
+    font-size: 14px;
 
     span{
         position: relative;
@@ -39,7 +40,7 @@
       right: 0;
       bottom: 0;
       height: 40px;
-      border-radius: 5px;
+      border-radius: 10px;
       background-clip: padding-box;
       color:#ccc;
     }
@@ -72,7 +73,7 @@
     &.small {
       height: 40px;
       line-height: 42px; 
-      font-size: 14px;
+      font-size: 13px;
       min-width: 100px;
     }
 

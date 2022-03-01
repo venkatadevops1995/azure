@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -18,7 +18,9 @@ export interface Leader {
   templateUrl: './l2-dashboard.component.html',
   styleUrls: ['./l2-dashboard.component.scss']
 })
-export class L2DashboardComponent implements OnInit {
+export class L2DashboardComponent implements OnInit { 
+
+  chartBgColor: string;
 
   //week wise team data getting from api
   weekWiseData:any = []
@@ -42,7 +44,8 @@ export class L2DashboardComponent implements OnInit {
   constructor(
     private http:HttpClientService,
     private ss: SingletonService,
-    private user: UserService
+    private user: UserService,
+    private renderer:Renderer2
   ) {
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
@@ -67,6 +70,10 @@ export class L2DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getmanagerList();
     let emp_id = this.user.getEmpId();
+    
+  }
+
+  ngAfterViewInit(){  
     
   }
 

@@ -38,6 +38,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AddProjectComponent } from './view-modules/common/add-project/add-project.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     SvgComponent,
     HeaderComponent,
     FooterComponent ,
-    AddProjectComponent
+    AddProjectComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule, 
@@ -76,7 +78,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    MatSlideToggleModule
+    MatSlideToggleModule 
   ],
   providers: [
     HttpClientService,

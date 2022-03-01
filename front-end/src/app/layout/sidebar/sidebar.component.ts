@@ -13,7 +13,6 @@ import {ObjectToKVArrayPipe} from 'src/app/pipes/objectToArray.pipe'
 import { KeyValue } from '@angular/common';
 
 
-
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -44,6 +43,7 @@ export class SidebarComponent implements OnInit {
   panelOpenState: boolean = false;
   toggle:boolean[];
   isReportsAccessable: Boolean=false;
+  
   constructor(
     private ss: SingletonService,
     private user: UserService,

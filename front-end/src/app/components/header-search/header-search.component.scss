@@ -3,54 +3,30 @@ form {
     // top: 50%;
     // left: 50%;
     // transform: translate(-50%,-50%);
-    transition: all 1s;
-    width: 50px;
-    height: 50px;
-    // background: white;
-    // right:30%;
-    // margin-right: 100px;
-    box-sizing: border-box;
-    border-radius: 25px;
-    border: 1px solid #76efef;
+    transition: all 1s;   
+    box-sizing: border-box; 
     padding: 5px;
-    width: 500px;
+    width: 320px;
     cursor: pointer;
 }
+ 
 
-input {
-    // position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    ;
-    // height: 42.5px;
-    line-height: 30px;
-    outline: 0;
-    border: 0;
-    // display: none;
-    font-size: 1em;
-    border-radius: 20px;
-    padding: 5px 20px;
-    display: block;
-    color: #3a7bca;
-}
-
-.fa {
-    box-sizing: border-box;
-    padding: 17px;
-    // width: 42.5px;
-    // height: 42.5px;
+.search-icon {
+    box-sizing: border-box; 
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
     border-radius: 50%;
-    text-align: center;
-    font-size: 1.2em;
-    transition: all 1s;
-    // background: #06b4e8;
-    color: #040404;
+    text-align: center; color:var(--on-col-primary-600);
+    opacity: 0.6;
+    margin-top: -3px;
 }
-
+.employee-profile-details{
+    .mat-dialog-container{
+        padding:0px;
+    }
+}
 // form:hover{
 //     width: 200px;
 //     cursor: pointer;

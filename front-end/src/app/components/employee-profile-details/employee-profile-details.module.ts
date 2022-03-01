@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '../button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     ReactiveFormsModule,
     ButtonModule,
     MatIconModule,
-    ClipboardModule
+    ClipboardModule,
+    MatDialogModule
   ],
   exports: [EmployeeProfileDetailsComponent]
 })
