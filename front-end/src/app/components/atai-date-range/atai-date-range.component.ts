@@ -1,12 +1,12 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ConnectionPositionPair, Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { ChangeDetectorRef, Component, ElementRef, forwardRef, HostBinding, HostListener, Input, OnInit, Optional, Renderer2, Self, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, OnInit, Optional, Output, Renderer2, Self, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState, NativeDateAdapter } from '@angular/material/core';
 import { DateRange, MatCalendar, MatCalendarCell, MatCalendarCellCssClasses, MatCalendarUserEvent, MatDateSelectionModel, MatRangeDateSelectionModel, MatSingleDateSelectionModel } from '@angular/material/datepicker';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject, Subscription, take } from 'rxjs';
+import { Subject, Subscription, take } from 'rxjs'; 
 
 /** Checks whether a node is a table cell element. */
 function isTableCell(node: Node): node is HTMLTableCellElement {
@@ -53,6 +53,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   // ID attribute for the field and for attribute for the label
   @Input() idd = "daterange-picker-" + Math.floor((Math.random() * 100) + 1);
+
+
+  @Output('dateSelected') dateSelectedEvent: EventEmitter<any> = new EventEmitter();
 
   // for mat
   @HostBinding() id = `${this.idd}`
@@ -166,6 +169,18 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     this.stateChanges.next();
   }
 
+  setPresetValue(preset: 'Last 7 Days' | 'Last 30 Days' | 'This Month' | 'Last Month') {
+    if (this.selectionPresets.map(item => item.str).indexOf(preset) != -1) {
+      let presetObj = this.selectionPresets.filter(item => {
+        return item.str == preset;
+      })[0]
+      this.dateMeta.dateString = presetObj.str;
+      this.setSelection(presetObj.id)
+    } else {
+      console.warn("UNKNOWN date range picker PRESET VALUE");
+    }
+  }
+
   // for mat
   focused = false;
 
@@ -240,6 +255,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(d.getTime() - 6 * 86400000));
         this._model.add(d);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
         break;
       case ('last30Days'):
         console.log('last 30 days');
@@ -247,6 +263,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(d.getTime() - 29 * 86400000));
         this._model.add(d);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
         break;
       case ('thisMonth'):
         console.log('this month');
@@ -256,6 +273,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
           this._model.add(new Date(d.getTime() - (currentDate - 1) * 86400000));
           this._model.add(d);
           this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
         }
         break;
       case ('lastMonth'):
@@ -267,6 +285,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(lastMonthlastDayDate.getTime() - (lastMonthLastDay - 1) * 86400000));
         this._model.add(lastMonthlastDayDate);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
         break;
       case ('custom'):
         console.log('custom selection');
@@ -275,6 +294,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(dateRange[0]));
         this._model.add(new Date(dateRange[1]));
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
         break;
       default:
         console.log('default')
