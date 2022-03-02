@@ -11,6 +11,8 @@ import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { DateRange } from '@angular/material/datepicker';
 
 export interface AttendanceInterface {
   date: any;
@@ -26,6 +28,8 @@ export interface AttendanceInterface {
   styleUrls: ['./attendence-sheet.component.scss']
 })
 export class AttendenceSheetComponent implements OnInit {
+
+  @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
   fromdate: any;
   downloadable = false;
   showMessage = false;
@@ -37,16 +41,6 @@ export class AttendenceSheetComponent implements OnInit {
   ATTENDENCE_DATA: AttendanceInterface[] = [];
   displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net', 'posted'];
   dataSource = this.ATTENDENCE_DATA;
-  ranges: any = {
-    'Today': [moment(), moment()],
-    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-    // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-  }
   maxDate = moment();
   selected: any = {};
   selectedEmpId: any;
@@ -72,9 +66,21 @@ export class AttendenceSheetComponent implements OnInit {
   ngOnInit(): void {
 
     // this.option.setValue(this.user.getEmpId());
-    this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    this.getReporters();
 
+  }
+
+  ngAfterViewInit() {
+    this.dateRangePicker.setPresetValue('Last 30 Days')
+    // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    this.getReporters();
+  }
+
+  onDateSelection(val:DateRange<any> ){
+    console.log(val)
+    // this.fromdate = val.start;
+    this.fromdate = this.convertDatefmt(val.start)
+    this.todate = this.convertDatefmt(val.end);
+    this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
   }
 
   getAttendenceData(fromdate, todate, emp_id) {

@@ -18,7 +18,7 @@
   <div style="display: grid;grid-template-columns:1fr 1fr;grid-gap:10px">
     <div  style="max-width: 300px;">
       <mat-form-field appearance="legacy">
-        <app-atai-date-range ></app-atai-date-range>
+        <app-atai-date-range (dateSelected)="onDateSelection($event)"></app-atai-date-range>
       </mat-form-field>
     </div>
     <!-- <div class="dateinput" style="max-width: 300px;">
