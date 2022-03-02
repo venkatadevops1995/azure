@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -7,6 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ReplaySubject, Subject, Observable } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { takeUntil, take, startWith, map } from 'rxjs/operators';
+import { CircleProgressComponent } from 'ng-circle-progress';
 export interface Leader {
   emp_id: any ,
   emp_name: any;
@@ -18,11 +19,12 @@ export interface Leader {
   templateUrl: './l2-dashboard.component.html',
   styleUrls: ['./l2-dashboard.component.scss']
 })
-export class L2DashboardComponent implements OnInit { 
-
-  chartBgColor: string;
-
-  //week wise team data getting from api
+export class L2DashboardComponent implements OnInit{
+  //fixing the circle-progress inside text
+  // @ViewChildren('w-55') circleprogress:CircleProgressComponent;
+  @ViewChildren ('cp1') cp1:QueryList<CircleProgressComponent>;
+  @ViewChildren ('cp2') cp2:QueryList<CircleProgressComponent>;
+  //week wise team data getting from api@#@
   weekWiseData:any = []
 
   // form group for search form
@@ -44,8 +46,7 @@ export class L2DashboardComponent implements OnInit {
   constructor(
     private http:HttpClientService,
     private ss: SingletonService,
-    private user: UserService,
-    private renderer:Renderer2
+    private user: UserService
   ) {
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
@@ -70,10 +71,6 @@ export class L2DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getmanagerList();
     let emp_id = this.user.getEmpId();
-    
-  }
-
-  ngAfterViewInit(){  
     
   }
 
@@ -125,7 +122,16 @@ export class L2DashboardComponent implements OnInit {
     this.ss.statusMessage.showStatusMessage(false,'Select Leader form list')
   }
   }
-
+   ngAfterViewInit(){
+    setTimeout(()=>{
+      this.cp1.forEach(item=> {
+        item.svg.subtitle.y = 130;
+      });
+      this.cp2.forEach(el => {
+        el.svg.subtitle.y=130;
+      });
+    },3000)
+  }
   //converting to percentage
   getPercentage(nccount,empcount){
     let percentage:any = (nccount/empcount)*100;
