@@ -1,7 +1,5 @@
 @import "./ng-palette";
-
 body {
-
     // The primary color of the theme
     --col-primary: #{map-get($md-primary, 500)};
     --col-primary-50: #{map-get($md-primary, 50)};
@@ -16,9 +14,8 @@ body {
     --col-primary-900: #{map-get($md-primary, 900)};
     --col-primary-A100: #{map-get($md-primary, A100)};
     --col-primary-A200: #{map-get($md-primary, A200)};
-    --col-primary-A300: #{map-get($md-primary, A300)};
     --col-primary-A400: #{map-get($md-primary, A400)};
-
+    --col-primary-A700: #{map-get($md-primary, A700)};
     --on-primary: #{map-get(map-get($md-primary,contrast), 500)};
     --on-primary-50: #{map-get(map-get($md-primary,contrast), 50)};
     --on-primary-100: #{map-get(map-get($md-primary,contrast), 100)};
@@ -32,9 +29,8 @@ body {
     --on-primary-900: #{map-get(map-get($md-primary,contrast), 900)};
     --on-primary-A100: #{map-get(map-get($md-primary,contrast), A100)};
     --on-primary-A200: #{map-get(map-get($md-primary,contrast), A200)};
-    --on-primary-A300: #{map-get(map-get($md-primary,contrast), A300)};
     --on-primary-A400: #{map-get(map-get($md-primary,contrast), A400)};
-
+    --on-primary-A700: #{map-get(map-get($md-primary,contrast), A700)};
     // The accent color of the theme
     --col-accent: #{map-get($md-accent, 500)};
     --col-accent-50: #{map-get($md-accent, 50)};
@@ -49,9 +45,8 @@ body {
     --col-accent-900: #{map-get($md-accent, 900)};
     --col-accent-A100: #{map-get($md-accent, A100)};
     --col-accent-A200: #{map-get($md-accent, A200)};
-    --col-accent-A300: #{map-get($md-accent, A300)};
     --col-accent-A400: #{map-get($md-accent, A400)};
-
+    --col-accent-A700: #{map-get($md-accent, A700)};
     // the text on the accent color
     --on-accent: #{map-get(map-get($md-accent,contrast), 500)};
     --on-accent-50: #{map-get(map-get($md-accent,contrast), 50)};
@@ -66,9 +61,8 @@ body {
     --on-accent-900: #{map-get(map-get($md-accent,contrast), 900)};
     --on-accent-A100: #{map-get(map-get($md-accent,contrast), A100)};
     --on-accent-A200: #{map-get(map-get($md-accent,contrast), A200)};
-    --on-accent-A300: #{map-get(map-get($md-accent,contrast), A300)};
     --on-accent-A400: #{map-get(map-get($md-accent,contrast), A400)};
-
+    --on-accent-A700: #{map-get(map-get($md-accent,contrast), A700)};
     // The accent color of the theme
     --col-warn: #{map-get($md-warn, 500)};
     --col-warn-50: #{map-get($md-warn, 50)};
@@ -83,10 +77,8 @@ body {
     --col-warn-900: #{map-get($md-warn, 900)};
     --col-warn-A100: #{map-get($md-warn, A100)};
     --col-warn-A200: #{map-get($md-warn, A200)};
-    --col-warn-A300: #{map-get($md-warn, A300)};
     --col-warn-A400: #{map-get($md-warn, A400)};
-
-
+    --col-warn-A700: #{map-get($md-warn, A700)};
     // the text on the accent color
     --on-warn: #{map-get(map-get($md-warn,contrast), 500)};
     --on-warn-50: #{map-get(map-get($md-warn,contrast), 50)};
@@ -101,9 +93,8 @@ body {
     --on-warn-900: #{map-get(map-get($md-warn,contrast), 900)};
     --on-warn-A100: #{map-get(map-get($md-warn,contrast), A100)};
     --on-warn-A200: #{map-get(map-get($md-warn,contrast), A200)};
-    --on-warn-A300: #{map-get(map-get($md-warn,contrast), A300)};
     --on-warn-A400: #{map-get(map-get($md-warn,contrast), A400)};
-
+    --on-warn-A700: #{map-get(map-get($md-warn,contrast), A700)};
     // Miscelleneous colors
     // --col-accent: #039be5;
     --col-success: #{map-get($md-misc, 'success')};
@@ -111,9 +102,7 @@ body {
     --col-error: #{map-get($md-warn, 900)};
     --col-warn: #{map-get($md-warn, A100)};
     --bg-body: #f5f5f5;
-
     // Borders
     --border-style: 1px solid rgba(128, 41, 41, 0.12);
     --box-shadow-card: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-
 }

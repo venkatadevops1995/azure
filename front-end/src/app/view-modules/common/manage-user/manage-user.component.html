@@ -98,7 +98,7 @@
 
 
 
-<table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8">
+<table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
 
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -152,7 +152,7 @@
     </ng-container>
 
     <ng-container matColumnDef="functional_manager">
-        <th mat-header-cell *matHeaderCellDef>Functional Owner</th>
+        <th mat-header-cell  *matHeaderCellDef>Functional Owner</th>
         <td mat-cell *matCellDef="let element">
             <!-- <div style="display:inline;" *ngIf="element.staged_managers['3'] !== undefined" class='fc_blue' tooltip="Current Manager: {{element.managers['3']['emp_name']}}" placement="bottom">{{element.staged_managers['3']['emp_name']}}</div>
             <div style="display:inline;" *ngIf="element.staged_managers['3'] === undefined">{{element.managers['3']['emp_name']}}</div> -->
@@ -171,7 +171,7 @@
         </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row class="header-gradient" *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 <div *ngIf="USERS_DATA.length==0 && showMessage==true" style="padding-left:20px">

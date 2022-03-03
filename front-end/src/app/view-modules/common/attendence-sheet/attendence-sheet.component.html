@@ -1,5 +1,6 @@
-<div style="display: grid;grid-template-columns:1fr 1fr 1fr;grid-gap:10px">
-  <div>
+<div style="display: grid;grid-template-columns:1fr 1fr 1fr 1fr;grid-gap:10px">
+  <h1 class="attendance-heading fw-600 flex nowrap  fs-24 middle-xs start-xs">Attendance</h1>
+  <div class="flex nowrap  middle-xs" style="grid-column:3/4">
     <mat-form-field class="w-100 mr-10">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
         [(ngModel)]="value">
@@ -15,7 +16,8 @@
     </mat-form-field> 
 
   </div>
-  <div style="display: grid;grid-template-columns:1fr 1fr;grid-gap:10px">
+  <div class="start-xs flex nowrap  middle-xs"
+  style="grid-column:4/5;gap:48px">
     <div  style="max-width: 300px;">
       <mat-form-field appearance="legacy">
         <app-atai-date-range (dateSelected)="onDateSelection($event)"></app-atai-date-range>
@@ -56,8 +58,8 @@
 </div>
 
 <div *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
-
-  <table mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8">
+<div class="attend--table-scrollbar-hide" style="height: 900px; overflow-y: auto;overflow-x: hidden;">
+  <table mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100 ">
 
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef> Date </th>
@@ -112,7 +114,9 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row class="header-gradient" *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
+ 
 </div>

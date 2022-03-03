@@ -10,6 +10,7 @@
 
 .export:hover {
     text-decoration: underline;
+    border-bottom:1px solid red;
 }
 
 .dateinput {
@@ -25,11 +26,11 @@
 }
 
 .weekend_class {
-    background-color: lightgray;
+    background-color:var(--col-primary-900);
 }
 
 .holiday {
-    background-color: lightblue;
+    background-color: var(--col-accent-A700);
 }
 
 .holiday_class {
@@ -41,11 +42,18 @@
 }
 
 .project_class {
-    color: green;
+    color: var(--col-accent-500);
 }
 
 .export_icon {
     // padding-top: 20px;
     align-items: baseline;
     padding-top: 6px;
+}
+.attendance-heading{
+    color: var(--col-accent-500); 
+    
+}
+.attend--table-scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
