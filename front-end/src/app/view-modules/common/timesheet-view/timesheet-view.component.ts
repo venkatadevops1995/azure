@@ -7,10 +7,12 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import enmTsStatus from 'src/app/enums/timesheet-status.enum';
 import { Subject } from 'rxjs';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-timesheet-view',
@@ -38,7 +40,7 @@ export class TimesheetViewComponent implements OnInit {
   @ViewChild('selProject') elSelProject: ElementRef;
 
   // reference to the all zeros in project confirmation modal pop up
-  @ViewChild('refModalProjectAllZeros') modalProjectAllZeros: ModalPopupComponent
+  // @ViewChild('refModalProjectAllZeros') modalProjectAllZeros: ModalPopupComponent
 
   // reference to save submit confirmation modal pop up
   @ViewChild('refModalSaveSubmit') modalSaveSubmit: ModalPopupComponent
@@ -69,9 +71,9 @@ export class TimesheetViewComponent implements OnInit {
   showWsr: boolean = false;
 
   //boolean view token to show hide the  save buttons
-  savedWtr:boolean = false;
+  savedWtr: boolean = false;
 
-  savedWsr:boolean = false;
+  savedWsr: boolean = false;
 
 
   // boolean view token  to enable / disable wsr projects submit button
@@ -87,7 +89,7 @@ export class TimesheetViewComponent implements OnInit {
   holderRejected: { timesheet: any, wsr: any } = { timesheet: null, wsr: null }
 
   // boolean to indicate whether rejected timesheet value has changed
-  hasRejectedValueChange ;
+  hasRejectedValueChange;
 
   // boolean to indicate if it has all zeros filled in any of the projects in timesheet
   hasAllZerosInProject: boolean = false;
@@ -112,7 +114,8 @@ export class TimesheetViewComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private ss: SingletonService,
     private router: Router,
-    private el: ElementRef
+    private el: ElementRef,
+    private dialog: MatDialog
   ) {
     this.fgWsrProjects = this.ss.fb.group({
       active_projects: this.ss.fb.array([]),
@@ -176,8 +179,8 @@ export class TimesheetViewComponent implements OnInit {
   onClickDocument(e) {
     let target: any = e.target;
     let tempTarget = target;
-    while (tempTarget && tempTarget != this.el.nativeElement) {
-      if (tempTarget.classList) {
+    if (target == this.el.nativeElement || isDescendant(this.el.nativeElement, target)) {
+      while (tempTarget && tempTarget != this.el.nativeElement) {
         if (tempTarget.classList.contains('wsr__sel-project-project')) {
           let index = Number(target.getAttribute("index"));
           let projectToBeAdded = this.wsrActiveProjectsHidden[index];
@@ -188,35 +191,18 @@ export class TimesheetViewComponent implements OnInit {
         } else if (tempTarget.classList.contains('wsr__sel-project-toggle')) {
           this.showProjectList = !this.showProjectList;
           break;
-        } else if (tempTarget.classList.contains('zeros-project-cancel') || tempTarget.classList.contains('closebutton')) {
-          // on click cancel in the modal pop up of confirm all zeros in project
-          this.proceedWithAllZerosInProject = false;
-          this.modalProjectAllZeros.close();
-            this.savedWtr = false;
-            this.savedWsr = false;
-          break;
-        } else if (tempTarget.classList.contains('zeros-project-proceed')) {
-          // on click proceed in the modal pop up of confirm all zeros in project
-          this.proceedWithAllZerosInProject = true;
-          this.modalProjectAllZeros.close();
-          if (this.timeSheetType == 'rejected') {
-            this.onSubmitWsr('save-submit');
-          } else {
-            this.onSubmitTimeSheet(this.submitTypeWhileConfirmingAllZeros)
-          }
-          break;
-
         }
-
+        tempTarget = tempTarget.parentNode;
       }
-      tempTarget = tempTarget.parentNode;
-    }
-    if (tempTarget == this.el.nativeElement) {
+      if (tempTarget == this.el.nativeElement) {
+        this.showProjectList = false;
+      }
+    } else {
       this.showProjectList = false;
     }
   }
 
-  // get the weekly data from  backend for timesheet
+  // get the weekly data from backend for timesheet
   getWeeklyTimeSheetData(initial: boolean = false) {
     let params = new HttpParams();
     let url;
@@ -230,65 +216,65 @@ export class TimesheetViewComponent implements OnInit {
     this.http.request("get", url, params).subscribe(res => {
       if (res.status == 200) {
         this.weeklyTimeSheetData = res.body[0];
-        
+
         if (initial) {
           if (this.weeklyTimeSheetData) {
             this.weeklyTimeSheetData.days.push('Total');
-        // console.log(this.weeklyTimeSheetData.HOLIDAY['work_hours']);
+            // console.log(this.weeklyTimeSheetData.HOLIDAY['work_hours']);
 
-        let holHours = this.weeklyTimeSheetData.HOLIDAY['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
-        let holMins =  this.weeklyTimeSheetData.HOLIDAY['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
-        if(holMins >= 60){
-          holHours = holHours + Math.floor(holMins/60);
-				  holMins = holMins % 60;
-        }
-        this.weeklyTimeSheetData.HOLIDAY['work_hours'].push({date:"Total",enable: true,h:holHours,m:holMins});
-
-        let grossHours = this.weeklyTimeSheetData.gross_working_hours.map(item => item.h).reduce((prev, next) => prev + next);
-        let grossMins =  this.weeklyTimeSheetData.gross_working_hours.map(item => item.m).reduce((prev, next) => prev + next);
-        if(grossMins >= 60){
-          grossHours = grossHours + Math.floor(grossMins/60);
-				  grossMins = grossMins % 60;
-        }
-        this.weeklyTimeSheetData.gross_working_hours.push({date:"Total",h:grossHours,m:grossMins});
-
-        let netHours = this.weeklyTimeSheetData.net_working_hours.map(item => item.h).reduce((prev, next) => prev + next);
-        let netMins =  this.weeklyTimeSheetData.net_working_hours.map(item => item.m).reduce((prev, next) => prev + next);
-        if(netMins >= 60){
-          netHours = netHours + Math.floor(netMins/60);
-				  netMins = netMins % 60;
-        }
-        this.weeklyTimeSheetData.net_working_hours.push({date:"Total",h:netHours,m:netMins});
-    
-        let misHours = this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
-        let misMins =  this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
-        if(misMins >= 60){
-          misHours = misHours + Math.floor(misMins/60);
-				  misMins = misMins % 60;
-        }
-
-        this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].push({date:"Total",enable: true,h:misHours,m:misMins});
-
-        let vacHours = this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
-        let vacMins =  this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
-        if(vacMins >= 60){
-          vacHours = vacHours + Math.floor(vacMins/60);
-				  vacMins = vacMins % 60;
-        }
-        
-        this.weeklyTimeSheetData.VACATION['work_hours'].push({date:'Total',enable: true,h:vacHours,m:vacMins});
-      
-        this.weeklyTimeSheetData.active_projects.forEach(element => {
-          if(element.visibilityFlag){
-            let eleHours = element['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
-            let eleMins = element['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
-            if(eleMins >= 60){
-              eleHours = eleHours + Math.floor(eleMins/60);
-              eleMins = eleMins % 60;
+            let holHours = this.weeklyTimeSheetData.HOLIDAY['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
+            let holMins = this.weeklyTimeSheetData.HOLIDAY['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
+            if (holMins >= 60) {
+              holHours = holHours + Math.floor(holMins / 60);
+              holMins = holMins % 60;
             }
-          element['work_hours'].push({date:'Total',enable: true,h:eleHours,m:eleMins});
-        }
-        });
+            this.weeklyTimeSheetData.HOLIDAY['work_hours'].push({ date: "Total", enable: true, h: holHours, m: holMins });
+
+            let grossHours = this.weeklyTimeSheetData.gross_working_hours.map(item => item.h).reduce((prev, next) => prev + next);
+            let grossMins = this.weeklyTimeSheetData.gross_working_hours.map(item => item.m).reduce((prev, next) => prev + next);
+            if (grossMins >= 60) {
+              grossHours = grossHours + Math.floor(grossMins / 60);
+              grossMins = grossMins % 60;
+            }
+            this.weeklyTimeSheetData.gross_working_hours.push({ date: "Total", h: grossHours, m: grossMins });
+
+            let netHours = this.weeklyTimeSheetData.net_working_hours.map(item => item.h).reduce((prev, next) => prev + next);
+            let netMins = this.weeklyTimeSheetData.net_working_hours.map(item => item.m).reduce((prev, next) => prev + next);
+            if (netMins >= 60) {
+              netHours = netHours + Math.floor(netMins / 60);
+              netMins = netMins % 60;
+            }
+            this.weeklyTimeSheetData.net_working_hours.push({ date: "Total", h: netHours, m: netMins });
+
+            let misHours = this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
+            let misMins = this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
+            if (misMins >= 60) {
+              misHours = misHours + Math.floor(misMins / 60);
+              misMins = misMins % 60;
+            }
+
+            this.weeklyTimeSheetData.MISCELLANEOUS['work_hours'].push({ date: "Total", enable: true, h: misHours, m: misMins });
+
+            let vacHours = this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
+            let vacMins = this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
+            if (vacMins >= 60) {
+              vacHours = vacHours + Math.floor(vacMins / 60);
+              vacMins = vacMins % 60;
+            }
+
+            this.weeklyTimeSheetData.VACATION['work_hours'].push({ date: 'Total', enable: true, h: vacHours, m: vacMins });
+
+            this.weeklyTimeSheetData.active_projects.forEach(element => {
+              if (element.visibilityFlag) {
+                let eleHours = element['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
+                let eleMins = element['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
+                if (eleMins >= 60) {
+                  eleHours = eleHours + Math.floor(eleMins / 60);
+                  eleMins = eleMins % 60;
+                }
+                element['work_hours'].push({ date: 'Total', enable: true, h: eleHours, m: eleMins });
+              }
+            });
             if (this.timeSheetType == 'regular') {
               if (this.weeklyTimeSheetData.enableSaveSubmit) {
                 this.disableTimesheet = false;
@@ -327,17 +313,33 @@ export class TimesheetViewComponent implements OnInit {
     })
   }
 
+  onProjectChange(data) {
+    // if (data.type == 'add') {
+    //   this.weeklyStatusData.active_projects.forEach(item => {
+    //     if (item.project_id == data.project.project_id) {
+    //       this.wsrActiveProjectsVisible.push(item);
+    //       let initialValue = item.work_report;
+    //       (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(initialValue));
+    //     }
+    //   });
+    // } else if (data.type == 'remove') {
+    //   this.wsrActiveProjectsVisible = this.wsrActiveProjectsVisible.filter((itemVisible, index) => {
+    //     if (itemVisible.project_id == data.project.project_id) {
+    //       (<FormArray>this.fgWsrProjects.get('active_projects')).removeAt(0);
+    //     }
+    //     return itemVisible.project_id != data.project.project_id;
+    //   })
+    // }
+  }
 
   // on change timesheet entries
   onTimeSheetChange(data) {
     if (this.timeSheetType == 'rejected') {
       this.hasRejectedValueChange = data.hasValueChanged;
     }
-    // console.log(data, this)
     this.disableSaveSubmit = !data.canFinalSubmit;
     this.hasAllZerosInProject = data.hasAllZerosInProject;
     this.cd.detectChanges();
-    // console.log(JSON.stringify(this.compTimeSheet.getTimeSheetData()),"            ",JSON.stringify(this.holderRejected.timesheet));
   }
 
   // get the projects for the employee
@@ -359,6 +361,25 @@ export class TimesheetViewComponent implements OnInit {
     }
   }
 
+  confirmSaveSubmit() {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
+      }
+    })
+    dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
+      console.log(result)
+      if (!result) {
+        // on click cancel 
+      } else {
+        // on click proceed  
+        this.disableSaveSubmit = true;
+        this.submitTypeWhileConfirmingAllZeros = 'save-submit';
+        this.onSubmitWsr('save-submit');
+      }
+    })
+  }
+
   // on clicking proceed of save submit popup
   proeceedSaveSubmit() {
     this.disableSaveSubmit = true;
@@ -370,9 +391,9 @@ export class TimesheetViewComponent implements OnInit {
 
   // on clicking submit to submit timesheet
   onSubmitTimeSheet(type) {
-    if(type == 'save'){
+    if (type == 'save') {
       this.savedWtr = true;
-     }
+    }
     var sendRequest = (type) => {
       let params = new HttpParams();
       if (this.timeSheetType == 'rejected') {
@@ -381,9 +402,9 @@ export class TimesheetViewComponent implements OnInit {
       let timesheet = this.compTimeSheet.getTimeSheetData();
       this.http.request("post", "weeklydata/", params, [timesheet]).subscribe(res => {
         if (res.status == 201) {
-          if(type == 'save'){
-           this.savedWtr = false;
-           }
+          if (type == 'save') {
+            this.savedWtr = false;
+          }
           this.ss.statusMessage.showStatusMessage(true, "Successfully saved the timesheet");
           if (type == 'save') {
             this.onSubmitWsr(type);
@@ -397,7 +418,7 @@ export class TimesheetViewComponent implements OnInit {
             this.getWeeklyTimeSheetData(true);
             this.getWeeklyStatusData();
           }
-          else{
+          else {
             this.http.request("get", 'statuswisetimesheetcount/').subscribe(res => {
               if (res.status == 200) {
                 let pendingApprovalCount = 0;
@@ -407,15 +428,15 @@ export class TimesheetViewComponent implements OnInit {
                 rejectedCount = timesheetsData.rejected_cnt;
                 this.ss.resTimeSheet$.next({
                   rc: rejectedCount,
-                  pac : pendingApprovalCount
+                  pac: pendingApprovalCount
                 })
               }
             })
           }
         } else {
-          if(type == 'save'){
+          if (type == 'save') {
             this.savedWtr = false;
-            }
+          }
           this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
           if (this.timeSheetType == 'regular') {
             this.getWeeklyTimeSheetData(true);
@@ -434,14 +455,41 @@ export class TimesheetViewComponent implements OnInit {
         if (type == 'save-submit') {
           this.proceedWithAllZerosInProject = true;
         }
-        else{
-        this.modalProjectAllZeros.open();
-      }
+        else {
+          // this.modalProjectAllZeros.open();
+          this.confirmSubmit();
+        }
       }
     } else {
       sendRequest(type);
     }
 
+  }
+
+  confirmSubmit() {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
+      }
+    })
+    dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
+      console.log(result)
+      if (!result) {
+        // on click cancel in the modal pop up of confirm all zeros in project
+        this.proceedWithAllZerosInProject = false;
+        this.savedWtr = false;
+        this.savedWsr = false;
+      } else {
+        // on click proceed in the modal pop up of confirm all zeros in project
+        this.proceedWithAllZerosInProject = true;
+        if (this.timeSheetType == 'rejected') {
+          this.onSubmitWsr('save-submit');
+        } else {
+          this.onSubmitTimeSheet(this.submitTypeWhileConfirmingAllZeros)
+        }
+
+      }
+    })
   }
 
   // to ge tthe wsr data from backend
@@ -466,7 +514,7 @@ export class TimesheetViewComponent implements OnInit {
               this.wsrActiveProjectsVisible.push(item);
               (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(item.work_report));
             } else {
-              // this.wsrActiveProjectsHidden.push(item)
+              this.wsrActiveProjectsHidden.push(item)
             }
           });
           this.fgWsrProjects.get('general').setValue(this.weeklyStatusData['GENERAL'].work_report)
@@ -509,7 +557,7 @@ export class TimesheetViewComponent implements OnInit {
 
   // on submitting the wsr form
   onSubmitWsr(type) {
-    if(type == 'save'){
+    if (type == 'save') {
       this.savedWsr = true;
     }
     var sendRequest = () => {
@@ -544,9 +592,9 @@ export class TimesheetViewComponent implements OnInit {
       }
       this.http.request("post", "weeklystatus/", params, requestBody).subscribe(res => {
         if (res.status == 201) {
-          if(type == 'save'){
+          if (type == 'save') {
             this.savedWsr = false;
-           }
+          }
           this.ss.statusMessage.showStatusMessage(true, "Successfully saved the weekly status report");
           this.getWeeklyTimeSheetData(true);
           if (this.timeSheetType == 'rejected') {
@@ -571,16 +619,17 @@ export class TimesheetViewComponent implements OnInit {
           this.onSubmitTimeSheet('save-submit');
           sendRequest();
         } else {
-          this.modalProjectAllZeros.open();
+          // this.modalProjectAllZeros.open();          
+          this.confirmSubmit();
         }
       } else {
         this.onSubmitTimeSheet('save-submit');
         sendRequest();
       }
     } else {
-      if(type == 'save-submit'){
+      if (type == 'save-submit') {
         this.proceedWithAllZerosInProject = false;
-      }  
+      }
       sendRequest();
     }
   }

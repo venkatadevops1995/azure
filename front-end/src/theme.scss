@@ -19,8 +19,8 @@ $dark-theme : mat.define-dark-theme((color:(primary:$dark-primary,
 @include mat.all-component-themes($dark-theme);
 
 
-body{
-    color:#fff;
+body {
+  color: #fff;
 }
 
 /* Material theme styling */
@@ -42,4 +42,15 @@ body{
       color: var(--col-accent-500);
     }
   }
+}
+
+mat-dialog-container.mat-dialog-container {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+// overlay for mat dialog 
+.cdk-overlay-darker-backdrop, .cdk-overlay-dark-backdrop{
+  background:rgba(0,0,0,0.52);
 }

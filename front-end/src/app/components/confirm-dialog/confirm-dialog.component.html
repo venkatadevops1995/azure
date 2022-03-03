@@ -1,12 +1,11 @@
 <!-- <h2 mat-dialog-title color="accent">Confirm</h2> -->
-<mat-toolbar class="mat-dialog-header">
+<div class="confirm-heading ">
   <span *ngIf="!data?.onlyForAlert">Confirm</span>
   <span *ngIf="data?.onlyForAlert">Alert</span>
-
-</mat-toolbar>
-<div class="p-10">
-  <div class="p-20">
-    <span>
+</div>
+<div  >
+  <div class="mt-10 mb-30" >
+    <span class="fs-12 fw-300 col-primary-100">
       {{ data?.confirmMessage || 'Are you sure you want to continue ?' }}
     </span>
     <div class="mt-20" *ngIf="data?.showTextbox">
@@ -15,12 +14,14 @@
     </div>
   </div>
   <div style="position: relative;top:0px;">
-    <mat-dialog-actions style="margin-bottom:0px;" align="end">
-      <app-button tabindex="0" mat-dialog-close cdkFocusInitial size='small' theme="danger" type="button">Cancel</app-button>
-      <div class="mr-5 ml-10"  *ngIf="!data?.onlyForAlert">
-        <app-button [mat-dialog-close]="{text:fcText.value}" size='small' theme="blue-lite" type="button">Proceed</app-button>
+    <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
+      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial size='small' theme="grey" type="button">
+        Cancel
+      </app-button>
+      <div class="mr-5 ml-10" *ngIf="!data?.onlyForAlert">
+        <app-button [mat-dialog-close]="data?.showTextbox ? {text:fcText.value}: true" size='small' theme="blue-lite"
+          type="button">Proceed</app-button>
       </div>
     </mat-dialog-actions>
-    
   </div>
-</div> 
+</div>

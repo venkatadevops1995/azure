@@ -4,7 +4,7 @@
 </a> -->
 <!-- (click)="onClickChnagePassword()" -->
 
-<app-header-search *ngIf="leaveFlag == true"></app-header-search>
+<app-header-search class="mr-50" *ngIf="leaveFlag == true"></app-header-search>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
   <div class="compliances" *ngIf="leaveFlag == true">
@@ -30,8 +30,9 @@
     </div>
 
   </div>
-  <div  *ngIf="showEmailToggle && leaveFlag == true" class="flex p-10 center-xs ml-15 mr-15">
-    <mat-slide-toggle (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled"><span>Emails</span>
+  <div  *ngIf="showEmailToggle && leaveFlag == true" class="flex col p-10 center-xs middle-xs ml-15 mr-15">
+    <span class="fs-13">Emails</span>
+    <mat-slide-toggle (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled">
     </mat-slide-toggle>
   </div>
 
