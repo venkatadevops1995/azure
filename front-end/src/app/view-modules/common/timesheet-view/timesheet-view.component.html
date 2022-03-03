@@ -1,96 +1,77 @@
 <div class="flex middle-xs between-xs">
-    <h2 class="heading">
-        {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
-    </h2>
-    <a (click)="refModalRejectionComments.open()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData"
-        href="javascript:;" style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs ">
-        <!-- <div [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" class="mr-5"></div> -->
-        <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite.svg#comments',w:25}" class="mr-5">
+  <h2 class="heading mb-20">
+    {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
+  </h2>
+  <a (click)="refModalRejectionComments.open()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData"
+    href="javascript:;" style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs ">
+    <!-- <div [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" class="mr-5"></div> -->
+    <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite.svg#comments',w:25}" class="mr-5">
 
-        </div>
-        <span>View Comments</span>
-    </a>
+    </div>
+    <span>View Comments</span>
+  </a>
 </div>
-<app-time-sheet [disable]="disableTimesheet" (evChange)="onTimeSheetChange($event)" [config]='weeklyTimeSheetData'>
+<app-time-sheet [disable]="disableTimesheet"  
+  (evChange)="onTimeSheetChange($event)" [config]='weeklyTimeSheetData'>
 </app-time-sheet>
 
 
 <div *ngIf="showWsr" class="wsr mt-30" [formGroup]="fgWsrProjects">
-    <h2 class="heading">Weekly Status Report</h2>
+  <h2 class="heading">Weekly Status Report</h2>
+  <div class="wsr__text-area-wrap">
     <div>
-        <div *ngFor="let project of wsrActiveProjectsVisible;let i=index;">
-            <div class="wsr__project-name">{{project?.project_name}}</div>
-            <div></div>
-            <textarea [formControl]="fgWsrProjects['controls']['active_projects']['controls'][i] "
-                class="wsr__project-text mb-30"></textarea>
-        </div>
+      <div *ngFor="let project of wsrActiveProjectsVisible;let i=index;">
+        <div class="wsr__project-name mb-10 mt-20">{{project?.project_name}}</div>
+        <div></div>
+        <textarea placeholder="Add details  of the project"
+          [formControl]="fgWsrProjects['controls']['active_projects']['controls'][i] "
+          class="wsr__project-text "></textarea>
+      </div>
     </div>
-    <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
-        class="wsr__sel-project flex middle-xs" [class.disabled]="wsrActiveProjectsHidden.length < 1"
-        style="margin-top:-15px;">
-        <div  class="flex middle-xs center-xs wsr__sel-project-toggle">
-            <div class="mr-5" [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" svg-fill="currentColor">
-            </div> Select Project
-        </div>
-        <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
-            <div class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
-                *ngFor="let project of wsrActiveProjectsHidden;let i = index;">
-                {{project?.project_name}}
-            </div>
-        </div>
+    <div class="flex col">
+      <div class="wsr__project-name general mt-20 mb-10   between-xs">
+        <span>&nbsp;</span>
+        <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p>
+      </div>
+      <div></div>
+      <textarea placeholder="General details to include" formControlName="general"
+        class="wsr__project-text fg-1"></textarea>
     </div>
-    <div class="wsr__project-name mt-30">General</div>
-    <div></div>
-    <textarea formControlName="general" class="wsr__project-text"></textarea>
-    <ng-container *ngIf="this.timeSheetType == 'rejected'">
+  </div>
+  <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
+    class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1" >
+    <div class="flex middle-xs center-xs wsr__sel-project-toggle">
+        <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
+        Select Project
+    </div>
+    <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
+      <div class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
+        *ngFor="let project of wsrActiveProjectsHidden;let i = index;">
+        {{project?.project_name}}
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="this.timeSheetType == 'rejected'">
     <div class="flex end-xs middle-xs mt-20" *ngIf="weeklyTimeSheetData?.enableSaveSubmit">
-        <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p>
-        <app-button [class.disabled]='(!checkWsrSubmitEnable())' (click)="onSubmitWsr('save-submit')">Submit
-        </app-button>
+      <app-button [class.disabled]='(!checkWsrSubmitEnable())' (click)="onSubmitWsr('save-submit')">Submit
+      </app-button>
     </div>
-    </ng-container>
-    <ng-container *ngIf="this.timeSheetType == 'regular'">
-    <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit" class="flex end-xs middle-xs mt-20" style="">
-        <!-- <div class="flex end-xs middle-xs mt-20" *ngIf="weeklyTimeSheetData?.enableSaveSubmit"> -->
-        <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p>
-    <!-- </div> -->
-        <app-button theme="blue-lite-extra" [class.disabled]= "savedWtr || wsrCharCount > 5000" (click)="onSubmitTimeSheet('save')">Save</app-button>
-        <app-button [class.disabled]="showDisable()" class="ml-30" (click)="modalSaveSubmit.open()">Save &
-            Submit</app-button>
+  </ng-container>
+  <ng-container *ngIf="this.timeSheetType == 'regular'">
+    <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit" class="flex end-xs middle-xs mt-20">
+      <!-- <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p> -->
+      <app-button theme="default" *ngIf="showDisable()" class="ml-30 mr-50" (click)="confirmSaveSubmit()">Save &
+        Submit
+      </app-button>
+      <app-button theme="grey" [class.disabled]="savedWtr || wsrCharCount > 5000" (click)="onSubmitTimeSheet('save')">
+        Save</app-button>
     </div>
-</ng-container>
+  </ng-container>
 </div>
 
 <app-modal-popup [h]="250" [w]="500" #refModalRejectionComments>
-    <div head>Manager Comments</div>
-    <p class="p-15" style="word-break: break-all;">
-        {{weeklyTimeSheetData?.comments}}
-    </p>
-</app-modal-popup>
-
-<app-modal-popup [w]="500" [h]="250" #refModalProjectAllZeros>
-    <div head="">
-        Confirm
-    </div>
-    <div class="p-15">
-        One or more projects are having all entries as zero. Are you sure you want to proceed?
-        <div class="mt-30 flex end-xs">
-            <app-button theme="black" class="mr-30 zeros-project-cancel">Cancel</app-button>
-            <app-button class="zeros-project-proceed">Proceed</app-button>
-        </div>
-    </div>
-</app-modal-popup>
-
-
-<app-modal-popup [w]="500" [h]="250" #refModalSaveSubmit>
-    <div head="">
-        Confirm
-    </div>
-    <div class="p-15">
-        Are you sure you want to proceed?
-        <div class="mt-30 flex end-xs">
-            <app-button theme="black" class="mr-30 zeros-project-cancel" (click)="modalSaveSubmit.close()">Cancel</app-button>
-            <app-button class="zeros-project-proceed" (click)="proeceedSaveSubmit()">Proceed</app-button>
-        </div>
-    </div>
+  <div head>Manager Comments</div>
+  <p class="p-15" style="word-break: break-all;">
+    {{weeklyTimeSheetData?.comments}}
+  </p>
 </app-modal-popup>

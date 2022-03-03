@@ -31,11 +31,12 @@
     .compliances__item{
         position: relative;
         margin-right: 15px;
+        height: 26px;
         span{
             color:var(--on-primary-900);
             font-size: 10px;
             position: absolute;
-            top:calc(50% - 2px);
+            top:50%;
             left: 50%;
             transform: translate(-50%,-50%);
         }
@@ -52,4 +53,4 @@
 
 .hr-grid {
     grid-template-columns: 250px 0.5fr 180px;
-} 
+}

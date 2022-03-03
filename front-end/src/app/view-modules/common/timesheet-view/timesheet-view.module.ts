@@ -7,6 +7,9 @@ import { TimeSheetModule } from './../time-sheet/time-sheet.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TimesheetViewComponent } from './timesheet-view.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -18,7 +21,10 @@ import { TimesheetViewComponent } from './timesheet-view.component';
     ReactiveFormsModule,
     ButtonModule,
     SvgIconModule,
-    ModalPopupModule
+    ModalPopupModule,
+    MatDialogModule,
+    ConfirmDialogModule,
+    MatIconModule
   ],
   exports:[
     TimesheetViewComponent

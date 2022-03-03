@@ -15,6 +15,9 @@ export class ForgotPasswordComponent implements OnInit {
     // the formgroup for the forgotpassword form
     fgForgotPassword: FormGroup;
 
+    // show success message boolean value
+    showSuccessMessage : boolean = false;
+
     // ref to the ngForm . helpful in reset .
     @ViewChild("form") ngForm: NgForm;
 
@@ -32,17 +35,18 @@ export class ForgotPasswordComponent implements OnInit {
 
     // on submiting the forgot password form
     onSubmit(e) {
+        this.showSuccessMessage= true;
         if (this.fgForgotPassword.valid) {
-            this.authHttp.noAuth().request('post', 'forgot-password/', "", this.fgForgotPassword.value).subscribe(res => {
-                if (res.status === 200) {
-                    this.ss.statusMessage.showStatusMessage(true, "An email has been sent to reset password.")
-                    this.ngForm.resetForm();
-                } else if (res.error.message == "invalidlogins") {
-                    this.ss.statusMessage.showStatusMessage(false, "This email does not exist.")
-                } else {
-                    this.ss.statusMessage.showStatusMessage(false, "Something went wrong.")
-                }
-            });
+            // this.authHttp.noAuth().request('post', 'forgot-password/', "", this.fgForgotPassword.value).subscribe(res => {
+            //     if (res.status === 200) {
+            //         this.ss.statusMessage.showStatusMessage(true, "An email has been sent to reset password.")
+            //         this.ngForm.resetForm();
+            //     } else if (res.error.message == "invalidlogins") {
+            //         this.ss.statusMessage.showStatusMessage(false, "This email does not exist.")
+            //     } else {
+            //         this.ss.statusMessage.showStatusMessage(false, "Something went wrong.")
+            //     }
+            // });
         }
     }
  

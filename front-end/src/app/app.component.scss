@@ -17,6 +17,9 @@
             padding:15px;
         }
     }
+    .main-wrap{
+        background: var(--col-primary-A100);
+    }
     
     app-header{
         grid-area:header;

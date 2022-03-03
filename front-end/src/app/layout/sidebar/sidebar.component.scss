@@ -1,5 +1,4 @@
 :host {
-  background: var(--col-primary-900);
   display: grid;
   grid-template-rows: minmax(250px, 300px) 1fr;
 
@@ -82,7 +81,7 @@
 
             >a,
             >span {
-              padding: 10px 0 10px 50px;
+              padding: 10px 0 10px 60px;
               &.active{
                 background:linear-gradient(to right, var(--col-primary-400), var(--col-primary-900));
                 color:var(--on-primary-400);
@@ -121,6 +120,7 @@
   position: fixed;
   top: 0;
   z-index: 999;
+  background: var(--col-primary-900);
 
   ul {
     list-style-type: none;
