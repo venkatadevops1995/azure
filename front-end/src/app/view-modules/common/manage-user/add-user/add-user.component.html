@@ -1,97 +1,104 @@
 <h2 class="heading">Add Employee</h2>
 
 <div>
-    <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()">
-        <div>
-            <div class="grid-container">
-                <mat-form-field>
-                    <mat-label>First Name</mat-label>
-                    <input matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
-                    <mat-error *ngIf=" addUserForm.controls.firstName.touched && addUserForm.controls.firstName.hasError('required')">
-                        Please enter First Name
-                    </mat-error>
-                </mat-form-field>
+  <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()">
+    <div>
+      <div class="grid-container">
+        <mat-form-field>
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
+          <mat-error
+            *ngIf=" addUserForm.controls.firstName.touched && addUserForm.controls.firstName.hasError('required')">
+            Please enter First Name
+          </mat-error>
+        </mat-form-field>
 
 
 
 
-                <mat-form-field>
-                    <mat-label>Last Name</mat-label>
-                    <input matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
-                    <mat-error *ngIf="addUserForm.controls.lastName.touched && addUserForm.controls.lastName.hasError('required')">
-                        Please enter Last Name
-                    </mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
+          <mat-error
+            *ngIf="addUserForm.controls.lastName.touched && addUserForm.controls.lastName.hasError('required')">
+            Please enter Last Name
+          </mat-error>
+        </mat-form-field>
 
-                <mat-form-field>
-                    <mat-label>Staff No.</mat-label>
-                    <input matInput formControlName="staff_no">
-                    <mat-error *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
-                        Please enter Staff No.
-                    </mat-error>
-                    <mat-error *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('is_duplicated')">
-                        Entered Staff No. already exists
-                    </mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <mat-label>Staff No.</mat-label>
+          <input matInput formControlName="staff_no">
+          <mat-error
+            *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
+            Please enter Staff No.
+          </mat-error>
+          <mat-error
+            *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('is_duplicated')">
+            Entered Staff No. already exists
+          </mat-error>
+        </mat-form-field>
 
-                <mat-form-field>
-                    <mat-label>Email</mat-label>
-                    <input matInput formControlName="email" />
-                    <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('required')">
-                        Please enter Email
-                    </mat-error>
-                    <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('email')">
-                        Please enter valid Email
-                    </mat-error>
-                    <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('is_duplicated')">
-                        Entered Email already exists
-                    </mat-error>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+          <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('required')">
+            Please enter Email
+          </mat-error>
+          <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('email')">
+            Please enter valid Email
+          </mat-error>
+          <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('is_duplicated')">
+            Entered Email already exists
+          </mat-error>
 
-                </mat-form-field>
+        </mat-form-field>
 
-                <mat-form-field>
-                    <mat-label>Group</mat-label>
-                    <mat-select formControlName="company">
-                        <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="addUserForm.controls.company.touched && addUserForm.controls.company.hasError('required')">
-                        Please select Group
-                    </mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <mat-label>Group</mat-label>
+          <mat-select formControlName="company">
+            <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="addUserForm.controls.company.touched && addUserForm.controls.company.hasError('required')">
+            Please select Group
+          </mat-error>
+        </mat-form-field>
 
-                <mat-form-field>
-                    <mat-label>Location</mat-label>
-                    <mat-select formControlName="location">
-                        <mat-option [value]="location.id" *ngFor="let location of ALL_LOCATIONS">{{location.name}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="addUserForm.controls.location.touched && addUserForm.controls.location.hasError('required')">
-                        Please select Location
-                    </mat-error>
-                </mat-form-field>
-
-
-                <mat-form-field>
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender">
-                        <mat-option [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="addUserForm.controls.gender.touched && addUserForm.controls.gender.hasError('required')">
-                        Please select Gender
-                    </mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <mat-label>Location</mat-label>
+          <mat-select formControlName="location">
+            <mat-option [value]="location.id" *ngFor="let location of ALL_LOCATIONS">{{location.name}}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="addUserForm.controls.location.touched && addUserForm.controls.location.hasError('required')">
+            Please select Location
+          </mat-error>
+        </mat-form-field>
 
 
-                <mat-form-field>
-                    <mat-label>Category</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="addUserForm.controls.category.touched && addUserForm.controls.category.hasError('required')">
-                        Please select Category
-                    </mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="gender">
+            <mat-option [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="addUserForm.controls.gender.touched && addUserForm.controls.gender.hasError('required')">
+            Please select Gender
+          </mat-error>
+        </mat-form-field>
 
-                <!-- <mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="addUserForm.controls.category.touched && addUserForm.controls.category.hasError('required')">
+            Please select Category
+          </mat-error>
+        </mat-form-field>
+
+        <!-- <mat-form-field>
                     <mat-label>Marital Status</mat-label>
                     <mat-select formControlName="is_married" (selectionChange)="onMaritalStatusChange()">
                         <mat-option [value]="m_status['value']" *ngFor="let m_status of MARITAL_STATUS">{{m_status['name']}}</mat-option>
@@ -101,7 +108,7 @@
                     </mat-error>
                 </mat-form-field> -->
 
-                <!-- <mat-form-field >
+        <!-- <mat-form-field >
                     <mat-label>Parental leave taken</mat-label>
                     <mat-select formControlName="patentry_maternity_cnt" [disabled]="addUserForm.controls.is_married.value!=true">
                         <mat-option [value]=0 >0</mat-option>
@@ -116,21 +123,23 @@
 
 
 
-                <mat-form-field class="custompicker">
-                    <mat-label>Date of Joining</mat-label>
-                    <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
+        <mat-form-field class="custompicker">
+          <mat-label>Date of Joining</mat-label>
+          <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
                         formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
-                    <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
+          <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
                         <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
                       </button> -->
-                    <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" >date_range</mat-icon>
-                    <mat-error *ngIf="addUserForm.controls.doj.touched ">
-                        Please select Date of Joining
-                    </mat-error>
-                </mat-form-field>
+          <app-atai-date-range></app-atai-date-range>
+          <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
+            style="color: #3a7bca;">date_range</mat-icon>
+          <mat-error *ngIf="addUserForm.controls.doj.touched ">
+            Please select Date of Joining
+          </mat-error>
+        </mat-form-field>
 
-            </div>
-            <!-- <div>
+      </div>
+      <!-- <div>
             <p>Role</p>
             <mat-form-field appearance="fill" style="width: 250px;padding: 4px;">
                 <mat-label>Select Role</mat-label>
@@ -141,98 +150,107 @@
         </div> -->
 
 
-            <div class="grid-container">
-                <div style="padding: 0px 0px 17.5px;margin: 4px;">
-                    <div style="display: inline-block;position: relative;min-width: 280px;min-height: 65px; padding: 10px 0px 0px 20px;" class="box2 mat-form-field-flex ">
+      <div class="grid-container">
+        <div style="padding: 0px 0px 17.5px;margin: 4px;">
+          <div
+            style="display: inline-block;position: relative;min-width: 280px;min-height: 65px; padding: 10px 0px 0px 20px;"
+            class="box2 mat-form-field-flex ">
 
-                        <p style="margin: 0 0 0 0px;">Atwork Role</p>
-                        <div style="padding-left: 2px;">
-                            <ul>
-                                <li *ngFor="let role of ROLES;let i=index">
-                                    <!-- <div class="container"> -->
-                                    <label class="container"> {{role.name}}
-                                    <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
-                                    <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' " [checked]="role.selected" [disabled]="role.disabled">
-                                    <span class="checkmark"></span>
-                                    </label>
-                                    <!-- </div> -->
-                                </li>
+            <p style="margin: 0 0 0 0px;">Atwork Role</p>
+            <div style="padding-left: 2px;">
+              <ul>
+                <li *ngFor="let role of ROLES;let i=index">
+                  <!-- <div class="container"> -->
+                  <label class="container"> {{role.name}}
+                    <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
+                    <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
+                      [checked]="role.selected" [disabled]="role.disabled">
+                    <span class="checkmark"></span>
+                  </label>
+                  <!-- </div> -->
+                </li>
 
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
+              </ul>
             </div>
-
-
-
-            <div class="grid-container">
-                <div *ngIf="!makeSelfFM">
-                    <mat-form-field>
-                        <mat-label>Functional Owner</mat-label>
-                        <mat-select formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
-                            <mat-option [value]=0 *ngIf="newUserRoleValue==4" class="self-option">Self ({{newUserFirstName +" "+newUserLastName}})</mat-option>
-                            <ng-container *ngIf="newUserRoleValue!=4">
-                                <mat-option [value]="emp['emp_id']" *ngFor="let emp of FM_DATA">{{emp["emp_name"]}}</mat-option>
-                            </ng-container>
-
-                        </mat-select>
-                        <mat-error *ngIf="addUserForm.controls.fun_own.touched && addUserForm.controls.fun_own.hasError('notNull')">
-                            Please select Functional Owner
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field>
-                        <mat-label>Manager's Manager</mat-label>
-                        <mat-select formControlName="man_manager" (selectionChange)="changeMM($event.value, newUserRoleValue)">
-                            <mat-option [value]=0 *ngIf="newUserRoleValue==4 " class="self-option">Self ({{newUserFirstName +" "+newUserLastName}})</mat-option>
-                            <mat-option [value]="emp['emp_id']" *ngFor="let emp of MM_DATA">{{emp["emp_name"]}}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="addUserForm.controls.man_manager.touched && addUserForm.controls.man_manager.hasError('notNull')">
-                            Please select Manager's Manager
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field>
-                        <mat-label>Reporting Manager</mat-label>
-                        <mat-select formControlName="rep_manager">
-                            <mat-option [value]=0 *ngIf="newUserRoleValue==4 " class="self-option">Self ({{newUserFirstName +" "+newUserLastName}})</mat-option>
-                            <mat-option [value]="emp['emp_id']" *ngFor="let emp of RM_DATA">{{emp["emp_name"]}}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="addUserForm.controls.rep_manager.touched && addUserForm.controls.rep_manager.hasError('notNull')">
-                            Please select Reporting Manager
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-        </div>
-        <div mat-dialog-actions>
-            <div style="display: inline-block;padding-bottom: 10px;">
-                <app-button size='small' theme="blue-lite" type="submit" [disabled]="addUserForm.invalid">Add</app-button>
-            </div>
-            <div style="display: inline-block;padding-bottom: 10px;padding-left: 20px;">
-                <app-button size='small' theme="danger" type="button" (click)="reset()">Reset</app-button>
-            </div>
+          </div>
 
         </div>
-    </form>
+      </div>
+
+
+
+      <div class="grid-container">
+        <div *ngIf="!makeSelfFM">
+          <mat-form-field>
+            <mat-label>Functional Owner</mat-label>
+            <mat-select formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
+              <mat-option [value]=0 *ngIf="newUserRoleValue==4" class="self-option">Self
+                ({{newUserFirstName +" "+newUserLastName}})</mat-option>
+              <ng-container *ngIf="newUserRoleValue!=4">
+                <mat-option [value]="emp['emp_id']" *ngFor="let emp of FM_DATA">{{emp["emp_name"]}}</mat-option>
+              </ng-container>
+
+            </mat-select>
+            <mat-error *ngIf="addUserForm.controls.fun_own.touched && addUserForm.controls.fun_own.hasError('notNull')">
+              Please select Functional Owner
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Manager's Manager</mat-label>
+            <mat-select formControlName="man_manager" (selectionChange)="changeMM($event.value, newUserRoleValue)">
+              <mat-option [value]=0 *ngIf="newUserRoleValue==4 " class="self-option">Self
+                ({{newUserFirstName +" "+newUserLastName}})</mat-option>
+              <mat-option [value]="emp['emp_id']" *ngFor="let emp of MM_DATA">{{emp["emp_name"]}}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="addUserForm.controls.man_manager.touched && addUserForm.controls.man_manager.hasError('notNull')">
+              Please select Manager's Manager
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Reporting Manager</mat-label>
+            <mat-select formControlName="rep_manager">
+              <mat-option [value]=0 *ngIf="newUserRoleValue==4 " class="self-option">Self
+                ({{newUserFirstName +" "+newUserLastName}})</mat-option>
+              <mat-option [value]="emp['emp_id']" *ngFor="let emp of RM_DATA">{{emp["emp_name"]}}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="addUserForm.controls.rep_manager.touched && addUserForm.controls.rep_manager.hasError('notNull')">
+              Please select Reporting Manager
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div mat-dialog-actions>
+      <div style="display: inline-block;padding-bottom: 10px;">
+        <app-button size='small' theme="blue-lite" type="submit" [disabled]="addUserForm.invalid">Add</app-button>
+      </div>
+      <div style="display: inline-block;padding-bottom: 10px;padding-left: 20px;">
+        <app-button size='small' theme="danger" type="button" (click)="reset()">Reset</app-button>
+      </div>
+
+    </div>
+  </form>
 </div>
 
 <app-modal-popup #confirmationRef [w]="'30%'" [h]="'35%'">
-    <div head>
-        Confirmation
-    </div>
-    <div style="margin: 10px;text-align: center;">
-        Are you sure to add this employee ?
-    </div>
-    <br>
-    <div style="text-align: center;">
-        <app-button style="margin:5px 20px" size='small' type="button" w="130" (click)="addUser()">Confirm
-        </app-button>
-        <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="closeConfirmation()">Cancel
-        </app-button>
-    </div>
+  <div head>
+    Confirmation
+  </div>
+  <div style="margin: 10px;text-align: center;">
+    Are you sure to add this employee ?
+  </div>
+  <br>
+  <div style="text-align: center;">
+    <app-button style="margin:5px 20px" size='small' type="button" w="130" (click)="addUser()">Confirm
+    </app-button>
+    <app-button style="margin:5px 20px" size='small' theme="danger" type="button" w="130" (click)="closeConfirmation()">
+      Cancel
+    </app-button>
+  </div>
 </app-modal-popup>

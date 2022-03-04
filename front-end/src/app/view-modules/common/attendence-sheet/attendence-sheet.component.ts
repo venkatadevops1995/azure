@@ -70,9 +70,11 @@ export class AttendenceSheetComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.dateRangePicker.setPresetValue('Last 30 Days')
-    // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    this.getReporters();
+    setTimeout(()=>{
+      this.dateRangePicker.setPresetValue('Last 30 Days')
+      // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+      this.getReporters();
+    })
   }
 
   onDateSelection(val:DateRange<any> ){
@@ -94,7 +96,7 @@ export class AttendenceSheetComponent implements OnInit {
       //    })
       this.downloadable = true
     } else if (emp_id !== undefined) {
-      this.http.request("get", 'attendance/?from=' +'2022-01-01'+ '&to=' +'2022-01-31'+ '&emp_id=' + emp_id,).subscribe(res => {
+      this.http.request("get", 'attendance/?from=' +fromdate+ '&to=' +todate+ '&emp_id=' + emp_id,).subscribe(res => {
         if (res.status == 200) {
           console.log(res.body['results'])
           this.ATTENDENCE_DATA = res.body['results'];

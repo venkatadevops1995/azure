@@ -6,7 +6,7 @@ import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, NG_VALUE_A
 import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState, NativeDateAdapter } from '@angular/material/core';
 import { DateRange, MatCalendar, MatCalendarCell, MatCalendarCellCssClasses, MatCalendarUserEvent, MatDateSelectionModel, MatRangeDateSelectionModel, MatSingleDateSelectionModel } from '@angular/material/datepicker';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject, Subscription, take } from 'rxjs'; 
+import { Subject, Subscription, take } from 'rxjs';
 
 /** Checks whether a node is a table cell element. */
 function isTableCell(node: Node): node is HTMLTableCellElement {
@@ -223,10 +223,12 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   ngOnInit(): void {
     this._model = this._rangeModel;
-    this.ngControl.statusChanges.subscribe((status) => {
-      console.log(status);
-      this.stateChanges.next()
-    })
+    if (this.ngControl) {
+      this.ngControl.statusChanges.subscribe((status) => {
+        console.log(status);
+        this.stateChanges.next()
+      })
+    }
   }
 
 
