@@ -94,6 +94,7 @@ export class HeaderSearchComponent implements OnInit {
         this.employeeInput = { emp_name: emp_name, emp_details: res.body[0] }
         let dialogRef =  this.dialog.open(EmployeeProfileDetailsComponent, {
           panelClass: 'employee-profile-details',
+          backdropClass:'',
           data: this.employeeInput
         })
       } else {

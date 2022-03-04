@@ -1,8 +1,9 @@
 :host {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     background:linear-gradient(to right,var(--col-primary-A200),var(--col-primary-900));
+    padding:0 var(--padding-sides);
     .change-password {
         color: var(--color-tertiary);
         font-size: 15px;

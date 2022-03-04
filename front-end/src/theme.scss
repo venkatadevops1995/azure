@@ -125,3 +125,24 @@ mat-dialog-container.mat-dialog-container {
 .cdk-overlay-darker-backdrop, .cdk-overlay-dark-backdrop{
   background:rgba(0,0,0,0.52);
 }
+
+// remove padding bottom from the mat form field components
+.no-pb{
+  &.mat-form-field-appearance-legacy .mat-form-field-wrapper{
+    padding-bottom: 0;
+  }
+  &.mat-form-field-appearance-legacy .mat-form-field-underline{
+    bottom:0%;
+  }
+
+}
+
+.atai-date-range{
+  &.mat-form-field-appearance-legacy  > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix{
+    padding:0;
+    border-top: 0 solid transparent;
+  }
+  &.mat-form-field-appearance-legacy > .mat-form-field-wrapper > .mat-form-field-underline{
+    display: none;
+  }
+}

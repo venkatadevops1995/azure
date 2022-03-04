@@ -1,4 +1,4 @@
-<div>
+<div class="mb-20">
     <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
       
         <div class="flex middle-xs " style="justify-content:space-between;">
@@ -13,13 +13,13 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field> -->
-            <div class="flex w-40  end-xs" >
+            <div class="flex w-40  end-xs bottom-xs fs-14" >
 
-                <mat-form-field class="w-50 mr-10">
+                <mat-form-field class="w-50 mr-10 no-pb">
                     <mat-label>Manager name</mat-label>
                     <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl" [(ngModel)]="value">
-                    <button style="background: none;border:none;" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                        <mat-icon>arrow_drop_down</mat-icon>
+                    <button style="background: none;border:none;" class="pointer" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                        <mat-icon class="mat-icon" style="width:24px;height:24px;font-size:24px;">arrow_drop_down</mat-icon>
                       </button>
                     <mat-autocomplete #auto="matAutocomplete">
                         <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
@@ -28,7 +28,7 @@
                     </mat-autocomplete>
                 </mat-form-field>
                 <!-- <p *ngIf="show" style="color: var(--color-danger);">Select Leader from list</p> -->
-                <div class="flex end-xs middle-xs" style="margin-top: -25px;">
+                <div class="flex end-xs bottom-xs" >
                     <app-button>Submit
                     </app-button>
                 </div>

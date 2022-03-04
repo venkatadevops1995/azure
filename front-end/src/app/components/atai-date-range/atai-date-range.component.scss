@@ -3,7 +3,8 @@ app-atai-date-range {
 
   .mat-form-field-appearance-legacy .mat-form-field-underline {
     padding-bottom: 0;
-    display: none;
+    // display: none;
+    
   }
 
   .mat-form-field-appearance-legacy .mat-form-field-wrapper {
@@ -11,14 +12,13 @@ app-atai-date-range {
   }
 
   .mat-form-field-flex {
-    position: relative;
-    top: 0.6em;
+    position: relative; 
   }
 
   .mat-icon {
     position: absolute;
     right: 0px;
-    top: 0.6em;
+    top: 0.3em;
   }
 }
 
