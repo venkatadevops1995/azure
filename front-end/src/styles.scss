@@ -10,7 +10,9 @@
 @import "./assets/scss/css-variables";
 @import "./assets/scss/use-mixins";
 
-
+body {
+  --padding-sides: 6.25%;
+}
 .mat-icon {
   &.mat-icon-small {
     width: 15px;

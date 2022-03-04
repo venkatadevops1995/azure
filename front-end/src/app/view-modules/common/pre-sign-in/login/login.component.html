@@ -2,10 +2,10 @@
   <!-- <h2 class="heading tac">Login!</h2> -->
   <form #form="ngForm" class="mt-30 fs-14" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
     <div class="  middle-xs flex" matPrefix>
-      <div class="mr-10" fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#user',w:25}" style="color:var(--col-accent-500);"
-        svg-fill="currentColor"></div>
+      <div class="mr-10" fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#user',w:25}"
+        style="color:var(--col-accent-500);" svg-fill="currentColor"></div>
       <mat-form-field class="formField lite fs-13" style="flex-grow: 1;" color="primary">
-        <mat-label>Email 
+        <mat-label>Email
         </mat-label>
         <input autocomplete="off" matInput type="email" placeholder="Enter email" formControlName="email">
         <mat-error *ngIf="fgLogin.controls.email.hasError('email')">
@@ -20,8 +20,8 @@
     <div class="mt-15 middle-xs flex" matPrefix>
       <div class="mr-10" fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#key',w:25}"
         style="color:var(--col-accent-500);" svg-fill="currentColor"></div>
-      <mat-form-field class="formField lite"  style="flex-grow: 1;">
-        <mat-label>Password 
+      <mat-form-field class="formField lite" style="flex-grow: 1;">
+        <mat-label>Password
         </mat-label>
         <input autocomplete="off" matInput [attr.type]="hidePassword ? 'password' : 'text'" placeholder="Enter password"
           formControlName="password">
@@ -43,7 +43,7 @@
       <a style="color:var(--col-accent-500);" class="fs-12" [routerLink]="'/forgot-password'">Forgot password</a>
     </div>
     <div class="flex center-xs">
-      <app-button  style="width: 100%;" theme="black">Login</app-button>
+      <app-button style="width: 100%;" theme="black">Login</app-button>
     </div>
 
 

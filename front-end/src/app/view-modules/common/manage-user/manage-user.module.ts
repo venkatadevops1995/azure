@@ -20,6 +20,7 @@ import { FileUploadModule } from 'src/app/components/input-file/input-file.modul
 import { AddUserComponent } from './add-user/add-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 @NgModule({
   declarations: [ManageUserComponent, AddUserComponent, EditUserComponent],
   imports: [
@@ -41,6 +42,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     TooltipModule,
     FileUploadModule,
     MatAutocompleteModule,
+    AtaiDateRangeModule
     // NgxDaterangepickerMd.forRoot()
   ]
 })
