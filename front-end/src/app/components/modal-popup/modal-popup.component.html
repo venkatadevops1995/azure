@@ -1,8 +1,6 @@
 <div class="overlay" #overlay style="display: none">
   <div
     [ngStyle]="{
-      width: widthToSet,
-      height: heightToSet,
       'max-width': maxWidthToSet,
       'max-height': maxHeightToSet,
       'min-width': minWidthToSet,
@@ -14,21 +12,21 @@
     <!--The heading of the pop up with angular transclusion using attribute head-->
     <div *ngIf="head" class="head">
       <ng-content select="[head]"></ng-content>
-      <div class="close" #content>
+      <!-- <div class="close" #content> -->
         <!-- <mat-icon class="white-icon">close</mat-icon> -->
-        <div *ngIf ="!iscloseBtnVisible"
+        <!-- <div *ngIf ="!iscloseBtnVisible"
           (click)="close()"
           [svgIcon]="{ url: './assets/icons-sprite.svg#close-circle', w: 30 }"
           style="fill: #fff; cursor: pointer"
           class="closebutton"
         ></div>
-      </div>
+      </div> -->
     </div>
 
     <!-- The content for the main content area of the pop up -->
     <div class="middle" [style.overflow]="policy_style ? 'hidden' : 'auto'">
       <!-- <wyniki-scroll-bar [takeMinParentHeight]="true" [autoUpdate]="true" style="height:100%;" idd="test" #scrollbar> -->
-      <div [style.padding]="policy_style ? '30px 0 30px 0' : ''"  [ngClass] = "policy_style ? '' : 'p-30'" style="height: 100%">
+      <div style="height: 100%">
         <ng-content></ng-content>
       </div>
       <!-- </wyniki-scroll-bar> -->

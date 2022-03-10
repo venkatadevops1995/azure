@@ -105,6 +105,26 @@ th.mat-header-cell:last-of-type{
   border-radius: 0 10px 10px 0;
 }
 
+//adding style for the single date picker
+
+.mat-calendar-body-today{
+    background-color:var(--col-accent-500) !important;
+
+}
+.mat-calendar-body-selected{
+  background-color:var(--col-accent-500) !important;
+
+}
+.mat-calendar-previous-button,
+ .mat-calendar-next-button{
+    color:var(--col-accent-500) !important;
+}
+.mat-calendar-table-header{
+    color:var(--col-accent-500) !important;
+}
+
+//////////////////////////////////////
+
 /* Material theme styling */
 .mat-form-field-appearance-legacy {
   .mat-form-field-label {

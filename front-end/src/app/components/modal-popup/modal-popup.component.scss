@@ -20,15 +20,15 @@
  
  :host .modal-content .head {
      background: var(--color-secondary); //#2a3144;
-     font-size: 36px;
-     color: #fff;
-     padding: 20px 15px 20px 40px;
+     font-size: 24px;
+     color:var(--col-accent-500);
+     padding: 20px 15px 20px 8px;
      //font-weight: 100; 
      margin-top: 0px;
      margin-bottom: 0px;
      position: relative;
      z-index: 1;
-     font-weight: 300;
+     font-weight: 600;
      text-align: left;
  }
  
@@ -48,16 +48,24 @@
      position: absolute;
      top: 50%;
      left: 50%;
-     width: 80%;
-     height: 100%;
-     max-width: 80%;
-     max-height: 80%;
+    //  width: 80%;
+    //  height: 100%;
+    //  max-width: 80%;
+    //  max-height: 80%;
      transform: translate(-50%, -50%);
-     background: #edf1f7;
-     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
-     cursor: default;
-     display: flex;
-     flex-direction: column;
+    //  background: #edf1f7;
+    //  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+    //  cursor: default;
+    //  display: flex;
+    //  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    background-image: radial-gradient(130% 100% at 0% 0%, var(--col-primary-300), var(--col-primary-900) 100%);
+    box-shadow: inset 0px -75px 60px rgb(0 0 0 / 22%);
+    border-radius: 15px;
+    border: 1px solid #555;
+    padding: 40px 50px 30px 50px;
+    max-width: 420px;
  }
  /*pre-sign-in-wrap dbd-modal-popup .content{
     overflow: auto
