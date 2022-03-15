@@ -197,14 +197,14 @@ export class SidebarComponent implements OnInit {
         // if (item.link == 'approve-timesheets') {
         //   item.showDot = (res.body.length > 0);
         // }
-        console.log("-----------------------",item);
+        // console.log("-----------------------",item);
 
         if(item.text=="Timesheet" && item.hasOwnProperty("submenu")){
-          console.log("-----------------------",item);
+          // console.log("-----------------------",item);
         item["submenu"].forEach(e=>{
           if (e.link == 'approve-timesheets') {
             e.showRedDot =  true;
-            console.log("---------------set red dot--------",item["submenu"]);
+            // console.log("---------------set red dot--------",item["submenu"]);
           }
 
         })

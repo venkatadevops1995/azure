@@ -42,9 +42,16 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // used to unsubscribe subscriptions
   destroy$: Subject<any> = new Subject();
 
+  // mat form field error state matcher
   @Input() override errorStateMatcher: ErrorStateMatcher;
 
   @Input() label: string = 'Date Range';
+
+  // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
+  @Input() showInput: boolean = true;
+
+  // whether to allow same date to be selected as start and end date
+  @Input() allowSameDateRange: boolean = false;
 
   get empty() {
     let selection = this._model.selection;
@@ -54,8 +61,14 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // ID attribute for the field and for attribute for the label
   @Input() idd = "daterange-picker-" + Math.floor((Math.random() * 100) + 1);
 
+  // whether to show or hide the presets
+  @Input() showPresets: boolean = true
 
+  // event emitted when the date selection is completed
   @Output('dateSelected') dateSelectedEvent: EventEmitter<any> = new EventEmitter();
+
+  // event emitted when the date selection is completed
+  @Output('cancel') cancelSelection: EventEmitter<any> = new EventEmitter();
 
   // for mat
   @HostBinding() id = `${this.idd}`
@@ -106,13 +119,13 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   _model: MatDateSelectionModel<any, any>
 
   // minimum date calendar should start
-  minDate = new Date().getDate() - 90;
+  @Input() minDate = new Date(new Date().getDate() - 90);
 
   // count for how many next days should be displayed in calendar
-  daysLimit = 59;
+  daysLimit = 60;
 
   // maximum data calendar should start
-  maxDate = new Date(new Date().setDate(new Date().getDate() + this.daysLimit));
+  @Input() maxDate: Date = new Date(new Date().setDate(new Date().getDate() + this.daysLimit));
 
   // To store date selected
   selectedDates: Array<Date | any> = [];
@@ -146,6 +159,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   get placeholder() {
     return this.pH;
   }
+
   set placeholder(plh) {
     this.pH = plh;
     this.stateChanges.next();
@@ -169,6 +183,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     this.stateChanges.next();
   }
 
+  /* 
+    @param: preset  (preset type)
+    @description: Method to set the dates selection to one of the preset values
+  */
   setPresetValue(preset: 'Last 7 Days' | 'Last 30 Days' | 'This Month' | 'Last Month') {
     if (this.selectionPresets.map(item => item.str).indexOf(preset) != -1) {
       let presetObj = this.selectionPresets.filter(item => {
@@ -233,9 +251,11 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
 
   ngAfterViewInit() {
-    this.renderer.listen(this.inputElRef.nativeElement, 'keydown', (e: Event) => {
-      e.preventDefault();
-    })
+    if (this.showInput) {
+      this.renderer.listen(this.inputElRef.nativeElement, 'keydown', (e: Event) => {
+        e.preventDefault();
+      })
+    }
   }
 
   ngDoCheck() {
@@ -245,6 +265,12 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       // this.stateChanges.next();
     }
   }
+
+  /* 
+    @param presetId the id from the above predefined preset options
+    @return undefined
+    @description set the selection in the calendar 
+  */
   setSelection(presetId) {
 
     let d = new Date();
@@ -304,6 +330,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     }
   }
 
+  /* 
+    @param e : Mouse click event
+  */
   @HostListener('document:click', ['$event'])
   onClick(e: Event) {
     console.log('click document')
@@ -332,24 +361,38 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   }
 
-  onClickApply(e: Event) {
+  /* 
+    @param event:Mouse click event on apply button
+  */
+  onClickApply() {
     this.dateMeta.selectionType = 'custom';
     this.selectedPresetRef = null;
     const selection = this._model.selection;
-    this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'yyyy-mm-dd') + ' - ' + this.nativeDateAdapter.format(selection.end, 'yyyy-mm-dd')
+    if (this._model.selection.end == null) {
+      this._model.selection.end = new Date(this._model.selection.start)
+    }
+    this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'dd-mm-yyyy') + ' - ' + this.nativeDateAdapter.format(selection.end, 'dd-mm-yyyy')
+    this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
     this.propagateChange(this._model.selection)
     this.overlayRef.dispose()
     this.subscribeBackDropClick.unsubscribe()
   }
 
-  onClickCancel(e: Event) {
+  /* 
+    @param event:Mouse click event on cancel button
+  */
+  close() {
     // this.clearSelection(); 
     this.clearSelection()
     this.setSelection(this.dateMeta.selectionType)
     this.overlayRef.dispose()
+    this.cancelSelection.emit(false)
     this.subscribeBackDropClick.unsubscribe()
   }
 
+  /* 
+    @param event:on hovering over the calendar cells to show the cell in preview range
+  */
   onHover(event) {
     let target = event.target
     const selection = this._model.selection;
@@ -365,6 +408,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   }
 
+  /* 
+    @param element: html element which the html 
+    @return matcalendar cell object
+  */
   _getCellFromElement(element: HTMLElement): MatCalendarCell | null {
     let calendarBody = this.calendar.monthView._matCalendarBody;
     let cell: HTMLElement | undefined;
@@ -387,16 +434,23 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     return null;
   }
 
-  openDateRangePicker(e: Event) {
+  /* 
+    @param: event
+  */
+  openDateRangePicker(elRef?: ElementRef) {
     // this.clearSelection()
     let positions = [
       new ConnectionPositionPair({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'top' }),
-      new ConnectionPositionPair({ originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'bottom' })
+      new ConnectionPositionPair({ originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'bottom' }),
+      new ConnectionPositionPair({ originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'top' }),
+      new ConnectionPositionPair({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'bottom' }),
     ]
-    let positionStrategy = this.positionBuilder.flexibleConnectedTo(this.dateFieldRef)
+
+    let positionStrategy = this.positionBuilder.flexibleConnectedTo(elRef || this.dateFieldRef)
       .withPositions(positions)
       .withFlexibleDimensions(false)
       .withPush(false);
+
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       panelClass: ['atai-date-range-calendar-wrap', 'is-active'],
@@ -407,10 +461,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
     let portalRef = new TemplatePortal(this.calendarTemplateRef, this.viewContainerRef)
     this.overlayRef.attach(portalRef)
-    if (this.calendar) {
-
-    }
-    this.subscribeBackDropClick = this.overlayRef.backdropClick().pipe(take(1)).subscribe(() => this.overlayRef.dispose());
+    this.subscribeBackDropClick = this.overlayRef.backdropClick().pipe(take(1)).subscribe(() => {
+      this.close()
+    });
   }
 
   // get the date in between of the start and end dates considering the time for start and end dates is equal
@@ -466,81 +519,61 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         calendarBody.previewEnd = null;
         // console.log(this.calendar.monthView._previewStart)
         let isSameDate = selection.start.toString() == value.toString();
-        if (value && !isSameDate) {
+        if (!this.allowSameDateRange && isSameDate) {
+          return;
+        }
+        if (value) {
           // console.log("NOT SAME DATE CAN ADD IN THE DATE LIST and the IN BETWEEN DATES ALSO. CHECK IF ALREADY EXISTS TO NOT DUPLICATE")   
           // if the selected end date is less than the start then set the start to the new date
           if (value.getTime() < selection.start.getTime()) {
             this.resetRange()
             this._model.add(value);
+            this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
           } else {
             this._model.add(value);
-
+            this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+            this.onClickApply();
           }
-          this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
           console.log("DATE SELECTED RANGE SELECTION", this._model.selection)
-
           // this.selectedDate = value;
           // CHECK IF ANY DATE ALREADY EXISTS AND GET THE LIST OF DATES TO BE ADDED    
-        } else if (value) {
-          console.log("SAME DATE SO REMOVE THE DATE FROM THE LIST OF DATES AND ALSO RESET THE DATESELECTION MODEL")
         }
+
+        // else if (value) {
+        //   console.log("SAME DATE SO REMOVE THE DATE FROM THE LIST OF DATES AND ALSO RESET THE DATESELECTION MODEL")
+        // }
       } else {
         if (value) {
           // this.clearSelection();
           console.log("ADD DATE TO THE SELECTION AND ALSO LIST OF DATES ")
-          // this.selectedDates.push(value.toString());
-          // this.selectedDate = value;
-          // this._model.updateSelection({ start: null, end: null } as unknown as any, this);
           this._model.add(value);
           this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
         }
       }
     } else {
       if (value) {
-        // this.clearSelection();
-        // this._model.add(value);
-        // this.selectedDates.push(value.toString());
-        // this.dateMeta.selectedRange = value; 
-        // this._model.updateSelection({ start: null, end: null } as unknown as any, this);
         this._model.add(value);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
       }
     }
 
     // this.calendar.updateTodaysDate();
-    // this.cdRef.detectChanges()
-    console.log(this._model.selection)
+    // this.cdRef.detectChanges() 
   }
 
   // resetRange selection model
   resetRange() {
     this._model.updateSelection({ start: null, end: null } as unknown as any, this);
+    this.dateMeta.dateString = "";
+    this.dateMeta.selectionType = null
+    this.dateMeta.selectedRange = new DateRange(null, null);
   }
-
 
   changeMonth(event) {
     // we are setting selected year. 
     this.year = event.getFullYear();
     this.month = this.listOfMonths[event.getMonth()];
   }
-
-  // dateClass = (date: Date): MatCalendarCellCssClasses => {
-  //   // calendar is disabled
-  //   if (!this.isCalendarEnabled) {
-  //     const highlightDate = this.IsABookedDate(date);
-  //     // we show booked dates
-  //     return (highlightDate && !this.isCalendarEnabled) ? 'special-date' : '';
-  //   } else {
-  //     // calendar is enabled
-  //     // we show only selected dates and added dates 
-  //     let dateString = date.toString();
-  //     if (this.selectedDates.indexOf(dateString) != -1) {
-  //       return 'selected-date'
-  //     } else {
-  //       return ""
-  //     }
-  //   }
-  // };
 
   dateClass = (date: Date): MatCalendarCellCssClasses => {
     // calendar is disabled 
@@ -565,7 +598,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       this._model.add(new Date(date.end));
       let selection = this._model.selection
       this.dateMeta.selectedRange = new DateRange(selection.start, selection.end);
-      this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'yyyy-mm-dd') + ' - ' + this.nativeDateAdapter.format(selection.end, 'yyyy-mm-dd')
+      this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'dd-mm-yyyy') + ' - ' + this.nativeDateAdapter.format(selection.end, 'dd-mm-yyyy')
       // if format is satisfied then set the UI and model with the selected dates  
     } else {
       console.warn("THE DATE " + date + " IS NOT A VALID VALUE FOR THE DATE RANGE PICKER");
@@ -592,6 +625,5 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
 }
 
-// The date preview during range selection is sometimes missing adding a date to preview
-// the date range should show the currently selected dates during the opening of the pop up
+// The date preview during range selection is sometimes missing adding a date to preview 
 // The date range should temporarily hold the User interacted data until apply or any of the preset are clicked . If cancel is clicked the date meta should be reverted to the previous selection

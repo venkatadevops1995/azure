@@ -24,83 +24,118 @@ body {
 }
 
 
+/* Mat Table */
 
-.mat-header-cell{
+.mat-header-cell {
   font-size: 14px;
   font-weight: 700;
-  color:var(primary-A100) ;
-  
-}
-.mat-table thead:after{
-  content:"";
-  display:block;
-  width: 1300% !important;
-  height:9px;
+  color: var(primary-A100);
 
-  position:sticky !important;
-  bottom:0 !important;
 }
-.mat-cell, .mat-footer-cell{
+
+.mat-table thead:after {
+  content: "";
+  display: block;
+  width: 1300% !important;
+  height: 9px;
+
+  position: sticky !important;
+  bottom: 0 !important;
+}
+
+.mat-cell,
+.mat-footer-cell {
   font-size: 13px;
 }
-.mat-header-row{
+
+.header-gradient {
+  background: linear-gradient(170.84deg, var(--col-primary-500) -49.76%, var(--col-primary-900) 190.96%);
+
+  &.light {
+    background: linear-gradient(to bottom, var(--col-primary-100) -49.76%, var(--col-primary-500) 190.96%);
+  }
+}
+
+.mat-header-row {
   position: sticky;
   top: 0;
   z-index: 100 !important;
-  height:61px !important;
+  height: 61px !important;
+  border-radius: 10px;
+  border-bottom-width: 0px;
+  @extend .header-gradient;
 
+}
+
+.mat-header-cell {
+  color: var(--col-primary-200) !important;
+
+
+}
+
+.mat-table tbody {
+  background-color: var(--col-primary-A200);
+}
+
+
+.mat-row {
+  height: 52px !important;
+  border-bottom-width: 0px;
+
+  &:not(tr) {
+    background: var(--col-primary-A200);
   }
 
-.header-gradient{
-    background: linear-gradient(170.84deg, var(--col-primary-500) -49.76%, var(--col-primary-900) 190.96%);
-    
-}
-th.mat-header-cell{
-  color:var(--col-primary-200) !important;
-
-    
-}
-
-.mat-table tbody{
-  background-color:var(--col-primary-A200);
-}
-tr.mat-row:hover{
-  cursor:pointer;
-  box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
-  transform: scale(1);
-}
-  .mat-row{
-    height:52px !important;
+  &:first-of-type {
+    margin-top: 10px;
   }
 
-th.mat-header-cell, td.mat-cell, td.mat-footer-cell{
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
+    transform: scale(1);
+  }
+}
+
+.mat-header-cell,
+.mat-cell,
+.mat-footer-cell {
   border-bottom-width: 0px !important;
-  vertical-align:middle !important;
+  vertical-align: middle !important;
 
 }
-th.mat-header-cell,td.mat-cell{
+
+.mat-header-cell,
+.mat-cell {
   text-align: center !important;
 }
 
-th.mat-header-cell:first-of-type{
+.mat-header-cell:first-of-type {
   border-radius: 10px 0 0 10px;
 
 }
-th.mat-header-cell:first-of-type,td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type{
-  padding-left:0px !important;
+
+.mat-header-cell:first-of-type,
+.mat-cell:first-of-type,
+.mat-footer-cell:first-of-type {
+  padding-left: 0px !important;
 }
-th.mat-header-cell:last-of-type{
+
+.mat-header-cell:last-of-type {
   border-radius: 0 10px 10px 0;
 }
+
 /* Material theme styling */
 .mat-form-field-appearance-legacy {
   .mat-form-field-label {
     color: var(--col-primary-300);
   }
 }
-.mat-table{
-  background:none;
+
+.mat-table {
+  background: none;
 }
+
 .mat-form-field {
   color: #fff;
 
@@ -122,27 +157,63 @@ mat-dialog-container.mat-dialog-container {
 }
 
 // overlay for mat dialog 
-.cdk-overlay-darker-backdrop, .cdk-overlay-dark-backdrop{
-  background:rgba(0,0,0,0.52);
+.cdk-overlay-darker-backdrop,
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.52);
 }
 
 // remove padding bottom from the mat form field components
-.no-pb{
-  &.mat-form-field-appearance-legacy .mat-form-field-wrapper{
+.no-pb {
+  &.mat-form-field-appearance-legacy .mat-form-field-wrapper {
     padding-bottom: 0;
   }
-  &.mat-form-field-appearance-legacy .mat-form-field-underline{
-    bottom:0%;
+
+  &.mat-form-field-appearance-legacy .mat-form-field-underline {
+    bottom: 0%;
   }
 
 }
 
-.atai-date-range{
-  &.mat-form-field-appearance-legacy  > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix{
-    padding:0;
+// ATAI date range picker
+
+.atai-date-range {
+  &.mat-form-field-appearance-legacy>.mat-form-field-wrapper>.mat-form-field-flex>.mat-form-field-infix {
+    padding: 0;
     border-top: 0 solid transparent;
   }
-  &.mat-form-field-appearance-legacy > .mat-form-field-wrapper > .mat-form-field-underline{
+
+  &.mat-form-field-appearance-legacy>.mat-form-field-wrapper>.mat-form-field-underline {
     display: none;
   }
+
+  .mat-form-field-wrapper {
+    display: flex;
+  }
+
+  .mat-form-field {
+    display: block;
+  }
+}
+
+// Date picker of angular material
+.mat-calendar-body-today {
+  // background-color: var(--col-accent-500) !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--col-accent-500) !important;
+}
+
+.mat-calendar-previous-button,
+.mat-calendar-next-button {
+  color: var(--col-accent-500) !important;
+}
+
+.mat-calendar-table-header {
+  color: var(--col-accent-500) !important;
+}
+
+// 
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled){
+  color:var(--col-primary-100);
 }

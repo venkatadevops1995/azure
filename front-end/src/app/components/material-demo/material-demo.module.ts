@@ -23,6 +23,7 @@ import { DialogContentExampleComponent } from './dialog-content-example/dialog-c
 import { ButtonModule } from '../button/button.module';  
 import { AtaiDateRangeModule } from '../atai-date-range/atai-date-range.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [MaterialDemoComponent, DialogContentExampleComponent],
@@ -48,7 +49,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     AtaiDateRangeModule,
     OverlayModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDatepickerModule
   ]
 })
 export class MaterialDemoModule {  

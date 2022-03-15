@@ -91,7 +91,7 @@
     pointer-events: none;
   }
 
-  &.disabled button {
-    background: #bbb;
+  &.disabled button { 
+    opacity: 0.3;
   }
 }

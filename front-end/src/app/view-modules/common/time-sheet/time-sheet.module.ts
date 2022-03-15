@@ -9,6 +9,7 @@ import { TimeSheetComponent } from './time-sheet.component';
 import { ButtonModule } from './../../../components/button/button.module'; 
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -21,7 +22,8 @@ import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-d
     ReactiveFormsModule,
     ModalPopupModule,
     MatIconModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MatDialogModule
   ],
   exports:[TimeSheetComponent],
   providers:[TimeSheetService]

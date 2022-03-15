@@ -22,7 +22,8 @@ export class AppDateAdapter extends NativeDateAdapter {
                     }
                     let returnDate = [];
                     let month = super.getMonth(date) + 1;
-                    returnDate[splitDate.indexOf('dd')] = super.getDate(date);
+                    let dateDay = super.getDate(date);
+                    returnDate[splitDate.indexOf('dd')] = dateDay < 10 ? '0'+dateDay : dateDay;
                     returnDate[splitDate.indexOf('mm')] = month < 10 ? '0' + month : month;
                     returnDate[splitDate.indexOf('yyyy')] = super.getYear(date);
                     return returnDate.join('-');

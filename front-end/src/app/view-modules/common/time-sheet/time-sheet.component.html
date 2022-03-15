@@ -43,7 +43,7 @@
     <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
       style="z-index: 1111;">
       <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
-        <div class="flex middle-xs center-xs sel-project__btn">
+        <div class="flex middle-xs center-xs sel-project__btn btn-outline">
           <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
           Select Project
         </div>
@@ -150,7 +150,11 @@
   </div>
 </div>
 <ng-template #noTimeSheetData>
-  <p class="p-15 dis-ib" style="background:#ccc;">None</p>
+  <!-- <p class="p-15 dis-ib" style="background:#ccc;">None</p> -->
+  <div class="flex col middle-xs center-xs pt-50 mt-50">
+      <img src="./assets/images/happy_announcement.png" alt="">
+      <p class="col-primary-400 mt-10">No Pending Timesheets to submit</p>
+  </div>
 </ng-template>
 
 <app-modal-popup [w]="500" [h]="250">

@@ -1,17 +1,6 @@
 <div class="material-demo">
   <h2>Material Components For Demo!</h2>
   <div>
-    <h3>Date Range Picker</h3>
-    <div style="font-size: 12px">
-      <mat-form-field>
-        <app-atai-date-range [formControl]="dateRange"></app-atai-date-range>
-        <!-- <mat-hint>Hint</mat-hint> -->
-        <!-- <mat-error *ngIf="dateRange.hasError('test')">This is invalid</mat-error> -->
-      </mat-form-field> 
-    </div>
-  </div> 
-  <hr>
-  <div>
     <h3>Overlay</h3>
     <!-- This button triggers the overlay and is it's origin -->
     <button (click)="isOpen = !isOpen" type="button" mat-raised-button cdkOverlayOrigin #trigger="cdkOverlayOrigin">
@@ -43,6 +32,32 @@
   <div>
     <h3>App Button (custom)</h3>
     <app-button>Submit</app-button>
+  </div>
+  <hr>
+  <div>
+    <h3>Date Range Picker</h3>
+    <div style="font-size: 12px" class="flex ">
+      <mat-form-field appearance="legacy">
+        <app-atai-date-range [formControl]="dateRange"></app-atai-date-range>
+        <!-- <mat-hint>Hint</mat-hint> -->
+        <!-- <mat-error *ngIf="dateRange.hasError('test')">This is invalid</mat-error> -->
+      </mat-form-field>
+    </div>
+  </div>
+  <hr>
+  <div>
+    <h3>Mat Date Range Picker</h3>
+    <div style="font-size: 12px" class="flex ">
+
+      <mat-form-field appearance="fill">
+        <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate">
+          <input matStartDate placeholder="Start date">
+          <input matEndDate placeholder="End date">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
   </div>
   <hr>
   <div>

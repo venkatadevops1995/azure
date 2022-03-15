@@ -1,5 +1,4 @@
-<button class="{{size}}">
-  <!-- <div class="border-gradient">Submit</div> -->
+<button class="{{size}}" [attr.type]="type">
   <svg width="100%" height="100%">
     <defs>
       <linearGradient id="linear-{{id}}" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -11,7 +10,9 @@
         <stop offset="100%" [attr.stop-color]="colors.stop" />
       </linearGradient>
     </defs>
-    <rect x="1" y="2" width="98%" rx="15" ry="15" height="47" [attr.fill]="gradientUrls.fill"
+    <rect *ngIf="size == 'default'" x="1" y="2" width="98%" rx="15" ry="15" height="47" [attr.fill]="gradientUrls.fill"
+      [attr.stroke]="gradientUrls.stroke"></rect>
+    <rect *ngIf="size == 'small'" x="1" y="2" width="98%" rx="15" ry="15" height="37" [attr.fill]="gradientUrls.fill"
       [attr.stroke]="gradientUrls.stroke"></rect>
   </svg>
   <span>

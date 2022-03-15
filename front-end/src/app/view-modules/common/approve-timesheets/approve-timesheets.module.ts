@@ -9,6 +9,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
+import { TimeSheetModule } from '../time-sheet/time-sheet.module';
 
 
 
@@ -24,7 +25,8 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
     ModalPopupModule,
     MatSelectModule,
     SvgIconModule,
-    FileDownloadModule
+    FileDownloadModule,
+    TimeSheetModule
   ]
 })
 export class ApproveTimesheetsModule { }

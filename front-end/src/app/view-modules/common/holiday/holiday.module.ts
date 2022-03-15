@@ -5,18 +5,22 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { HolidayComponent } from './holiday.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'src/app/components/button/button.module';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 // import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { MatIconModule } from '@angular/material/icon';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTableModule } from '@angular/material/table';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [ HolidayComponent],
+  declarations: [HolidayComponent],
   imports: [
     CommonModule,
     SvgIconModule,
@@ -25,13 +29,16 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     ButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    // NgxDaterangepickerMd.forRoot(),
     MatIconModule,
     ModalPopupModule,
     MatSelectModule,
-    MatAutocompleteModule
-
+    MatAutocompleteModule,
+    MatTableModule,
+    MatFormFieldModule,
+    AtaiDateRangeModule,
+    PopUpModule,
+    MatDialogModule
   ],
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
 export class HolidayModule { }

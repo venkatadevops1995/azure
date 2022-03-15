@@ -1,5 +1,5 @@
 <div class="overlay_status tac"  [class.visible]="showStatus" [@visibilityChanged]="(showStatus).toString()"
-    #overlay [class.fail]="status  === false" [class.info]="status == 'info'" [class.warning]="status == 'warning'" [class.full]="full" [class.orange]="status === 'orange'"
+    #overlay [class.fail]="status  === false" [class.info]="status == 'info'" [class.warning]="status == 'warning'" [class.full]="full" [class.orange]="status === 'orange'" 
     [class.success]="status === true">
     <!-- <div style="fill:inherit;" (click)="clickClose($event, $event.target)" class="closeStatus">
         <mat-icon>close</mat-icon>
@@ -7,20 +7,19 @@
     <ng-container *ngFor="let notification of notificationsQueue;let i= index;">
         <ng-container *ngIf="notification.typeof === 'TemplateRef' && notification.show === true">
             <div [@notificationAnimation] (click)="clickClose($event,i)" class="notification {{notification.status}}">
-                <ng-container *ngTemplateOutlet="notification.message">
-
+                <ng-container *ngTemplateOutlet="notification.message"> 
                 </ng-container>
             </div>
         </ng-container>
         <ng-container *ngIf="notification.typeof === 'string' && notification.show === true">
             <div [@notificationAnimation] (click)="clickClose($event,i)" class="notification {{notification.status}}">
-                <div class="disIB vaMid mR10">
-                    <!-- <div *ngIf="status === true" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#tick-circle',w:25}"></div>
-                    <div *ngIf="status === false" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#into-circle',w:25}"></div>
-                    <div *ngIf="status === 'info'" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#info',w:25}"></div>
-                    <div *ngIf="status === 'warning'" svg-fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#warning',w:25}" svg-fill="none"
-                        svg-stroke="currentcolor" svg-stroke-linecap="round" svg-stroke-linejoin="round" svg-stroke-width="2"></div> -->
-                    <div class="msg disIB vaMid">
+                <div class="flex nowrap pl-20" >
+                    <div *ngIf="notification.status === 'success'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite-new.svg#tick-circle',w:15}"></div>
+                    <div *ngIf="notification.status === 'fail'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite-new.svg#close-circle',w:15}"></div>
+                    <div *ngIf="status === 'info'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite.svg#info',w:15}"></div>
+                    <div *ngIf="status === 'warning'" svg-fill="inherit" [svgIcon]="{url:'/assets/icons-sprite.svg#warning',w:15}" svg-fill="none"
+                        svg-stroke="currentcolor" svg-stroke-linecap="round" svg-stroke-linejoin="round" svg-stroke-width="2"></div>
+                    <div class="msg">
                         <p>{{notification.message}}</p>
                     </div>
                 </div>

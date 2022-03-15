@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
-// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+import * as moment from 'moment'; 
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -15,24 +15,15 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ReportComponent implements OnInit {
 
+  @ViewChild(AtaiDateRangeComponent) dateRange:AtaiDateRangeComponent;
+
   fromdate: any;
   downloadable = false;
   date4;
   EMPS: any[];
   option = new FormControl('');
-  filteredManagers: Observable<any>;;
-  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
-  todate: any;
-  ranges: any = {
-    // 'Today': [moment(), moment()],
-    // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    // 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-    // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-  }
+  filteredManagers: Observable<any>;; 
+  todate: any; 
   maxDate: any = moment();
   selected: any = {};
   message: any;
@@ -52,21 +43,29 @@ export class ReportComponent implements OnInit {
     const filterValue = value.toLowerCase();
     return this.EMPS.filter(option => option.emp_name.toLowerCase().includes(filterValue))
   }
-
-  open(e) {
-    // this.pickerDirective.open(e);
-  }
+ 
   ngOnInit(): void {
 
-    this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
-    this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
-    this.selected["startDate"] = this.ranges['Last 30 Days'][0];
-    this.selected["endDate"] = this.ranges['Last 30 Days'][1];
+    // this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
+    // this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
+    // this.selected["startDate"] = this.ranges['Last 30 Days'][0];
+    // this.selected["endDate"] = this.ranges['Last 30 Days'][1];
     
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
     this.getStatus();
 
+  }
+
+  ngAfterViewInit(){
+    this.dateRange.setPresetValue('Last 30 Days');
+  }
+
+  // when a date is selected in the date range
+  onDateSelection(data) {
+    console.log(data)
+    this.fromdate = this.convertDatefmt(data.start)
+    this.todate = this.convertDatefmt(data.end) 
   }
 
 //  getAttendenceData(fromdate, todate, emp_id) {

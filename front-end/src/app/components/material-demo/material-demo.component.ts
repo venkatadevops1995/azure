@@ -14,11 +14,13 @@ interface Food {
   styleUrls: ['./material-demo.component.scss']
 })
 export class MaterialDemoComponent implements OnInit {
+  minDate: Date;
+  maxDate: Date;
 
   isOpen: boolean = false;
 
   // 
-  dateRange: FormControl = new FormControl(null,[Validators.required]);
+  dateRange: FormControl = new FormControl(null, [Validators.required]);
 
   foods: Food[] = [
     { value: 'steak-0', viewValue: 'Steak' },
@@ -26,7 +28,11 @@ export class MaterialDemoComponent implements OnInit {
     { value: 'tacos-2', viewValue: 'Tacos' }
   ];
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) {
+    const currentYear = new Date().getFullYear();
+    this.minDate = new Date(currentYear - 1, 0, 1);
+    this.maxDate = new Date(currentYear + 1, 11, 31);
+  }
 
   ngOnInit(): void {
     this.dateRange.valueChanges.subscribe((val) => {

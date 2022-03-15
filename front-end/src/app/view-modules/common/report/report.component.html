@@ -1,12 +1,6 @@
-<div style="display: grid;grid-template-columns:1fr 1fr 1fr;grid-gap:10px">
-  <div>
-    <!-- <mat-form-field>
-            <mat-label>Employees</mat-label>
-            <mat-select [formControl]="option" (selectionChange)="selectEmp()">
-                <mat-option [value]="emp['emp_id']" *ngFor="let emp of EMPS">{{emp["emp_name"]}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
-    <mat-form-field class="w-100 mr-10">
+<div>
+  <div class="flex fs-14 mb-20 center-xs middle-xs">
+    <mat-form-field class=" mr-50 no-pb">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
         [(ngModel)]="value">
       <button style="background: none;border:none;" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear"
@@ -18,31 +12,18 @@
           {{emp["emp_name"]}}
         </mat-option>
       </mat-autocomplete>
-    </mat-form-field>
-  </div>
-  <div style="display: grid;grid-template-columns:1fr 1fr;grid-gap:10px">
-    <div class="dateinput" style="max-width: 250px;">
-
-      <!-- <input type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selected" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
-                [maxDate]='maxDate' class="ngx-daterangepicker-action" (datesUpdated)="updateRange($event)" style="border: none;background: none;color: #5dcbdc;"> -->
-      <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)"
-        style="background: none; border: none;cursor: pointer;">
-        <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action"
-          style="color: #5dcbdc;">date_range</mat-icon>
-      </button>
-    </div>
-    <div class="export_icon" style="margin-top: 15px;">
-      <a [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}">
-        <!-- <p class="pr-50 wsr-download export"> -->
-        <span class="ml-5" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}"
-          style="color:var(--color-tertiary);margin-top:-6px;cursor:pointer;" svg-fill="currentColor"></span>
-        <!-- <span> <img width="40px" height="40px" src="assets/images/exportExcel.png" alt=""></span> -->
-        <!-- </p> -->
-      </a>
+    </mat-form-field> 
+      <mat-form-field style="flex-basis:200px;" appearance="legacy" class="no-pb atai-date-range">
+        <app-atai-date-range (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+      </mat-form-field> 
+    <div class="export_icon ml-50" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
+      [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}"
+      style="color:var(--col-primary-100);margin-top:-6px;cursor:pointer;" svg-fill="currentColor">
+      <!-- <span> <img width="40px" height="40px" src="assets/images/exportExcel.png" alt=""></span> -->
+      <!-- </p> -->
     </div>
   </div>
 </div>
-
 <div class="Message">
   <div class="Message-icon">
     <!-- <i class="fa fa-bell-o"></i> -->
@@ -52,4 +33,10 @@
     <p>{{message}}</p>
   </div>
   <!-- <button class="Message-close js-messageClose"><i class="fa fa-times"></i></button> -->
+</div>
+
+
+<div class="flex col middle-xs center-xs mt-50 pt-50">
+  <img src="./assets/images/at_work_downloads.png" alt="" >
+  <p class="col-primary-400 mt-10">Download the data</p>
 </div>

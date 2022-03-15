@@ -64,7 +64,7 @@ export class HeaderSearchComponent implements OnInit {
           this.employeesOptions.push(element)
         });
         this.employeeList = [...this.employeesOptions]
-        console.log(this.employeesOptions);
+        // console.log(this.employeesOptions);
       }
     })
   }

@@ -24,7 +24,7 @@ app-atai-date-range {
 
 .atai-calendar {
   background: rgba(0, 0, 0, 1);
-  border: 1px solid #aaa;
+  border: 1px solid #777;
   border-radius: 5px;
   width: 350px;
 
@@ -64,6 +64,7 @@ app-atai-date-range {
   clear: both;
   align-items: center;
   position: relative;
+  width: 100%;
 
   input {
     padding-right: 40px;

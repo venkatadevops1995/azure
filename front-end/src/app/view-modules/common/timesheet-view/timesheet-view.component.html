@@ -11,6 +11,7 @@
     <span>View Comments</span>
   </a>
 </div>
+<!-- {{weeklyTimeSheetData | json}} -->
 <app-time-sheet [disable]="disableTimesheet"  
   (evChange)="onTimeSheetChange($event)" [config]='weeklyTimeSheetData'>
 </app-time-sheet>
@@ -60,7 +61,7 @@
   <ng-container *ngIf="this.timeSheetType == 'regular'">
     <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit" class="flex end-xs middle-xs mt-20">
       <!-- <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p> -->
-      <app-button theme="default" *ngIf="showDisable()" class="ml-30 mr-50" (click)="confirmSaveSubmit()">Save &
+      <app-button theme="default" [class.disabled]="showDisable()" [disabled]="showDisable()" class="ml-30 mr-50" (click)="confirmSaveSubmit()">Save &
         Submit
       </app-button>
       <app-button theme="grey" [class.disabled]="savedWtr || wsrCharCount > 5000" (click)="onSubmitTimeSheet('save')">

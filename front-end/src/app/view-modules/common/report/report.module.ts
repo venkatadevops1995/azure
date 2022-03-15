@@ -11,6 +11,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { ReportComponent } from './report.component';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 
 
 
@@ -30,7 +31,8 @@ import { ReportComponent } from './report.component';
     MatIconModule,
     SvgIconModule,
     ReactiveFormsModule,
-    TooltipModule
+    TooltipModule,
+    AtaiDateRangeModule
   ]
 })
 export class ReportModule { }

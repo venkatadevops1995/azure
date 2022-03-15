@@ -7,10 +7,10 @@ import { trigger, state, animate, transition, style, keyframes } from '@angular/
     styleUrls: ['./status-message.component.scss'],
     animations: [trigger(
         'visibilityChanged', [
-            state('true', style({ 'height': '*', 'padding': '10px' })),
-            state('false', style({ height: '*', 'padding': '0px' })),
-            transition('*=>*', animate('200ms'))
-        ],
+        state('true', style({ 'height': '*', 'padding': '10px' })),
+        state('false', style({ height: '*', 'padding': '0px' })),
+        transition('*=>*', animate('200ms'))
+    ],
     ),
     trigger('notificationAnimation', [
         transition(':enter', [
@@ -60,13 +60,13 @@ export class StatusMessageComponent {
     // boolean to set the width to 100% or have padding on left
     full: boolean;
 
-    @ViewChild('overlay', /* TODO: add static flag */ {static:false}) overlay: ElementRef;
+    @ViewChild('overlay', /* TODO: add static flag */ { static: false }) overlay: ElementRef;
 
     constructor(
         private el: ElementRef
     ) {
 
-    }  
+    }
 
     // close a notification on click
     clickClose(e: Event, i) {
@@ -82,8 +82,8 @@ export class StatusMessageComponent {
     }
 
     // the boolean property to mark the open and close animations of the 
-     showStatus: boolean = false;
- 
+    showStatus: boolean = false;
+
 
     timeOutRefForMoniter;
 
@@ -127,13 +127,13 @@ export class StatusMessageComponent {
     }
 
     // method to invoke the status message pop up with Input arguments to set the status , message, duration to show the message, heading in the pop up
-    showStatusMessage(status: boolean | string, message?: string | TemplateRef<any> | Array<any>, duration?: number, id ?: any ) {
+    showStatusMessage(status: boolean | string, message?: string | TemplateRef<any> | Array<any>, duration?: number, id?: any) {
         let messageToPushIntoQueue: any = {};
 
-        if(id && this.checkMessageExists(id)){
+        if (id && this.checkMessageExists(id)) {
             return;
         }
-        console.log(id,this.checkMessageExists(id),this.notificationsQueue)
+        console.log(id, this.checkMessageExists(id), this.notificationsQueue)
         messageToPushIntoQueue.message = message;
 
         if (message instanceof Array) {
@@ -150,6 +150,7 @@ export class StatusMessageComponent {
 
         // if input duration is not passed then set it to 5000 milli seconds
         messageToPushIntoQueue.duration = duration || 5000;
+        // messageToPushIntoQueue.duration = 200000
 
         messageToPushIntoQueue.timestamp = Date.now();
 
@@ -167,10 +168,10 @@ export class StatusMessageComponent {
 
     }
 
-    checkMessageExists(id){
+    checkMessageExists(id) {
         let returnToken = false;
-        this.notificationsQueue.forEach((item)=>{
-            if(item.id && item.id === id){
+        this.notificationsQueue.forEach((item) => {
+            if (item.id && item.id === id) {
                 returnToken = true;
                 // reset the timer for the particular message
                 item.timestamp = Date.now();
