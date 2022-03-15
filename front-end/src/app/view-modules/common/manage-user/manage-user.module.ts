@@ -21,12 +21,15 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
+import {MatRadioModule} from '@angular/material/radio';
+  // If required extend other NativeDateAdapter methods.
 @NgModule({
-  declarations: [ManageUserComponent, AddUserComponent, EditUserComponent],
+  declarations: [ManageUserComponent, AddUserComponent, EditUserComponent,],
   imports: [
     CommonModule,
     MatTableModule,
-    MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -42,7 +45,11 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
     TooltipModule,
     FileUploadModule,
     MatAutocompleteModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    ConfirmDialogModule,
+    MatRadioModule
     // NgxDaterangepickerMd.forRoot()
   ]
 })

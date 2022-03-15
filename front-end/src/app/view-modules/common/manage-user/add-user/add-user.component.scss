@@ -7,15 +7,40 @@ li {
 //     list-style-type: none;
 //     margin-top: 4px;
 // }
+// Outer wrapper for the form
+.wrapper{
+    background-color:var(--col-primary-A200);
+    border-radius:10px;
+    min-width:990px;
+   
+}
+  // common grid container for each row
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    background-color: #F6FAFD;
-    border-radius: 20px;
-    margin: 0 0 10px;
-    padding: 4px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 2.5em;
+    // border-radius: 10px;
+    // margin: 0 0 10px;
+    // padding: 4px;
 }
+// .grid-container-mod2{
+//     display: grid;
+//     grid-template-columns: 1fr 1fr;
+   
+// }
+// .grid-container-mod3{
+//     display: grid;
 
+//     grid-template-columns: 1fr 1fr 1fr;
+// }
+//css for material date picker
+
+// setting the mat-form-field for taking full avalable width inside 
+// grid cell
+::ng-deep .mat-form-field-wrapper {
+    width: 100%;
+}
+/////////////////////////////////////
 .box2 {
     grid-row: 3 /span 1;
 }
@@ -26,9 +51,14 @@ li {
 
 mat-form-field {
     // width: 200px;
+    font-size:14px !important;
     padding: 4px;
 }
 
+.gap{
+    width: 100%;
+    height: 2em;
+}
 .container {
     // display: inline-block;
     position: relative;
@@ -60,28 +90,47 @@ mat-form-field {
     position: absolute;
     top: 0;
     left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: #eee;
-    border-radius: 15px;
+    // height: 20px;
+    // width: 20px;
+    height: 18px;
+    width: 18px;
+    border: 2px solid var(--col-primary-300);
+    // background:var(--col-primary-A200);
+  
+    // border-radius: 50%;
 }
-
+.checkmark input:checked+ .checkmark{
+    background-color: #fff;
+}
 
 /* On mouse-over, add a grey background color */
 
-.container:hover input~.checkmark {
-    background-color: #ccc;
-}
+// .container:hover input~.checkmark {
+    // background-color: #ccc;
+// }
 
 
 /* When the checkbox is checked, add a blue background */
 
 .container input:checked~.checkmark {
-    background-color: #067BCA;
+    // background-color: #067BCA;
+    // background-color: #fff;
+    border-color:  var(--col-accent-500);
+  
+  
+}
+.container input:checked~.checkmark:after{
+    background:var(--col-accent-500) !important; 
 }
 
 .container input:disabled~.checkmark {
-    background-color: var( --color-quaternary-dark);
+    // background-color: var( --color-quaternary-dark);
+    border: 2px solid var(--col-accent-A400);
+    // background: var(--col-primary-A200) !important;
+}
+.container input:disabled~.checkmark:after{
+
+    background: var(--col-accent-A400) !important;
 }
 
 .self-option {
@@ -108,13 +157,22 @@ mat-form-field {
 /* Style the checkmark/indicator */
 
 .container .checkmark:after {
-    left: 6px;
-    top: 3px;
-    width: 5px;
-    height: 9px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
+    // left: 6px;
+    // top: 3px;
+    // width: 5px;
+    // height: 9px;
+    // border: solid white;
+    // border-width: 0 3px 3px 0;
+    // transform: rotate(45deg);
+    // position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    // border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--col-accent-A400);
+  
 }
 
 .disabled-input {
@@ -130,4 +188,18 @@ mat-form-field {
     mat-select {
         color: #AAAAAA;
     }
+}
+// adding css for radio button
+::ng-deep .mat-radio-label-content{
+    padding-left: 4px !important;
+    padding-right: 0px !important;
+  
+}
+::ng-deep .mat-radio-inner-circle{
+    width:18px !important;
+    height:18px  !important;
+}
+::ng-deep .mat-radio-outer-circle{
+    width:18px !important;
+    height:18px  !important;
 }

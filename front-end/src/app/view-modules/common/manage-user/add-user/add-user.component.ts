@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, NgForm, ValidatorFn, Validators } from '@angular/forms';
+import { MatDatepicker } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
@@ -9,6 +10,13 @@ import ValidateEmail from 'src/app/functions/validations/email';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { take } from 'rxjs/operators';
+
+import { MAT_DATE_LOCALE, NativeDateAdapter } from "@angular/material/core";
+import { DateAdapter,MAT_DATE_FORMATS } from '@angular/material/core';
+import { formatDate } from '@angular/common';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -42,16 +50,43 @@ export function NoDate(): ValidatorFn {
     return res ? { notNull: true } : null
   }
 }
+// Date Adapter
+export const PICK_FORMATS = {
+  parse: {
+    dateInput: {month: 'numeric', year: 'numeric', day: 'numeric'}
+  },
+  display: {
+      dateInput: 'input',
+      monthYearLabel: {year: 'numeric', month: 'numeric'},
+      dateA11yLabel: {year: 'numeric', month: 'numeric'},
+      monthYearA11yLabel: {year: 'numeric', month: 'numeric'}
+  }
+};  
+
+export class PickDateAdapter extends NativeDateAdapter {
+  override format(date: Date, displayFormat: Object): string {
+      if (displayFormat === 'input') {
+          return formatDate(date,'yyyy-MM-dd',this.locale);
+      } else {
+          return formatDate(date,'MMM YYYY',this.locale);
+      }
+  }
+}
 
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
-  styleUrls: ['./add-user.component.scss']
+  styleUrls: ['./add-user.component.scss'],
+  providers: [
+    {provide: DateAdapter, useClass: PickDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
+] 
 })
-export class AddUserComponent implements OnInit {
-
-  @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
-
+export class AddUserComponent implements OnInit ,AfterViewInit   {
+ 
+  // @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
+  @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
+  @ViewChild('f') myNgForm:NgForm;
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
   data: UserData[] = [];
@@ -79,14 +114,13 @@ export class AddUserComponent implements OnInit {
   ALL_LOCATIONS = []
   ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
   MARITAL_STATUS = [{name:"Married",value:true},{name:"Unmarried",value:false}]
-
+  date:any
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
     private datepipe: DatePipe,
     private user: UserService) { }
-
 
 
 
@@ -161,16 +195,16 @@ export class AddUserComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    
+
   }
 
   reset(){
 
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
-    this.getCategories();
-    this.getCompanies();
-    this.getFunOwners();
+    // this.getCategories();
+    // this.getCompanies();
+    // this.getFunOwners();
     this.addUserForm.reset({ 'role': 1 });
     this.newUserFirstName = '';
     this.newUserLastName = '';
@@ -350,7 +384,7 @@ export class AddUserComponent implements OnInit {
     formData.append('category', this.addUserForm.controls.category.value);
     formData.append('location', this.addUserForm.controls.location.value);
     formData.append('gender', this.addUserForm.controls.gender.value);
-    formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value.startDate._d, 'yyyy-MM-dd'));
+    formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value, 'yyyy-MM-dd'));
     // formData.append('is_married', this.addUserForm.controls.is_married.value);
     // formData.append('patentry_maternity_cnt', this.addUserForm.controls.patentry_maternity_cnt.value);
 
@@ -370,6 +404,7 @@ export class AddUserComponent implements OnInit {
         }
         this.getAllReportes();
         this.addUserForm.reset({ 'role': 1 });
+         this.reset();
       } else if (res.error) {
 
         Object.keys(res.error["results"][0]).forEach(ele => {
@@ -380,7 +415,7 @@ export class AddUserComponent implements OnInit {
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
 
       }
-      this.confirmationModal.close()
+      // this.confirmationModal.close()
     })
 
 
@@ -390,7 +425,27 @@ export class AddUserComponent implements OnInit {
     this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
     }
 }
+//Open dialogBox dynamically
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      panelClass: 'confirm-remove-project',
+      backdropClass:'cdk-overlay-darker-backdrop',
+      data: {
+          confirmMessage: 'Are you sure to add this employee?'
+      }
+    })
+    dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+        console.log('######################',data)
+        if(data){
+          // call addUser
+          this.addUser();
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.myNgForm.resetForm());
 
+        }else{
+          // this.myNgForm.resetForm();
+        }
+    })
+  }        
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {
@@ -491,13 +546,21 @@ export class AddUserComponent implements OnInit {
     e.click()
   }
   openConfirmation(){
-    this.confirmationModal.open()
+    // this.confirmationModal.open()
+    this.openDialog()
 
   }
   closeConfirmation(){
-    this.confirmationModal.close()
+    // this.confirmationModal.close()
     
   }
+
+  onDate(event): void {
+    console.log("Date input:",event)
+    
+  }
+  // addUserForm = new FormGroup({},{updateOn: ‘submit’});
+ 
 
 
 }

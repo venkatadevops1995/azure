@@ -39,7 +39,9 @@ import { AddProjectComponent } from './view-modules/common/add-project/add-proje
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
-
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatDialogModule} from '@angular/material/dialog';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +52,7 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
     HeaderComponent,
     FooterComponent ,
     AddProjectComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
   imports: [
     BrowserModule, 
@@ -72,6 +74,9 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
     // MatSlideToggleModule,
     MatIconModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatRadioModule,
+    MatDialogModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable

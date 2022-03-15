@@ -1,11 +1,11 @@
 <div>
     <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="search(managerCtrl.value)">
-        <!-- <h2 style="color:var(--color-primary)">
-            Leader Name
-        </h2> -->
-        <div class="flex" style="justify-content:space-between;">
-    
-            <div class="flex w-50">
+       
+        <div class="flex nowrap middle-xs between-xs">
+            <h2 class="col-accent-500 fs-24 fw-600">
+                Project change
+            </h2>
+            <div class="flex w-40">
     
                 <mat-form-field class="w-50 mr-10">
                     <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl" [(ngModel)]="value">

@@ -69,13 +69,8 @@ body {
 
 .mat-header-cell {
   color: var(--col-primary-200) !important;
-
-
 }
 
-.mat-table tbody {
-  background-color: var(--col-primary-A200);
-}
 
 
 .mat-row {
@@ -102,7 +97,6 @@ body {
 .mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
-
 }
 
 .mat-header-cell,
@@ -110,20 +104,60 @@ body {
   text-align: center !important;
 }
 
-.mat-header-cell:first-of-type {
+//giving border radious to left side of first header cell
+th.mat-header-cell:first-of-type {
   border-radius: 10px 0 0 10px;
 
 }
 
-.mat-header-cell:first-of-type,
-.mat-cell:first-of-type,
-.mat-footer-cell:first-of-type {
+// removing left padding from first column
+th.mat-header-cell:first-of-type,
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type {
   padding-left: 0px !important;
 }
 
-.mat-header-cell:last-of-type {
+//giving border radious to right side of last header cell
+th.mat-header-cell:last-of-type {
   border-radius: 0 10px 10px 0;
 }
+
+
+//Adding color for material-table body background-Color
+.mat-table tbody {
+  background-color: var(--col-primary-A200);
+}
+
+//hover effect on material-table row
+tr.mat-row:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
+  transform: scale(1);
+}
+
+//reset the bottom border and text alignment in material-table cells
+th.mat-header-cell,
+td.mat-cell,
+td.mat-footer-cell {
+  border-bottom-width: 0px !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--col-accent-500) !important;
+}
+
+.mat-calendar-previous-button,
+.mat-calendar-next-button {
+  color: var(--col-accent-500) !important;
+}
+
+.mat-calendar-table-header {
+  color: var(--col-accent-500) !important;
+}
+
+//////////////////////////////////////
 
 /* Material theme styling */
 .mat-form-field-appearance-legacy {
@@ -197,23 +231,10 @@ mat-dialog-container.mat-dialog-container {
 
 // Date picker of angular material
 .mat-calendar-body-today {
-  // background-color: var(--col-accent-500) !important;
-}
-
-.mat-calendar-body-selected {
-  background-color: var(--col-accent-500) !important;
-}
-
-.mat-calendar-previous-button,
-.mat-calendar-next-button {
-  color: var(--col-accent-500) !important;
-}
-
-.mat-calendar-table-header {
-  color: var(--col-accent-500) !important;
+  background-color: none !important;
 }
 
 // 
-.mat-primary .mat-option.mat-selected:not(.mat-option-disabled){
-  color:var(--col-primary-100);
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: var(--col-primary-100);
 }
