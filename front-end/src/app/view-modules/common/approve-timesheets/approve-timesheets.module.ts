@@ -10,6 +10,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { TimeSheetModule } from '../time-sheet/time-sheet.module';
+import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
+import {  MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
+import { StylePaginatorModule } from 'src/app/directives/style-paginator/style-paginator.module';
 
 
 
@@ -26,7 +30,10 @@ import { TimeSheetModule } from '../time-sheet/time-sheet.module';
     MatSelectModule,
     SvgIconModule,
     FileDownloadModule,
-    TimeSheetModule
+    TimeSheetModule,
+    PopUpModule,
+    MatDialogModule, 
+    StylePaginatorModule
   ]
 })
 export class ApproveTimesheetsModule { }

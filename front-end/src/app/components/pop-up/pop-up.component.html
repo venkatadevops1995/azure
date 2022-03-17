@@ -1,12 +1,16 @@
 <!-- <h2 mat-dialog-title color="accent">Confirm</h2> -->
-<div class="confirm-heading">
-  <span>{{data?.heading || 'Heading'}}</span>
-</div>
-<div>
-  <div class="mt-10 mb-30"  >
-      <ng-content></ng-content>
+<div class="confirm-heading flex between-xs"  >
+  <span class="fg-1">{{dataMerged?.heading}}</span>
+  <div>
+    <div class="pointer" svg-fill="none" [mat-dialog-close] [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:25}"></div>
   </div>
-  <div style="position: relative;top:0px;">
+</div> 
+<div>
+  <div class="mt-10 mb-30"   > 
+    <ng-container *ngTemplateOutlet="dataMerged.template"></ng-container>
+  </div>
+  <!-- {{dataMerged | json}} {{data | json}} -->
+  <div style="position: relative;top:0px;" *ngIf="!dataMerged.hideFooterButtons">
     <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
       <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial theme="grey" type="button">
         Cancel

@@ -14,7 +14,7 @@ export class ConfirmDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { confirmMessage: string, template:TemplateRef<any>, showTextbox ?: boolean, placeholderTextField:string, onlyForAlert?:boolean   }
   ) { 
-
+    console.log(data)
   }
 
   ngOnInit(): void {

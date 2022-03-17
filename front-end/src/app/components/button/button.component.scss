@@ -70,16 +70,17 @@
       background: var(--color-danger);
     }
 
-    // &.small {
-    //   height: 40px;
-    //   line-height: 42px; 
-    //   font-size: 13px;
-    //   min-width: 100px;
-    // }
+    &.small {
+      height: 40px;
+      line-height: 42px; 
+      font-size: 13px;
+      min-width: 100px;
+      padding: 0 25px;
+    }
 
     &.extra-small {
       height: 30px;
-      padding: 0 30px;
+      padding: 0 15px;
       line-height: 32px;
       border-radius: 25px;
       font-size: 11px;

@@ -178,16 +178,14 @@
   </app-atai-date-range>
 
   <ng-template #templateRefHolidayForm>
-    <app-pop-up>
-      <mat-form-field style=" max-width: 350px;">
-        <mat-label>Add Option</mat-label>
-        <mat-select [(ngModel)]="selectedHolidayOption">
-          <mat-option *ngFor="let opt of ['Import from template','Add manually']" [value]="opt">
-            {{opt}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </app-pop-up>
+    <mat-form-field style=" max-width: 350px;">
+      <mat-label>Add Option</mat-label>
+      <mat-select [(ngModel)]="selectedHolidayOption">
+        <mat-option *ngFor="let opt of ['Import from template','Add manually']" [value]="opt">
+          {{opt}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </ng-template>
 
 

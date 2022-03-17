@@ -4,7 +4,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
 import { TimeSheetComponent } from './../../common/time-sheet/time-sheet.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef, TemplateRef } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 
 @Component({
   selector: 'app-timesheet-view',
@@ -38,6 +39,10 @@ export class TimesheetViewComponent implements OnInit {
 
   // reference to the active mins element
   @ViewChild('selProject') elSelProject: ElementRef;
+
+
+  // template ref of maanger comments
+  @ViewChild('templateRefManagerComments') templateRefManagerComments:TemplateRef<any>;
 
   // reference to the all zeros in project confirmation modal pop up
   // @ViewChild('refModalProjectAllZeros') modalProjectAllZeros: ModalPopupComponent
@@ -257,6 +262,7 @@ export class TimesheetViewComponent implements OnInit {
 
             let vacHours = this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.h).reduce((prev, next) => prev + next);
             let vacMins = this.weeklyTimeSheetData.VACATION['work_hours'].map(item => item.m).reduce((prev, next) => prev + next);
+
             if (vacMins >= 60) {
               vacHours = vacHours + Math.floor(vacMins / 60);
               vacMins = vacMins % 60;
@@ -275,6 +281,7 @@ export class TimesheetViewComponent implements OnInit {
                 element['work_hours'].push({ date: 'Total', enable: true, h: eleHours, m: eleMins });
               }
             });
+            
             if (this.timeSheetType == 'regular') {
               if (this.weeklyTimeSheetData.enableSaveSubmit) {
                 this.disableTimesheet = false;
@@ -330,6 +337,17 @@ export class TimesheetViewComponent implements OnInit {
     //     return itemVisible.project_id != data.project.project_id;
     //   })
     // }
+  }
+
+  openManagerComments(){
+    let dialogRef = this.dialog.open(PopUpComponent,{
+      data:{
+        heading:'Manager Comments',
+        hideFooterButtons:true,
+        template:this.templateRefManagerComments,
+        maxWidth:'500px'
+      }
+    })
   }
 
   // on change timesheet entries

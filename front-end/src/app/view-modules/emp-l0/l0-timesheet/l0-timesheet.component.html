@@ -1,5 +1,5 @@
 <h2 class="heading">Weekly Timesheet</h2>
-<app-time-sheet [disable]="disableTimesheet" [config]='weeklyTimeSheetData'>
+<app-time-sheet [disable]="disableTimesheet" [data]='weeklyTimeSheetData'>
     <div *ngIf="!disableTimesheet " class="flex end-xs mt-20">
         <app-button theme="blue-lite-extra" class="mr-30" (click)="onSubmitTimeSheet('save')">Save</app-button>
         <app-button (click)="onSubmitTimeSheet('save-submit')">Save & Submit</app-button>

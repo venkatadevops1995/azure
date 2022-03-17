@@ -6,7 +6,7 @@
     font-size: 16px;
 
     &.disable {
-      pointer-events: none;
+      // pointer-events: none;
     }
   }
 
@@ -94,9 +94,17 @@
     }
   }
 
+  .timesheet__head-name{
+    display: grid;
+    grid-template-columns: minmax(150px, 250px) 2fr 6fr;
+    position: relative;
+    align-items: center;
+    justify-items: center;
+
+  }
   .timesheet__row {
     >* {
-      height: 58px;
+      height: 55px;
       display: flex;
       align-items: center;
     }
@@ -120,6 +128,14 @@
     }
 
     > .total-value{
+      font-size: 13px; 
+      color:var(--col-primary-100);
+      &.resolve-timesheet{ 
+        font-weight: bold;
+      }
+    }
+
+    > .time-value{
       font-size: 13px; 
       color:var(--col-primary-100);
     }

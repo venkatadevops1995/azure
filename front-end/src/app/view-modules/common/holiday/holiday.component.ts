@@ -534,9 +534,10 @@ export class HolidayComponent implements OnInit {
   /* open holiday pop up to show the form to select between import holidays or manually add holidays */
   openHolidayPopup() {
     this.isNewHolidayList = true;
-    let dialogRef = this.dialog.open(this.templateHolidayForm, {
+    let dialogRef = this.dialog.open(PopUpComponent, {
       data: {
-        heading: 'Test Heading'
+        heading: 'Add Holiday Option',
+        template:this.templateHolidayForm
       }
     })
 

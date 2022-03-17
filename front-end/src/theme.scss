@@ -193,7 +193,7 @@ mat-dialog-container.mat-dialog-container {
 // overlay for mat dialog 
 .cdk-overlay-darker-backdrop,
 .cdk-overlay-dark-backdrop {
-  background: rgba(0, 0, 0, 0.52);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 // remove padding bottom from the mat form field components
@@ -237,4 +237,26 @@ mat-dialog-container.mat-dialog-container {
 // 
 .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
   color: var(--col-primary-100);
+}
+
+/* Mat Paginator styles */
+.mat-paginator{
+  background: none;
+}
+.mat-paginator-container {
+  position: relative;
+}
+
+.mat-paginator-range-label {
+  margin: 2px 1px 0 !important;
+}
+
+.mat-paginator-range-actions {
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.mat-paginator-page-size {
+  position: absolute;
+  right: 0;
 }

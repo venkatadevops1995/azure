@@ -9,7 +9,7 @@
 <div class="mins">
   <div #refMinsActive [attr.tabindex]="disabled ? -1 : 0" [class.black-text]="( minsActive != '00' || (input.value != '0' && input.value != '00'))"
     class="mins__active">
-    <span>{{minsActive.trim()}}</span>
+    <span>{{minsActive ? minsActive: ''}}</span>
     <svg width="12" height="8">
       <path d="M 0 0 L 12 0 L 6 8 L 0 0"></path>
     </svg>

@@ -2,18 +2,16 @@
   <h2 class="heading mb-20">
     {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
   </h2>
-  <a (click)="refModalRejectionComments.open()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData"
-    href="javascript:;" style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs ">
+  <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData"
+    href="javascript:;" style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs">
     <!-- <div [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" class="mr-5"></div> -->
-    <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite.svg#comments',w:25}" class="mr-5">
-
+    <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite.svg#comments',w:25}" class="mr-5"> 
     </div>
     <span>View Comments</span>
   </a>
 </div>
 <!-- {{weeklyTimeSheetData | json}} -->
-<app-time-sheet [disable]="disableTimesheet"  
-  (evChange)="onTimeSheetChange($event)" [config]='weeklyTimeSheetData'>
+<app-time-sheet [disable]="disableTimesheet" (evChange)="onTimeSheetChange($event)" [data]='weeklyTimeSheetData'>
 </app-time-sheet>
 
 
@@ -40,10 +38,10 @@
     </div>
   </div>
   <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
-    class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1" >
+    class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1">
     <div class="flex middle-xs center-xs wsr__sel-project-toggle">
-        <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
-        Select Project
+      <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
+      Select Project
     </div>
     <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
       <div class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
@@ -61,8 +59,8 @@
   <ng-container *ngIf="this.timeSheetType == 'regular'">
     <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit" class="flex end-xs middle-xs mt-20">
       <!-- <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p> -->
-      <app-button theme="default" [class.disabled]="showDisable()" [disabled]="showDisable()" class="ml-30 mr-50" (click)="confirmSaveSubmit()">Save &
-        Submit
+      <app-button theme="default" [class.disabled]="showDisable()" [disabled]="showDisable()" class="ml-30 mr-50"
+        (click)="confirmSaveSubmit()">Save & Submit
       </app-button>
       <app-button theme="grey" [class.disabled]="savedWtr || wsrCharCount > 5000" (click)="onSubmitTimeSheet('save')">
         Save</app-button>
@@ -70,9 +68,9 @@
   </ng-container>
 </div>
 
-<app-modal-popup [h]="250" [w]="500" #refModalRejectionComments>
-  <div head>Manager Comments</div>
-  <p class="p-15" style="word-break: break-all;">
+
+<ng-template #templateRefManagerComments>
+  <p class="fs-12 fw-300 col-primary-100"  style="word-break: break-all;">
     {{weeklyTimeSheetData?.comments}}
   </p>
-</app-modal-popup>
+</ng-template>
