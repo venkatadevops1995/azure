@@ -33,3 +33,5 @@
 // width classes for w-5 to w-100 %
 @include attr-x('width','w-', 20, 5, '%');
  
+@include attr-x('border-radius','br-', 4, 5, 'px');
+ 

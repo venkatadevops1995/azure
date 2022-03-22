@@ -1,17 +1,7 @@
-@mixin textareaFormControl {
-  textarea {
-    background-color: var(--col-primary-A200);
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    min-height: 125px;
-    padding: 20px 10px;
-    color: var(--col-primary-100);
-  }
-}
+ 
 
 :host {
-    
+
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -304,39 +294,14 @@
 }
 
 
-.resolve-popup {
-  width: 80vw;
-  max-width: 780px;
-  background: linear-gradient(90.49deg, var(--col-primary-800) 15.95%, var(--col-primary-900) 76.74%);
+.resolve-popup {  
   display: flex;
   flex-direction: column;
 
   &.resolve-popup--reject-timesheet{
       max-width: 500px;
   }
-
-  .resolve-popup__close {
-    // position: absolute;
-    // top:10px;
-    // right: 10px;
-    width: 60px;
-  }
-
-  .resolve-popup__heading {
-    padding: 15px 10px;
-    background: var(--col-primary-700);
-
-    h2 {
-      font-weight: bold;
-    }
-  }
-
-  .resolve-popup__body {
-    padding: 50px;
-    max-height: 75vh;
-    overflow: auto;
-    @include textareaFormControl;
-  }
+ 
 
   .resolve-popup__project-name {
     position: relative;

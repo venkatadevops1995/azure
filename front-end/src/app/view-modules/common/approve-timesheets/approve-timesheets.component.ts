@@ -311,8 +311,15 @@ export class ApproveTimesheetsComponent implements OnInit {
       if (res.status == 200) {
         this.wsrData = res.body;
       }
-      this.dialogRef = this.dialog.open(this.templateRefWSRData, {
-        panelClass: 'cdk-backdrop-darker'
+      this.dialogRef = this.dialog.open(PopUpComponent, {
+        panelClass: 'cdk-backdrop-darker',
+        data:{
+          template:this.templateRefWSRData,
+          hideFooterButtons:true,
+          showCloseButton:true,
+          heading:'Weekly Status Report',
+          maxWidth:'780px'
+        }
       })
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
 
@@ -370,8 +377,14 @@ export class ApproveTimesheetsComponent implements OnInit {
       }
     }else{
       
-      this.dialogRef = this.dialog.open(this.templateRejectTimesheet, {
-
+      this.dialogRef = this.dialog.open(PopUpComponent, {
+        data:{
+          template:this.templateRejectTimesheet,
+          maxWidth:'500px',
+          heading:"Enter Comments",
+          hideFooterButtons:true,
+          showCloseButton:true,
+        }
       })
       this.dialogRef.afterOpened().pipe(take(1)).subscribe((val) => {
         this.commentForm.resetForm()

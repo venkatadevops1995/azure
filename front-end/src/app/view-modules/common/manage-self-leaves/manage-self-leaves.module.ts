@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ManageSelfLeavesComponent } from './manage-self-leaves.component';
 import { ButtonModule } from 'src/app/components/button/button.module';
-import { MatTableModule } from '@angular/material/table';
-// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { MatTableModule } from '@angular/material/table'; 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,8 +18,12 @@ import { StripTableModule } from 'src/app/components/strip-table/strip-table.mod
 import { LeaveDetailsModule } from 'src/app/components/leave-details/leave-details.module';
 import { FileUploadModule } from 'src/app/components/input-file/input-file.module';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
 @NgModule({
-  declarations: [ManageSelfLeavesComponent],
+  declarations: [ManageSelfLeavesComponent, ApplyLeaveComponent],
   imports: [
     CommonModule,
     ButtonModule,
@@ -34,14 +37,16 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatIconModule,
     MatRadioModule,
     MatDatepickerModule,
-    MatNativeDateModule,
-    // NgxDaterangepickerMd.forRoot(),
+    MatNativeDateModule, 
     MatCheckboxModule,
     ConfirmDialogModule,
     StripTableModule,
     LeaveDetailsModule,
     FileUploadModule,
-    SvgIconModule
+    SvgIconModule,
+    AtaiDateRangeModule,
+    PopUpModule,
+    MatTabsModule
   ],
   providers:[ 
   ]

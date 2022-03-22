@@ -99,6 +99,10 @@ body {
   vertical-align: middle !important;
 }
 
+.mat-cell {
+  color: var(--col-primary-100);
+}
+
 .mat-header-cell,
 .mat-cell {
   text-align: center !important;
@@ -142,6 +146,7 @@ td.mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
   text-align: center !important;
+  background: unset;
 }
 
 .mat-calendar-body-selected {
@@ -240,9 +245,10 @@ mat-dialog-container.mat-dialog-container {
 }
 
 /* Mat Paginator styles */
-.mat-paginator{
+.mat-paginator {
   background: none;
 }
+
 .mat-paginator-container {
   position: relative;
 }
@@ -259,4 +265,65 @@ mat-dialog-container.mat-dialog-container {
 .mat-paginator-page-size {
   position: absolute;
   right: 0;
+}
+
+
+/* check box and radio button button style (click button to check and un check) */
+
+.mat-radio-button {
+  &.button-style {
+    .mat-radio-container {
+      display: none;
+    }
+
+    .mat-radio-label-content {
+      padding: 5px 20px;
+      border: 1px solid var(--col-primary-300);
+      border-radius: 20px;
+      font-size: inherit;
+    }
+
+    &.mat-radio-checked {
+      .mat-radio-label-content {
+        background: var(--col-accent-500);
+        border: 1px solid var(--col-accent-100);
+      }
+    }
+
+    &.mat-radio-disabled {
+      .mat-radio-label-content {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.mat-checkbox {
+  &.button-style {
+    .mat-checkbox-inner-container {
+      display: none;
+    }
+
+    .mat-checkbox-label {
+      padding: 5px 20px;
+      border: 1px solid var(--col-primary-300);
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    &.mat-checkbox-checked {
+      .mat-checkbox-label {
+        background: var(--col-accent-500);
+        border: 1px solid var(--col-accent-100);
+      }
+    }
+  }
+
+  &.mat-checkbox-disabled {
+    &.button-style {
+      .mat-checkbox-label {
+        opacity: 0.5;
+      }
+    }
+  }
 }

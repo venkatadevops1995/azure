@@ -67,7 +67,8 @@
 
   <ng-container *ngFor="let timesheet of timesheetsData;let ts_index=index">
     <app-time-sheet (event)="onEventEmitTimeSheet($event)" [disable]="!enableFlag" [showHeader]="ts_index == 0"
-      mode="resolve-timesheet" [disable]="true" [disableResolution]="!enableFlag" [data]='timesheet' class="mb-15 dis-blk">
+      mode="resolve-timesheet" [disable]="true" [disableResolution]="!enableFlag" [data]='timesheet'
+      class="mb-15 dis-blk">
     </app-time-sheet>
   </ng-container>
 
@@ -80,55 +81,35 @@
 
 <div *ngIf="timesheetsData?.length == 0" class="flex col center-xs middle-xs fg-1">
   <img src="./assets/images/no-data-sheet.png" alt="" style="max-width: 250px;">
-  <p class="p-15 fs-14 col-primary-400"  >No time sheets available</p>
+  <p class="p-15 fs-14 col-primary-400">No time sheets available</p>
 </div>
 
 <ng-template #templateRefRejectTimeSheet>
-  <div class="resolve-popup resolve-popup--reject-timesheet">
-    <div class="flex center-xs pos-r resolve-popup__heading">
-      <h2 class="fg-1">Reject Timesheet</h2>
-      <div>
-        <div class="resolve-popup__close pointer" (click)="dialogRef.close()"
-          [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}" svg-fill="none"></div>
-      </div>
+  <form #commentForm="ngForm" [formGroup]="fgRejectionComments" (ngSubmit)="onSubmitApprove(fgRejectionComments.value)">
+    <textarea  formControlName="comments" class="textarea-black" placeholder="Enter comments *"></textarea>
+    <div class="flex end-xs middle-xs mt-20">
+      <app-button [disabled]="!fgRejectionComments?.controls['comments']?.value?.length">Submit
+      </app-button>
     </div>
-    <div class="resolve-popup__body">
-      <form #commentForm="ngForm" [formGroup]="fgRejectionComments"
-        (ngSubmit)="onSubmitApprove(fgRejectionComments.value)">
-        <textarea matInput formControlName="comments" class="reject-textarea" placeholder="Enter comments *"></textarea>
-        <div class="flex end-xs middle-xs mt-20">
-          <app-button [disabled]="!fgRejectionComments?.controls['comments']?.value?.length" >Submit
-          </app-button>
-        </div>
-      </form>
-    </div>
-  </div>
+  </form>
 </ng-template>
+
 
 <ng-template #templateRefWSRData>
   <div class="resolve-popup">
-    <div class="flex center-xs pos-r resolve-popup__heading">
-      <h2 class="fg-1">Weekly Status Report</h2>
+    <ng-container *ngFor="let data of wsrData;let i=index;">
       <div>
-        <div class="resolve-popup__close pointer" (click)="dialogRef.close()"
-          [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}" svg-fill="none"></div>
-      </div>
-    </div>
-    <div class="resolve-popup__body">
-      <ng-container *ngFor="let data of wsrData;let i=index;">
-        <div>
-          <div *ngFor="let project of data.active_projects;let i=index;">
-            <ng-container *ngIf="project.visibilityFlag">
-              <div class="resolve-popup__project-name fs-14 mb-15 pl-10">{{project?.project_name}}</div>
-              <textarea disabled class="resolve-popup__project-text mb-30 ">{{project.work_report}}</textarea>
-            </ng-container>
-          </div>
+        <div *ngFor="let project of data.active_projects;let i=index;">
+          <ng-container *ngIf="project.visibilityFlag">
+            <div class="resolve-popup__project-name fs-14 mb-15 pl-10">{{project?.project_name}}</div>
+            <textarea disabled class="textarea-black mb-30 ">{{project.work_report}}</textarea>
+          </ng-container>
         </div>
-        <ng-container *ngIf="data.GENERAL.visibilityFlag">
-          <div class="resolve-popup__project-name fs-14 mb-15 pl-10">General</div>
-          <textarea disabled class="resolve-popup__project-text  ">{{data.GENERAL.work_report}}</textarea>
-        </ng-container>
+      </div>
+      <ng-container *ngIf="data.GENERAL.visibilityFlag">
+        <div class="resolve-popup__project-name fs-14 mb-15 pl-10">General</div>
+        <textarea disabled class="textarea-black  ">{{data.GENERAL.work_report}}</textarea>
       </ng-container>
-    </div>
+    </ng-container>
   </div>
 </ng-template>

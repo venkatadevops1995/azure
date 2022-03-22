@@ -1,24 +1,27 @@
 <!-- <h2 mat-dialog-title color="accent">Confirm</h2> -->
-<div class="confirm-heading flex between-xs"  >
-  <span class="fg-1">{{dataMerged?.heading}}</span>
-  <div>
-    <div class="pointer" svg-fill="none" [mat-dialog-close] [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:25}"></div>
-  </div>
-</div> 
-<div>
-  <div class="mt-10 mb-30"   > 
-    <ng-container *ngTemplateOutlet="dataMerged.template"></ng-container>
-  </div>
-  <!-- {{dataMerged | json}} {{data | json}} -->
-  <div style="position: relative;top:0px;" *ngIf="!dataMerged.hideFooterButtons">
-    <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
-      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial theme="grey" type="button">
-        Cancel
-      </app-button>
-      <div class="mr-5 ml-10">
-        <app-button [mat-dialog-close]="true" type="button">
-          Proceed</app-button>
-      </div>
-    </mat-dialog-actions>
+<div class="popup">
+  <div class="flex center-xs pos-r popup__heading">
+    <h2 class="fg-1">{{dataMerged?.heading}}</h2>
+    <div *ngIf="dataMerged?.showCloseButton">
+      <div class="popup__close pointer" (click)="dialogRef.close()"
+        [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}" svg-fill="none"></div>
+    </div>
+  </div>  
+  <div class="popup__body">
+    <div class="mt-10 mb-30"> 
+      <ng-container *ngTemplateOutlet="dataMerged.template"></ng-container>
+    </div>
+    <!-- {{dataMerged | json}} {{data | json}} -->
+    <div style="position: relative;top:0px;" *ngIf="!dataMerged.hideFooterButtons">
+      <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
+        <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial theme="grey" type="button">
+          Cancel
+        </app-button>
+        <div class="mr-5 ml-10">
+          <app-button [mat-dialog-close]="true" type="button">
+            Proceed</app-button>
+        </div>
+      </mat-dialog-actions>
+    </div>
   </div>
 </div>

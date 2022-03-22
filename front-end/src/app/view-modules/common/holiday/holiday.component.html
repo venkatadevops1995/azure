@@ -169,16 +169,12 @@
     </app-button>
   </div>
 
-
-
-
   <app-atai-date-range [minDate]="minDate" [maxDate]="maxDate" [allowSameDateRange]="true" [showInput]="false"
     [showPresets]="false" (dateSelected)="onDateSelection($event)" (cancel)="onCancelDatePicker()">
-
   </app-atai-date-range>
 
   <ng-template #templateRefHolidayForm>
-    <mat-form-field style=" max-width: 350px;">
+    <mat-form-field class="w-100" style=" max-width: 350px;">
       <mat-label>Add Option</mat-label>
       <mat-select [(ngModel)]="selectedHolidayOption">
         <mat-option *ngFor="let opt of ['Import from template','Add manually']" [value]="opt">
@@ -192,7 +188,7 @@
   <!-- the mat auto complete selection drop down for occassion name -->
   <mat-autocomplete panelWidth="250" autoActiveFirstOption #occasionAuto="matAutocomplete"
     (optionSelected)="onSelectAutoComplete($event)">
-    <mat-option *ngFor="let option of filteredDefaultHolidayList  " [value]="option.name">
+    <mat-option *ngFor="let option of filteredDefaultHolidayList" [value]="option.name">
       {{option.name}}
     </mat-option>
   </mat-autocomplete>

@@ -1,21 +1,36 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    background-image: radial-gradient(130% 100% at 0% 0%, var(--col-primary-300), var(--col-primary-900) 100%);
-    box-shadow: inset 0px -75px 60px rgb(0 0 0 / 22%);
-    border-radius: 15px;
-    border: 1px solid #555;
-    padding: 40px 50px 30px 50px;
-    max-width: 620px;
-    width: 70vw;
-  
-    .confirm-heading {
-      color: var(--col-accent-300);
-      background: linear-gradient(to right, var(--col-accent-600), var(--col-accent-100));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 26px;
-      font-weight: 700;
+  width: 80vw;
+  max-width: 780px;
+  background: linear-gradient(90.49deg, var(--col-primary-800) 15.95%, var(--col-primary-900) 76.74%);
+  display: flex;
+  flex-direction: column;
+
+  &.resolve-popup--reject-timesheet {
+    max-width: 500px;
+  } 
+
+  .popup__close {
+    // position: absolute;
+    // top:10px;
+    // right: 10px;
+    width: 60px;
+  }
+
+  .popup__heading {
+    padding: 15px 10px;
+    background: var(--col-primary-700);
+
+    h2 {
+      font-weight: bold;
     }
   }
-  
+
+  .popup__body {
+    padding: 50px;
+    max-height: 75vh;
+    overflow: auto;
+  }
+
+}
+
+.popup {}

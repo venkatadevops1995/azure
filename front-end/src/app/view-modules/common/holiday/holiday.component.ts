@@ -537,7 +537,8 @@ export class HolidayComponent implements OnInit {
     let dialogRef = this.dialog.open(PopUpComponent, {
       data: {
         heading: 'Add Holiday Option',
-        template:this.templateHolidayForm
+        template:this.templateHolidayForm,
+        maxWidth:'500px'
       }
     })
 
