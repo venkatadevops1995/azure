@@ -13,6 +13,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { MatCheckbox, MatCheckboxModule , MatCheckboxChange ,MatCheckboxClickAction } from '@angular/material/checkbox';
 import { ButtonModule } from 'src/app/components/button/button.module';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 
 
 
@@ -35,7 +36,8 @@ import { ButtonModule } from 'src/app/components/button/button.module';
     ReactiveFormsModule,
     TooltipModule,
     MatCheckboxModule,
-    ButtonModule
+    ButtonModule,
+    AtaiDateRangeModule
   ]
 })
 export class DownloadMisModule { }

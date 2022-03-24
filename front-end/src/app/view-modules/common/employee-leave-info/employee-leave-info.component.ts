@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 
@@ -24,55 +25,73 @@ export interface EmpLeave {
   styleUrls: ['./employee-leave-info.component.scss']
 })
 export class EmployeeLeaveInfoComponent implements OnInit {
-  @ViewChild('editLeaveDialog') editProjectPopup: ModalPopupComponent;
+
+  @ViewChild('editLeaveDialog') editProjectTemplateRef: TemplateRef<any>;
+
+
+  editProjectDialogRef: MatDialogRef<any>;
+
   PROJECTS = [] //["ab","bc","ca","ad"]
+
   PROJECTS_LIST = {}
-  EMP_LEAVE_DATA:EmpLeave[] =[]
+
+  EMP_LEAVE_DATA: EmpLeave[] = []
+
   displayedColumns = ['staff_no', 'emp_name', 'company', 'currLvBal', 'edit'];
+
   loading_emp_data = true;
+
   EMP_LEAVE_FILTERED_DATA: any[] = [];
+
   employeeList: EmpLeave[];
-    // form group for search form
-    fgSearch: FormGroup;
-    //filter for Dashboard
-    filterArray = [];
-    managerCtrl = new FormControl();
-    filteredManagers: Observable<any[]>;
-    value:any;
-    edited_emp_name = ""
-    showMessage = false;
+
+  // form group for search form
+  fgSearch: FormGroup;
+
+  //filter for Dashboard
+  filterArray = [];
+
+  managerCtrl = new FormControl();
+
+  filteredManagers: Observable<any[]>;
+
+  value: any;
+
+  edited_emp_name = ""
+
+  showMessage = false;
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder) {
-      this.fgSearch = this.ss.fb.group({
-        filtervalue: ["",[Validators.required] ],
-      }),
+    this.fgSearch = this.ss.fb.group({
+      filtervalue: ["", [Validators.required]],
+    }),
       this.filteredManagers = this.managerCtrl.valueChanges
         .pipe(
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeList)
         );
-     }
+  }
 
-    // on submitting the search by filter form
-    onSubmitSearch(value?) {
-      
-      if(value !="ALL"){
+  // on submitting the search by filter form
+  onSubmitSearch(value?) {
+
+    if (value != "ALL") {
       const filterValue = value.toLowerCase();
-      this.EMP_LEAVE_FILTERED_DATA=  this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue) && option.emp_name.toLowerCase()!='all')
+      this.EMP_LEAVE_FILTERED_DATA = this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue) && option.emp_name.toLowerCase() != 'all')
     }
-    else{
-      this.EMP_LEAVE_FILTERED_DATA = this.employeeList.slice(1,this.employeeList.length);
+    else {
+      this.EMP_LEAVE_FILTERED_DATA = this.employeeList.slice(1, this.employeeList.length);
     }
-    }
+  }
 
   editLeaveForm = this.fb.group({
     'emp': [''],
     'currentLeaveBal': [''],
-    'leave_credits': ['',Validators.required],
-    'comments':["",Validators.required]
+    'leave_credits': ['', Validators.required],
+    'comments': ["", Validators.required]
 
   })
   filterForm = this.fb.group({
@@ -92,7 +111,7 @@ export class EmployeeLeaveInfoComponent implements OnInit {
 
   }
 
-  clear(){
+  clear() {
     this.fgSearch.reset('')
     this.managerCtrl.setValue('')
     this.managerCtrl.updateValueAndValidity()
@@ -100,12 +119,12 @@ export class EmployeeLeaveInfoComponent implements OnInit {
 
   filterManagerList(value: string) {
 
-    
+
     const filterValue = value.toLowerCase();
     return this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue))
     // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
   }
-  
+
   private _filter(value: string, projects = this.PROJECTS): string[] {
     let filterValue = '';
     if (value == null || value == '') {
@@ -158,7 +177,15 @@ export class EmployeeLeaveInfoComponent implements OnInit {
 
     this.editLeaveForm.controls.leave_credits.setValue(this.EMP_LEAVE_FILTERED_DATA[index]["outstanding_leave_bal"]);
 
-    this.editProjectPopup.open();
+    this.editProjectDialogRef = this.dialog.open(PopUpComponent,{
+      data:{
+        heading: 'Edit Leave Balance',
+        template:this.editProjectTemplateRef,
+        hideFooterButtons:true,
+        showCloseButton:true
+      }
+    })
+    // this.editProjectPopup.open();
 
   }
 
@@ -182,78 +209,78 @@ export class EmployeeLeaveInfoComponent implements OnInit {
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, "Leave balance have been added successfully");
         this.editLeaveForm.reset();
-        this.editProjectPopup.close();
+        this.editProjectDialogRef.close();
         this.getEmpLeaves();
-        
+
       }
-      else if(res.status==417){
+      else if (res.status == 417) {
         this.ss.statusMessage.showStatusMessage(false, res.error.results);
       }
-      else{
+      else {
         this.ss.statusMessage.showStatusMessage(false, "Error while updating leave balance");
       }
-  })
-}
+    })
+  }
 
 
-getAllProjects(): void {
-  let projects =[]
+  getAllProjects(): void {
+    let projects = []
     this.http.request('get', 'all-projects/').subscribe(res => {
-    // "emp_id": 28,
-    // "email": "a@gmail.com",
-    // "emp_name": "aa vv",
-    // "company": "ATAI",
-    // "staff_no": "1111",
-    // "role_id": 1,
-    // "total_leave_bal": 0.0,
-    // "consumed": 0.0,
-    // "outstanding_leave_bal": 0.0
+      // "emp_id": 28,
+      // "email": "a@gmail.com",
+      // "emp_name": "aa vv",
+      // "company": "ATAI",
+      // "staff_no": "1111",
+      // "role_id": 1,
+      // "total_leave_bal": 0.0,
+      // "consumed": 0.0,
+      // "outstanding_leave_bal": 0.0
 
-    if (res.status == 200) {
-      res.body["results"].forEach(element => {
-        projects.push(element);
-      });
-      this.getEmpLeaves();
-      this.PROJECTS = projects;
-    }
-  })
-}
-getProjectById(id) {
-  if (id === "") {
-    return { id: '', name: '' }
-  } else if (id === 0) {
-    return { id: 0, name: 'None' }
-  }
-
-  for (let i = 0; i < this.PROJECTS.length; i++) {
-    {
-      if (this.PROJECTS[i].id == id) {
-        return this.PROJECTS[i];
+      if (res.status == 200) {
+        res.body["results"].forEach(element => {
+          projects.push(element);
+        });
+        this.getEmpLeaves();
+        this.PROJECTS = projects;
       }
+    })
+  }
+  getProjectById(id) {
+    if (id === "") {
+      return { id: '', name: '' }
+    } else if (id === 0) {
+      return { id: 0, name: 'None' }
     }
 
+    for (let i = 0; i < this.PROJECTS.length; i++) {
+      {
+        if (this.PROJECTS[i].id == id) {
+          return this.PROJECTS[i];
+        }
+      }
+
+    }
   }
-}
-getEmpLeaves(): void {
-  let emp_projects =[]
-    this.http.request('get', 'leave/balance/','is_hr=true').subscribe(res => {
+  getEmpLeaves(): void {
+    let emp_projects = []
+    this.http.request('get', 'leave/balance/', 'is_hr=true').subscribe(res => {
 
 
-    if (res.status == 200) {
-      res.body["results"].forEach(element => {
+      if (res.status == 200) {
+        res.body["results"].forEach(element => {
 
-        emp_projects.push(element
-        );
+          emp_projects.push(element
+          );
 
-      });
-      this.EMP_LEAVE_DATA = emp_projects;
-      this.EMP_LEAVE_FILTERED_DATA = emp_projects;
+        });
+        this.EMP_LEAVE_DATA = emp_projects;
+        this.EMP_LEAVE_FILTERED_DATA = emp_projects;
         this.employeeList = [...this.EMP_LEAVE_FILTERED_DATA]
-        this.employeeList.unshift({emp_id:-1,emp_name:'ALL', company: '', staff_no: '', outstanding_leave_bal: 0})
+        this.employeeList.unshift({ emp_id: -1, emp_name: 'ALL', company: '', staff_no: '', outstanding_leave_bal: 0 })
         this.managerCtrl.setValue('ALL');
         this.showMessage = true;
-      // this.search(this.filterForm.controls.filter.value);
-    }
-  })
-}
+        // this.search(this.filterForm.controls.filter.value);
+      }
+    })
+  }
 }

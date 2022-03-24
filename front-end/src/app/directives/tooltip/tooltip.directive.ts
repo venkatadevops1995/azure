@@ -29,11 +29,11 @@ export class TooltipDirective {
   }
 
   hide() {
-    this.renderer.removeClass(this.tooltip, 'ng-tooltip-show');
-    window.setTimeout(() => {
-      this.renderer.removeChild(document.body, this.tooltip);
-      this.tooltip = null;
-    }, Number(this.delay));
+    // this.renderer.removeClass(this.tooltip, 'ng-tooltip-show');
+    // window.setTimeout(() => {
+    //   this.renderer.removeChild(document.body, this.tooltip);
+    //   this.tooltip = null;
+    // }, Number(this.delay));
   }
 
   create() {

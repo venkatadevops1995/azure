@@ -36,7 +36,7 @@ body {
 .mat-table thead:after {
   content: "";
   display: block;
-  width: 1300% !important;
+  // width: 1300% !important;
   height: 9px;
 
   position: sticky !important;
@@ -244,6 +244,10 @@ mat-dialog-container.mat-dialog-container {
   color: var(--col-primary-100);
 }
 
+.mat-option{
+  font-size: inherit;
+}
+
 /* Mat Paginator styles */
 .mat-paginator {
   background: none;
@@ -325,5 +329,14 @@ mat-dialog-container.mat-dialog-container {
         opacity: 0.5;
       }
     }
+  }
+}
+
+
+// File upload component styles ( inside mat form field)
+
+.atai-file-upload{
+  .mat-form-field-underline{
+      display: none;
   }
 }

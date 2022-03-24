@@ -1,10 +1,7 @@
 <div>
   <h2 class="heading">Document Configuration</h2>
-  <div style="margin: 10px 0px 0px 100px">
-    <!-- <nav mat-tab-nav-bar>
-            <a mat-tab-link *ngFor="let tab of tabList" (click)="selectTab=tab['id']" [active]="tab['id']==selectTab"> {{tab['name']}} </a>
-        </nav> -->
-    <mat-tab-group
+  <div style="margin: 10px 0px 0px 100px"> 
+    <mat-tab-group  color="accent"
       [selectedIndex]="tabIndexControl.value"
       (selectedIndexChange)="setTab($event)"
     >
@@ -17,13 +14,13 @@
           <div style="margin: 50px 10px 0px">
             <form [formGroup]="policyForm">
               <div class="container">
-                <div>
-                  <mat-form-field>
+                <div class="fs-14">
+                  <mat-form-field class="w-100 no-pb">
                     <mat-label>Policy name</mat-label>
                     <input formControlName="policy_name" matInput />
                   </mat-form-field>
                   <!-- <textarea formControlName="policy_name" placeholder="Policy name" class="leave__comment"></textarea> -->
-                  <mat-error
+                  <mat-error class="fs-12"
                     [@slideAnimation]="
                       policyForm.controls.policy_name.touched &&
                       policyForm.controls.policy_name.hasError('required')
@@ -36,8 +33,8 @@
                 </div>
                 <br />
                 <div *ngIf="showUploadBlock">
-                  <mat-form-field class="full-width fg-1 file">
-                    <app-file
+                  <mat-form-field class="atai-file-upload full-width fg-1 file w-100 no-pb">
+                    <app-file 
                       [getFile]="fileObjInstance"
                       [accept]="{ browse: '.pdf' }"
                       [folderUpload]="false"
@@ -45,6 +42,7 @@
                       [multiple]="false"
                       pH="Drop or browse policy"
                       idd="policy-upload"
+                      acceptString="(.pdf only)"
                       (changeEE)="uploadFile()"
                     ></app-file>
                     <!-- {{applyForm.controls.invitationUpload.touched}} {{applyForm.controls.invitationUpload.hasError('unAcceptedFile')}} -->
@@ -65,9 +63,10 @@
                     Policy selection is required
                   </mat-error>
                 </div>
-                <div style="margin-top: 10px">
-                  <div style="display: flex; justify-content: flex-start">
-                    <div class="custom_checkbox" style="margin: 0px 10px 0px">
+                <div>
+                  <div  class="flex mt-20">
+
+                    <div class="custom_checkbox mr-15" >
                       <input
                         type="checkbox"
                         id="all"
@@ -80,8 +79,7 @@
                       <label for="all">All</label>
                     </div>
                     <div
-                      class="custom_checkbox"
-                      style="margin: 0px 10px 0px"
+                      class="custom_checkbox mr-15" 
                       *ngFor="let com of companyList.subtasks"
                     >
                       <input
@@ -100,9 +98,9 @@
                                             {{com}} -->
                     </div>
                   </div>
-                  <div style="margin-top: 20px; padding-left: 20px">
+                  <div style="margin-top: 20px; ">
                     <mat-radio-group
-                      class="pb-10 example-radio-group secondary"
+                      class="pb-10 example-radio-group secondary fs-14 col-primary-300"
                       formControlName="enable_for"
                     >
                       <mat-radio-button

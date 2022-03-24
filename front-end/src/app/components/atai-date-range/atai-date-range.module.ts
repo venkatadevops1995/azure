@@ -12,6 +12,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 
 
 
@@ -29,7 +30,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     OverlayModule,
     MatButtonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SvgIconModule
   ],
   exports: [AtaiDateRangeComponent],
   providers: [

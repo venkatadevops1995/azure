@@ -11,6 +11,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { HrTimesheetReportComponent } from './hr-timesheet-report.component';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 
 
 
@@ -30,7 +31,8 @@ import { HrTimesheetReportComponent } from './hr-timesheet-report.component';
     MatIconModule,
     SvgIconModule,
     ReactiveFormsModule,
-    TooltipModule
+    TooltipModule,
+    AtaiDateRangeModule
   ]
 })
 export class HrTimesheetReportModule { }

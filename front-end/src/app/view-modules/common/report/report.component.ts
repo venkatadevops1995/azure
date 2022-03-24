@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment'; 
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
@@ -15,82 +15,82 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ReportComponent implements OnInit {
 
-  @ViewChild(AtaiDateRangeComponent) dateRange:AtaiDateRangeComponent;
+  @ViewChild(AtaiDateRangeComponent) dateRange: AtaiDateRangeComponent;
 
   fromdate: any;
   downloadable = false;
   date4;
   EMPS: any[];
   option = new FormControl('');
-  filteredManagers: Observable<any>;; 
-  todate: any; 
+  filteredManagers: Observable<any>;;
+  todate: any;
   maxDate: any = moment();
   selected: any = {};
   message: any;
   availableDate: any;
   selectedEmpId: any;
   value: any;
-  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService) {
-    this.filteredManagers = this.option.valueChanges
-    .pipe(
-      startWith(''),
-      map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
-    );
-    
 
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private cdRef: ChangeDetectorRef) {
+    this.filteredManagers = this.option.valueChanges
+      .pipe(
+        startWith(''),
+        map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
+      );
   }
+
   private filterManagerList(value) {
     const filterValue = value.toLowerCase();
     return this.EMPS.filter(option => option.emp_name.toLowerCase().includes(filterValue))
   }
- 
+
   ngOnInit(): void {
 
     // this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
     // this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
     // this.selected["startDate"] = this.ranges['Last 30 Days'][0];
     // this.selected["endDate"] = this.ranges['Last 30 Days'][1];
-    
+
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
     this.getStatus();
 
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
+
     this.dateRange.setPresetValue('Last 30 Days');
   }
 
   // when a date is selected in the date range
   onDateSelection(data) {
-    console.log(data)
     this.fromdate = this.convertDatefmt(data.start)
-    this.todate = this.convertDatefmt(data.end) 
+    this.todate = this.convertDatefmt(data.end)
+    this.cdRef.detectChanges()
   }
 
-//  getAttendenceData(fromdate, todate, emp_id) {
-//   if (emp_id === 'all') {
-//      this.http.request("get", 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&all_emp=true').subscribe(res => {
-//        if (res.status == 200) {
-//          this.downloadable = res.body['results']['downloadable'];
-//        }
-//      })
-//    } else {
-//      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
-//        if (res.status == 200) {
-//          console.log(res.body['results'])
-//          this.downloadable = false;
-//        }
-//      })
-//    }
-// }
-  getStatus(){
+  //  getAttendenceData(fromdate, todate, emp_id) {
+  //   if (emp_id === 'all') {
+  //      this.http.request("get", 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&all_emp=true').subscribe(res => {
+  //        if (res.status == 200) {
+  //          this.downloadable = res.body['results']['downloadable'];
+  //        }
+  //      })
+  //    } else {
+  //      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
+  //        if (res.status == 200) {
+  //          console.log(res.body['results'])
+  //          this.downloadable = false;
+  //        }
+  //      })
+  //    }
+  // }
+
+  getStatus() {
     this.http.request("get", 'reportdatesavailability',).subscribe(res => {
       if (res.status == 200) {
         this.message = res.body.msg.msg;
         let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd'));
-        console.log(days);
-
         this.maxDate = moment().subtract(days, 'days');
       }
     })
@@ -99,9 +99,6 @@ export class ReportComponent implements OnInit {
   calculateDiff(sentDate) {
     var date1: any = new Date(sentDate);
     var date2: any = new Date();
-    console.log(date1);
-
-    console.log(date2);
 
     var diffDays: any = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -133,8 +130,8 @@ export class ReportComponent implements OnInit {
     }
   }
   selectEmp(value) {
-    this.selectedEmpId = this.EMPS.filter(x=>{
-      if(x.emp_name == value){
+    this.selectedEmpId = this.EMPS.filter(x => {
+      if (x.emp_name == value) {
         return x['emp_id'];
       }
     });
@@ -142,10 +139,10 @@ export class ReportComponent implements OnInit {
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
   }
 
-  clear(){
+  clear() {
     this.option.reset();
     this.option.setValue('');
-   }
+  }
   getReporters() {
     if (this.user.getRoleId() > 1) {
       this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
@@ -164,18 +161,18 @@ export class ReportComponent implements OnInit {
             this.EMPS.push(each);
           }
         })
-    
+
         this.EMPS.forEach(element => {
-          if(element.emp_id == this.user.getEmpId()){
+          if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
             console.log(emp_name);
-            
+
             this.option.setValue(emp_name);
             this.selectEmp(emp_name)
-         }
+          }
         });
       }
     })
-   
+
   }
 }

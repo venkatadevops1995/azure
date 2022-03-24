@@ -1,15 +1,16 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
 import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
@@ -67,6 +68,11 @@ export class ApplyLeaveComponent implements OnInit {
 
   @Output('event') eventEmitter: EventEmitter<any> = new EventEmitter();
 
+  // template reference for the discrepancy data pop up
+  @ViewChild('templateRefDiscrepancyData') templateRefDiscrepancyData: TemplateRef<any>
+
+  dialogRefDiscrepancyData: MatDialogRef<any>;
+
   // Dateipicker
   datePickerLeaveApplcn: any = {
     startAtStartDate: new Date(this.today.getTime() - 30 * MILLISECONDS_DAY),
@@ -114,6 +120,23 @@ export class ApplyLeaveComponent implements OnInit {
 
       }
       return true
+    },
+    dataPickerFilter: (position: 'start' | 'end' = 'start') => {
+      return (date: Date) => {
+        let startDate = (position == 'start') ? this.datePickerLeaveApplcn.startAtStartDate : this.datePickerLeaveApplcn.startAtEndDate;
+        startDate.setHours(0, 0, 0, 0)
+        const day = (date).getDay();
+        let leaveType = this.applyForm.get('type').value.name
+        let condition = false;
+        if (position == 'end') {
+          let endDate = this.datePickerLeaveApplcn.endAtEndDate
+          condition = !(date < startDate) && !(date > endDate)
+          return (condition && (day != 0 && day != 6) && (!this.checkDateisThere(date, this.holidayList))) && date.getFullYear() == this.today.getFullYear()
+        } else {
+          condition = !(date < startDate)
+          return (condition && (day != 0 && day != 6) && (!this.checkDateisThere(date, this.holidayList))) && date.getFullYear() == this.today.getFullYear()
+        }
+      }
     },
     dataPickerFilterEnd: (date: Date) => {
       let startDate = this.datePickerLeaveApplcn.startAtEndDate;
@@ -193,7 +216,6 @@ export class ApplyLeaveComponent implements OnInit {
     this.getCurrentLeaveBalance();
     this.getLeaveRequestsAvailability();
     this.getLeaveConfig()
-    this.openApplyPopUp()
     // TODO: merge the value changes of the form. currently as the change detector is continuously firing in this compnent it is handled this way
     this.applyForm.get('startDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       if (val) {
@@ -204,6 +226,7 @@ export class ApplyLeaveComponent implements OnInit {
 
     this.applyForm.get('category').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       this.disableHalfDayCheckBoxes()
+      this.restDates()
       this.chosenDate()
     })
     this.applyForm.get('endDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
@@ -254,6 +277,7 @@ export class ApplyLeaveComponent implements OnInit {
         this.applyForm.get('invitationUpload').updateValueAndValidity()
       }
     })
+    this.openApplyPopUp()
   }
 
   ngOnDestroy() {
@@ -324,10 +348,12 @@ export class ApplyLeaveComponent implements OnInit {
     this.applyFormSubmitted = false;
     this.selectedIndexLeaveCategory = 1;
     this.applyForm.get('category').setValue(this.leaveCategories[this.selectedIndexLeaveCategory])
+    this.eventEmitter.emit({ type: 'cancel', data: null })
   }
 
 
   getTimesheetDiscrepancy() {
+    this.applyFormSubmitted = true
     if (this.applyForm.valid) {
       var param = new HttpParams();
       let f = this.applyForm.value
@@ -360,7 +386,16 @@ export class ApplyLeaveComponent implements OnInit {
           if (res.body["results"].length > 0) {
             console.log("-----------ts dis----------------", res.body["results"])
             this.TIMESHEET_DISCREPANCY_DATA = res.body["results"]
-            this.timesheetDiscrepancyPopup.open()
+            // this.timesheetDiscrepancyPopup.open()
+            this.dialogRefDiscrepancyData = this.dialog.open(PopUpComponent, {
+              data: {
+                template: this.templateRefDiscrepancyData,
+                heading: 'Submitted timesheet',
+                showCloseButton: true,
+                hideFooterButtons: true,
+                maxWidth: '800px'
+              }
+            })
           }
           else {
             this.onSubmitApplyForm()
@@ -395,8 +430,20 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   disableHalfDayCheckBoxes() {
+
     this.applyForm.get('startDateSecondHalf').disable()
     this.applyForm.get('endDateFirstHalf').disable()
+  }
+
+  restDates() {
+
+    this.applyForm.get('startDate').reset()
+    this.applyForm.get('endDate').reset()
+
+    this.applyForm.get('startDate').markAsPristine()
+    this.applyForm.get('endDate').markAsPristine()
+    this.applyForm.get('startDate').markAsUntouched()
+    this.applyForm.get('endDate').markAsUntouched()
   }
 
   getCurrentLeaveBalance() {
@@ -441,7 +488,7 @@ export class ApplyLeaveComponent implements OnInit {
         this.applyForm.get('type').setValue(valToSet);
         this.applyForm.get('category').setValue('Single Day');
 
-        
+
 
       }
       else {
@@ -451,27 +498,27 @@ export class ApplyLeaveComponent implements OnInit {
 
   }
 
-    // get leave config
-    getLeaveConfig() {
-      let category = this.user.getDataFromToken('category');
-      // let categorySlug = category.replace(' ','-').toLowerCase()
-      let params = new HttpParams()
-      params = params.append('category', category)
+  // get leave config
+  getLeaveConfig() {
+    let category = this.user.getDataFromToken('category');
+    // let categorySlug = category.replace(' ','-').toLowerCase()
+    let params = new HttpParams()
+    params = params.append('category', category)
 
-      this.http.request('get', 'leave/config/category/', params).subscribe((res) => {
-          if (res.status == 200) {
-              console.log(res)
-              let leaveCredits = res.body['results']
-              let obj = {}
-              leaveCredits.forEach(item => {
-                  obj[item.leave_type_name] = item.leave_type_name == 'Paid' ? 180 : item.leave_credits
-              });
-              this.datePickerLeaveApplcn.noOfLeaveDays = obj
-          }
-      })
+    this.http.request('get', 'leave/config/category/', params).subscribe((res) => {
+      if (res.status == 200) {
+        console.log(res)
+        let leaveCredits = res.body['results']
+        let obj = {}
+        leaveCredits.forEach(item => {
+          obj[item.leave_type_name] = item.leave_type_name == 'Paid' ? 180 : item.leave_credits
+        });
+        this.datePickerLeaveApplcn.noOfLeaveDays = obj
+      }
+    })
   }
 
-  onClose(){
+  onClose() {
     this.applyFormNgForm.resetForm()
     this.applyFormSubmitted = false;
     this.selectedIndexLeaveCategory = 1;
@@ -575,7 +622,8 @@ export class ApplyLeaveComponent implements OnInit {
   // 
   onSubmitApplyForm() {
 
-    this.applyFormSubmitted = true;
+    // this.applyFormSubmitted = true;
+
     let sendRequest = () => {
       let fd = new FormData();
       let f = this.applyForm.value
@@ -615,8 +663,10 @@ export class ApplyLeaveComponent implements OnInit {
       this.http.request('post', 'leave/request/', '', fd).subscribe(res => {
         if (res.status == 200) {
           this.ss.statusMessage.showStatusMessage(true, "leave application has been submitted successfully")
+          if (this.dialogRefDiscrepancyData) {
+            this.dialogRefDiscrepancyData.close();
+          }
           this.closeApplyForm();
-          this.timesheetDiscrepancyPopup.close();
           this.getCurrentLeaveBalance();
           // this.getAppliedLeaves();
           // this.getLeaveHistory();
