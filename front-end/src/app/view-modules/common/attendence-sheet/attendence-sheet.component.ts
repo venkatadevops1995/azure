@@ -47,12 +47,14 @@ export class AttendenceSheetComponent implements OnInit {
   value: any;
   filteredManagers: Observable<any>;
   constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
-
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',this.EMPS);
     this.filteredManagers = this.option.valueChanges
+  
       .pipe(
         startWith(''),
-        map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
+        map(state => state ? this.filterManagerList(state) : this.EMPS?.slice())
       );
+    
   }
   private filterManagerList(value: string) {
     const filterValue = value.toLowerCase();

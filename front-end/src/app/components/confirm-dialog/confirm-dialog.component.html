@@ -1,26 +1,28 @@
 <!-- <h2 mat-dialog-title color="accent">Confirm</h2> -->
-<div class="confirm-heading ">
-  <span *ngIf="!data?.onlyForAlert">Confirm</span>
-  <span *ngIf="data?.onlyForAlert">Alert</span>
+<div class="confirm-heading "> 
+  <span *ngIf="dataMerged?.heading">{{dataMerged?.heading}}</span>
 </div>
-<div  >
-  <div class="mt-10 mb-30" >
+<div>
+  <div class="mt-10 mb-30" *ngIf="!dataMerged?.template;else templateContent;">
     <span class="fs-12 fw-300 col-primary-100">
-      {{ data?.confirmMessage || 'Are you sure you want to continue ?' }}
+      {{ dataMerged?.confirmMessage  }}
     </span>
-    <div class="mt-20" *ngIf="data?.showTextbox">
+    <div class="mt-20" *ngIf="dataMerged?.showTextbox">
       <textarea matInput [formControl]="fcText" rows="4"
-        placeholder="{{data?.placeholderTextField || 'Enter comments'}}"></textarea>
+        placeholder="{{dataMerged?.placeholderTextField }}"></textarea>
     </div>
   </div>
-  <div style="position: relative;top:0px;">
+  <ng-template #templateContent>
+    <ng-container *ngTemplateOutlet="dataMerged?.template"></ng-container>
+  </ng-template>
+  <div style="position: relative;top:0px;" *ngIf="!dataMerged?.template">
     <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
-      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial   theme="grey" type="button">
+      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial theme="grey" type="button">
         Cancel
       </app-button>
-      <div class="mr-5 ml-10" *ngIf="!data?.onlyForAlert">
-        <app-button [mat-dialog-close]="data?.showTextbox ? {text:fcText.value}: true"  theme="blue-lite"
-          type="button">Proceed</app-button>
+      <div class="mr-5 ml-10" *ngIf="!dataMerged?.onlyForAlert">
+        <app-button [mat-dialog-close]="dataMerged?.showTextbox ? {text:fcText.value}: true" theme="blue-lite" type="button">
+          Proceed</app-button>
       </div>
     </mat-dialog-actions>
   </div>

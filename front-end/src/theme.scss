@@ -45,7 +45,7 @@ body {
 
 .mat-cell,
 .mat-footer-cell {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .header-gradient {
@@ -147,6 +147,9 @@ td.mat-footer-cell {
   vertical-align: middle !important;
   text-align: center !important;
   background: unset;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 60px;
 }
 
 .mat-calendar-body-selected {
@@ -327,3 +330,16 @@ mat-dialog-container.mat-dialog-container {
     }
   }
 }
+
+// ********************************************************
+// Rahulchange (universal popup font -size)**********************
+.mat-option{
+  font-size:inherit !important;
+  
+}
+// ********************************************************
+// Rahulchange (adding font family for table universal)**********************
+// table.mat-table{
+//   font-family: 'Inter';
+// }
+// ********************************************************

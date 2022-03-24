@@ -37,8 +37,20 @@
     </div> -->
     <div class="export_icon" style="cursor:pointer; ">
       <a [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}" style="max-height: 10px;">
-        <span class="ml-25" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}"
-          style="color:var(--col-primary-200); " svg-fill="currentColor"></span>
+        <!-- rahul change previous icon**********************************
+        **************************************************************** -->
+        <!-- <span class="ml-25" [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}"
+        style="color:var(--col-primary-200); " svg-fill="currentColor"></span> -->
+        
+        <!-- rahul changes new-sprite icon**********************************
+        **************************************************************** -->
+          <div class="ml-25" [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:16}"
+          style="
+         color: var(--col-primary-300);
+         margin-top: 0px;
+         cursor: pointer;
+       "
+        svg-fill="currentColor"></div>
         <!-- <span class="ml-5" [svgIcon]="{url:'./assets/icons-sprite.svg#download',w:15}"></span> -->
         <!-- <span> <img width="40px" height="40px" src="assets/images/exportExcel.png" alt=""></span> -->
 
