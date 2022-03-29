@@ -51,6 +51,7 @@ export class ManageSelfLeavesComponent implements OnInit {
     todate: any;
 
     currentBalance = 0;
+
     // the min date for the calendar when opening for date selection for a holiday row in edit mode
     maxDate = new Date()
 
@@ -119,6 +120,7 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     ngOnInit(): void {
         this.getLeaveHistory()
+        this.getCurrentLeaveBalance();
         // this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
         // this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
         this.getAppliedLeaves();
@@ -229,6 +231,9 @@ export class ManageSelfLeavesComponent implements OnInit {
         if(data.type == 'submitted'){
             this.getAppliedLeaves();
             this.getLeaveHistory();
+            this.getCurrentLeaveBalance();
+        }else if (data.type == 'cancel'){
+            this.dialogRefLeaveApplication.close()
         }
     }
 

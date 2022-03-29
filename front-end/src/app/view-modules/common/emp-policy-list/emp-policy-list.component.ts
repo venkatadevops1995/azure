@@ -1,12 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
-
+import { MatDialog } from '@angular/material/dialog';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 @Component({
   selector: 'app-emp-policy-list',
   templateUrl: './emp-policy-list.component.html',
@@ -15,7 +16,9 @@ import { UserService } from 'src/app/services/user.service';
 export class EmpPolicyListComponent implements OnInit {
   @ViewChild('policyDetailsRef') policyDetailModal: ModalPopupComponent;
   @ViewChild('deletePolicyRef') deletePolicyModal: ModalPopupComponent;
-  
+  //Rahul change***************************
+  @ViewChild("PolicyDetailsPopUp") PolicyDetailsPopUp : TemplateRef<any>;
+  //************************************ 
   employeePopupColumns = ["sno", "policy_name", "updated_date", "view"]
   EMPLOYEE_FILTERED_DATA = []
   deleteId = 0;
@@ -25,6 +28,7 @@ export class EmpPolicyListComponent implements OnInit {
   constructor( private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
+    public dialog: MatDialog,
     private router: Router,
     private activatedRoute:ActivatedRoute,
     private user:UserService) { }
@@ -54,12 +58,28 @@ export class EmpPolicyListComponent implements OnInit {
   
   openPolicyDetails(policy_name,id){
     this.clicked_policy_name = policy_name
-    this.policyDetailModal.open()
+    // this.policyDetailModal.open()
+    //Rahul change(commenting previous popup open() and opening new popup for policydetailspopup)
+
+     this.dialog.open(PopUpComponent, {
+        data: {
+          heading: `${this.clicked_policy_name}`,
+          template:this.PolicyDetailsPopUp,
+          maxWidth:'812px',
+          hideFooterButtons: true,
+          showCloseButton: true,
+        },
+        autoFocus: false,
+      })
+
+    // ******************************************************************************
+    // *************************************************************************
+    
     this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
-    this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken
+    this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken;
+    console.log('!!!!!!!!!!!!!!!!!!!!!!##########################################',this.filepathUrl)
     this.isLoaderVisible = false
-     
 
   }
 

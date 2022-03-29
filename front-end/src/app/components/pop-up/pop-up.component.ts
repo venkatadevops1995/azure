@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth:any }
+
 @Component({
   selector: 'app-pop-up',
   templateUrl: './pop-up.component.html',

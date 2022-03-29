@@ -1,4 +1,4 @@
-<div (drop)="drop_handler($event, $event.target)" class="fg {{theme}}" [ngClass]="ngClassInput">
+<div (drop)="drop_handler($event, $event.target)" class="fg {{theme}}"  [ngClass]="ngClassInput" [class.is-empty]="(fileArray.length == 0)">
   <div *ngIf="false" class="loader-files">
     <svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
       style="width:50px;height:50px;" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0"
@@ -14,30 +14,35 @@
       </circle>
     </svg>
   </div>
-  <div (keyup)="keyUp($event, $event.target)" tabindex="0" class="file-wrap"  >
+  <div (keyup)="keyUp($event, $event.target)" tabindex="0" class="file-wrap" [ngStyle]="{backgroundColor:(bgColor || 'var(--col-primary-900)')}">
     <!--Upload button connected using for attribute to file input to trigger the file browser on click-->
-    <label #fileLabel class="btn-file flex middle-xs" for="{{idd}}">
-      <mat-icon class="mr-5">upload</mat-icon>
-      <ng-container *ngIf="pH;else defaultPh">
-        <div>{{pH}} <sup *ngIf="!optional">*</sup></div>
+    <label #fileLabel class="btn-file flex middle-xs" for="{{idd}}" [ngStyle]="{borderColor:(borderColor)}" *ngIf="fileArray.length < 1">
+      <ng-container >
+        <div class="col-primary-300 mb-10" [svgIcon]="{url:'./assets/icons-sprite-new.svg#upload',w:25}"></div>
+        <ng-container *ngIf="pH;else defaultPh">
+          <div>{{pH}} <sup *ngIf="!optional">*</sup></div>
+        </ng-container>
+        <ng-template #defaultPh>
+          <div>Drop files or click to add attachments here <sup *ngIf="!optional">*</sup></div>
+        </ng-template>
+        <p class="accept-string mt-10" *ngIf="acceptString">{{acceptString}}</p>
       </ng-container>
-      <ng-template #defaultPh>
-        <div>Drop files or click to add attachments here <sup *ngIf="!optional">*</sup></div>
-      </ng-template>
     </label>
 
-    <div class="file-list flex start-xs">
+    <div class="file-list flex start-xs" *ngIf="fileArray.length > 0" >
       <ng-container *ngIf="fileArray.length < 6;else noOfFiles">
         <div [class.single]="multiple === false" class="file fs-13 flex middle-xs center-xs mr-5 "
           *ngFor="let file of fileArray;let i = index;">
-          {{file.name}} ({{file.size | fileSize}})
-          <mat-icon class="small-xs ml-5 pointer" (click)="upDateFileList($event,i)">close</mat-icon>
+          {{file.name}} - ({{file.size | fileSize}})
+          <div class="ml-15 pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#remove',w:25}" svg-fill="var(--col-warn-500)"
+            (click)="upDateFileList($event,i)"></div>
         </div>
       </ng-container>
       <ng-template #noOfFiles>
         <div class="file fs13 flex middle-xs center-xs mr-5">
           {{fileArray.length }} files selected ({{control?.fileSize | fileSize}})
-          <mat-icon class="small-xs ml-5 pointer" (click)="upDateFileList($event,undefined)">close</mat-icon>
+          <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:25}"  svg-fill="none"
+            (click)="upDateFileList($event,undefined)"></div>
         </div>
       </ng-template>
     </div>

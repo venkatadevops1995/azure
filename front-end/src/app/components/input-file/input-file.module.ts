@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   declarations: [
     FileUploadComponent, FileSizePipe
   ],
-  imports: [ReactiveFormsModule, CommonModule, MatIconModule],
+  imports: [ReactiveFormsModule, CommonModule, SvgIconModule],
   exports: [FileUploadComponent, FileSizePipe],
   providers: [
     { provide: NgForm, useClass: NgForm },

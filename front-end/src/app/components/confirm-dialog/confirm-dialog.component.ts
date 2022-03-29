@@ -21,6 +21,7 @@ export class ConfirmDialogComponent implements OnInit {
     showTextbox: false,
     placeholderTextField:'Enter comments'
   }
+  
   /* merged data passed with default data */
   dataMerged: ConfirmPopUpData = this.defaultData;
 

@@ -36,7 +36,7 @@ body {
 .mat-table thead:after {
   content: "";
   display: block;
-  width: 1300% !important;
+  // width: 1300% !important;
   height: 9px;
 
   position: sticky !important;
@@ -146,10 +146,18 @@ td.mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
   text-align: center !important;
+  // rahul change (making policy column left align in policy component)***********
+   &.table-colum-left{
+  text-align:left !important;
+   }
+//*******************************************************
   background: unset;
   white-space: normal;
   word-wrap: break-word;
   max-width: 60px;
+  &.w-350px{
+    max-width:350px !important;
+  }
 }
 
 .mat-calendar-body-selected {
@@ -245,6 +253,10 @@ mat-dialog-container.mat-dialog-container {
 // 
 .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
   color: var(--col-primary-100);
+}
+
+.mat-option{
+  font-size: inherit;
 }
 
 /* Mat Paginator styles */
@@ -343,3 +355,17 @@ mat-dialog-container.mat-dialog-container {
 //   font-family: 'Inter';
 // }
 // ********************************************************
+
+// File upload component styles ( inside mat form field)
+
+.atai-file-upload{
+  .mat-form-field-underline{
+      display: none;
+  }
+}
+
+// rahul change ( giving some padding to policy column in policy component)***********
+.pl-table-50{
+  padding-left:50px !important;
+}
+//*******************************************************

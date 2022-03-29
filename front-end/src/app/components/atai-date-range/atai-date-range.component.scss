@@ -1,11 +1,18 @@
 app-atai-date-range {
   position: relative;
+  .atai-date-range{
+    &.disabled{
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
 
   .mat-form-field-appearance-legacy .mat-form-field-underline {
     padding-bottom: 0;
     // display: none;
     
   }
+
 
   .mat-form-field-appearance-legacy .mat-form-field-wrapper {
     padding-bottom: 0px;
@@ -15,10 +22,10 @@ app-atai-date-range {
     position: relative; 
   }
 
-  .mat-icon {
+  .atai-date-range__calendar-icon {
     position: absolute;
     right: 0px;
-    top: 0.3em;
+    top: 0.75em;
   }
 }
 

@@ -52,7 +52,7 @@ export class AttendenceSheetComponent implements OnInit {
   
       .pipe(
         startWith(''),
-        map(state => state ? this.filterManagerList(state) : this.EMPS?.slice())
+        map(state => state ? this.filterManagerList(state) : this.EMPS ? this.EMPS.slice() : [])
       );
     
   }

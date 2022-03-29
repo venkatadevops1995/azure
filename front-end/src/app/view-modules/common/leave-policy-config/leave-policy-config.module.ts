@@ -10,6 +10,7 @@ import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.mod
 import { MatSelectModule } from '@angular/material/select';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatIconModule } from '@angular/material/icon';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 
 
 
@@ -27,7 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     PipesModule,
     ButtonModule,
-    MatIconModule
+    MatIconModule,
+    SvgIconModule
   ]
 })
 export class LeavePolicyConfigModule { }

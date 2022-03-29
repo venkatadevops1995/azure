@@ -50,6 +50,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
   @Input() showInput: boolean = true;
 
+  // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
+  @Input() disabled: boolean = false;
+
   // whether to allow same date to be selected as start and end date
   @Input() allowSameDateRange: boolean = false;
 
@@ -196,7 +199,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       this.setSelection(presetObj.id)
     } else {
       console.warn("UNKNOWN date range picker PRESET VALUE");
-    }
+    }  
   }
 
   // for mat
@@ -271,7 +274,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     @return undefined
     @description set the selection in the calendar 
   */
-  setSelection(presetId) {
+  setSelection(presetId,emit:boolean = true) {
 
     let d = new Date();
     d.setHours(0, 0, 0, 0)
@@ -283,7 +286,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(d.getTime() - 6 * 86400000));
         this._model.add(d);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
-        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        if(emit){
+          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        }
         break;
       case ('last30Days'):
         console.log('last 30 days');
@@ -291,7 +296,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(d.getTime() - 29 * 86400000));
         this._model.add(d);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
-        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        if(emit){
+          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        }
         break;
       case ('thisMonth'):
         console.log('this month');
@@ -301,7 +308,11 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
           this._model.add(new Date(d.getTime() - (currentDate - 1) * 86400000));
           this._model.add(d);
           this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
-          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+          if(emit){
+            this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+          }
+          this.cdRef.markForCheck()
+          this.cdRef.detectChanges()
         }
         break;
       case ('lastMonth'):
@@ -313,7 +324,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(lastMonthlastDayDate.getTime() - (lastMonthLastDay - 1) * 86400000));
         this._model.add(lastMonthlastDayDate);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
-        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        if(emit){
+          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        }
         break;
       case ('custom'):
         console.log('custom selection');
@@ -322,12 +335,14 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this._model.add(new Date(dateRange[0]));
         this._model.add(new Date(dateRange[1]));
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
-        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        if(emit){
+          this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+        }
         break;
       default:
         console.log('default')
         break;
-    }
+    } 
   }
 
   /* 
@@ -373,6 +388,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     }
     this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'dd-mm-yyyy') + ' - ' + this.nativeDateAdapter.format(selection.end, 'dd-mm-yyyy')
     this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
+    this.cdRef.markForCheck()
     this.propagateChange(this._model.selection)
     this.overlayRef.dispose()
     this.subscribeBackDropClick.unsubscribe()
@@ -384,9 +400,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   close() {
     // this.clearSelection(); 
     this.clearSelection()
-    this.setSelection(this.dateMeta.selectionType)
+    // as there is no change in date do not emit the dateSelected event
+    this.setSelection(this.dateMeta.selectionType, false)
     this.overlayRef.dispose()
-    this.cancelSelection.emit(false)
+    this.cancelSelection.emit(false) 
     this.subscribeBackDropClick.unsubscribe()
   }
 
@@ -567,6 +584,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     this.dateMeta.dateString = "";
     this.dateMeta.selectionType = null
     this.dateMeta.selectedRange = new DateRange(null, null);
+    this.dateSelectedEvent.emit(this._model.selection);
+    this.cdRef.markForCheck()
   }
 
   changeMonth(event) {
@@ -586,7 +605,6 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   touched = false;
 
-  disabled = false;
 
   writeValue(date: any) {
     // validate the date string for required format

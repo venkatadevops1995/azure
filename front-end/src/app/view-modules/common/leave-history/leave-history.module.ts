@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { ShowTableModule } from '../show-table/show-table.module';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 
 
 
@@ -26,8 +27,7 @@ import { ShowTableModule } from '../show-table/show-table.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatAutocompleteModule,
-    SvgIconModule,
-    MatIconModule,
+    SvgIconModule, 
     MatInputModule,
     FileDownloadModule,
     MatTableModule,
@@ -40,7 +40,8 @@ import { ShowTableModule } from '../show-table/show-table.module';
     MatInputModule,
     MatSlideToggleModule,
     MatSortModule,
-    ShowTableModule
+    ShowTableModule,
+    AtaiDateRangeModule
   ]
 })
 export class LeaveHistoryModule { }

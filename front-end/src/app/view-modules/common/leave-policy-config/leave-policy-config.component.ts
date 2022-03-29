@@ -248,7 +248,7 @@ export class LeavePolicyConfigComponent implements OnInit {
                 }
             })
         } else {
-            this.ss.statusMessage.showStatusMessage(true, 'No changes to update')
+            this.ss.statusMessage.showStatusMessage(false, 'No changes to update')
         }
     }
 

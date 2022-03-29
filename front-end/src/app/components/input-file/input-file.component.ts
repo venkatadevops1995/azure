@@ -66,6 +66,10 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // placeholder input
     @Input() pH: string;
 
+    @Input() bgColor: any;
+
+    @Input() borderColor: any;
+
     // placeholder input
     @Input() optional: boolean;
 
@@ -73,7 +77,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
     // for mat
     get placeholder() {
-        return this.pH;
+        return "";
     }
     set placeholder(plh) {
         this.pH = plh;
@@ -143,6 +147,8 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // below link gives all the different formats that have a known type by  file input which have an extension
     // https://www.iana.org/assignments/media-types/media-types.xhtml#image
     @Input() accept: any = { browser: '*', drop: false };
+
+    @Input() acceptString: string = ""
 
     //current form control. helpful in validating and accessing form control
     control: AbstractControl | any;

@@ -11,7 +11,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
-import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
+// import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -31,7 +33,9 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     MatIconModule,
     SvgIconModule,
     ReactiveFormsModule,
-    TooltipModule
+    // TooltipModule,
+    AtaiDateRangeModule,
+    MatTooltipModule
   ]
 })
 export class HrAttendenceReportModule { }
