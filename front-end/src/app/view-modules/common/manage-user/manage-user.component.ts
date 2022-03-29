@@ -14,6 +14,7 @@ import ValidateEmail from 'src/app/functions/validations/email';
 import { UserService } from 'src/app/services/user.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators'; 
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 
 export function NotNull(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -56,7 +57,9 @@ export interface ProjectData {
 })
 export class ManageUserComponent implements OnInit {
   selected_emp: UserData;
-
+  // Rahul change *******************************
+  @ViewChild("EditManagerDialog") EditManagerDialog : TemplateRef<any>;
+  // **********************************************
   @ViewChild('addUserDialog') addUserPopup: ModalPopupComponent;
 
   @ViewChild('confirmationDialog') confirmationPopup: ModalPopupComponent;
@@ -70,7 +73,7 @@ export class ManageUserComponent implements OnInit {
   @ViewChild('updateMis') updateMisPopUp:ModalPopupComponent;
 
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
-  displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
+  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
   data: UserData[] = [];
   USERS_DATA: any = [];
   RM_DATA: UserData[] = [];
@@ -117,6 +120,9 @@ export class ManageUserComponent implements OnInit {
     private http: HttpClientService,
     private fb: FormBuilder,
     private datepipe: DatePipe,
+    // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
+    public dialogRef: MatDialogRef<any>,  
+//*****************************************************************************************
     private user: UserService) {
       this.fgSearch = this.ss.fb.group({
         filtervalue: ["", [Validators.required]],
@@ -528,7 +534,19 @@ export class ManageUserComponent implements OnInit {
       this.FM_DATA = [ this.USERS_DATA[i].managers['3']];
     }
     
-    this.editManagerPopup.open();
+    // this.editManagerPopup.open();
+  //Rahul chaange  opening EditManagerDialog on clicking edit icon
+      this.dialogRef = this.dialog.open(PopUpComponent, {
+        data: {
+          heading: 'Transfer',
+          template:this.EditManagerDialog,
+          maxWidth:'420px',
+          hideFooterButtons: true,
+          showCloseButton: true,
+        },
+        autoFocus: false,
+      })
+/////////////////////////////////////
     this.edited_emp_name = this.USERS_DATA[i].emp_name
     console.log(this.edited_emp_name,this.USERS_DATA[i].emp_name.value)
     this.changeRoleForm.controls.emp_id.setValue(this.USERS_DATA[i].emp_id); 
@@ -574,7 +592,11 @@ export class ManageUserComponent implements OnInit {
 
       if (res.status == 200) {
         this.ss.statusMessage.showStatusMessage(true, "Managers have been updated successfully");
-        this.editManagerPopup.close();
+
+        // this.editManagerPopup.close();
+        // Rahul change (closing the EditManagerDialog)***************************************
+        this.dialogRef.close()
+        //*************************************************************************** 
         this.getAllReportes();
         
       } else {

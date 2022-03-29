@@ -1,7 +1,7 @@
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background-color: #F6FAFD;
+    // background-color: #F6FAFD;
     border-radius: 20px;
     margin: 0 0 10px;
     padding: 4px;
@@ -31,4 +31,27 @@ mat-form-field {
    p span{
     color: red;
    }
+}
+::ng-deep button.small{
+    width: 130px !important;
+}
+
+:host ::ng-deep div.middle {
+    div.model__content{
+        padding: 0 !important;
+    
+    }
+}
+.disable__emp_msg{
+    padding: 20px 0 0 40px;
+}
+button.disable--emp-btn{
+    color: var(--col-warn-A200) !important;
+    
+    cursor: default !important;
+}
+ button.action--btn{
+    background-color: transparent;
+    color: var(--col-primary-300);
+
 }

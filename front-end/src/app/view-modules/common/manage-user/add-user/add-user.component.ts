@@ -13,7 +13,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { take } from 'rxjs/operators';
-
+// Rahul changes *****************************
 import { MAT_DATE_LOCALE, NativeDateAdapter } from "@angular/material/core";
 import { DateAdapter,MAT_DATE_FORMATS } from '@angular/material/core';
 import { formatDate } from '@angular/common';
@@ -29,6 +29,7 @@ export interface UserData {
   }[]
 
 }
+// ******************************************************
 export interface ProjectData {
   id: number,
   name: string
@@ -50,7 +51,9 @@ export function NoDate(): ValidatorFn {
     return res ? { notNull: true } : null
   }
 }
-// Date Adapter
+// Date Adapter(Rahul changes) *************************
+// **************************************************************
+// **************************************************************
 export const PICK_FORMATS = {
   parse: {
     dateInput: {month: 'numeric', year: 'numeric', day: 'numeric'}
@@ -72,21 +75,25 @@ export class PickDateAdapter extends NativeDateAdapter {
       }
   }
 }
-
+//****************************************************************** */
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
+  // rahul changes ***********************************
   providers: [
     {provide: DateAdapter, useClass: PickDateAdapter},
     {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
 ] 
+// ******************************************************
 })
 export class AddUserComponent implements OnInit ,AfterViewInit   {
  
   // @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
   @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
+  // Rahul changes ****************************
   @ViewChild('f') myNgForm:NgForm;
+  // ***********************************************
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
   data: UserData[] = [];
@@ -384,12 +391,23 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     formData.append('category', this.addUserForm.controls.category.value);
     formData.append('location', this.addUserForm.controls.location.value);
     formData.append('gender', this.addUserForm.controls.gender.value);
+    // Rahul changes ************************************************
     formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value, 'yyyy-MM-dd'));
+    // ****************************************************************
+
     // formData.append('is_married', this.addUserForm.controls.is_married.value);
     // formData.append('patentry_maternity_cnt', this.addUserForm.controls.patentry_maternity_cnt.value);
+  // ******************************************************
+  // ******************************************************
+  // *****************************************************
+  // logging the formdata in console after submission
 
-
-
+    formData.forEach(i=>{
+      console.log("Posting payload for add user:" ,i)
+    })
+    this.reset();
+    // *************************************************
+    // ************************************************** *
     this.http.request('post', 'users/', '', formData).subscribe(res => {
 
       if (res.status == 201) {
@@ -425,7 +443,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
     }
 }
-//Open dialogBox dynamically
+//Rahul change Open dialogBox dynamically(rahul changes) ************************
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       panelClass: 'confirm-remove-project',
@@ -439,13 +457,15 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
         if(data){
           // call addUser
           this.addUser();
+          //Reeset the form 
           console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.myNgForm.resetForm());
 
         }else{
           // this.myNgForm.resetForm();
         }
     })
-  }        
+  }       
+  // **************************************************************** 
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {

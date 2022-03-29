@@ -51,10 +51,12 @@ export class AttendenceSheetComponent implements OnInit {
 
   constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
     this.filteredManagers = this.option.valueChanges
+  
       .pipe(
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.EMPS ? this.EMPS.slice() : [])
       );
+    
   }
 
   private filterManagerList(value: string) {

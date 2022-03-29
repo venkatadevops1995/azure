@@ -16,7 +16,7 @@
 
           <mat-form-field>
             <mat-label>Last Name</mat-label>
-            <input matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
+            <input autocomplete="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
             <mat-error
               *ngIf="addUserForm.controls.lastName.touched && addUserForm.controls.lastName.hasError('required')">
               Please enter Last Name
@@ -25,7 +25,7 @@
 
           <mat-form-field>
             <mat-label>Email</mat-label>
-            <input matInput formControlName="email" />
+            <input autocomplete="off" matInput formControlName="email" />
             <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('required')">
               Please enter Email
             </mat-error>
@@ -40,7 +40,7 @@
 
           <mat-form-field>
             <mat-label>Staff No.</mat-label>
-            <input matInput formControlName="staff_no">
+            <input autocomplete="off" matInput formControlName="staff_no">
             <mat-error
               *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
               Please enter Staff No.
@@ -176,7 +176,7 @@
                         <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
                       </button> -->
           <!-- <app-atai-date-range></app-atai-date-range> -->
-          <input matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
+          <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
           <mat-datepicker-toggle matSuffix [for]="picker">
             <mat-icon matSuffix  matDatepickerToggleIcon role="img" class="mat-icon material-icons "
             style="color:var(--col);">date_range</mat-icon>

@@ -539,7 +539,8 @@ export class HolidayComponent implements OnInit {
         heading: 'Add Holiday Option',
         template:this.templateHolidayForm,
         maxWidth:'500px'
-      }
+      },
+    
     })
 
     dialogRef.afterClosed().pipe(take(1)).subscribe(result => {

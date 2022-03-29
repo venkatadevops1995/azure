@@ -45,7 +45,7 @@ body {
 
 .mat-cell,
 .mat-footer-cell {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .header-gradient {
@@ -146,7 +146,18 @@ td.mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
   text-align: center !important;
+  // rahul change (making policy column left align in policy component)***********
+   &.table-colum-left{
+  text-align:left !important;
+   }
+//*******************************************************
   background: unset;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 60px;
+  &.w-350px{
+    max-width:350px !important;
+  }
 }
 
 .mat-calendar-body-selected {
@@ -332,6 +343,18 @@ mat-dialog-container.mat-dialog-container {
   }
 }
 
+// ********************************************************
+// Rahulchange (universal popup font -size)**********************
+.mat-option{
+  font-size:inherit !important;
+  
+}
+// ********************************************************
+// Rahulchange (adding font family for table universal)**********************
+// table.mat-table{
+//   font-family: 'Inter';
+// }
+// ********************************************************
 
 // File upload component styles ( inside mat form field)
 
@@ -340,3 +363,9 @@ mat-dialog-container.mat-dialog-container {
       display: none;
   }
 }
+
+// rahul change ( giving some padding to policy column in policy component)***********
+.pl-table-50{
+  padding-left:50px !important;
+}
+//*******************************************************

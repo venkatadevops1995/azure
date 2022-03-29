@@ -1,16 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 import { HttpParams } from '@angular/common/http';
 import ValidateEmail from 'src/app/functions/validations/email';
 import { NotNull, NoDate } from '../manage-user.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, take } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+
+
 export interface UserData {
   emp_id: number;
   name: string;
@@ -32,20 +36,39 @@ export interface UserData {
 })
 export class EditUserComponent implements OnInit {
 
+//  Rahul change(using Viewchild for modalPopup)**************************
+@ViewChild("editEmppopup") editEmppopup : TemplateRef<any>;
+
+//  ***********************************************************************
+// ********************************************************************
+// ***************************************************************
+//  Rahul change(using Viewchild for disable employee popup)**************************
+@ViewChild("disableEmppopup") disableEmppopup : TemplateRef<any>;
+@ViewChild("errorOnDisablePopup") errorOnDisablePopup : TemplateRef<any>;
+@ViewChild("successOnDisablePopup") successOnDisablePopup : TemplateRef<any>;
+
+//  ***********************************************************************
+// ********************************************************************
+// ***************************************************************
   @ViewChild('refModalDisable') modalDisable: ModalPopupComponent
   @ViewChild('refModalDisableError') modalDisableError: ModalPopupComponent
   @ViewChild('refModalDisableSuccess') modalDisableSuccess: ModalPopupComponent
   
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
   
-  displayedColumns: string[] = ['staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
     private datepipe : DatePipe,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
-    private user: UserService) { 
+    private user: UserService,
+// Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
+    public dialogRef: MatDialogRef<any>,  
+//*****************************************************************************************
+// ***********************************************************************************************
+    ) { 
       this.filteredManagers = this.searchField.valueChanges
         .pipe(
           startWith(''),
@@ -66,6 +89,8 @@ export class EditUserComponent implements OnInit {
   filteredManagers: Observable<any>;
   errorMessage : string = "";
   disableEmpName: string = '';
+  editAbleEmpName:string = '';
+  delete_emp_success_msg:string ='';
   ngOnInit(): void {
     this.getAllReportes();
   }
@@ -159,7 +184,13 @@ export class EditUserComponent implements OnInit {
     this.searchField.reset()
     this.USERS_DATA = []
   }
-
+  // (rahul change) adding the onDateSelection() for selecting date****************
+  
+  onDate(event): void {
+    console.log("Date input:",event)
+    
+  }
+  //***************************************************************************** */
 
   editUser(i){
     this.  getCompanies() 
@@ -172,14 +203,31 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
-
-    this.editUserPopup.open()
+ // Rahul change(opening modal popup)******************************
+    // this.editUserPopup.open()
+  
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Edit Employee',
+        template:this.editEmppopup,
+        maxWidth:'420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+      },
+      autoFocus: false,
+    })
+    // calling setId() for getting userName corresponding to click index
+    this.setId(i)
+    // ******************************************************************
     console.log(i,)
     this
   }
   close(){
     this.editUserForm.reset()
-    this.editUserPopup.close()
+    // this.editUserPopup.close()
+    // this.dialog.closeAll()
+    console.log("$$$$$  Close cl")
+    this.dialogRef.close()
 
   }
 
@@ -205,44 +253,113 @@ export class EditUserComponent implements OnInit {
     this.disableEmp();
   }
   disableEmp() {
-    let  obj = {
-      emp_id : this.editUserForm.value.emp_id,
-      relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
+    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%date%%%%%%%%%%%%%%%%%%%%',this.deleteUserForm.value.dol)
+    if(this.deleteUserForm.value.dol){
+        let  obj = {
+          emp_id : this.editUserForm.value.emp_id,
+          relieved : this.datepipe.transform(this.deleteUserForm.value.dol, 'yyyy-MM-dd'),
+        //   relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
+        }
+      
+        this.http.request("put", "delete/",'', obj).subscribe(res => {
+          if (res.status == 400) {
+              this.errorMessage = res.error.message + ". First update employee's manager";
+              // this.modalDisableError.open()
+//Rahul change(open a dialog box on status 400 when user click on disable employee proceed button ) ************************
+           
+        this.dialog.open(ConfirmDialogComponent, {
+            panelClass: 'confirm-remove-project',
+            backdropClass:'cdk-overlay-darker-backdrop',
+            data: {
+              template: this.errorOnDisablePopup,
+              heading: '',
+                hideFooterButtons:true,
+            }
+          })
+  // **************************************************************** 
+            this.deleteUserForm.controls.dol.setValue('')
+            return;
+          }else if(res.status == 406){
+            this.errorMessage = res.error.message;
+              // this.modalDisableError.open()
+//Rahul change(open a dialog box  when user click on disable employee proceed button and enter releaving date less then 
+//joining date ) ************************
+        this.dialog.open(ConfirmDialogComponent, {
+          panelClass: 'confirm-remove-project',
+          backdropClass:'cdk-overlay-darker-backdrop',
+          data: {
+            template: this.errorOnDisablePopup,
+            heading: '',
+              hideFooterButtons:true,
+          }
+        })
+// **************************************************************** 
+          
+            this.deleteUserForm.controls.dol.setValue('')
+            return;
+          }
+          if (res.body["success"] == true) {
+      
+              console.log("-------------------------")
+              // this.modalDisableError.open()
+//Rahul change(open a dialog box on status success when user click on disable employee proceed button ) ************************
+       
+        this.dialog.open(ConfirmDialogComponent, {
+          panelClass: 'confirm-remove-project',
+          backdropClass:'cdk-overlay-darker-backdrop',
+          data: {
+            template: this.successOnDisablePopup,
+            heading: '',
+            hideFooterButtons:true,
+          }
+        })
+// **************************************************************** 
+              this.close()
+              this.getAllReportes()
+              this.delete_emp_success_msg = res.body.results
+              this.deleteUserForm.controls.dol.setValue('')
+              this
+          } else {
+            alert(res.body.message)
+    
+            this.errorMessage = res.body.message;
+             // this.modalDisableError.open();
+//Rahul change(open a dialog box  when user click on disable employee proceed button and get some server error 
+        this.dialog.open(ConfirmDialogComponent, {
+          panelClass: 'confirm-remove-project',
+          backdropClass:'cdk-overlay-darker-backdrop',
+          data: {
+            template: this.errorOnDisablePopup,
+            heading: '',
+              hideFooterButtons:true,
+          }
+        })
+// **************************************************************** 
+           
+            this.deleteUserForm.controls.dol.setValue('')
+            return;
+            
+          }
+        })
+    }else{
+      return;
     }
-    this.http.request("put", "delete/",'', obj).subscribe(res => {
-      if (res.status == 400) {
-          this.errorMessage = res.error.message + ". First update employee's manager";
-        this.modalDisableError.open()
-        return;
-      }else if(res.status == 406){
-        this.errorMessage = res.error.message;
-        this.modalDisableError.open()
-        return;
-      }
-      if (res.body["success"] == true) {
-  
-          console.log("-------------------------")
-          this.modalDisableSuccess.open()
-          this.close()
-          this.getAllReportes()
-          this
-      } else {
-        alert(res.body.message)
-
-        this.errorMessage = res.body.message;
-        this.modalDisableError.open()
-        return;
-        
-      }
-    })
+    
   }
   setId(i : number) {
     this.index = i;
-    this.disableEmpName = this.USERS_DATA[i]["emp_name"]    
+    this.disableEmpName = this.USERS_DATA[i]["emp_name"]  
+    //Rahul change(assigning employee name after calling setId() from editUser() by passing the index number*****
+    //********************************************************************************************* 
+    this.editAbleEmpName = this.USERS_DATA[i]["emp_name"]    
+    //**********************************************************************
   }
 
    proeceedDisable() {
-     this.modalDisable.close();
+    //  Rahul change (closing disableEmployee popup)***************************
+    //  **********************************************************************
+    //  this.modalDisable.close();
+    this.dialogRef.close();
      if (this.index != -1) {
        this.disableUser(this.index);
      }
@@ -251,4 +368,31 @@ export class EditUserComponent implements OnInit {
     console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
     e.click()
   }
+
+//Rahul change (disableEmppopupopen() and disableEmppopupclose() are added)in order to open and close disable employee squre
+// popup
+disableEmppopupopen(){
+  this.dialogRef = this.dialog.open(PopUpComponent, {
+    data: {
+      heading: 'Edit Employee',
+      template:this.disableEmppopup,
+      maxWidth:'420px',
+      hideFooterButtons: true,
+      showCloseButton: true,
+    },
+    autoFocus: false,
+  })
+}
+// disableEmpclose(){
+//   this.dialogRef.close();
+// }
+//**************************************************************************************** */
+//Rahul change ( disableerorrpopup() is added in order to close all confermation popup 
+// while user click on disable employee proceed  button
+
+disableerorrpopup(){
+  console.log('disable error popup have been close#####################')
+  this.dialog.closeAll();
+}
+//**************************************************************************************** */
 }

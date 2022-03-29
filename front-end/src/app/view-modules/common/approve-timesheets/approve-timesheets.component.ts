@@ -319,7 +319,8 @@ export class ApproveTimesheetsComponent implements OnInit {
           showCloseButton:true,
           heading:'Weekly Status Report',
           maxWidth:'780px'
-        }
+        },
+       
       })
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
 
@@ -384,7 +385,8 @@ export class ApproveTimesheetsComponent implements OnInit {
           heading:"Enter Comments",
           hideFooterButtons:true,
           showCloseButton:true,
-        }
+        },
+      
       })
       this.dialogRef.afterOpened().pipe(take(1)).subscribe((val) => {
         this.commentForm.resetForm()

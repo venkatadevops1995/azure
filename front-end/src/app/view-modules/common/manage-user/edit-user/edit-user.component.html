@@ -1,13 +1,22 @@
 <div>
-    <div class="flex" style="justify-content:space-between;">
-
-        <div class="flex w-50">
+    <div class="flex middle-xs" style="justify-content:space-between;">
+        <h2 class="heading fw-600">Edit Employee</h2>
+        <div class="fs-14 flex w-50 end-xs middle-xs">
             <mat-form-field class="w-50 mr-10">
-                <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField" >
+                <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField">
                 <button style="background: none;border:none;" mat-button type='button' matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                    <mat-icon>arrow_drop_down</mat-icon>
+                    <!-- <mat-icon>arrow_drop_down</mat-icon> -->
+                    <!-- rahul changes(icons-sprite-new) ************************************
+                ****************************************************** -->
+                <div  [svgIcon]="{url:'./assets/icons-sprite-new.svg#dropdown-arrow',w:14}"
+                style="
+               color: var(--col-warn-A200);
+               cursor: pointer;
+             "
+              svg-fill="#6A6A6A"></div>
+              <!-- ************************************************************ -->
                   </button>
-                <mat-autocomplete #auto="matAutocomplete">
+                <mat-autocomplete class="fs-14" #auto="matAutocomplete">
                     <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
                         {{state.emp_name}}
                     </mat-option>
@@ -40,8 +49,12 @@
     </div> -->
     </div>
 </div>
-<table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8">
-
+<table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
+    <ng-container matColumnDef="serial_no">
+        <th mat-header-cell *matHeaderCellDef> S.NO </th>
+        <td mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
+    </ng-container>
+    
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
@@ -49,7 +62,7 @@
 
     <ng-container matColumnDef="staff_no">
         <th mat-header-cell *matHeaderCellDef>Staff No. </th>
-        <td mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
+        <td  mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
     </ng-container>
 
     <ng-container matColumnDef="email">
@@ -117,17 +130,41 @@
     <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef> Edit</th>
         <td mat-cell *matCellDef="let element;let i = index">
-            <button type="button" style="border: none;background-color: #f6fafd;" (click)="editUser(i)"><span class="material-icons">
+            <!-- <button type="button" style="border: none;background-color: #f6fafd;" (click)="editUser(i)"><span class="material-icons">
                 mode_edit
-                </span></button>
+                </span></button> -->
+        <!-- rahul changes(icons-sprite-new) ************************************
+        ****************************************************** -->
+                <div  (click)="editUser(i)" [svgIcon]="{url:'./assets/icons-sprite-new.svg#edit',w:16}"
+                style="
+               color: var(--col-primary-300);
+               cursor: pointer;
+             "
+              svg-fill="currentColor"></div>
+      <!-- ************************************************************ -->
         </td>
     </ng-container>
     <ng-container matColumnDef="disable">
         <th mat-header-cell *matHeaderCellDef> Disable</th>
         <td mat-cell *matCellDef="let element;let i = index">
-            <button type="button" style="border: none;background-color: #f6fafd;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
+            <!-- <button type="button" style="border: none;background-color: #f6fafd;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
                 delete
-                </span></button>
+                </span></button> -->
+                <!-- rahul changes(icons-sprite-new) ************************************
+                ****************************************************** -->
+                <!-- <div  (click)="setId(i); modalDisable.open()" [svgIcon]="{url:'./assets/icons-sprite-new.svg#disable',w:16}"
+                style="
+               color: var(--col-warn-A200);
+               cursor: pointer;
+             "
+              svg-fill="currentColor"></div> -->
+              <button class="action--btn" (click)="setId(i); disableEmppopupopen()" [svgIcon]="{url:'./assets/icons-sprite-new.svg#disable',w:16}"
+              [disabled]="element.staging_status !== null ? true : false"
+              [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" 
+              style="border: none;cursor: pointer;  "
+           title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}" 
+            svg-fill="currentColor"></button>
+              <!-- ************************************************************ -->
         </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -140,14 +177,15 @@
 </div>
 
 
-
-<app-modal-popup #editEmp [w]="'500px'" [h]="'480px'">
+ <!-- Rahul change(no need some field in editUser popup) ************************************
+                ************************************************* -->
+ <!-- <app-modal-popup #editEmp [w]="'500px'" [h]="'480px'">
     <div head>
         Edit Employee
     </div>
     <div>
         <form [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
-            <div class="grid-container">
+            <div class="grid-container"> 
 
                 <mat-form-field class="disabled-input">
                     <mat-label>Name</mat-label>
@@ -167,7 +205,6 @@
                         Entered Staff No. already exists
                     </mat-error>
                 </mat-form-field>
-
 
                 <mat-form-field class="disabled-input">
                     <mat-label>Email</mat-label>
@@ -194,8 +231,6 @@
                     </mat-error>
                 </mat-form-field>
 
-
-
                 <mat-form-field>
                     <mat-label>Gender</mat-label>
                     <mat-select formControlName="gender" [disabled]="true">
@@ -204,8 +239,7 @@
                     <mat-error *ngIf="editUserForm.controls.gender.touched && editUserForm.controls.gender.hasError('required')">
                         Please Select Gender
                     </mat-error>
-                </mat-form-field>
-
+                </mat-form-field> 
 
                 <mat-form-field>
                     <mat-label>Category</mat-label>
@@ -216,8 +250,6 @@
                         Please Select Category
                     </mat-error>
                 </mat-form-field>
-
-
 
                 <div mat-dialog-actions style="padding-bottom:20px">
                     <div style="display: inline-block; text-align: center;">
@@ -234,7 +266,97 @@
         </form>
 
     </div>
-</app-modal-popup>
+</app-modal-popup>  -->
+<!-- **************************************************************
+************************************************************ -->
+<!-- Rahul change(no need some field in editUser popup change into modelpopup) ************************************
+ ************************************************* -->
+ <ng-template #editEmppopup>
+ <form class="fs-14 flex col nowrap center-xs"[formGroup]="editUserForm" (ngSubmit)="updateEmp()">
+    <p class="col-primary-400">Select Category for</p>
+    <div class="fs-18 mb-30"> {{ editAbleEmpName  | titlecase }} </div> 
+
+    <mat-form-field >
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+            <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="editUserForm.controls.category.touched && editUserForm.controls.category.hasError('required')">
+            Please Select Category
+        </mat-error>
+    </mat-form-field>
+    <div class="center-xs  mt-20" mat-dialog-actions style="padding-bottom:20px;">
+        <!-- <div style="display: inline-block; text-align: center;padding-left: 10px;">
+            <app-button size='small' theme="grey" type="button" (click)="close()">Close</app-button>
+        </div> -->
+        <div style="display: inline-block; text-align: center;">
+            <app-button size='small' theme="success" type="submit" [disabled]="editUserForm.invalid">Update</app-button>
+        </div>
+
+       
+    </div>
+</form>
+</ng-template>
+<!-- **************************************************************
+************************************************************ -->
+<!-- rahul change added custom date(disable-employee popup) *****************************
+            ******************************************************************* -->
+<ng-template #disableEmppopup>
+    <div  class=" p-15 flex col nowrap center-xs">
+        <p class="col-primary-400">
+            You want to disable :
+        </p>
+          <div class="fs-18 mb-30 delete__emp">
+            {{ disableEmpName ? disableEmpName : '' }}
+        </div> 
+        <!-- <div class="delete__emp">
+            <p> <span> </span> </p>
+        </div> -->
+       <form class="fs-14"[formGroup]="deleteUserForm" >
+        <mat-form-field class="custompicker w-100">
+         
+            <mat-label>Relieved Date</mat-label>
+            <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
+                formControlName="dol" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
+            <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
+                <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
+              </button> -->
+            <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" >date_range</mat-icon>
+            <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+                Please select Relieved Date
+            </mat-error> -->
+            <input matInput  [matDatepicker]="picker" formControlName="dol" autocomplete="off" (keydown)="false" (click)="picker.open()" (dateChange)="onDate($event)" >
+          <mat-datepicker-toggle matSuffix [for]="picker">
+            <div matSuffix   matDatepickerToggleIcon [svgIcon]="{url: './assets/icons-sprite-new.svg#calendar'}"
+            style="
+            color: var(--col-primary-300);
+            margin-top: 0px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+          "
+           svg-fill="currentColor">
+         </div>
+        </mat-datepicker-toggle>
+        <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+        <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+            Please select Relieving Date
+          </mat-error>
+        </mat-form-field>
+
+        <!-- <mat-form-field appearance="legacy" class="no-pb atai-date-range">
+            <app-atai-date-range [minDate]="minDate" [maxDate]="maxDate" [allowSameDateRange]="true" [showInput]="true"
+              [showPresets]="true" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+          </mat-form-field> -->
+       </form>
+        <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
+            <!-- <app-button theme="black" size="small" theme="grey"class="mr-30 zeros-project-cancel" (click)="disableEmpclose()">Cancel</app-button> -->
+            <app-button size="small" theme="success" class="zeros-project-proceed" (click)="proeceedDisable()">Proceed</app-button>
+        </div>
+    </div>
+ </ng-template>
+<!-- **************************************************************
+************************************************************ -->
 <app-modal-popup [w]="500" [h]="500" #refModalDisable>
     <div head="">
         Confirm
@@ -245,33 +367,85 @@
         </div>
        <form [formGroup]="deleteUserForm" >
         <mat-form-field class="custompicker">
+         
             <mat-label>Relieved Date</mat-label>
             <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
                 formControlName="dol" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
             <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
                 <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
               </button> -->
-            <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" >date_range</mat-icon>
+            <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" >date_range</mat-icon>
             <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
                 Please select Relieved Date
-            </mat-error>
+            </mat-error> -->
+            <input matInput  [matDatepicker]="picker" formControlName="dol" (dateChange)="onDate($event)" required>
+          <mat-datepicker-toggle matSuffix [for]="picker">
+            <div matSuffix   matDatepickerToggleIcon [svgIcon]="{url: './assets/icons-sprite-new.svg#calendar'}"
+            style="
+            color: var(--col-primary-300);
+            margin-top: 0px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+          "
+           svg-fill="currentColor">
+         </div>
+        </mat-datepicker-toggle>
+        <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+        <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+            Please select Relieving Date
+          </mat-error>
         </mat-form-field>
+
+        <!-- <mat-form-field appearance="legacy" class="no-pb atai-date-range">
+            <app-atai-date-range [minDate]="minDate" [maxDate]="maxDate" [allowSameDateRange]="true" [showInput]="true"
+              [showPresets]="true" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+          </mat-form-field> -->
        </form>
         <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
             <app-button theme="black" class="mr-30 zeros-project-cancel" (click)="modalDisable.close()">Cancel</app-button>
-            <app-button class="zeros-project-proceed" (click)="proeceedDisable()">Proceed</app-button>
+            <app-button [disabled]="!deleteUserForm.valid" class="zeros-project-proceed"  (click)="proeceedDisable()">Proceed</app-button>
         </div>
     </div>
 </app-modal-popup>
+<!-- Rahul change (template refrance added for the getting error masg while disabling the employee)*****************-->
+<ng-template #errorOnDisablePopup>
+    <div class=" flex col nowrap center-xs" style="gap:1em;">
+    <div  [svgIcon]="{url:'./assets/icons-sprite-new.svg#Error',w:40}"
+    style="
+   color: var(--col-primary-300);
+   cursor: pointer;
+ "
+  svg-fill="currentColor"></div>
+  <h1 >{{errorMessage}}</h1>
+  <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Got it</app-button>
+</div>
+</ng-template>
+<!-- *************************************************************************************************************** -->
 
-
-
-
+<!-- 
 <app-modal-popup [w]="500" [h]="250" #refModalDisableError>
-   <h1>{{errorMessage}}</h1>
-</app-modal-popup>
-
-
+    <div head="">
+        Disable Employee
+    </div>
+   <h1 class="disable__emp_msg">{{errorMessage}}</h1>
+</app-modal-popup> -->
+<ng-template #successOnDisablePopup>
+    <div class=" flex col nowrap center-xs" style="gap:1em;">
+    <div  [svgIcon]="{url:'./assets/icons-sprite-new.svg#success-tick-circle',w:40}"
+    style="
+   color: var(--col-primary-300);
+   cursor: pointer;
+ "
+  svg-fill="currentColor"></div>
+  <h1 >{{delete_emp_success_msg}}</h1>
+  <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Done</app-button>
+</div>
+</ng-template>
+<!-- 
 <app-modal-popup [w]="500" [h]="250" #refModalDisableSuccess>
-    <h1>You successfully disabled employee</h1>
- </app-modal-popup>
+    <div head="">
+        Disable Employee
+    </div>
+    <h1 class="disable__emp_msg">{{delete_emp_success_msg}}</h1>
+ </app-modal-popup> -->
