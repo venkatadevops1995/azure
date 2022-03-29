@@ -69,7 +69,7 @@
     padding: 10px 10px;
     position: relative;
     font-size: 14px;
-    &:not(.general):before{
+    &:before{
       content:"";
       height: 60%;
       width:2px;

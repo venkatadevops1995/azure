@@ -1,6 +1,10 @@
 <app-pre-sign-in>
+  <div class="welcome-heading">
+    <h1>Hello,</h1>
+    <span>Welcome back!</span>
+  </div>
   <!-- <h2 class="heading tac">Login!</h2> -->
-  <form #form="ngForm" class="mt-30 fs-14" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
+  <form #form="ngForm" class="fs-14" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
     <div class="  middle-xs flex" matPrefix>
       <div class="mr-10" fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#user',w:25}"
         style="color:var(--col-accent-500);" svg-fill="currentColor"></div>
@@ -29,12 +33,12 @@
           Please enter the password
         </mat-error>
 
-        <div style="cursor: pointer;" matSuffix [attr.aria-label]="'Hide password'"
+        <div class="col-primary-300" style="cursor: pointer;" matSuffix [attr.aria-label]="'Hide password'"
           (click)="hidePassword = !hidePassword">
           <div title="Show password" *ngIf="hidePassword" matPrefix fill="inherit"
-            [svgIcon]="{url:'./assets/icons-sprite.svg#eye',w:25}" svg-fill="#333"></div>
+            [svgIcon]="{url:'./assets/icons-sprite-new.svg#show-password',w:25}" svg-fill="currentColor"></div>
           <div title="Hide password" *ngIf="!hidePassword" matPrefix fill="inherit"
-            [svgIcon]="{url:'./assets/icons-sprite.svg#eye-slash',w:25}" svg-fill="#333"></div>
+            [svgIcon]="{url:'./assets/icons-sprite-new.svg#hide-password',w:25}" svg-fill="currentColor"></div>
         </div>
       </mat-form-field>
     </div>

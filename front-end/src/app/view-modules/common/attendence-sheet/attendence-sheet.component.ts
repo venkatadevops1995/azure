@@ -11,8 +11,9 @@ import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { AtaiDateRangeComponent, SelectionPresetTypes } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { DateRange } from '@angular/material/datepicker';
+import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 
 export interface AttendanceInterface {
   date: any;
@@ -36,24 +37,26 @@ export class AttendenceSheetComponent implements OnInit {
   date4;
   EMPS: any[];
   option = new FormControl('');
+  datePickerPresets: SelectionPresetTypes = ['Last 30 Days', 'Last Month', 'This Month']
   // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ATTENDENCE_DATA: AttendanceInterface[] = [];
   displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net', 'posted'];
   dataSource = this.ATTENDENCE_DATA;
-  maxDate = moment();
+  maxDate = new Date(new Date().getTime() - 10 * MILLISECONDS_DAY);
   selected: any = {};
   selectedEmpId: any;
   value: any;
   filteredManagers: Observable<any>;
-  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
 
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
     this.filteredManagers = this.option.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.EMPS ? this.EMPS.slice() : [])
       );
   }
+
   private filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
     return this.EMPS.filter(option => option.emp_name.toLowerCase().includes(filterValue))
@@ -70,14 +73,14 @@ export class AttendenceSheetComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.dateRangePicker.setPresetValue('Last 30 Days')
       // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
       this.getReporters();
     })
   }
 
-  onDateSelection(val:DateRange<any> ){
+  onDateSelection(val: DateRange<any>) {
     console.log(val)
     // this.fromdate = val.start;
     this.fromdate = this.convertDatefmt(val.start)
@@ -96,7 +99,7 @@ export class AttendenceSheetComponent implements OnInit {
       //    })
       this.downloadable = true
     } else if (emp_id !== undefined) {
-      this.http.request("get", 'attendance/?from=' +fromdate+ '&to=' +todate+ '&emp_id=' + emp_id,).subscribe(res => {
+      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
         if (res.status == 200) {
           console.log(res.body['results'])
           this.ATTENDENCE_DATA = res.body['results'];

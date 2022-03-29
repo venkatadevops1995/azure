@@ -16,9 +16,9 @@
     <mat-form-field style="flex-basis:200px;" appearance="legacy" class="no-pb atai-date-range">
       <app-atai-date-range (dateSelected)="onDateSelection($event)"></app-atai-date-range>
     </mat-form-field>
-    <div class="export_icon ml-30" style="cursor:pointer;"
+    <div class="export_icon ml-30 pointer" 
       [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
-      [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}" svg-fill="currentColor">
+      [svgIcon]="{url:'./assets/icons-sprite.svg#excel-green',w:30}"  >
     </div>
   </div>
 

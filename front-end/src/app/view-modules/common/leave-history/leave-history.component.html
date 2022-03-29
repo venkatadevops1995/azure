@@ -22,9 +22,8 @@
         <app-atai-date-range (dateSelected)="onDateSelect($event)"></app-atai-date-range>
       </mat-form-field>
 
-      <div title="Download" class="export_icon ml-50" (click)="onClickExportResolved()"
-        [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}"
-        style="color:var(--color-tertiary);margin-top:0px;cursor:pointer" svg-fill="currentColor">
+      <div title="Download" class="export_icon ml-50 pointer" (click)="onClickExportResolved()"
+        [svgIcon]="{url:'./assets/icons-sprite-new.svg#excel-green',w:25}"   >
       </div>
     </div>
   </div>
