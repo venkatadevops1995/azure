@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '../button/button.module';
 import { ModalPopupModule } from '../modal-popup/modal-popup.module';
 import { MatIconModule } from '@angular/material/icon';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 
 
 
@@ -21,7 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     ButtonModule,
     ModalPopupModule,
-    MatIconModule
+    MatIconModule,
+    SvgIconModule
   ],
   exports: [LeaveDetailsComponent]
 })

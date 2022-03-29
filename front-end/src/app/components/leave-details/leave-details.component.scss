@@ -1,31 +1,76 @@
 :host {
-    .abs-image-zoom {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-        background: var(--color-blue-bg);
-        padding: 40px;
-        z-index: 11;
-        .abs-image-inner {
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-        }
-        .close-image-zoom {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
+  .abs-image-zoom {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: var(--color-blue-bg);
+    padding: 40px;
+    z-index: 11;
+
+    .abs-image-inner {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
     }
+
+    .close-image-zoom {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+
+  .leave-details {
+    .leave-details__data {
+      display: grid;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      grid-template-columns: repeat(4, 1fr);
+      // row-gap:50px;
+      column-gap: 40px;
+
+      .leave-details__single {
+        margin-bottom: 40px;
+
+        &.leave-details__single--span-2 {
+          grid-column: span 2;
+        }
+
+        &.leave-details__single--span-4 {
+          grid-column: span 4;
+        }
+
+        .leave-details__single-title {
+          color: var(--col-primary-300);
+        }
+
+        .leave-details__single-value {}
+      }
+    }
+  }
+
+  .ip-simple {
+    background: none;
+    max-width: 50px;
+    margin: 0px 15px;
+    height: 30px;
+    line-height: 30px;
+    border:none;
+    outline: none;
+    border-bottom: 1px solid var(--col-accent-500);
+    color:#fff;
+    text-align: center;
+  }
 }
 
 ::ng-deep .consumed {
-    .mat-form-field-flex {
-        height: 45px!important;
-    }
-    .mat-form-field-infix {
-        padding: 0.2em 0 1em 20px!important;
-    }
+  .mat-form-field-flex {
+    height: 45px !important;
+  }
+
+  .mat-form-field-infix {
+    padding: 0.2em 0 1em 20px !important;
+  }
 }

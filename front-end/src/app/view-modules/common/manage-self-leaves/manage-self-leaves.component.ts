@@ -56,7 +56,7 @@ export class ManageSelfLeavesComponent implements OnInit {
     maxDate = new Date()
 
     // the maxdate for the calendar when opening for date selection for a holiday row in edit mode
-    minDate = new Date(this.maxDate.getTime() - (30 * 86400000))
+    minDate = new Date(this.maxDate.getTime() - (5 * 365 * MILLISECONDS_DAY))
     // maxDate = moment().subtract(0, 'days');
 
     // minDate = moment().subtract(30, 'days')
@@ -162,17 +162,17 @@ export class ManageSelfLeavesComponent implements OnInit {
         this.dialogRefLeaveApplication = this.dialog.open(PopUpComponent, {
             panelClass: 'apply-leave',
             data: {
-              template: this.templateRefApplyLeave,
-              hideFooterButtons: true,
-              showCloseButton: true,
-              heading: 'Apply Leave',
-              maxWidth: '900px'
+                template: this.templateRefApplyLeave,
+                hideFooterButtons: true,
+                showCloseButton: true,
+                heading: 'Apply Leave',
+                maxWidth: '900px'
             }
-          });
-  
-          this.dialogRefLeaveApplication.afterClosed().pipe(take(1)).subscribe(() => {
-              this.applyLeaveRef.onClose()
-          });
+        });
+
+        this.dialogRefLeaveApplication.afterClosed().pipe(take(1)).subscribe(() => {
+            this.applyLeaveRef.onClose()
+        });
     }
 
 
@@ -228,11 +228,11 @@ export class ManageSelfLeavesComponent implements OnInit {
 
 
     eventHandlerApplyLeave(data: { type: any, data: any }) {
-        if(data.type == 'submitted'){
+        if (data.type == 'submitted') {
             this.getAppliedLeaves();
             this.getLeaveHistory();
             this.getCurrentLeaveBalance();
-        }else if (data.type == 'cancel'){
+        } else if (data.type == 'cancel') {
             this.dialogRefLeaveApplication.close()
         }
     }

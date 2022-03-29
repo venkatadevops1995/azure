@@ -14,6 +14,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -34,7 +35,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
     MatIconModule,
     SvgIconModule,
     ReactiveFormsModule,
-    TooltipModule,
+    MatTooltipModule,
     AtaiDateRangeModule
   ]
 })

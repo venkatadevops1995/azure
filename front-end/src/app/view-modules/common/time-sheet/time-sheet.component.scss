@@ -100,8 +100,15 @@
     position: relative;
     align-items: center;
     justify-items: center;
-
+    .dot-red {
+        height: 10px;
+        width: 10px;
+        background-color: var(--col-warn);
+        border-radius: 50%;
+        display: inline-block;
+    }
   }
+  
   .timesheet__row {
     >* {
       height: 55px;
@@ -132,6 +139,9 @@
       color:var(--col-primary-100);
       &.resolve-timesheet{ 
         font-weight: bold;
+        &.total-value__red{
+          color:var(--col-warn-500);
+        }
       }
     }
 

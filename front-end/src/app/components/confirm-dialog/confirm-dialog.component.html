@@ -8,7 +8,7 @@
       {{ dataMerged?.confirmMessage  }}
     </span>
     <div class="mt-20" *ngIf="dataMerged?.showTextbox">
-      <textarea matInput [formControl]="fcText" rows="4"
+      <textarea class="textarea-border br-10 w-100" [formControl]="fcText" rows="4"
         placeholder="{{dataMerged?.placeholderTextField }}"></textarea>
     </div>
   </div>

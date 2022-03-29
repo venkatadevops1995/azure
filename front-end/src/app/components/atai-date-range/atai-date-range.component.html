@@ -12,7 +12,7 @@
     <div>
       <div class="atai-date-range__calendar">
         <div *ngIf="showPresets" class="selection-presets">
-          <div *ngFor="let preset of selectionPresets;let i = index;" [attr.data-index]="i" [attr.id]="preset.id"
+          <div *ngFor="let preset of selectionPresets;let i = index;" setMonthView="maxDate" [attr.data-index]="i" [attr.id]="preset.id"
             [class.selected]="dateMeta.dateString == preset.str" class="selection-preset">{{preset.str}}</div>
         </div>
         <mat-calendar (mouseover)="onHover($event)" readonly style="width:100%; height:auto" [dateClass]="dateClass"

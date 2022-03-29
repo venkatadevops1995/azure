@@ -15,6 +15,8 @@ export class SvgIconDirective {
 
   @Input() svgIcon: { url?: string, w?: number | string, h?: number | string };
 
+  defaultUrls = ['./assets/images/icons-sprite-new.svg', './assets/images/icons-sprite.svg'];
+
   constructor(
     private element: ElementRef,
     private http: HttpClient,
@@ -23,6 +25,19 @@ export class SvgIconDirective {
   ) { }
 
   @HostBinding("style.lineHeight") lH = "0";
+
+  getDefaultIcons() {
+    this.defaultUrls.forEach((url) => {
+      this.http.get(url, { responseType: "text" }).subscribe(res => {
+        let svg = res;
+        this.ss.svg.push(url);
+        this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
+          "beforeEnd",
+          svg
+        );
+      });
+    })
+  }
 
   ngOnChanges(values) {
     var input = values.svgIcon.currentValue;
@@ -43,6 +58,7 @@ export class SvgIconDirective {
     } else {
       this.element.nativeElement.classList.add("dis-ib");
     }
+
     // get the svg symbol id from the url property in input
     let SvgUrl = current.split(".svg#")[0] + ".svg";
     var symbol = current.split(".svg#")[1];
@@ -67,6 +83,7 @@ export class SvgIconDirective {
         }
       }, 500);
     }
+
   }
 
   appendSVG(input, symbol) {
