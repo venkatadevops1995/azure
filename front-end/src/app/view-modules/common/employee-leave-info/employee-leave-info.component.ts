@@ -182,7 +182,8 @@ export class EmployeeLeaveInfoComponent implements OnInit {
         heading: 'Edit Leave Balance',
         template:this.editProjectTemplateRef,
         hideFooterButtons:true,
-        showCloseButton:true
+        showCloseButton:true,
+        minWidth:'600px'
       }
     })
     // this.editProjectPopup.open();

@@ -97,7 +97,7 @@
 
 <ng-template #editLeaveDialog>
 
-  <p>
+  <p class="mb-20">
     Edit Leave Balance for <b>{{edited_emp_name}}</b>
   </p>
 
@@ -107,7 +107,7 @@
 
       <h2>Current Leave Balance: {{editLeaveForm.controls.currentLeaveBal.value}}</h2>
 
-      <mat-form-field class="max-w250">
+      <mat-form-field class="max-w250 mt-10">
         <mat-label>Modify</mat-label>
         <input type="number" placeholder="Enter leave balance" aria-label="Number" matInput
           formControlName="leave_credits" step="0.5">

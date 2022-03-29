@@ -106,6 +106,8 @@
       .holidays__input-date {
         @extend .holidays__input;
         padding-right: 30px;
+        min-height: 30px;
+        height: auto;
 
         +div {
           position: absolute;
