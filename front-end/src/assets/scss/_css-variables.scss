@@ -1,5 +1,6 @@
 @import "./ng-palette";
 body {
+    
     // The primary color of the theme
     --col-primary: #{map-get($md-primary, 500)};
     --col-primary-50: #{map-get($md-primary, 50)};
@@ -31,6 +32,7 @@ body {
     --on-primary-A200: #{map-get(map-get($md-primary,contrast), A200)};
     --on-primary-A400: #{map-get(map-get($md-primary,contrast), A400)};
     --on-primary-A700: #{map-get(map-get($md-primary,contrast), A700)};
+
     // The accent color of the theme
     --col-accent: #{map-get($md-accent, 500)};
     --col-accent-50: #{map-get($md-accent, 50)};
@@ -47,6 +49,7 @@ body {
     --col-accent-A200: #{map-get($md-accent, A200)};
     --col-accent-A400: #{map-get($md-accent, A400)};
     --col-accent-A700: #{map-get($md-accent, A700)};
+
     // the text on the accent color
     --on-accent: #{map-get(map-get($md-accent,contrast), 500)};
     --on-accent-50: #{map-get(map-get($md-accent,contrast), 50)};
@@ -63,6 +66,7 @@ body {
     --on-accent-A200: #{map-get(map-get($md-accent,contrast), A200)};
     --on-accent-A400: #{map-get(map-get($md-accent,contrast), A400)};
     --on-accent-A700: #{map-get(map-get($md-accent,contrast), A700)};
+
     // The accent color of the theme
     --col-warn: #{map-get($md-warn, 500)};
     --col-warn-50: #{map-get($md-warn, 50)};
@@ -97,6 +101,8 @@ body {
     --on-warn-A200: #{map-get(map-get($md-warn,contrast), A200)};
     --on-warn-A400: #{map-get(map-get($md-warn,contrast), A400)};
     --on-warn-A700: #{map-get(map-get($md-warn,contrast), A700)};
+
+
     // Miscelleneous colors
     // --col-accent: #039be5;
     --col-success: #{map-get($md-misc, 'success')};

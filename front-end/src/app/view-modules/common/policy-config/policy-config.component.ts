@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
 import { ThemePalette } from '@angular/material/core';
@@ -64,7 +64,7 @@ export class PolicyConfigComponent implements OnInit {
   //   "expire_on":['']
   // })
   employeeSearchControl = this.fb.control('')
-  policyUploadControl = this.fb.control('')
+  policyUploadControl = this.fb.control('',[Validators.required])
   edit_policy = false
   policy_id = ''
   emp_count = 0;
@@ -72,6 +72,10 @@ export class PolicyConfigComponent implements OnInit {
   enable_for_options = [{ option: 'ALL', value: 'All employees' },
   { option: 'FEW', value: 'Selected employees' }]
   showUploadBlock: boolean;
+
+  // to avoid the start slide animation of tab group
+  showView:boolean = false;
+
   constructor(private fb: FormBuilder,
     private http: HttpClientService,
     private ss: SingletonService,
@@ -113,7 +117,14 @@ export class PolicyConfigComponent implements OnInit {
       this.getPolicyType()
     }
   }
+
   subs: any;
+
+  @HostBinding('style.visibility') get visibility() {
+    return this.showView ? 'visible': 'hidden';
+  }
+
+
   ngOnInit(): void {
 
     console.log("-------------------", this.edit_policy);
@@ -127,6 +138,13 @@ export class PolicyConfigComponent implements OnInit {
 
     })
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.showView = true
+    }, 200)
+  }
+
   setTab(v) {
     console.log("--------------SET TAB----", v, this.tabIndexControl.value);
 
@@ -251,11 +269,7 @@ export class PolicyConfigComponent implements OnInit {
       await this.getAllUser()
     
     }
-    console.log("====================", this.EMPLOYEE_DATA);
-
-    // Rahul change(showing only 10 users data)
-    // this.EMPLOYEE_DATA=this.EMPLOYEE_DATA.slice(1,11);
-    // **********************************************
+    console.log("====================", this.EMPLOYEE_DATA); 
 
     this.updateFilterData()
     this.employeeSearchControl.reset('')
@@ -295,7 +309,7 @@ export class PolicyConfigComponent implements OnInit {
       })
 
       this.searchKey = val.trim().toLowerCase()
-      
+
       if (val.trim() == '') {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) });
        
@@ -381,23 +395,23 @@ export class PolicyConfigComponent implements OnInit {
       console.log("file upload", this.policyUploadControl.value);
       const formData = new FormData();
       let file__type = this.policyUploadControl.value.type
-      if(file__type === 'application/pdf'){
+      if (file__type === 'application/pdf') {
         formData.append('file', this.policyUploadControl.value)
-      this.http.request('POST', 'policy/upload/', '', formData).subscribe(res => {
-        if (res.status == 200) {
-          this.ss.statusMessage.showStatusMessage(true, "File has been uploaded successfully");
-          this.policyForm.controls.file_name.setValue(res.body['results']['filename'])
-          this.policyForm.controls.display_name.setValue(res.body['results']['displayname'])
+        this.http.request('POST', 'policy/upload/', '', formData).subscribe(res => {
+          if (res.status == 200) {
+            this.ss.statusMessage.showStatusMessage(true, "File has been uploaded successfully");
+            this.policyForm.controls.file_name.setValue(res.body['results']['filename'])
+            this.policyForm.controls.display_name.setValue(res.body['results']['displayname'])
 
 
-        } else {
-          this.ss.statusMessage.showStatusMessage(false, "Issue while uploading file");
-          this.policyForm.controls.file_name.reset()
-          this.policyForm.controls.display_name.reset()
-          this.policyUploadControl.reset()
-        }
-      })
-      }else{
+          } else {
+            this.ss.statusMessage.showStatusMessage(false, "Issue while uploading file");
+            this.policyForm.controls.file_name.reset()
+            this.policyForm.controls.display_name.reset()
+            this.policyUploadControl.reset()
+          }
+        })
+      } else {
         this.ss.statusMessage.showStatusMessage(false, "Only pdf files allowed");
         this.policyForm.controls.file_name.reset()
         this.policyForm.controls.display_name.reset()

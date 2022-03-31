@@ -15,7 +15,7 @@
     </mat-form-field>
 
     <mat-form-field style="flex-basis:200px;" appearance="legacy" class="no-pb atai-date-range">
-      <app-atai-date-range (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+      <app-atai-date-range [presets]="datePickerPresets" [maxDate]="maxDate" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
     </mat-form-field>
     <div class="export_icon ml-50 pointer" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
       [svgIcon]="{url:'./assets/icons-sprite-new.svg#excel-green',w:25}" >

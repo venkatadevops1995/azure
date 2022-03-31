@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { HttpParams } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { DatePipe } from '@angular/common'; 
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
@@ -41,7 +39,7 @@ export class HrAttendanceReportComponent implements OnInit {
   ATTENDENCE_DATA: AttendanceInterface[] = [];
   displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net', 'posted'];
   dataSource = this.ATTENDENCE_DATA;
-  maxDate = moment();
+  maxDate = new Date();
   selected: any = {};
   selectedEmpId: any;
   value: any;

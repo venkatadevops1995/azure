@@ -50,7 +50,10 @@ ul {
 }
 // Rahul change *****************
 .custom_checkbox{
-    // height: 40px; 
+    height: 40px;  
+    &.all{
+        opacity: 0.6;
+    }
 }
 // *************************************
 .custom_checkbox>input[type=checkbox] {
@@ -75,8 +78,8 @@ ul {
 .custom_checkbox>input[type=checkbox]:checked+label {
     background-image: none;
     outline: 0; 
-    border: 2px solid var(--col-primary-200);    
-    color:var(--col-primary-200);   
+    border: 2px solid var(--col-accent-500);    
+    color:var(--col-primary-200);  
 }
 
 // .selectedBg {

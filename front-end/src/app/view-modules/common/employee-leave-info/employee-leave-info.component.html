@@ -97,17 +97,17 @@
 
 <ng-template #editLeaveDialog>
 
-  <p>
-    Edit Leave Balance for <b>{{edited_emp_name}}</b>
+  <p class="mb-20 flex middle-xs">
+    <span class="fs-14 col-primary-300">Edit Leave Balance for :&nbsp;</span> <b class="col-primary-100 fg-1" style="word-break: break-word;">{{edited_emp_name}}</b>
   </p>
 
   <ng-container>
 
     <form [formGroup]="editLeaveForm" (ngSubmit)="updateLeave()">
 
-      <h2>Current Leave Balance: {{editLeaveForm.controls.currentLeaveBal.value}}</h2>
+      <p class="fs-20 col-accent-400">Current Leave Balance: {{editLeaveForm.controls.currentLeaveBal.value}}</p>
 
-      <mat-form-field class="max-w250">
+      <mat-form-field class="max-w250 mt-10">
         <mat-label>Modify</mat-label>
         <input type="number" placeholder="Enter leave balance" aria-label="Number" matInput
           formControlName="leave_credits" step="0.5">
@@ -129,7 +129,7 @@
 
 
       <div mat-dialog-actions>
-        <div style="display: inline-block; text-align: center;margin-top:10px">
+        <div class="flex center-xs w-100">
           <app-button size='small' theme="blue-lite" type="submit" [disabled]="editLeaveForm.invalid">Update
           </app-button>
         </div>

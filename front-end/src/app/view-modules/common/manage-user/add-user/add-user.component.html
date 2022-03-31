@@ -177,11 +177,7 @@
                       </button> -->
           <!-- <app-atai-date-range></app-atai-date-range> -->
           <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
-          <mat-datepicker-toggle matSuffix [for]="picker">
-            <!-- <mat-icon matSuffix  matDatepickerToggleIcon role="img" class="mat-icon material-icons "
-            style="color:var(--col);">date_range</mat-icon> -->
-            <div matSuffix class="pointer"  matDatepickerToggleIcon [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" ></div>
-          </mat-datepicker-toggle>
+          <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="picker.open()"></div>
           <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
           <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
           style="color: #3a7bca;">date_range</mat-icon> -->

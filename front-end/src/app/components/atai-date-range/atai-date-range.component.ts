@@ -130,7 +130,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   _model: MatDateSelectionModel<any, any>
 
   // minimum date calendar should start
-  @Input() minDate = new Date(new Date().getDate() - 90);
+  @Input() minDate = null;
 
   // count for how many next days should be displayed in calendar
   daysLimit = 60;
@@ -334,7 +334,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
             endDate = this.maxDate;
           }
           this._model.add(startDate);
-          this._model.add(d);
+          this._model.add(endDate);
         }
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
         if (emit) {

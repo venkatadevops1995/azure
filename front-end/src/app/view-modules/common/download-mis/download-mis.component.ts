@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DatePipe, formatDate } from '@angular/common';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { DatePipe, formatDate } from '@angular/common'; 
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 
@@ -57,9 +55,9 @@ export class DownloadMisComponent implements OnInit {
     console.log("Ischecked is ::::", event.checked);
     this.Ischecked = event.checked;
     if (event.checked) {
-      this.dateRangePicker.resetRange()
+      // this.dateRangePicker.resetRange()
     } else {
-      this.setThisMonth()
+      // this.setThisMonth()
     }
   }
 

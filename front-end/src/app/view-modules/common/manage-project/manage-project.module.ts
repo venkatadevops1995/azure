@@ -16,6 +16,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     MatDividerModule,
     SvgIconModule,
     FileDownloadModule,
-    TooltipModule,
+    MatTooltipModule,
     MatAutocompleteModule
   ]
 })

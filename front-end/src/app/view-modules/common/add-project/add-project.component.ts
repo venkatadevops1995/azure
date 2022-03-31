@@ -24,7 +24,7 @@ export class AddProjectComponent implements OnInit {
   filterAllActiveInactiveProject:any;
   USERS_DATA = [];
   filter_projects = [];
-  projectInputField = this.fb.control('',[Validators.required]); 
+  projectInputField = this.fb.control('',[]); 
 
   constructor(
     public dialog: MatDialog,

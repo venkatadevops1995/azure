@@ -3,6 +3,11 @@
 
 @include mat.core();
 
+// apply the "Inter" font familiy to the whole of angular material
+@import '~@angular/material/theming';
+$custom-typography: mat-typography-config($font-family: '"Inter", Roboto, "Helvetica Neue", sans-serif;');
+@include mat.core($custom-typography);
+
 // dark theme
 $dark-primary : mat.define-palette($md-primary);
 $dark-accent : mat.define-palette($md-accent);
@@ -71,6 +76,16 @@ body {
   color: var(--col-primary-200) !important;
 }
 
+.mat-sort-header-container {
+  justify-content: center;
+}
+
+.table-colum-left {
+  .mat-sort-header-container {
+    justify-content: flex-start;
+  }
+
+}
 
 
 .mat-row {
@@ -146,17 +161,20 @@ td.mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
   text-align: center !important;
+
   // rahul change (making policy column left align in policy component)***********
-   &.table-colum-left{
-  text-align:left !important;
-   }
-//*******************************************************
+  &.table-colum-left {
+    text-align: left !important;
+  }
+
+  //*******************************************************
   background: unset;
   white-space: normal;
   word-wrap: break-word;
   max-width: 60px;
-  &.w-350px{
-    max-width:350px !important;
+
+  &.w-350px {
+    max-width: 350px !important;
   }
 }
 
@@ -172,7 +190,12 @@ td.mat-footer-cell {
 .mat-calendar-table-header {
   color: var(--col-accent-500) !important;
 }
-
+.mat-calendar-body-label{
+  opacity: 0;
+}
+.mat-calendar-body-label[colspan="7"] {
+  display: none;
+}
 //////////////////////////////////////
 
 /* Material theme styling */
@@ -222,6 +245,12 @@ mat-dialog-container.mat-dialog-container {
     bottom: 0%;
   }
 
+  &.atai-file-upload {
+    &.mat-form-field-appearance-legacy .mat-form-field-infix {
+      padding-bottom: 0 !important;
+    }
+  }
+
 }
 
 // ATAI date range picker
@@ -255,7 +284,7 @@ mat-dialog-container.mat-dialog-container {
   color: var(--col-primary-100);
 }
 
-.mat-option{
+.mat-option {
   font-size: inherit;
 }
 
@@ -345,10 +374,11 @@ mat-dialog-container.mat-dialog-container {
 
 // ********************************************************
 // Rahulchange (universal popup font -size)**********************
-.mat-option{
-  font-size:inherit !important;
-  
+.mat-option {
+  font-size: inherit !important;
+
 }
+
 // ********************************************************
 // Rahulchange (adding font family for table universal)**********************
 // table.mat-table{
@@ -358,14 +388,50 @@ mat-dialog-container.mat-dialog-container {
 
 // File upload component styles ( inside mat form field)
 
-.atai-file-upload{
-  .mat-form-field-underline{
-      display: none;
+.atai-file-upload {
+  .mat-form-field-underline {
+    display: none;
   }
 }
 
 // rahul change ( giving some padding to policy column in policy component)***********
-.pl-table-50{
-  padding-left:50px !important;
+.pl-table-50 {
+  padding-left: 50px !important;
 }
+
 //*******************************************************
+
+/* apply inter font size */
+
+// input.mat-input-element,
+// .mat-form-field {
+//   font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
+// }
+
+/* table.mat-table {
+  tbody {
+    display: block;
+    max-height: 500px;
+    overflow: auto;
+    width: calc(100% + 15px);
+    padding-right: 10px;
+    background-color: unset;
+
+  }
+
+  tr {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin-top: 0;
+    background:var(--col-primary-A200);
+    &.mat-row:first-of-type{
+      margin-top: 0;
+    }
+  }
+  thead {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+} */
