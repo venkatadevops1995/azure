@@ -340,15 +340,17 @@ class email_service():
 
         mail_type =  "Employee disabled"
         subject = MailConfigurations.Sub_EmployeeDisabled.value+":"+str(emp_list[0].emp_name)+"("+str(emp_list[0].staff_no)+")"
-        subject2 = "atwork Notifications - Access Disabled_" + emp_name+"("+ str(staff_no)+")" 
+        subject2=""
         
-        log.info(subject2)
+        # log.info(subject2)
         if(stagging):
             manager_str = "HR initiated relieving date of"
             manager_str ="HR has initiated the relieving process of "  +emp_name+ " "+"(" +str(staff_no)+")" +" with the last working day as "+str(relieved)+ ". atwork will be accessible to "+emp_name+" till the last working day."
+            subject2 = MailConfigurations.Sub_EmployeeDisabledFuture+ emp_name+"("+ str(staff_no)+")" 
         else:
             # manager_str = "HR relieved "
             manager_str = "HR has relieved " +emp_name+ " "+"(" +str(staff_no)+")" + " on "+str(relieved)+" from his/her services. Access to atwork has been disabled successfully."
+            subject2 = MailConfigurations.Sub_EmployeeDisabledPast+ emp_name+"("+ str(staff_no)+")" 
         relieved = str(relieved)
         ctx={
             "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
