@@ -68,6 +68,9 @@ export class EmpPolicyListComponent implements OnInit {
           maxWidth:'812px',
           hideFooterButtons: true,
           showCloseButton: true,
+          padding_horizontal:false,
+          padding_vertical:false,
+          mb_30:false
         },
         autoFocus: false,
       })

@@ -4,8 +4,10 @@
   <!-- <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-40"> -->
   <form  [formGroup]="addUserForm" (ngSubmit)="openDialog()" class="mt-30" #f="ngForm">
     <div class="wrapper flex col pt-55 pb-55 pl-60 pr-60">
+     
       <div class="grid-container">
-          <mat-form-field>
+        <div class="w-100">
+          <mat-form-field class="w-50">
             <mat-label>First Name</mat-label>
             <input autocomplete="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
             <mat-error
@@ -14,7 +16,7 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field class="w-50"> 
             <mat-label>Last Name</mat-label>
             <input autocomplete="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
             <mat-error
@@ -22,7 +24,7 @@
               Please enter Last Name
             </mat-error>
           </mat-form-field>
-
+        </div>
           <mat-form-field>
             <mat-label>Email</mat-label>
             <input autocomplete="off" matInput formControlName="email" />
@@ -51,7 +53,9 @@
             </mat-error>
           </mat-form-field>
       </div>
+
       <div class="gap"></div>
+
       <div class="grid-container">
         <!-- <mat-form-field>
           <mat-label>Gender</mat-label>
@@ -64,7 +68,17 @@
         </mat-form-field> -->
 
         <!-- Adding custom code for radio button for gender selection -->
-      
+
+            <mat-form-field >
+              <mat-label>Location</mat-label>
+              <mat-select formControlName="location">
+                <mat-option [value]="location.id" *ngFor="let location of ALL_LOCATIONS">{{location.name}}</mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="addUserForm.controls.location.touched && addUserForm.controls.location.hasError('required')">
+                Please select Location
+              </mat-error>
+            </mat-form-field>
           
              <div class="fs-14" >
               <mat-label class="mb-5 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
@@ -75,61 +89,27 @@
                 Please select Gender
               </mat-error>
             
-          </div>
+              </div>
+                
 
-
-
-      <mat-form-field style="grid-column:3/4;">
-        <mat-label>Location</mat-label>
-        <mat-select formControlName="location">
-          <mat-option [value]="location.id" *ngFor="let location of ALL_LOCATIONS">{{location.name}}</mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="addUserForm.controls.location.touched && addUserForm.controls.location.hasError('required')">
-          Please select Location
-        </mat-error>
-      </mat-form-field>
-            
+              <mat-form-field>
+                <mat-label>Group</mat-label>
+                <mat-select formControlName="company">
+                  <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="addUserForm.controls.company.touched && addUserForm.controls.company.hasError('required')">
+                  Please select Group
+                </mat-error>
+              </mat-form-field>
       </div>
+
       <div class="gap"></div>
-      <div class="grid-container">
+      
+     
+<!-- 
+    *****************************************************************************
+    ******************************************************************************* -->
 
-        <div class="fs-14" > 
-          <p style="margin: 0 0 5px 0px;color:var(--col-primary-300);">Atwork Role</p>
-          <div >
-            <ul>
-              <li  class="mb-5"
-              *ngFor="let role of ROLES;let i=index">
-                <!-- <div class="container"> -->
-                <label class="container mr-15 " style="color:var(--col-primary-100)"> {{role.name}}
-                  <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
-                  <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
-                    [checked]="role.selected" [disabled]="role.disabled">
-                  <span class="checkmark"></span>
-                </label>
-                <!-- </div> -->
-              </li>
-
-            </ul>
-          </div>
-        </div>
-
-
-
-        <mat-form-field  style="grid-column:3/4;">
-          <mat-label>Group</mat-label>
-          <mat-select formControlName="company">
-            <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="addUserForm.controls.company.touched && addUserForm.controls.company.hasError('required')">
-            Please select Group
-          </mat-error>
-        </mat-form-field>
-         
-
-         
-      </div>
-      <div class="gap"></div>
       <div class="grid-container">
         <mat-form-field>
           <mat-label>Category</mat-label>
@@ -165,10 +145,30 @@
                         Please select Parental leave taken
                     </mat-error>
                 </mat-form-field> -->
+ <!-- *********************************************************
+ ***********************************************
+ ************************************ -->
+                <div class="fs-14" > 
+                  <p style="margin: 0 0 5px 0px;color:var(--col-primary-300);">Atwork Role</p>
+                  <div >
+                    <ul>
+                      <li  class="mb-5"
+                      *ngFor="let role of ROLES;let i=index">
+                        <!-- <div class="container"> -->
+                        <label class="container mr-15 " style="color:var(--col-primary-100)"> {{role.name}}
+                          <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
+                          <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
+                            [checked]="role.selected" [disabled]="role.disabled">
+                          <span class="checkmark"></span>
+                        </label>
+                        <!-- </div> -->
+                      </li>
+        
+                    </ul>
+                  </div>
+                </div>
 
-
-
-        <mat-form-field class="custompicker" style="grid-column: 3/4;">
+        <mat-form-field class="custompicker">
           <mat-label>Date of Joining</mat-label>
           <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
                         formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
@@ -178,8 +178,9 @@
           <!-- <app-atai-date-range></app-atai-date-range> -->
           <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
           <mat-datepicker-toggle matSuffix [for]="picker">
-            <mat-icon matSuffix  matDatepickerToggleIcon role="img" class="mat-icon material-icons "
-            style="color:var(--col);">date_range</mat-icon>
+            <!-- <mat-icon matSuffix  matDatepickerToggleIcon role="img" class="mat-icon material-icons "
+            style="color:var(--col);">date_range</mat-icon> -->
+            <div matSuffix class="pointer"  matDatepickerToggleIcon [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" ></div>
           </mat-datepicker-toggle>
           <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
           <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
@@ -227,7 +228,7 @@
               Please select Functional Owner
             </mat-error>
           </mat-form-field>
-          <mat-form-field style="grid-column: 3/4;">
+          <mat-form-field>
             <mat-label>Manager's Manager</mat-label>
             <mat-select formControlName="man_manager" (selectionChange)="changeMM($event.value, newUserRoleValue)">
               <mat-option [value]=0 *ngIf="newUserRoleValue==4 " class="self-option">Self

@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject, OnInit, Optional, Self, TemplateRef } f
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
-type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth:any }
+type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth:any,padding_horizontal?:boolean,padding_vertical?:boolean,vertical_scroll:boolean,mb_30:boolean}
 
 @Component({
   selector: 'app-pop-up',
@@ -18,7 +18,11 @@ export class PopUpComponent implements OnInit {
     showCloseButton: true,
     maxWidth: '420px',
     template: null,
-    minWidth:'420px'
+    minWidth:'420px',
+    padding_horizontal:true,
+    padding_vertical:true,
+    vertical_scroll:true,
+    mb_30:true
   }
 
   /* merged data passed with default data */

@@ -2,6 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { take } from 'rxjs/operators';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -110,6 +112,9 @@ export class PolicyListComponent implements OnInit {
           maxWidth:'812px',
           hideFooterButtons: true,
           showCloseButton: true,
+          padding_horizontal:false,
+          padding_vertical:false,
+          mb_30:false
         },
         autoFocus: false,
       })
@@ -126,7 +131,26 @@ export class PolicyListComponent implements OnInit {
   }
   openDeletePolicy(id){
     this.deleteId = id
-    this.deletePolicyModal.open();
+        //Rahul change Open dialogBox dynamically(rahul changes) ************************
+        // this.deletePolicyModal.open();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          panelClass: 'confirm-remove-project',
+          backdropClass:'cdk-overlay-darker-backdrop',
+          data: {
+              confirmMessage: 'Are you sure want to delete the policy ?'
+          }
+        })
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+            console.log('######################',data)
+            if(data==true){
+            this. deletePolicy(id)
+            
+            }else{
+             
+            }
+        })
+      
+      // **************************************************************** 
   }
   closeDeletePolicy(){
     this.deleteId = 0;
@@ -139,7 +163,9 @@ export class PolicyListComponent implements OnInit {
         this.ss.statusMessage.showStatusMessage(true,"Policy deleted successfully")
         this.deleteId = 0;
         this.getPolicies()
-        this.deletePolicyModal.close();
+        // Rahul change(closing new policy delete popup on conferm)*******************
+        // this.deletePolicyModal.close();
+        // **************************************************************
       }else{
         this.ss.statusMessage.showStatusMessage(false,"Error while deleting policy")
       }

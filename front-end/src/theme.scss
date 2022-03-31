@@ -86,7 +86,7 @@ body {
   }
 
   &:hover {
-    cursor: pointer;
+    // cursor: pointer;
     box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
     transform: scale(1);
   }
@@ -134,7 +134,7 @@ th.mat-header-cell:last-of-type {
 
 //hover effect on material-table row
 tr.mat-row:hover {
-  cursor: pointer;
+  // cursor: pointer;
   box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
   transform: scale(1);
 }

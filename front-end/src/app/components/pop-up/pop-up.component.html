@@ -7,8 +7,10 @@
         [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}" svg-fill="none"></div>
     </div>
   </div>  
-  <div class="popup__body">
-    <div class="mt-10 mb-30"> 
+  <div class="popup__body" [class.p-h]="dataMerged.padding_horizontal" 
+   [class.p-v]="dataMerged. padding_vertical"
+   [class.overflow]="dataMerged.vertical_scroll">
+    <div class="mt-10"[class.mb_30]="dataMerged.mb_30"> 
       <ng-container *ngTemplateOutlet="dataMerged.template"></ng-container>
     </div>
     <!-- {{dataMerged | json}} {{data | json}} -->

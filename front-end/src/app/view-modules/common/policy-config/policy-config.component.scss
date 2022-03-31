@@ -48,10 +48,11 @@ ul {
     border-radius: 19px;
     box-sizing: border-box;
 }
+// Rahul change *****************
 .custom_checkbox{
-    height: 40px; 
+    // height: 40px; 
 }
-
+// *************************************
 .custom_checkbox>input[type=checkbox] {
     display: none;
 }
@@ -78,6 +79,10 @@ ul {
     color:var(--col-primary-200);   
 }
 
-.selectedBg {
-    background-color: #add8e6;
-}
+// .selectedBg {
+//     background-color: #add8e6;
+// }
+.example::-webkit-scrollbar {
+    display: none;
+  }
+

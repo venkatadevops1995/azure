@@ -27,11 +27,24 @@
   }
 
   .popup__body {
-    padding: 50px;
+    // padding: 50px;
     max-height: 75vh;
-    overflow: auto;
+    // overflow: auto;
   }
-
+  
 }
-
+.p-v{
+  padding-top:50px;
+  padding-bottom:50px;
+}
+.p-h{
+padding-left: 50px;
+padding-right:50px;
+}
 .popup {}
+.overflow{
+  overflow: auto;
+}
+.mb_30{
+  margin-bottom: 30px;
+}
