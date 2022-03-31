@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSort } from '@angular/material/sort';
@@ -63,6 +63,7 @@ export class LeaveHistoryComponent implements OnInit{
     private http: HttpClientService,
     private datepipe: DatePipe,
     private fileDownload: FileDownloadService,
+    private cd:ChangeDetectorRef
   ) {
 
     side : this.any;
@@ -90,10 +91,12 @@ export class LeaveHistoryComponent implements OnInit{
     all: [''],
     employeeName: ['']
   })
+  Ischecked: boolean = false;
   ngOnInit(): void {
     this.checkHrAccessForreports();
     this.setPickerToLast30Days();
     this.getEmployees();
+    this.Ischecked = false;
   }
   
   setPickerToLast30Days() {
@@ -103,11 +106,17 @@ export class LeaveHistoryComponent implements OnInit{
     
   }
   onSubmitResolvedLeaveFilter(e) {
-
+    // console.log("Checked:", e.checked)
+    let isFutureLeave= false
+    if(e.checked){
+      isFutureLeave = true
+    }else{
+      isFutureLeave = false
+    }
     let fgValue: any = this.managerCtrl.value
     
     console.log(fgValue, e);
-    this.getLeaveApplications(true, fgValue)
+    this.getLeaveApplications(true, fgValue,isFutureLeave)
     let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
 
   }
@@ -202,7 +211,7 @@ export class LeaveHistoryComponent implements OnInit{
     })
   }
   // get all leave application with pagination
-  getLeaveApplications(isHistory: boolean = false, emp_name?) {
+  getLeaveApplications(isHistory: boolean = false, emp_name? , isFutureLeave:boolean=false) {
     let empName: any;
     if (emp_name) {
       empName = emp_name
@@ -248,6 +257,7 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('sort_dir', this.sortDirection || '')
       params = params.append('is_hr', 'true')
       params = params.append('filter', 'history')
+      params = params.append('is_future_leave',isFutureLeave ? 'true': 'false')
     }
     
     if (dp && dp['startDate'] && dp['endDate']) {
@@ -344,5 +354,23 @@ getTrigger(er) {
     if(this.yearFrom)
     this.getLeaveApplications(true);
   }
+}
+
+onIsDisableClick(event){
+ 
+  console.log("Ischecked is ::::",event);
+  this.Ischecked = event.checked;
+  if(event.checked){
+    this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
+    this.todate = this.convertDatefmt(this.ranges['This Month'][1])
+    // this.selected["endDate"] = this.ranges['This Month'][1];
+  }else{
+    this.fromdate = this.convertDatefmt('');
+    this.todate = this.convertDatefmt('');
+  }
+  this.onSubmitResolvedLeaveFilter(event)
+}
+ngAfterContentChecked(): void {
+  this.cd.detectChanges();
 }
 }

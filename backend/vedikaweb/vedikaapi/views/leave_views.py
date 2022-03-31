@@ -74,13 +74,16 @@ class LeaveBalanceView(APIView):
 
         req_data=json.loads(json.dumps(request.data))
         if(request.data['modifiedValue']%.5==0):
+            old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),req_data["emp"],'false')[0]['outstanding_leave_bal']
             
-            req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id})
+            req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id, 'current_leave_balance':old_leave_bal,'modified_leave_balance':req_data["modifiedValue"]})
+            
+            # req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id})
 
             serial_leave_bal_data = LeaveBalanceSerializer(data=req_data)
             if(serial_leave_bal_data.is_valid()):
                 if(req_data['leave_credits']!= 0):
-                    old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
+                    # old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
                     serial_leave_bal_data.save()
                     new_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
                     try:
@@ -784,7 +787,8 @@ class ExportResolvedLeaves(APIView):
                 for key,value in leave_summary_dict.items():
                     sheets2_data.append([key,value['emp_name'],value['leave_count']])
 
-                excel.defineMultipleWorksheets(['Leave History','Leave Summary', 'Hr Modifications'],[excel_data,sheets2_data, hr_data],leaveFlag=True)
+                # excel.defineMultipleWorksheets(['Leave History','Leave Summary', 'Hr Modifications'],[excel_data,sheets2_data, hr_data],leaveFlag=True)
+                excel.defineMultipleWorksheets(['Leave History','Leave Summary'],[excel_data,sheets2_data],leaveFlag=True)
                 # excel.writeExcel(excel_data,row_start=0)
                 # excel.terminateExcelService()
                 del excel
@@ -1369,14 +1373,30 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
         year = self.request.query_params.get('year',None)
+        is_future_leave = self.request.query_params.get('is_future_leave',"false")
         start_date= datetime.strptime(self.request.query_params.get('start_date', date.today()), '%Y-%m-%dT%H:%M:%S')
         end_date= datetime.strptime(self.request.query_params.get('end_date', date.today()), '%Y-%m-%dT%H:%M:%S')
-        print(utils.isNotNone(month,year))
-        if(utils.isNotNone(month,year)):
-            start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
+        leave_type_filters = [LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value]
+
+        # print(utils.isNotNone(month,year))
+
+        # if(utils.isNotNone(month,year)):
+        #     start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
+        # else:
+        #     start_and_end_dates = start_date,end_date
+        
+        
+        if(is_future_leave=="true"):
+            tomorrow = date.today() + timedelta(days=1)
+            year_end_date = date(tomorrow.year, 12, 31)
+            start_date= datetime.strptime(str(tomorrow), '%Y-%m-%d')
+            end_date= datetime.strptime(str(year_end_date), '%Y-%m-%d')
+            # added pending leaves
+            leave_type_filters = [LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value, LeaveRequestStatus.Pending.value]
         else:
             start_and_end_dates = start_date,end_date
-        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value],leave_request__emp__status=1)
+        start_and_end_dates = start_date,end_date
+        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=leave_type_filters,leave_request__emp__status=1)
         if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         else:
@@ -1396,7 +1416,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         keys_list = []
         for key, value in grouped_leaves:
             keys_list.append(key)
-        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1],status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value],emp__status=1).annotate(
+        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1],status__in=leave_type_filters,emp__status=1).annotate(
                 day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
                     When(leave__day_leave_type='FIRST_HALF', then=0.5),
                     When(leave__day_leave_type='SECOND_HALF', then=0.5),
