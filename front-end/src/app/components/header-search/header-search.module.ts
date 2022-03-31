@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { EmployeeProfileDetailsModule } from '../employee-profile-details/employee-profile-details.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 
 
 
@@ -28,7 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatIconModule,
     MatAutocompleteModule,
     MatDialogModule,
-    MatIconModule
+    SvgIconModule
   ],
   exports: [HeaderSearchComponent]
 })

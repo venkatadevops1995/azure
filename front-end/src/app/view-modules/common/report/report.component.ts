@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
+import { FormControl } from '@angular/forms'; 
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { AtaiDateRangeComponent, SelectionPresetTypes } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -24,7 +24,9 @@ export class ReportComponent implements OnInit {
   option = new FormControl('');
   filteredManagers: Observable<any>;;
   todate: any;
-  maxDate: any = moment();
+  maxDate: Date = new Date();
+  
+  datePickerPresets: SelectionPresetTypes = ['Last 30 Days', 'Last Month', 'This Month']
   selected: any = {};
   message: any;
   availableDate: any;
@@ -59,7 +61,6 @@ export class ReportComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    this.dateRange.setPresetValue('Last 30 Days');
   }
 
   // when a date is selected in the date range
@@ -89,9 +90,16 @@ export class ReportComponent implements OnInit {
   getStatus() {
     this.http.request("get", 'reportdatesavailability',).subscribe(res => {
       if (res.status == 200) {
+
         this.message = res.body.msg.msg;
-        let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd'));
-        this.maxDate = moment().subtract(days, 'days');
+        let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd')); 
+        
+        // set the max date
+        this.maxDate = new Date(this.maxDate.getTime() - (days * MILLISECONDS_DAY));
+        this.maxDate.setHours(0,0,0,0)
+        this.dateRange.maxDate = this.maxDate;
+        this.dateRange.setPresetValue('Last 30 Days');
+
       }
     })
   }

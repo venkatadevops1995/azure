@@ -183,7 +183,7 @@ export class EmployeeLeaveInfoComponent implements OnInit {
         template:this.editProjectTemplateRef,
         hideFooterButtons:true,
         showCloseButton:true,
-        minWidth:'600px'
+        minWidth:'500px'
       }
     })
     // this.editProjectPopup.open();

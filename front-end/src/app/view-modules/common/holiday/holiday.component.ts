@@ -41,8 +41,14 @@ export function notWeekend(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     var error = null;
     if (control.value['start_date'] != null) {
-      let dateStartDate = new Date(control.value['start_date']);
+      let dateStartDate = new Date(control.value['start_date']); 
       if (dateStartDate.getDay() == 6 || dateStartDate.getDay() == 0) {
+        error = true
+      }
+    }
+    if (control.value['end_date'] != null) { 
+      let dateEndDate = new Date(control.value['end_date']);
+      if (dateEndDate.getDay() == 6 || dateEndDate.getDay() == 0) {
         error = true
       }
     }
@@ -211,6 +217,7 @@ export class HolidayComponent implements OnInit {
       if (tempTarget.classList.contains('holidays__calendar-icon')) {
         let datePickerRefElement = tempTarget.previousElementSibling
         this.indexOfHolidayInDatePicker = Number(tempTarget.getAttribute('data-index'));
+        // this.dateRangePicker.setSelection('custom')
         this.dateRangePicker.openDateRangePicker(datePickerRefElement)
         break;
       }

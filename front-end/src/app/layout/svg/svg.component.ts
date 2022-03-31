@@ -4,7 +4,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
     selector: 'app-svg',
     template: `
   `,
-    styles: []
+  styles: []
 })
 export class SvgComponent implements OnInit {
 

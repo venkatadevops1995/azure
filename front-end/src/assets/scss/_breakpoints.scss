@@ -1,0 +1,31 @@
+$xs:'320px';
+$sm:'551px';
+$md:'769px';
+$xmd:'1025px';
+$lg:'1201px';
+$xlg:'1351px';
+$xxlg:'1651px';
+
+$breakpoints:(
+    'xs':(
+        'min-width':$xs
+    ),
+    'sm':(
+        'min-width':$sm
+    ),
+    'md':(
+        'min-width':$md
+    ),
+    'xmd':(
+        'min-width':$xmd
+    ),
+    'lg':(
+        'min-width':$lg
+    ),
+    'xlg':(
+        'min-width':$xlg
+    ),
+    'xxlg':(
+        'min-width':$xxlg
+    )
+);

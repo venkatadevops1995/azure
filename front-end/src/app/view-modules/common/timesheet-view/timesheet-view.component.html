@@ -39,8 +39,8 @@
   </div>
   <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
     class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1">
-    <div class="flex middle-xs center-xs wsr__sel-project-toggle">
-      <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
+    <div class="flex middle-xs center-xs wsr__sel-project-toggle">      
+      <div  class=" mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#add-circle',w:14}" svg-fill="currentColor"></div>
       Select Project
     </div>
     <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">

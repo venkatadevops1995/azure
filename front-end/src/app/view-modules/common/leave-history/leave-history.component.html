@@ -2,14 +2,14 @@
   <div class="bg-box mt-20">
     <div class="flex between-xs">
       <h2 class="heading">Leave History </h2>
-
     </div>
 
     <div class="flex bottom-xs end-xs  fs-14">
       <mat-form-field class="  mr-50 no-pb">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
           [(ngModel)]="value">
-        <div *ngIf="value" class="pointer" style="position: absolute;right: 5px;top:50%;transform:translateY(-50%);" [svgIcon]="{url:'./assets/icons-sprite-new.svg#close-circle',w:15}" (click)="clear()">
+        <div *ngIf="value" class="pointer" style="position: absolute;right: 5px;top:50%;transform:translateY(-50%);"
+          [svgIcon]="{url:'./assets/icons-sprite-new.svg#close-circle',w:15}" (click)="clear()">
         </div>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSubmitResolvedLeaveFilter($event)" class="fs-14">
           <mat-option *ngFor="let emp of filteredManagers | async" [value]="emp.emp_name">
@@ -19,11 +19,11 @@
       </mat-form-field>
 
       <mat-form-field class="no-pb atai-date-range no-pb" style="width: 200px;">
-        <app-atai-date-range (dateSelected)="onDateSelect($event)"></app-atai-date-range>
+        <app-atai-date-range [maxDate]="maxDate" (dateSelected)="onDateSelect($event)"></app-atai-date-range>
       </mat-form-field>
 
       <div title="Download" class="export_icon ml-50 pointer" (click)="onClickExportResolved()"
-        [svgIcon]="{url:'./assets/icons-sprite-new.svg#excel-green',w:25}"   >
+        [svgIcon]="{url:'./assets/icons-sprite-new.svg#excel-green',w:25}">
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
   <div class="mt-20" *ngIf="showMessage == true">
     <div class="grid">
       <ng-container *ngIf="LEAVE_DATA_HISTORY.length==0">
-        <div *ngIf=" historyLeavesFiltersApplied">
+        <div class="fs-14 col-primary-400" *ngIf=" historyLeavesFiltersApplied">
           No leave history available
         </div>
       </ng-container>

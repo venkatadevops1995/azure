@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { HttpParams } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { DatePipe } from '@angular/common'; 
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
@@ -37,13 +35,12 @@ export class AttendenceSheetComponent implements OnInit {
   date4;
   EMPS: any[];
   option = new FormControl('');
-  datePickerPresets: SelectionPresetTypes = ['Last 30 Days', 'Last Month', 'This Month']
   // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
   ATTENDENCE_DATA: AttendanceInterface[] = [];
   displayedColumns: string[] = ['date', 'firstIn', 'lastOut', 'gross', 'net', 'posted'];
   dataSource = this.ATTENDENCE_DATA;
-  maxDate = new Date(new Date().getTime() - 10 * MILLISECONDS_DAY);
+  maxDate = new Date();
   selected: any = {};
   selectedEmpId: any;
   value: any;
@@ -79,7 +76,7 @@ export class AttendenceSheetComponent implements OnInit {
       this.dateRangePicker.setPresetValue('Last 30 Days')
       // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
       this.getReporters();
-    })
+    },100)
   }
 
   onDateSelection(val: DateRange<any>) {

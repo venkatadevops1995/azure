@@ -4,8 +4,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import { MatTableDataSource } from '@angular/material/table'; 
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 // import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
 import { Observable } from 'rxjs';
@@ -39,7 +38,7 @@ export class LeaveHistoryComponent implements OnInit {
 
   fromdate: any;
   todate: any;
-  maxDate = moment().add(0, 'days')
+  maxDate = new Date();
 
   selectedHistoryRange: any = {};
   selectedAppliedRange: any = {};

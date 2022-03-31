@@ -50,7 +50,9 @@
           </mat-radio-group> -->
           <mat-tab-group color="accent" (selectedTabChange)="onChangeSelectedTab($event)"
             [selectedIndex]="selectedIndexLeaveCategory">
-            <mat-tab [disabled]="((applyForm.controls?.type?.value?.name == 'Marriage' || applyForm.controls?.type?.value?.name == 'Paternity') && i != 2)" *ngFor="let category of leaveCategories;let i = index" label="{{category}}"> </mat-tab>
+            <mat-tab
+              [disabled]="((applyForm.controls?.type?.value?.name == 'Marriage' || applyForm.controls?.type?.value?.name == 'Paternity') && i != 2)"
+              *ngFor="let category of leaveCategories;let i = index" label="{{category}}"> </mat-tab>
           </mat-tab-group>
         </div>
       </div>
@@ -64,9 +66,8 @@
             <input (focus)="refPicker1.open()" formControlName="startDate"
               [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput [matDatepicker]="refPicker1"
               (dateInput)="onChangeStartDate($event)" readonly>
-            <mat-datepicker-toggle matSuffix [for]="refPicker1" style="font-size: 22px;">
-              <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor"></div>
-            </mat-datepicker-toggle>
+            <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"
+              svg-fill="currentColor" (click)="refPicker1.open()"></div>
             <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
               [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
           </mat-form-field>
@@ -105,9 +106,9 @@
               <input (focus)="refPicker1.open()" formControlName="startDate"
                 [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput
                 [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
-              <mat-datepicker-toggle matSuffix [for]="refPicker1" style="font-size: 22px;">
-                <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor"></div>
-              </mat-datepicker-toggle>
+
+              <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"
+                svg-fill="currentColor" (click)="refPicker1.open()"></div>
               <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                 [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
             </mat-form-field>
@@ -130,9 +131,7 @@
               <input (focus)="refPicker2.open()" formControlName="endDate"
                 [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterEnd" matInput [matDatepicker]="refPicker2"
                 [value]="selectedEndDate" readonly>
-              <mat-datepicker-toggle style="font-size: 22px;" matSuffix [for]="refPicker2">
-                <mat-icon matDatepickerToggleIcon style="font-size: 22px;">date_range</mat-icon>
-              </mat-datepicker-toggle>
+                <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="refPicker2.open()"></div>
               <mat-datepicker (opened)="onOpenEndDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass('end')"
                 [startAt]="datePickerLeaveApplcn.startAtendDate" #refPicker2 color="primary"></mat-datepicker>
             </mat-form-field>
@@ -172,7 +171,7 @@
     <div style=" grid-column: 1/span 2;">
       <textarea formControlName="comment" placeholder="Purpose of leave"
         class="leave__comment textarea-border w-100"></textarea>
-      <mat-error class="fs-12"  style="overflow: hidden;height: 0px;"
+      <mat-error class="fs-12" style="overflow: hidden;height: 0px;"
         [@slideAnimation]="(applyForm.controls.comment.touched || applyFormSubmitted) && applyForm.controls.comment.hasError('required') ? 'open': 'close'">
         Please Enter Purpose of leave
       </mat-error>
@@ -194,9 +193,9 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="display: inline-block;padding: 10px;">
+    <!-- <div style="display: inline-block;padding: 10px;">
       <app-button size='small' theme="grey" type="button" w="130" (click)="closeApplyForm()">Cancel</app-button>
-    </div>
+    </div> -->
     <div style="display: inline-block;padding: 10px;">
       <app-button size='small' theme="blue-lite" type="submit" w="130" (click)="getTimesheetDiscrepancy()">Submit
       </app-button>
@@ -209,7 +208,8 @@
 
 <ng-template #templateRefDiscrepancyData>
   <div>
-    <p style="color: red;" class="mb-20"> <b>NOTE:</b> Timesheet had been already submitted. Hours for followings will be changed on
+    <p style="color: red;" class="mb-20"> <b>NOTE:</b> Timesheet had been already submitted. Hours for followings will
+      be changed on
       submission of the request</p>
     <div>
       <table mat-table [dataSource]="TIMESHEET_DISCREPANCY_DATA" *ngIf="TIMESHEET_DISCREPANCY_DATA.length!=0"

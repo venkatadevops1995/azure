@@ -89,12 +89,8 @@
     <div class="timesheet__row" *ngFor="let project of visibleActiveProjects;let i=index;">
       <div class="project">
         {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
-        {{project?.cumulative?.m | number:'2.' }}]
-
-        <mat-icon *ngIf="project.priority != 1 && !disable" [attr.data-index]='i'
-          class="timesheet__row-remove col-warn-500 mat-icon-small">
-          remove_circle_outline
-        </mat-icon>
+        {{project?.cumulative?.m | number:'2.' }}] 
+        <div *ngIf="project.priority != 1 && !disable" [attr.data-index]='i' class="timesheet__row-remove col-warn-500" [svgIcon]="{url:'./assets/icons-sprite-new.svg#remove',w:14}" svg-fill="currentColor"></div>
       </div>
       <ng-container *ngFor="let day of project?.work_hours;let j=index;">
         <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
@@ -112,8 +108,8 @@
     <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
       style="z-index: 1111;">
       <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
-        <div class="flex middle-xs center-xs sel-project__btn btn-outline">
-          <mat-icon class="mat-icon-small mr-5">add_circle_outline</mat-icon>
+        <div class="flex middle-xs center-xs sel-project__btn btn-outline"> 
+          <div  class=" mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#add-circle',w:14}" svg-fill="currentColor"></div>
           Select Project
         </div>
         <div class="sel-project__project-list" *ngIf="showProjectList && hiddenActiveProjects.length > 0">

@@ -81,7 +81,7 @@
     <ng-container matColumnDef="proj1">
         <th mat-header-cell  *matHeaderCellDef style="width:20%;"> Project 1 </th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj1?.name}}" placement="bottom">{{element.staged_proj1?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj1?.name}}" placement="bottom">{{element.staged_proj1?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj1.id === ''">{{element.proj1?.name}}</div>
         </td>
     </ng-container>
@@ -89,14 +89,14 @@
     <ng-container matColumnDef="proj2">
         <th mat-header-cell *matHeaderCellDef style="width:20%;"> Project 2</th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj2?.name}}" placement="bottom">{{element.staged_proj2?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj2?.name}}" placement="bottom">{{element.staged_proj2?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj2.id === ''">{{element.proj2?.name}}</div>
         </td>
     </ng-container>
     <ng-container matColumnDef="proj3">
         <th mat-header-cell *matHeaderCellDef style="width:20%;"> Project 3</th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj3?.name}}" placement="bottom">{{element.staged_proj3?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj3?.name}}" placement="bottom">{{element.staged_proj3?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj3.id === ''">{{element.proj3?.name}}</div>
         </td>
     </ng-container>
@@ -105,7 +105,7 @@
     <ng-container matColumnDef="proj1">
         <th mat-header-cell  *matHeaderCellDef style="width:20%;"> Project 1 </th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj1?.name}}" placement="bottom">{{element.staged_proj1?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj1?.name}}" placement="bottom">{{element.staged_proj1?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj1.id === ''">{{element.proj1?.name}}</div>
         </td>
     </ng-container>
@@ -113,14 +113,14 @@
     <ng-container matColumnDef="proj2">
         <th mat-header-cell *matHeaderCellDef style="width:20%;"> Project 2</th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj2?.name}}" placement="bottom">{{element.staged_proj2?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj2?.name}}" placement="bottom">{{element.staged_proj2?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj2.id === ''">{{element.proj2?.name}}</div>
         </td>
     </ng-container>
     <ng-container matColumnDef="proj3">
         <th mat-header-cell *matHeaderCellDef style="width:20%;"> Project 3</th>
         <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue' tooltip="Current Project: {{element.proj3?.name}}" placement="bottom">{{element.staged_proj3?.name}}</div>
+            <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue' matTooltip="Current Project: {{element.proj3?.name}}" placement="bottom">{{element.staged_proj3?.name}}</div>
             <div style="display:inline;" *ngIf="element.staged_proj3.id === ''">{{element.proj3?.name}}</div>
         </td>
     </ng-container> -->

@@ -5,11 +5,13 @@
     <div class="mis__datepicker fs-14 flex" style="max-width: 600px;margin: 30px 0;">
       <div>
         <mat-form-field class="no-pb atai-date-range">
-          <app-atai-date-range [minDate]="minDate" [disabled]="Ischecked" (dateSelected)="onDateSelect($event)"> </app-atai-date-range>
+          <app-atai-date-range [minDate]="minDate" [disabled]="!Ischecked" (dateSelected)="onDateSelect($event)">
+          </app-atai-date-range>
         </mat-form-field>
         <div class="mis__checkbox fs-14 col-primary-400 flex start-xs">
-          <mat-checkbox [checked]="Ischecked" color="accent" (change)="onIsDisableClick($event)">
-            <label> Disabled Employee</label>
+          <mat-checkbox [checked]="Ischecked" color="accent" (change)="onIsDisableClick($event)"
+            id="mat-checkbox-disabled-employee">
+            <label class="pointer" for="mat-checkbox-disabled-employee-input"> Disabled Employee</label>
           </mat-checkbox>
         </div>
       </div>

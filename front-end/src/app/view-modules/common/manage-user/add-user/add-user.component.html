@@ -169,21 +169,10 @@
 
 
         <mat-form-field class="custompicker" style="grid-column: 3/4;">
-          <mat-label>Date of Joining</mat-label>
-          <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
-                        formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
-          <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-                        <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
-                      </button> -->
-          <!-- <app-atai-date-range></app-atai-date-range> -->
-          <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
-          <mat-datepicker-toggle matSuffix [for]="picker">
-            <mat-icon matSuffix  matDatepickerToggleIcon role="img" class="mat-icon material-icons "
-            style="color:var(--col);">date_range</mat-icon>
-          </mat-datepicker-toggle>
-          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
-          <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
-          style="color: #3a7bca;">date_range</mat-icon> -->
+          <mat-label>Date of Joining</mat-label> 
+          <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" > 
+          <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="picker.open()"></div>
+          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker> 
           <mat-error *ngIf="addUserForm.controls.doj.touched ">
             Please select Date of Joining
           </mat-error>

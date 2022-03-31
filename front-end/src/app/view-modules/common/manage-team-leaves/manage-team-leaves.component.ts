@@ -7,8 +7,7 @@ import { debounceTime, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { SingletonService } from 'src/app/services/singleton.service';
-import * as moment from 'moment';
+import { SingletonService } from 'src/app/services/singleton.service'; 
 // import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 

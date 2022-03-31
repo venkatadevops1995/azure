@@ -2,10 +2,10 @@
 
 @import "./assets/scss/reset";
 @import "./assets/scss/flex";
+@import "./assets/scss/flex-align"; 
 
 
-@import "./assets/scss/typography";
-@import "./assets/scss/margin-paddings";
+@import "./assets/scss/typography"; 
 @import "./assets/scss/classes";
 @import "./assets/scss/css-variables";
 @import "./assets/scss/use-mixins";
@@ -13,7 +13,9 @@
 body {
   --padding-sides: 6.25%;
 }
-
+*{
+  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;;
+}
 img {
   max-width: 100%;
 }
@@ -86,12 +88,21 @@ img {
 }
 
 
+::placeholder{
+  font-size: 12px;
+}
+input::placeholder{
+  font-size: 12px;
+}
 
 /*------scroll bar (Chrome)---------------------*/
 
 ::-webkit-scrollbar {
   width: 5px;
   height: 7px;
+  height: 500px;
+  position: relative;
+  right: -20px;
 }
 
 ::-webkit-scrollbar-button {
@@ -117,6 +128,7 @@ img {
   background: var(--col-primary-900);
   border: 0px none #ffffff;
   border-radius: 50px;
+  height: 500px;
 }
 
 
