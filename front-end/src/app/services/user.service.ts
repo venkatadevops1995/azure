@@ -77,6 +77,10 @@ export class UserService {
     return empAdminPriority
 
   }
+  getReportAccess(){
+    let reportAccess = this.getTokenPayload()['report_access'];
+    return reportAccess
+  }
 
   isDemo() {
     return localStorage.getItem("isDemo") == "true";

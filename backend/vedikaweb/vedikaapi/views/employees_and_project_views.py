@@ -10,7 +10,7 @@ from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeL
 from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
 from django.conf import settings
-from vedikaweb.vedikaapi.decorators import custom_exceptions, is_manager,jwttokenvalidator,servicejwttokenvalidator
+from vedikaweb.vedikaapi.decorators import custom_exceptions, is_admin, is_manager,jwttokenvalidator,servicejwttokenvalidator
 from django.db.models import Q,F,Count,CharField, Case, When, Value as V
 
 from django.core.paginator import Paginator
@@ -166,7 +166,7 @@ class Users(APIView):
     
     @jwttokenvalidator
     @custom_exceptions
-    @is_manager
+    @is_admin
     def put(self,request,*args,**kargs):
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
@@ -179,8 +179,13 @@ class Users(APIView):
 
     @jwttokenvalidator
     @custom_exceptions
+    @is_admin
     def post(self,request,*args,**kargs):
         # new_user_data = request.data
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+
         data = NewEmpSerializer(data=request.data)
         
         try:
@@ -346,6 +351,9 @@ class AllProjects(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         project_serialized_data = ProjectSerializer(Project.objects.filter(Q(status=1),~Q(name__in = DefaultProjects.list())), many=True)
         return Response(utils.StyleRes(True,"All project list",project_serialized_data.data), status=StatusCode.HTTP_OK)
         
@@ -353,6 +361,7 @@ class AllProjects(APIView):
 class EmployeeProjects(APIView):
     @jwttokenvalidator
     @custom_exceptions
+    @is_manager
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request)
         if(auth_details['email']==""):
@@ -375,8 +384,11 @@ class EmployeeProjects(APIView):
 
     @jwttokenvalidator
     @custom_exceptions
+    @is_manager
     def post(self,request,*args,**kargs):
-        
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         serial_update_proj_data = UpdateProjectSerializer(data=request.data)
 
         if(serial_update_proj_data.is_valid() == True):
@@ -457,6 +469,7 @@ class EmployeeProjects(APIView):
 class EmpManagers(APIView):
     
     @jwttokenvalidator
+    @is_manager
     @custom_exceptions
     def get(self,request,*args,**kwargs):
 
@@ -754,8 +767,16 @@ class EmployeeEntryComplianceStatus(APIView):
 class ChangeRole(APIView):
     @jwttokenvalidator
     @custom_exceptions
+    @is_manager 
     def post(self,request):
         # print("change role")
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        is_hr = auth_details['is_emp_admin']
+        role_id = auth_details['role_id']
+        if((not(is_hr)) and (role_id < 4)):
+            return Response(utils.StyleRes(False,"Unauthorized Login"), status=StatusCode.HTTP_UNAUTHORIZED)
         serial_data = ChangeRoleSerializer(data=request.data)
         if(serial_data.is_valid()):
             emp_role_id = Employee.objects.filter(emp_id=serial_data['emp_id'].value)[0].role_id
@@ -880,7 +901,12 @@ class TransferEmp(APIView):
             return Response(utils.StyleRes(False,"transfer emp role error ",validated_data.errors), status=StatusCode.HTTP_BAD_REQUEST)
 
 class EmployeeDetails(APIView):
+    @jwttokenvalidator
+    @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         emp_name = request.query_params.get('emp_name','')
         emp_obj = Employee.objects.filter(emp_name__iexact=emp_name,status=1).prefetch_related(
             'emp','profile'
@@ -929,6 +955,9 @@ class AllActiveInActiveProjects(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         project_serialized_data = ProjectSerializer(Project.objects.filter(), many=True)
         return Response(utils.StyleRes(True,"All project list",project_serialized_data.data), status=StatusCode.HTTP_OK)
 

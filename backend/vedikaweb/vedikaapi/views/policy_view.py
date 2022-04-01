@@ -3,7 +3,7 @@ import os
 
 from django.db.models.fields import BooleanField
 from django.http.request import QueryDict
-from vedikaweb.vedikaapi.decorators import jwttokenvalidator, custom_exceptions
+from vedikaweb.vedikaapi.decorators import is_admin, is_manager, jwttokenvalidator, custom_exceptions
 from rest_framework.views import APIView
 from vedikaweb.vedikaapi.serializers import PolicyDocumentSerializer,PolicyDocumentCreateSerializer, PolicyCompanySerializer, PolicyDocumentEmployeeAccessPermissionSerializer, PolicyDocumentEmployeeActionSerializer
 from vedikaweb.vedikaapi.models import Company, Employee, PolicyType, PolicyDocument, PolicyCompany, PolicyDocumentEmployeeAccessPermission
@@ -27,9 +27,12 @@ log = logging.getLogger(__name__)
 
 
 class PolicyTypeView(APIView):
-    # @jwttokenvalidator
-    # @custom_exceptions
+    @jwttokenvalidator
+    @custom_exceptions
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         policy_types  = PolicyType.objects.filter(status=1).values('id','name');  
         if len(policy_types) > 0:
             return Response(utils.StyleRes(True,"Policy types", policy_types), status=StatusCode.HTTP_OK)
@@ -37,8 +40,13 @@ class PolicyTypeView(APIView):
             return Response(utils.StyleRes(True,"No content available", policy_types),status=StatusCode.HTTP_NO_CONTENT)
     
 class CreatePolicyView(APIView):
-
+    @jwttokenvalidator
+    @is_manager
+    @custom_exceptions
     def get(self,request,pk=None,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         condition = Q(status=1)
         if pk is not None:
             condition = condition&Q(id=pk)
@@ -74,8 +82,18 @@ class CreatePolicyView(APIView):
             # each_data.update({'emp_action':emp_action})
             all_policy_data.append(each_data)
         return Response(utils.StyleRes(True,"Policy list", all_policy_data), status=StatusCode.HTTP_OK)
-
+    
+    @jwttokenvalidator
+    # @is_manager
+    @is_admin
+    @custom_exceptions
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        # is_hr = auth_details['is_emp_admin']
+        # if(not(is_hr)):
+        #     return Response(utils.StyleRes(False,"Unauthorized User"),StatusCode.HTTP_UNAUTHORIZED)
         policy_serial_data = PolicyDocumentCreateSerializer(data=request.data)
         
         if policy_serial_data.is_valid():
@@ -195,8 +213,12 @@ class EmployeePolicyView(APIView):
         #     all_policy_data.append(each_data)
         # all_policy_data = PolicyDocumentSerializer(policy_list,many=True).data
         return Response(utils.StyleRes(True,"Employee Policy list", all_policy_data), status=StatusCode.HTTP_OK)
-
+    @jwttokenvalidator
+    @custom_exceptions
     def post(self,request,policy_id,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         auth_details = utils.validateJWTToken(request)
         if(auth_details['email']==""):
             return Response(auth_details, status=400)
@@ -287,8 +309,14 @@ class PolicyUpload(APIView):
         except Exception as e:
             print(e)
             return Response(utils.StyleRes(False,"Employee Policy file download", "file does not exist"), status=StatusCode.HTTP_NOT_FOUND)
+    @jwttokenvalidator
+    @is_admin
     @custom_exceptions
+
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         file_name = request.data['file']
         uploadedfilename = str(file_name).split('.')[0]
         uploadedfileext=str(file_name).split('.')[-1]

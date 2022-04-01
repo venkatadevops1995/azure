@@ -55,6 +55,9 @@ class utils():
         email = request.data['email']
         employee = Employee.objects.prefetch_related('profile').annotate(category=F('profile__category__name'),gender=F('profile__gender_id')).get(email=email)
         emp_admin = EmployeeAdmin.objects.filter(emp_id=employee.emp_id,status=1)
+        payload['report_access'] = False
+        if(email in settings.ADMINS_TO_ACCESS_REPORTS):
+            payload['report_access'] = True
         payload['emp_name'] = employee.emp_name
         payload['emp_id'] = employee.emp_id
         payload['role_id'] = employee.role_id
