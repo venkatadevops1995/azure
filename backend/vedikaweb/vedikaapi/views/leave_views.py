@@ -1377,6 +1377,7 @@ class LeaveStatusAPI(APIView):
 #INDIVIDUAL LEAVE DAYS AE CONSIDERING AND RETURNING AS RESPONSE
 class MonthyCycleLeaveReportView(APIView):
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request)
@@ -1413,6 +1414,7 @@ class MonthyCycleLeaveReportView(APIView):
 #SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
 class MonthyCycleLeaveReportRequestBasedView(APIView):
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request)

@@ -113,7 +113,7 @@ export class AuthGuardSecurityService_Report_Access implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-      let is_report_access_admin = this.user.getReportAccess()
+      let is_report_access_admin = this.user?.getReportAccess()
       let dashbaord_route = this.user.getDashboardRoute()
       if (is_report_access_admin) {
           return true;

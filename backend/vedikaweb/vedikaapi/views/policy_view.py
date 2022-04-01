@@ -41,7 +41,7 @@ class PolicyTypeView(APIView):
     
 class CreatePolicyView(APIView):
     @jwttokenvalidator
-    @is_manager
+    @is_admin
     @custom_exceptions
     def get(self,request,pk=None,*args,**kwargs):
         auth_details = utils.validateJWTToken(request)

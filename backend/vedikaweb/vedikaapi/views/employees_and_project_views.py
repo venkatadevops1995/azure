@@ -168,6 +168,9 @@ class Users(APIView):
     @custom_exceptions
     @is_admin
     def put(self,request,*args,**kargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
             EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
