@@ -45,7 +45,7 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     fromdate: any;
     todate: any;
-    maxDate = moment().subtract(0, 'days');
+    // maxDate = moment().subtract(0, 'days');
 
     // minDate = moment().subtract(5, 'years')
     leaveCategories = ["Half Day", "Single Day", "Multiple Days"];
@@ -58,9 +58,16 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     specialLeaveTypeRequestsAvailable: Array<{ id: number, name: string, available: number }> = []
 
+    firstDayOfCurrentYear = new Date(this.today.getFullYear(),0,1).getTime()  // first day of the first month of the current year
+    last60days = (this.today.getTime() - (60*MILLISECONDS_DAY)) //last 60 days from current date
+    
+    // if last60 days is less than 1st day of the 1st month  of the current month then startdate(min date) is 1st day of the 1st month of the current year
+    // Otherwise startdate(min date) is last6o days
+    startDateForCal = (this.last60days > this.firstDayOfCurrentYear) ? this.last60days : this.firstDayOfCurrentYear
+    
     // Dateipicker
     datePickerLeaveApplcn: any = {
-        startAtStartDate: new Date(this.today.getTime() - 30 * MILLISECONDS_DAY),
+        startAtStartDate: new Date(this.startDateForCal),
         startAtEndDate: new Date(),
         endAtEndDate: new Date(),
         noOfLeaveDays: {
@@ -103,6 +110,7 @@ export class ManageSelfLeavesComponent implements OnInit {
                 if (position == 'end') {
                     let endDate = this.datePickerLeaveApplcn.endAtEndDate
                     condition = !(date < startDate) && !(date > endDate)
+                    console.log("Date is:",date,"start date:: ",startDate,"End date is:",endDate ,"::::","condition:",condition)
                     return (condition && (day != 0 && day != 6) && (!this.checkDateisThere(date,this.holidayList))) && date.getFullYear()==this.today.getFullYear()
                 } else {
                     condition = !(date < startDate)

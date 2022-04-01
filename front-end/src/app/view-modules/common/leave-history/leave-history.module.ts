@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { ShowTableModule } from '../show-table/show-table.module';
+import { MatCheckbox, MatCheckboxModule , MatCheckboxChange ,MatCheckboxClickAction } from '@angular/material/checkbox';
 
 
 
@@ -40,7 +41,8 @@ import { ShowTableModule } from '../show-table/show-table.module';
     MatInputModule,
     MatSlideToggleModule,
     MatSortModule,
-    ShowTableModule
+    ShowTableModule,
+    MatCheckboxModule,
   ]
 })
 export class LeaveHistoryModule { }

@@ -22,9 +22,9 @@
             </mat-form-field>
         </div>
         <div class="ml-15" style="margin-left: 55px;">
-            <div class="dateinput change">
-                <input [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
-                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: red;" (datesUpdated)="onSubmitResolvedLeaveFilter($event)" [opens]="'left'"
+            <div class="dateinput change"  [ngClass]= "Ischecked ? 'disable' :''">
+                <input [disabled] = "!side"  [disabled]="Ischecked ? true : false"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="daterange" placeholder="Select Date range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
+                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" class="ngx-daterangepicker-action" style="border: none;background: none;color: red;" (datesUpdated)="onSubmitResolvedLeaveFilter($event)" [opens]="'left'"
                     [drops]="'down'" readonly>
 
                 <button [disabled] = "!side"  [ngStyle] = "{'color' : side == true ? '#3a7bca' : 'slategray'}" type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
@@ -39,8 +39,11 @@
         </div> -->
 <!-- month-year ends  -->
 
-
-
+        <div class="future__leave_checkbox">
+            <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onIsDisableClick($event)"> 
+            <label style="font-size: 16px;"> Future Leaves Only</label>
+            </mat-checkbox>
+        </div>
 
         <div class="export_icon ml-15" style="position: absolute; right: 100px ;float: right; margin-top: 5px;margin-left: 65px">
             <a (click)="onClickExportResolved()" style="max-height: 10px;">

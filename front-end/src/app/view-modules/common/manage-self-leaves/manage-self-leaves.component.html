@@ -78,7 +78,7 @@
         <div style="display: inline-block;">
             <div class="dateinput">
                 <input type="daterange" placeholder="Select Date Range" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [(ngModel)]="selectedHistoryRange" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}"
-                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" [maxDate]='maxDate' class="ngx-daterangepicker-action" style="border: none;background: none;color: #3a7bca;" [opens]="'right'" [drops]="'up'" readonly
+                    #picker [ranges]="ranges" [keepCalendarOpeningWithRange]="true" class="ngx-daterangepicker-action" style="border: none;background: none;color: #3a7bca;" [opens]="'right'" [drops]="'up'" readonly
                     (datesUpdated)="getLeaveHistory($event)" />
 
                 <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">

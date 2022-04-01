@@ -332,26 +332,30 @@ class email_service():
         Inform Managers about employee disable
         '''
         emp_list =  Employee.objects.filter(emp_id=emp_id)
+        staff_no = Employee.objects.only('staff_no'). get(emp_id=emp_id).staff_no
+        emp_name =unicodedata.normalize("NFKD", emp_list[0].emp_name)
+
         # print(emp_list.values())
         # print(emp_list[0].emp_name)
 
         mail_type =  "Employee disabled"
-        subject = MailConfigurations.Sub_EmployeeDisabled.value+":"+str(emp_list[0].emp_name)+"("+str(emp_list[0].staff_no)+")"
-        log.info(subject)
+        subject=""
+        
+        # log.info(subject)
         if(stagging):
-            manager_str = "HR initiated relieving date of"
+            subject = MailConfigurations.Sub_EmployeeDisabledFuture.value + emp_name+"("+ str(staff_no)+")" 
         else:
-            manager_str = "HR relieved "
+            subject = MailConfigurations.Sub_EmployeeDisabledPast.value + emp_name+"("+ str(staff_no)+")" 
         relieved = str(relieved)
         ctx={
             "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
             "email":emp_list[0].email,
             "relieved":relieved,
-            "manager_str":manager_str
+            "staff_no":staff_no,
         }
         if(stagging):
             if(email_service.isValidReceiver(emp_id)):
-                emp_queue_obj = {'emp':emp_id,'email':emp_list[0].email,'email_subject':'Atwork access','email_type':"disable_info_emp",'required_inputs':str(json.dumps(ctx))}
+                emp_queue_obj = {'emp':emp_id,'email':emp_list[0].email,'email_subject':subject,'email_type':"disable_info_emp",'required_inputs':str(json.dumps(ctx))}
                 emp_queue_ser_obj = EmailQueueSerializer(data=emp_queue_obj)
                 if(emp_queue_ser_obj.is_valid()):
                     emp_queue_ser_obj.save()
@@ -373,7 +377,17 @@ class email_service():
         for mgr_id,mgr_email in zip(manager_ids,manager_emails):
             emailList=[mgr_email]
             if(email_service.isValidReceiver(mgr_id)):
-                emp_queue_obj = {'emp':mgr_id,'email':mgr_email,'email_subject':subject,'email_type':"disable_info_mgr",'required_inputs':str(json.dumps(ctx))}
+                mgr_name = Employee.objects.only('emp_name'). get(emp_id=mgr_id).emp_name                
+                
+                ctx2={
+                    "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
+                    "email":emp_list[0].email,
+                    "relieved":relieved,
+                    "staff_no":staff_no,
+                    "mgr_name":mgr_name,
+                    "stagging":stagging
+                }
+                emp_queue_obj = {'emp':mgr_id,'email':mgr_email,'email_subject':subject,'email_type':"disable_info_mgr",'required_inputs':str(json.dumps(ctx2))}
                 emp_queue_ser_obj = EmailQueueSerializer(data=emp_queue_obj)
                 if(emp_queue_ser_obj.is_valid()):
                     emp_queue_ser_obj.save()
