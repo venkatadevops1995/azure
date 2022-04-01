@@ -663,6 +663,9 @@ class ApproveEmpTimesheet(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def post(self, request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         try:
             serialized = EmployeeWorkApproveStatusSerializer(data = request.data)
             if (serialized.is_valid()):
@@ -726,6 +729,9 @@ class getEmpManagers(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self, request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         try:
             auth_details = utils.validateJWTToken(request)
             if(auth_details['email']==""):
@@ -772,6 +778,9 @@ class getHistoricalData(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self, request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         try:
             auth_details = utils.validateJWTToken(request)
             if(auth_details['email']==""):

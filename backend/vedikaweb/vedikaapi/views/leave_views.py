@@ -13,7 +13,7 @@ from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireL
 
 from vedikaweb.vedikaapi.constants import  LeaveDayStatus, LeaveDiscrepancyStatus, LeaveRequestStatus, MaxLeaveDaysForLeaveType, MaxRequestsForLeaveType, StatusCode, DefaultProjects,LeaveMailTypes, LeaveExcelHeadings, TimesheetDiscrpancyStatus
 from vedikaweb.vedikaapi.utils import utils
-from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator, is_manager, query_debugger
+from vedikaweb.vedikaapi.decorators import custom_exceptions, is_admin,jwttokenvalidator, is_manager, query_debugger
 from django.db.models import Q,F,Prefetch,CharField, Case, When, Value as V
 from django.core.exceptions import MultipleObjectsReturned, ValidationError, ObjectDoesNotExist
 from django.db.models import Sum
@@ -112,7 +112,8 @@ class LeaveRequestView(APIView):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         qp = request.query_params
-        is_hr = json.loads(qp.get('is_hr','false'))
+        # is_hr = json.loads(qp.get('is_hr','false'))
+        is_hr = auth_details['is_emp_admin']
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
         if errors:
             # print('errors in get leave requests')
@@ -592,6 +593,9 @@ class LeaveConfigOfCategory(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         category = request.query_params['category']
         class Serializer(serializers.Serializer):
             category=serializers.CharField(required=True)
@@ -613,6 +617,9 @@ class LeaveResolveView(APIView):
     @is_manager
     @transaction.atomic
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         req_data=request.data
         class LeaveResolveSerializer(serializers.Serializer):
             id = serializers.IntegerField(required=True)
@@ -869,11 +876,18 @@ class LeaveTypeView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self, request, *args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         leave_type = list(LeaveType.objects.filter(status=1).values())
         return Response(utils.StyleRes(True,"Leave Types",leave_type),status=StatusCode.HTTP_OK)
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def post(self, request, *args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         serial_leave_type = LeaveTypeSerializer(data=request.data)
         if(serial_leave_type.is_valid() == True):
             serial_leave_type.save()
@@ -885,13 +899,20 @@ class NewHireMonthTimePeriodsView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         month_time_periods = list(NewHireMonthTimePeriods.objects.filter(status=1).order_by('start_date','end_date').values('id','start_date','end_date'))
         return Response(utils.StyleRes(True,"Month time periods for the new hire first month leave credit round off",month_time_periods),status=StatusCode.HTTP_OK)
 
 class LeaveConfigView(APIView): 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         category_leave_credit = LeaveConfig.objects.filter(leave_type__status=1).select_related('category','leave_type').order_by('category__id','leave_type__id')
         category_leave_credit_serializer = LeaveConfigSerializer(category_leave_credit,many=True )   
         if len(category_leave_credit_serializer.data) > 0:
@@ -901,8 +922,12 @@ class LeaveConfigView(APIView):
         
 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def patch(self,request,*args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # repr(LeaveConfigSerializer())
         serialized_data = UpdateLeaveConfigSerializer(data=request.data, many=True )
         if serialized_data.is_valid():  
@@ -930,6 +955,9 @@ class FillLeaveConfigView(APIView):
     @custom_exceptions
     @transaction.atomic
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # get all the rows from the emp type
         categories = Category.objects.all()
         # get all the rows from the leave type table
@@ -954,6 +982,9 @@ class FillNewHireLeaveConfigView(APIView):
     @custom_exceptions
     @transaction.atomic
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # get all the rows from the emp type
         categories = Category.objects.all()
         # get all the rows from the leave type table
@@ -978,8 +1009,12 @@ class FillNewHireLeaveConfigView(APIView):
 
 class NewHireLeaveConfigView(APIView):
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         round_off = list(NewHireLeaveConfig.objects.select_related('category','time_period').order_by('category__id','time_period__id')) 
         round_off_serializer = NewHireLeaveConfigSerializer(round_off, many=True)  
         if len(round_off_serializer.data) > 0:
@@ -988,8 +1023,12 @@ class NewHireLeaveConfigView(APIView):
             return Response(utils.StyleRes(True,"No content available", round_off_serializer.data),status=StatusCode.HTTP_NO_CONTENT)
     
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def patch(self,request,*args, **kwargs):  
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         serialized_data = NewHireLeaveConfigSerializer(data=request.data,many=True, partial=True) 
         # print(serialized_data.errors, request.data)
         if serialized_data.is_valid(): 
@@ -1057,6 +1096,9 @@ class LeaveDiscrepancyView(APIView):
     @jwttokenvalidator
     @custom_exceptions 
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         qp = request.query_params
         leave_request_id = qp.get('leave_request_id')
 
@@ -1088,6 +1130,7 @@ class LeaveDiscrepancyView(APIView):
 class ExportEmpLeave(APIView):
     
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request) 
@@ -1128,6 +1171,7 @@ class ExportEmpLeave(APIView):
     # @query_debugger
 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def post(self,request,*args, **kwargs):
         auth_details = utils.validateJWTToken(request) 
@@ -1336,7 +1380,13 @@ class LeaveStatusAPI(APIView):
 #BASED ON LEAVE TABLE
 #INDIVIDUAL LEAVE DAYS AE CONSIDERING AND RETURNING AS RESPONSE
 class MonthyCycleLeaveReportView(APIView):
+    @jwttokenvalidator
+    @is_admin
+    @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
@@ -1367,7 +1417,13 @@ class MonthyCycleLeaveReportView(APIView):
 #BASED ON BOTH LEAVE AND LEAVE REQUEST TABLE
 #SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
 class MonthyCycleLeaveReportRequestBasedView(APIView):
+    @jwttokenvalidator
+    @is_admin
+    @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         export_flag = self.request.query_params.get('export',False)
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)

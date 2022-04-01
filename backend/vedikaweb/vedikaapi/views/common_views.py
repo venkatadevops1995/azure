@@ -565,6 +565,9 @@ class CompanyView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         company_list = list(Company.objects.filter(status=1).values())
         return Response(utils.StyleRes(True,"Company list",company_list),status=StatusCode.HTTP_OK)
 
@@ -574,6 +577,9 @@ class CategoryView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request, *args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         employee_type = list(Category.objects.values())
         return Response(utils.StyleRes(True,"Employee Types",employee_type),status=StatusCode.HTTP_OK)
 
@@ -584,6 +590,9 @@ class DataAvailability(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
         from_,to_,last_ = utils.dataUnavailabledates()
         msg = {'msg':'Data will not be available from {} to {}'.format(from_,to_)}
         res ={'msg':msg,'availbledate':last_}
