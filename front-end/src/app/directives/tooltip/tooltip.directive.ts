@@ -56,6 +56,7 @@ export class TooltipDirective {
     this.renderer.addClass(this.tooltip, `ng-tooltip-${this.placement}`);
 
     // delay
+    this.renderer.setStyle(this.tooltip, 'z-index', 1000);
     this.renderer.setStyle(this.tooltip, '-webkit-transition', `opacity ${this.delay}ms`);
     this.renderer.setStyle(this.tooltip, '-moz-transition', `opacity ${this.delay}ms`);
     this.renderer.setStyle(this.tooltip, '-o-transition', `opacity ${this.delay}ms`);

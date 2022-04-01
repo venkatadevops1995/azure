@@ -426,7 +426,7 @@
     </div>
 
     <div style="display: flex; justify-content: space-between">
-      <div class="custom_checkbox" style="margin: 0px 10px 0px">
+      <div class="custom_checkbox" style="margin: 0px 10px 0px;accent-color:var(--col-accent-500)">
         <input
           type="checkbox"
           id="allIn"
@@ -440,9 +440,10 @@
       </div>
       <div
         class="custom_checkbox"
-        style="margin: 0px 10px 0px"
+        style="margin: 0px 10px 0px;accent-color:var(--col-accent-500)"
         *ngFor="let com of companyList.subtasks"
       >
+
         <input
           type="checkbox"
           id="{{ com['name'] }}In"
@@ -477,13 +478,22 @@
     >
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef style="width: 80px">
-        
+
+
+        <!-- Rahul change (customise the style for checkbox)***************** -->
+                  <!-- *********************************************************** -->
+  <label >
+    
           <input
             type="checkbox"
             [checked]="allSelected"
             (click)="selectAllEmp($event)"
           
           />
+          <span></span>
+        </label>
+          <!-- *********************************************************** -->
+          
            <!-- Rahul change ********************** -->
           <!-- <mat-checkbox color="accent"[checked]="allSelected"
           (click)="selectAllEmp($event)">
@@ -495,6 +505,10 @@
           *matCellDef="let element; let i = index"
           [ngClass]="{ selectedBg: element.selected == true }"
         >
+
+
+         <!-- Rahul change (customise the style for checkbox)***************** -->
+         <label >
           <input
             type="checkbox"
             name="com"
@@ -503,7 +517,11 @@
               element.selected = !element.selected; updateEmpSelection()
             "
           />
-      
+          <span></span>
+        </label>
+       <!-- *********************************************************** -->
+
+       
         </td>
       </ng-container>
 
@@ -643,7 +661,7 @@
 <ng-template #selectedEmpPopup>
   <div>
     <div style="text-align: center">
-      <p *ngIf="SELECTED_EMPLOYEE_DATA.length == 0">
+      <p class="p-20" *ngIf="SELECTED_EMPLOYEE_DATA.length == 0">
         No employee has been selected
       </p>
     </div>
