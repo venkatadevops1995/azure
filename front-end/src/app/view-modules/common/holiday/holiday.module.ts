@@ -8,9 +8,7 @@ import { ButtonModule } from 'src/app/components/button/button.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { MatNativeDateModule } from '@angular/material/core';
-// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { MatIconModule } from '@angular/material/icon';
+import { MatNativeDateModule } from '@angular/material/core'; 
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -28,8 +26,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     FormsModule,
     ButtonModule,
     MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
+    MatNativeDateModule, 
     ModalPopupModule,
     MatSelectModule,
     MatAutocompleteModule,

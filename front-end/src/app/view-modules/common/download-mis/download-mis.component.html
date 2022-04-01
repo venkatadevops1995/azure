@@ -4,7 +4,7 @@
   <div class="mis__body p-50 primary-900 flex center-xs">
     <div class="mis__datepicker fs-14 flex" style="max-width: 600px;margin: 30px 0;">
       <div>
-        <mat-form-field class="no-pb atai-date-range">
+        <mat-form-field class="no-pb atai-date-range" style="min-width: 225px;">
           <app-atai-date-range [minDate]="minDate" [disabled]="!Ischecked" (dateSelected)="onDateSelect($event)">
           </app-atai-date-range>
         </mat-form-field>
@@ -21,10 +21,7 @@
           <span [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:15}" style="color:'#ffffff';"
             svg-fill="currentColor" class="ml-5  mr-10"></span> <span>MIS</span>
         </div>
-      </app-button>
-      <!-- <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)" style="background: none; border: none;cursor: pointer;">
-                    <mat-icon role="img" (click)="open($event)" [ngClass]= "Ischecked ? '' :'disable--icon'" class="mat-icon material-icons calender-icon ngx-daterangepicker-action">date_range</mat-icon>
-                </button> -->
+      </app-button> 
     </div>
 
   </div>

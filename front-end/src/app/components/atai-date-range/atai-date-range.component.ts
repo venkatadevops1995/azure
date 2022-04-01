@@ -157,7 +157,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // for mat
   set value(date: any) {
     if (date && date.start && date.start instanceof Date && date.end && date.end instanceof Date) {
-      this._model.updateSelection({ start: date.start, end: date.end } as unknown, this)
+      this.setCustomValue(date.start, date.end)
       this.stateChanges.next();
     }
   }
@@ -210,6 +210,20 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     }
   }
 
+
+  setCustomValue(start: Date, end: Date) {
+    this.dateMeta.selectionType = 'custom';
+    this.dateMeta.dateString = this.nativeDateAdapter.format(start, 'dd-mm-yyyy') + ' - ' + this.nativeDateAdapter.format(end, 'dd-mm-yyyy');
+    this.dateMeta.selectedRange = new DateRange(start, end);
+    this._model.updateSelection({ start: null, end: null } as unknown as any, this);
+    this._model.add(start);
+    this._model.add(end);
+    // this.setSelection('custom')
+    if (this.calendar) {
+      this.calendar.updateTodaysDate()
+    }
+  }
+
   // for mat
   focused = false;
 
@@ -259,7 +273,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         return presetInput.indexOf(item.str) != -1
       })
       console.log(this.selectionPresets)
-    } 
+    }
   }
 
   ngOnInit(): void {
@@ -505,7 +519,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   }
 
   /* 
-    @param: event
+    @param: elRef The element relative to which the date picker is positioned
   */
   openDateRangePicker(elRef?: ElementRef) {
     // this.clearSelection()

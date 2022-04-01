@@ -14,8 +14,7 @@ import { AnimationsService } from './services/animations.service';
 import { XhrProgressService } from './services/xhr-progress.service';
 import { DatePipe } from '@angular/common';
 import { AuthInterceptor } from './services/auth-interceptor';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; 
 import { ConfirmDialogModule } from './components/confirm-dialog/confirm-dialog.module';
 import { LoaderComponent } from './components/loader/loader.component';
 import { StatusMessageComponent } from './components/status-message/status-message.component';
@@ -71,8 +70,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    // MatSlideToggleModule,
-    MatIconModule,
+    // MatSlideToggleModule, 
     MatSelectModule,
     MatDatepickerModule,
     MatRadioModule,

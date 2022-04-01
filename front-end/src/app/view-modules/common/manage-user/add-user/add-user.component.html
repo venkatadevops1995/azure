@@ -169,45 +169,16 @@
                 </div>
 
         <mat-form-field class="custompicker">
-          <mat-label>Date of Joining</mat-label>
-          <!-- <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
-                        formControlName="doj" [closeOnAutoApply]="true" [autoApply]="true" readonly> -->
-          <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-                        <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
-                      </button> -->
-          <!-- <app-atai-date-range></app-atai-date-range> -->
+          <mat-label>Date of Joining</mat-label> 
           <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
           <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="picker.open()"></div>
-          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
-          <!-- <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
-          style="color: #3a7bca;">date_range</mat-icon> -->
+          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker> 
           <mat-error *ngIf="addUserForm.controls.doj.touched ">
             Please select Date of Joining
           </mat-error>
         </mat-form-field>
-      </div>
-      <!-- </div> -->
-      <!-- <div>
-            <p>Role</p>
-            <mat-form-field appearance="fill" style="width: 250px;padding: 4px;">
-                <mat-label>Select Role</mat-label>
-                <mat-select formControlName="role">
-                    <mat-option [value]="role.name" *ngFor="let role of ROLES">{{role.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div> -->
-
-
-      <!-- <div class="grid-container">
-        <div style="padding: 0px 0px 17.5px;margin: 4px;">-->
-         
-
-        <!-- </div>
-      </div>  -->
-
-
-
-      <!-- <div > -->
+      </div> 
+ 
         <div class="gap"></div>
         <div *ngIf="!makeSelfFM" class="grid-container">
           <mat-form-field>

@@ -15,6 +15,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SvgIconModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    ToolTipModule
   ]
 })
 export class AttendenceSheetModule { }

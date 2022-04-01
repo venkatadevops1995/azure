@@ -25,24 +25,20 @@
 }
 
 .weekend_class {
-  background-color: var(--col-accent-A700);
+  background-color: var(--col-primary-900);
+}
+ 
+
+.vacation_class {
+  color: #e98818;
 }
 
 .holiday {
-  background-color: rgba(23, 191, 247, 0.8);
+  .project_class {
+    color: var(--col-accent-500);
+  }
 }
 
-.holiday_class {
-  color: red;
-}
-
-.vacation_class {
-  color: #ded23b;
-}
-
-.project_class {
-  color: green;
-} 
 .export_icon {
   // padding-top: 20px;
   align-items: baseline;

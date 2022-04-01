@@ -1,124 +1,127 @@
-<div class="leave-details pb-20" style="height: 100%;">
+<div class="leave-details pb-20   " style="height: 100%;">
   <div class="abs-image-zoom" *ngIf="currentImageInZoom">
     <div class="abs-image-inner">
       <img [attr.src]="currentImageInZoom" alt="">
     </div>
-    <div (click)="currentImageInZoom = ''" class="close-image-zoom flex middle-xs pointer">
-      <mat-icon class="small-xs ml-5 ">close</mat-icon> Close
-    </div>
-  </div> 
-  <div class="leave-details__data">
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Employee Name</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.EmployeeName}}</div>
-    </div>
-    <div class="leave-details__single leave-details__single--span-2">
-      <div class="leave-details__single-title fs-12 mb-3">Leave Period</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeavePeriod}}</div>
-    </div>
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Total Days</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.TotalDays}}</div>
-    </div>
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Applied on</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.AppliedOn}}</div>
-    </div>
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Leave Type</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveType}}</div>
-    </div>
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Leave Reason</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveReason}}</div>
-    </div>
-    <div class="leave-details__single">
-      <div class="leave-details__single-title fs-12 mb-3">Status</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.Status}}</div>
-    </div>
-    <div class="leave-details__single   leave-details__single--span-4">
-      <div class="leave-details__single-title fs-12 mb-3">Leave Description</div>
-      <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveDescription || '--'}}</div>
-    </div>
+    <div class=" pointer close-image-zoom fs-12 col-primary-200" (click)="currentImageInZoom = ''"
+        svg-fill="none">Close</div>
   </div>
-  <ng-container *ngIf="data?.leave_type == 3">
-    <ng-container *ngIf="data?.uploads_invitation.length >= 1;else refNoInvitations">
-      <div class="separator"></div>
-      <h2>Invitation uploads</h2>
-      <div class="flex middle-xs">
-        <ng-container *ngFor="let upload of data?.uploads_invitation;">
-          <div (click)="currentImageInZoom = upload" class="pointer mr-20"
-            [ngStyle]="{'backgroundImage':'url('+upload+')'}" style="height: 100px;width:160px;background-size:cover;">
-          </div>
-        </ng-container>
-      </div>
-    </ng-container>
-    <ng-template #refNoInvitations>
-      <div class="separator"></div>
-      <h2>Invitation uploads</h2>
-      <p>No invitations uploaded</p>
-    </ng-template>
-  </ng-container>
+  <div>
 
-  <ng-container *ngIf="requestId?.get_discrepancy && data?.discrepancy_raised">
-    <div class="separator"></div>
-    <h3 class="mt-20">Leave Correction Details</h3>
-    <!-- <app-strip-table [data]="data?.discrepancyDetails"></app-strip-table> -->
-    <div class="leave-details__data mt-20">
-      <div class="leave-details__single  leave-details__single--span-2">
+    <div class="leave-details__data">
+      <div class="leave-details__single">
+        <div class="leave-details__single-title fs-12 mb-3">Employee Name</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.EmployeeName}}</div>
+      </div>
+      <div class="leave-details__single leave-details__single--span-2">
+        <div class="leave-details__single-title fs-12 mb-3">Leave Period</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeavePeriod}}</div>
+      </div>
+      <div class="leave-details__single">
+        <div class="leave-details__single-title fs-12 mb-3">Total Days</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.TotalDays}}</div>
+      </div>
+      <div class="leave-details__single">
+        <div class="leave-details__single-title fs-12 mb-3">Applied on</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.AppliedOn}}</div>
+      </div>
+      <div class="leave-details__single">
+        <div class="leave-details__single-title fs-12 mb-3">Leave Type</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveType}}</div>
+      </div>
+      <div class="leave-details__single">
+        <div class="leave-details__single-title fs-12 mb-3">Leave Reason</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveReason}}</div>
+      </div>
+      <div class="leave-details__single">
         <div class="leave-details__single-title fs-12 mb-3">Status</div>
-        <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.Status}}</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.Status}}</div>
       </div>
-      <div class="leave-details__single  leave-details__single--span-2">
-        <div class="leave-details__single-title fs-12 mb-3">Raised On</div>
-        <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.RaisedOn}}</div>
-      </div>
-      <div class="leave-details__single  leave-details__single--span-4">
-        <div class="leave-details__single-title fs-12 mb-3">Employee Comments</div>
-        <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.EmployeeComments || '--'}}</div>
+      <div class="leave-details__single   leave-details__single--span-4">
+        <div class="leave-details__single-title fs-12 mb-3">Leave Description</div>
+        <div class="leave-details__single-value fs-14">{{data?.requestDetails?.LeaveDescription || '--'}}</div>
       </div>
     </div>
-  </ng-container>
+    <ng-container *ngIf="data?.leave_type == 3">
+      <ng-container *ngIf="data?.uploads_invitation.length >= 1;else refNoInvitations">
+        <div class="separator"></div>
+        <h2 class="mb-10">Invitation uploads</h2>
+        <div class="flex middle-xs">
+          <ng-container *ngFor="let upload of data?.uploads_invitation;">
+            <div (click)="currentImageInZoom = upload" class="pointer mr-20" 
+              style="height: 100px;width:160px;background-size:cover;"> 
+              <img [attr.src]="upload" alt="">
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-template #refNoInvitations>
+        <div class="separator"></div>
+        <h2>Invitation uploads</h2>
+        <p>No invitations uploaded</p>
+      </ng-template>
+    </ng-container>
 
-  <div class="separator"
-    *ngIf="type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
-  </div>
-
-  <h3 style="margin-bottom: 0px;" *ngIf="type == 'team' && historyFlag" class="heading">Leave Insights</h3>
-
-  <div class="mt-20 flex between-xs middle-xs"
-    *ngIf="type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
-    <div style="margin-bottom: 0px;" class="fs-12">
-      <span class="col-primary-300">Leave Balance: </span>
-      <b class="fs-16"> {{data?.leave_balance}}</b>
-    </div>
-    <div class="fs-12 consumed flex middle-xs">
-      Leaves consumed in last
-      <input type="number" [formControl]="fcLastNDays " class="tac ip-simple fs-16" style="" min="1" step="1"
-        maxlength="3">
-      days is
-      <div class="col-accent-500 ml-10 mr-10" svg-fill="currentColor"
-        [svgIcon]="{url:'./assets/icons-sprite-new.svg#arrow-right',w:20}"></div>
-      <b class="fs-16  "> {{leavesInLastNDays?.leaveCount}} </b>
-      <app-button class="ml-20" theme="blue-lite" size='small' (click)="onClickGetLeavesInLastNDays()">Submit
-      </app-button>
-    </div>
-  </div>
-
-  <div class="mt-20 mb-20 "
-    *ngIf="data?.leaves_previous && data?.leaves_previous.length > 0 && type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
-    <div class="separator"></div>
-    <span style="color:var(--color-danger)">
-      This user has previously applied and used leaves from this leave type. Below are the details.
-    </span>
-    <ng-container *ngFor="let leave of data?.leaves_previous;let i = index;">
-      <div class="bg-box pos-r" style="margin-top:50px;">
-        <div
-          style="position: absolute;left:calc(50% - 25px);top:-30px;width:50px;height:50px;border:1px solid #666;background:white;line-height: 50px;border-radius:50%;text-align: center;font-size:20px;font-weight: bold;">
-          {{i + 1}}</div><br>
-        <app-strip-table [data]="leave?.requestDetails"></app-strip-table>
+    <ng-container *ngIf="requestId?.get_discrepancy && data?.discrepancy_raised">
+      <div class="separator"></div>
+      <h3 class="mt-20">Leave Correction Details</h3>
+      <!-- <app-strip-table [data]="data?.discrepancyDetails"></app-strip-table> -->
+      <div class="leave-details__data mt-20">
+        <div class="leave-details__single  leave-details__single--span-2">
+          <div class="leave-details__single-title fs-12 mb-3">Status</div>
+          <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.Status}}</div>
+        </div>
+        <div class="leave-details__single  leave-details__single--span-2">
+          <div class="leave-details__single-title fs-12 mb-3">Raised On</div>
+          <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.RaisedOn}}</div>
+        </div>
+        <div class="leave-details__single  leave-details__single--span-4">
+          <div class="leave-details__single-title fs-12 mb-3">Employee Comments</div>
+          <div class="leave-details__single-value fs-14">{{data?.discrepancyDetails?.EmployeeComments || '--'}}</div>
+        </div>
       </div>
     </ng-container>
+
+    <div class="separator"
+      *ngIf="type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
+    </div>
+
+    <h3 style="margin-bottom: 0px;" *ngIf="type == 'team' && historyFlag" class="heading">Leave Insights</h3>
+
+    <div class="mt-20 flex between-xs middle-xs"
+      *ngIf="type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
+      <div style="margin-bottom: 0px;" class="fs-12">
+        <span class="col-primary-300">Leave Balance: </span>
+        <b class="fs-16"> {{data?.leave_balance}}</b>
+      </div>
+      <div class="fs-12 consumed flex middle-xs">
+        Leaves consumed in last
+        <input type="number" [formControl]="fcLastNDays " class="tac ip-simple fs-16" style="" min="1" step="1"
+          maxlength="3">
+        days is
+        <div class="col-accent-500 ml-10 mr-10" svg-fill="currentColor"
+          [svgIcon]="{url:'./assets/icons-sprite-new.svg#arrow-right',w:20}"></div>
+        <b class="fs-16  "> {{leavesInLastNDays?.leaveCount}} </b>
+        <app-button class="ml-20" theme="blue-lite" size='small' (click)="onClickGetLeavesInLastNDays()">Submit
+        </app-button>
+      </div>
+    </div>
+
+    <div class="mt-20 mb-20 "
+      *ngIf="data?.leaves_previous && data?.leaves_previous.length > 0 && type == 'team' && historyFlag && data?.leave_type_name!='Marriage' && data?.leave_type_name!='Maternity' && data?.leave_type_name!='Paternity'">
+      <div class="separator"></div>
+      <span style="color:var(--color-danger)">
+        This user has previously applied and used leaves from this leave type. Below are the details.
+      </span>
+      <ng-container *ngFor="let leave of data?.leaves_previous;let i = index;">
+        <div class="bg-box pos-r" style="margin-top:50px;">
+          <div
+            style="position: absolute;left:calc(50% - 25px);top:-30px;width:50px;height:50px;border:1px solid #666;background:white;line-height: 50px;border-radius:50%;text-align: center;font-size:20px;font-weight: bold;">
+            {{i + 1}}</div><br>
+          <app-strip-table [data]="leave?.requestDetails"></app-strip-table>
+        </div>
+      </ng-container>
+    </div>
+    <div class="pb-20"></div>
   </div>
-  <div class="pb-20"></div>
 </div>

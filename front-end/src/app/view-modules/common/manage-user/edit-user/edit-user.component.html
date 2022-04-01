@@ -6,14 +6,10 @@
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField">
         <button style="background: none;border:none;" mat-button type='button' matSuffix mat-icon-button
           aria-label="Clear" (click)="clear()">
-          <!-- <mat-icon>arrow_drop_down</mat-icon> -->
-          <!-- rahul changes(icons-sprite-new) ************************************
-                ****************************************************** -->
           <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#dropdown-arrow',w:14}" style="
                color: var(--col-warn-A200);
                cursor: pointer;
              " svg-fill="#6A6A6A"></div>
-          <!-- ************************************************************ -->
         </button>
         <mat-autocomplete class="fs-14" #auto="matAutocomplete">
           <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
@@ -21,31 +17,11 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <!-- <p *ngIf="show" style="color: var(--color-danger);">Select Leader from list</p> -->
       <div class="flex end-xs middle-xs" style="margin-top: -25px;">
         <app-button [disabled]="searchField.invalid" (click)="getAllReportes()">Submit
         </app-button>
       </div>
 
-      <!--             
-            <mat-form-field class="w-50 mr-10">
-                <mat-label>Search employee</mat-label>
-                <input matInput [formControl]="searchField">
-                <button style="background: none;border:none;" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear" (click)="reset()">
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-                <mat-error *ngIf="searchField.touched && searchField.hasError('required')">
-                    Please enter text
-                </mat-error>
-            </mat-form-field>
-
-            <div class="flex end-xs middle-xs" style="margin-top: -25px;">
-                <app-button size='small' theme="blue-lite" [disabled]="searchField.invalid" (click)="getAllReportes()">Submit</app-button>
-            </div>
-        </div> -->
-      <!-- <div style="display: inline-block;padding: 10px;">
-        <app-button size='small' theme="blue-lite" (click)="reset()">Reset</app-button>
-    </div> -->
     </div>
   </div>
   <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
@@ -69,18 +45,6 @@
       <td mat-cell *matCellDef="let element"> {{element.email}} </td>
     </ng-container>
 
-    <!-- <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef> Edit </th>
-        <td mat-cell *matCellDef="let element;let i = index">
-            <button style=" border: none; outline: none;margin: 5px;" (click)=openEditDialog(i)><span class="material-icons">
-            edit
-            </span></button>
-            <button style=" border: none; outline: none;margin: 5px;" (click)=openDeleteDialog()><span class="material-icons">
-                delete
-                </span>
-            </button>
-        </td>
-    </ng-container> -->
 
     <ng-container matColumnDef="company">
       <th mat-header-cell *matHeaderCellDef> Group </th>
@@ -93,75 +57,27 @@
     </ng-container>
 
 
-    <!-- <ng-container matColumnDef="reporting_manager">
-        <th mat-header-cell *matHeaderCellDef>Reporting Manager</th>
-
-
-        <td mat-cell *matCellDef="let element">
-
-            <div style="display:inline;" *ngIf="element.staged_managers['1'] !== undefined" class='fc_blue' matTooltip="Current Manager: {{element.managers['1']['emp_name']}}" placement="bottom">{{element.staged_managers['1']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['1'] === undefined">{{element.managers['1']['emp_name']}}</div>
-
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="managers_manager">
-        <th mat-header-cell *matHeaderCellDef>Manager's Manager</th>
-        <td mat-cell *matCellDef="let element">
-
-            <div style="display:inline;" *ngIf="element.staged_managers['2'] !== undefined" class='fc_blue' matTooltip="Current Manager: {{element.managers['2']['emp_name']}}" placement="bottom">{{element.staged_managers['2']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['2'] === undefined">{{element.managers['2']['emp_name']}}</div>
-
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="functional_manager">
-        <th mat-header-cell *matHeaderCellDef>Functional Owner</th>
-        <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_managers['3'] !== undefined" class='fc_blue' matTooltip="Current Manager: {{element.managers['3']['emp_name']}}" placement="bottom">{{element.staged_managers['3']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['3'] === undefined">{{element.managers['3']['emp_name']}}</div>
-
-        </td>
-    </ng-container> -->
-
 
 
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef> Edit</th>
       <td mat-cell *matCellDef="let element;let i = index">
-        <!-- <button type="button" style="border: none;background-color: #f6fafd;" (click)="editUser(i)"><span class="material-icons">
-                mode_edit
-                </span></button> -->
-        <!-- rahul changes(icons-sprite-new) ************************************
-        ****************************************************** -->
         <div (click)="editUser(i)" [svgIcon]="{url:'./assets/icons-sprite-new.svg#edit',w:16}" style="
                color: var(--col-primary-300);
                cursor: pointer;
              " svg-fill="currentColor"></div>
-        <!-- ************************************************************ -->
       </td>
     </ng-container>
     <ng-container matColumnDef="disable">
       <th mat-header-cell *matHeaderCellDef> Disable</th>
       <td mat-cell *matCellDef="let element;let i = index">
-        <!-- <button type="button" style="border: none;background-color: #f6fafd;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
-                delete
-                </span></button> -->
-        <!-- rahul changes(icons-sprite-new) ************************************
-                ****************************************************** -->
-        <!-- <div  (click)="setId(i); modalDisable.open()" [svgIcon]="{url:'./assets/icons-sprite-new.svg#disable',w:16}"
-                style="
-               color: var(--col-warn-A200);
-               cursor: pointer;
-             "
-              svg-fill="currentColor"></div> -->
+
         <button class="action--btn" (click)="setId(i); disableEmppopupopen()"
           [svgIcon]="{url:'./assets/icons-sprite-new.svg#disable',w:16}"
           [disabled]="element.staging_status !== null ? true : false"
           [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
           title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
           svg-fill="currentColor"></button>
-        <!-- ************************************************************ -->
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -172,98 +88,7 @@
     NO DATA AVAILABLE
 
   </div>
-
-
-  <!-- Rahul change(no need some field in editUser popup) ************************************
-                ************************************************* -->
-  <!-- <app-modal-popup #editEmp [w]="'500px'" [h]="'480px'">
-    <div head>
-        Edit Employee
-    </div>
-    <div>
-        <form [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
-            <div class="grid-container"> 
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Name</mat-label>
-                    <input matInput formControlName="emp_name" readonly>
-                    <mat-error *ngIf="editUserForm.controls.emp_name.touched && editUserForm.controls.emp_name.hasError('required')">
-                        Please Enter Name
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Staff No.</mat-label>
-                    <input matInput formControlName="staff_no" readonly>
-                    <mat-error *ngIf="editUserForm.controls.staff_no.touched && editUserForm.controls.staff_no.hasError('required')">
-                        Please Enter Staff No.
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.staff_no.touched && editUserForm.controls.staff_no.hasError('is_duplicated')">
-                        Entered Staff No. already exists
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Email</mat-label>
-                    <input matInput formControlName="email" readonly/>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('required')">
-                        Please Enter Email
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('email')">
-                        Please Enter valid Email
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('is_duplicated')">
-                        Entered Email already exists
-                    </mat-error>
-
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Group</mat-label>
-                    <mat-select formControlName="company" [disabled]="true">
-                        <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.company.touched && editUserForm.controls.company.hasError('required')">
-                        Please Select Group
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender" [disabled]="true">
-                        <mat-option [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.gender.touched && editUserForm.controls.gender.hasError('required')">
-                        Please Select Gender
-                    </mat-error>
-                </mat-form-field> 
-
-                <mat-form-field>
-                    <mat-label>Category</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.category.touched && editUserForm.controls.category.hasError('required')">
-                        Please Select Category
-                    </mat-error>
-                </mat-form-field>
-
-                <div mat-dialog-actions style="padding-bottom:20px">
-                    <div style="display: inline-block; text-align: center;">
-                        <app-button size='small' theme="blue-lite" type="submit" [disabled]="editUserForm.invalid">Update</app-button>
-                    </div>
-
-                    <div style="display: inline-block; text-align: center;padding-left: 10px;">
-                        <app-button size='small' theme="danger" type="button" (click)="close()">Close</app-button>
-                    </div>
-
-
-                </div>
-            </div>
-        </form>
-
-    </div>
-</app-modal-popup>  -->
+ 
   <!-- **************************************************************
 ************************************************************ -->
   <!-- Rahul change(no need some field in editUser popup change into modelpopup) ************************************
@@ -313,7 +138,7 @@
       <form class="fs-14" [formGroup]="deleteUserForm">
         <mat-form-field class="custompicker w-100">
 
-          <mat-label>Relieved Date</mat-label> 
+          <mat-label>Relieved Date</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="dol" autocomplete="off" (keydown)="false"
             (click)="picker.open()" (dateChange)="onDate($event)">
           <div matSuffix matDatepickerToggleIcon (click)="picker.open()"
