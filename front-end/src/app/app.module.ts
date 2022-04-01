@@ -42,6 +42,8 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,9 +55,11 @@ import {MatDialogModule} from '@angular/material/dialog';
     FooterComponent ,
     AddProjectComponent,
     SidebarComponent,
+  
   ],
   imports: [
     BrowserModule, 
+   
     BrowserAnimationsModule,
     HttpClientModule,
     ConfirmDialogModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ComponentRef, Directive, ElementRef, HostListener, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
@@ -9,6 +9,9 @@ import { SingletonService } from 'src/app/services/singleton.service';
 import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
 import { HttpParams } from '@angular/common/http';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
+
+import { ComponentPortal } from '@angular/cdk/portal';
 
 export interface Project {
   id: number,
@@ -31,6 +34,8 @@ export interface ProjectData {
   styleUrls: ['./manage-project.component.scss']
 })
 export class ManageProjectComponent implements OnInit {
+
+
 //  Rahul change(using Viewchild for EditProjectDialog)**************************
 @ViewChild("EditProjectDialog") EditProjectDialog : TemplateRef<any>;
 
@@ -59,6 +64,7 @@ export class ManageProjectComponent implements OnInit {
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
     public dialogRef: MatDialogRef<any>,  
 //*****************************************************************************************
+
 // ***********************************************************************************************
     private fb: FormBuilder) {
     this.fgSearch = this.ss.fb.group({
@@ -109,6 +115,8 @@ export class ManageProjectComponent implements OnInit {
 
 
   }
+
+  
   filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
 
@@ -335,6 +343,7 @@ export class ManageProjectComponent implements OnInit {
 
           emp_projects.push({
             emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],
+            staging_status:element['staging_status'],staging_relieved:element['staging_relieved'],
             company: element["company"], proj1: this.getProjectById(element["p1"]), proj2: this.getProjectById(element["p2"]), proj3: this.getProjectById(element["p3"]), staged_proj1: this.getProjectById(element["staged"]["p1"]), staged_proj2: this.getProjectById(element["staged"]["p2"]), staged_proj3: this.getProjectById(element["staged"]["p3"])
           });
 
