@@ -41,12 +41,12 @@ export function notWeekend(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     var error = null;
     if (control.value['start_date'] != null) {
-      let dateStartDate = new Date(control.value['start_date']); 
+      let dateStartDate = new Date(control.value['start_date']);
       if (dateStartDate.getDay() == 6 || dateStartDate.getDay() == 0) {
         error = true
       }
     }
-    if (control.value['end_date'] != null) { 
+    if (control.value['end_date'] != null) {
       let dateEndDate = new Date(control.value['end_date']);
       if (dateEndDate.getDay() == 6 || dateEndDate.getDay() == 0) {
         error = true
@@ -195,9 +195,9 @@ export class HolidayComponent implements OnInit {
       if (tempTarget == null) {
         break;
       }
-
+      let classList = tempTarget.classList;
       // toggle the location checkbox for a holiday
-      if (tempTarget.classList.contains('holidays__checkbox') && this.editMode && !tempTarget.classList.contains('disabled')) {
+      if (classList.contains('holidays__checkbox') && this.editMode && !classList.contains('disabled')) {
         let dataIndex = tempTarget.getAttribute('data-index');
         let dataLocationId = Number(tempTarget.getAttribute('data-location_id'));
         let locFormControl = this.faHolidayList.controls[dataIndex].get('locations');
@@ -214,23 +214,27 @@ export class HolidayComponent implements OnInit {
       }
 
       // open the date picker for selection of dates for the holiday
-      if (tempTarget.classList.contains('holidays__calendar-icon')) {
+      if (classList.contains('holidays__calendar-icon') || classList.contains('holidays__input-date')) {
         let datePickerRefElement = tempTarget.previousElementSibling
         this.indexOfHolidayInDatePicker = Number(tempTarget.getAttribute('data-index'));
         // this.dateRangePicker.setSelection('custom')
+        let dateValue = this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('date').value
+        if (dateValue && dateValue['start_date'] && dateValue['end_date']) {
+          this.dateRangePicker.setCustomValue(new Date(dateValue['start_date']), new Date(dateValue['end_date']))
+        }
         this.dateRangePicker.openDateRangePicker(datePickerRefElement)
         break;
       }
 
       //  remove a row of holiday when the remove button is clicked
-      if (tempTarget.classList.contains('holidays__remove')) {
+      if (classList.contains('holidays__remove')) {
         let indexOfHoliday = Number(tempTarget.getAttribute('data-index'));
         this.holidayList[indexOfHoliday].delete = true;
         this.faHolidayList.controls[indexOfHoliday].get('delete').setValue(true)
       }
 
       //  remove a row of holiday when the remove button is clicked
-      if (tempTarget.classList.contains('holidays__cell--locations') && this.editMode) {
+      if (classList.contains('holidays__cell--locations') && this.editMode) {
         let indexOfHoliday = Number(tempTarget.getAttribute('data-index'));
         this.faHolidayList.controls[indexOfHoliday].get('locations').markAsTouched();
       }
@@ -447,7 +451,7 @@ export class HolidayComponent implements OnInit {
 
     // console.log(dateLocationCombinations)
     let countDateLocationCombinations = _.pickBy(_.countBy(dateLocationCombinations), (val, key) => val > 1)
-    
+
     let datesWithSameLocationMultipleTimes = [];
     _.forIn(countDateLocationCombinations, (val, key) => {
       let splitVal = key.split(' ');
@@ -544,10 +548,10 @@ export class HolidayComponent implements OnInit {
     let dialogRef = this.dialog.open(PopUpComponent, {
       data: {
         heading: 'Add Holiday Option',
-        template:this.templateHolidayForm,
-        maxWidth:'500px'
+        template: this.templateHolidayForm,
+        maxWidth: '500px'
       },
-    
+
     })
 
     dialogRef.afterClosed().pipe(take(1)).subscribe(result => {

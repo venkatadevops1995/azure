@@ -228,6 +228,9 @@ export class ApplyLeaveComponent implements OnInit {
       this.disableHalfDayCheckBoxes()
       this.restDates()
       this.chosenDate()
+      this.applyForm.get('endDateFirstHalf').reset()
+      this.applyForm.get('startDateSecondHalf').reset()
+      this.applyForm.get('half').reset()
     })
     this.applyForm.get('endDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       if (val) {

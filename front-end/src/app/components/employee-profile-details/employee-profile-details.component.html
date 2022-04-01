@@ -1,6 +1,6 @@
 <div class="emp-profile">
-  <div class="emp-profile__close">
-      <mat-icon (click)="onClickClose()" class="col-primary-200">cancel</mat-icon>
+  <div class="emp-profile__close"> 
+      <div class="col-primary-200" (click)="onClickClose()" svg-fill="none" [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}"></div>
   </div>
   <div class="emp-profile__head ">
     <div class="emp-profile__photo">
@@ -26,8 +26,8 @@
         <div class="flex middle-xs">
           <p style=" max-width: 300px;  word-break: break-all;">{{data?.emp_details?.email}}</p>
           <div class="pos-r">
-            <mat-icon class="ml-10  mat-icon-small pointer" (cdkCopyToClipboardCopied)="onCopy()"
-              [cdkCopyToClipboard]="data?.emp_details?.email">content_copy</mat-icon>
+            <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite-new.svg#copy',w:20}" class="ml-10 col-primary-200   pointer" (cdkCopyToClipboardCopied)="onCopy()"
+              [cdkCopyToClipboard]="data?.emp_details?.email"></div>
             <p style="position: absolute;left: -15px; top: -20px;width: 100px;" *ngIf="showToolTip" class="fs-10">Email
               Copied</p>
           </div>

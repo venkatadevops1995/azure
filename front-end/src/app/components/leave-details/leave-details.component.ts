@@ -138,7 +138,7 @@ export class LeaveDetailsComponent {
             data['requestDetails']['ManagerComments']= data.manager_comments 
         }
 
-        if (this.requestId.get_discrepancy) {
+        if (this.requestId.get_discrepancy && data.leave_discrepancy_details) {
             let ldd = data.leave_discrepancy_details
             data['discrepancyDetails'] = {
                   'Status':this.leaveDiscrepancyStatus[ldd.status] ,

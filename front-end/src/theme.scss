@@ -190,12 +190,12 @@ td.mat-footer-cell {
 .mat-calendar-table-header {
   color: var(--col-accent-500) !important;
 }
-.mat-calendar-body-label{
-  opacity: 0;
-}
-.mat-calendar-body-label[colspan="7"] {
-  display: none;
-}
+// .mat-calendar-body-label{
+//   opacity: 0;
+// }
+// .mat-calendar-body-label[colspan="7"] {
+//   display: none;
+// }
 //////////////////////////////////////
 
 /* Material theme styling */
@@ -352,7 +352,8 @@ mat-dialog-container.mat-dialog-container {
       padding: 5px 20px;
       border: 1px solid var(--col-primary-300);
       border-radius: 20px;
-      font-size: 14px;
+      font-size: inherit;
+      line-height: unset;
     }
 
     &.mat-checkbox-checked {

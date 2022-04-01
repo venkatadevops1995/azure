@@ -1,9 +1,6 @@
 <div class="overlay_status tac"  [class.visible]="showStatus" [@visibilityChanged]="(showStatus).toString()"
     #overlay [class.fail]="status  === false" [class.info]="status == 'info'" [class.warning]="status == 'warning'" [class.full]="full" [class.orange]="status === 'orange'" 
-    [class.success]="status === true">
-    <!-- <div style="fill:inherit;" (click)="clickClose($event, $event.target)" class="closeStatus">
-        <mat-icon>close</mat-icon>
-    </div> -->
+    [class.success]="status === true"> 
     <ng-container *ngFor="let notification of notificationsQueue;let i= index;">
         <ng-container *ngIf="notification.typeof === 'TemplateRef' && notification.show === true">
             <div [@notificationAnimation] (click)="clickClose($event,i)" class="notification {{notification.status}}">
