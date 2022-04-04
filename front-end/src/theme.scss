@@ -236,7 +236,7 @@ mat-dialog-container.mat-dialog-container {
 }
 
 // remove padding bottom from the mat form field components
-.no-pb {
+.no-pb { 
   &.mat-form-field-appearance-legacy .mat-form-field-wrapper {
     padding-bottom: 0;
   }
@@ -248,6 +248,9 @@ mat-dialog-container.mat-dialog-container {
   &.atai-file-upload {
     &.mat-form-field-appearance-legacy .mat-form-field-infix {
       padding-bottom: 0 !important;
+    }
+    &.mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper{
+      top:100%;
     }
   }
 

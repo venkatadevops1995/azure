@@ -1,24 +1,22 @@
 <h2 class="heading">
     Bulk Leave Update
-</h2>
-<!-- <div class="flex p-5 left-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'leave/config/export-emp-leave/?',responseType:'blob'}">Download Leave Balance Sheet <span [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:30}" style="color:var(--color-tertiary);margin-top:-5px;" svg-fill="currentColor" class="ml-5 mt-3"></span></div> -->
+</h2> 
 <div class="flex end-xs">
-    <app-button theme="grey" >
+    <app-button theme="grey" [dbdFileDownload]="{endPoint:'leave/config/export-emp-leave/?',responseType:'blob'}">
         <div class="flex middle-xs center-xs col-primary-100">
-            <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}" svg-fill="none"></div>
+            <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}"  svg-fill="none"></div>
             <span class="ml-15">Download Leave Balance Sheet</span>
         </div>
     </app-button>
 </div>
-<div style="margin-top: 20px; background-color: var(--color-quaternary); padding: 10px;">
-    <!-- <h2>Import leave</h2> -->
+<div style="margin-top: 20px; background-color: var(--color-quaternary); padding: 10px;"> 
 
     <form [formGroup]="fileUpdateForm">
-        <mat-form-field class="full-width fg-1 file no-pb atai-file-upload"  style="width: 100%;align-content: center;">
+        <mat-form-field class="full-width fg-1 file  atai-file-upload no-pb"  style="width: 100%;align-content: center;">
             <app-file [folderUpload]="false" formControlName="file"  acceptString="(.Xlsx only)" [multiple]="false" pH="Upload Leave Balance Sheet" idd="leave-bal-upload" [optional]='true' [accept]="{browse:'.xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', drop:['.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']}">
             </app-file>
 
-            <mat-error class="fs-14" *ngIf="fileUpdateForm.controls.file.touched && fileUpdateForm.controls.file.hasError('required')">
+            <mat-error class="fs-12" *ngIf="fileUpdateForm.controls.file.touched && fileUpdateForm.controls.file.hasError('required')">
                 This field is required
             </mat-error>
         </mat-form-field>
