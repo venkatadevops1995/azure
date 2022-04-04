@@ -206,7 +206,9 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
   }
 
   reset(){
-
+    //Rahul change(resetting all fields and setting default form value after clicking on reset())
+    this.myNgForm.resetForm()
+    //***************************************************************************************** */
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     // this.getCategories();
@@ -220,6 +222,8 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     this.makeSelfMM = false;
     this.makeSelfFM = false;
     this.ROLES = cloneDeep(this.ATWORK_ROLES)
+  
+    // this.reset()
   }
 
 
@@ -405,15 +409,15 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     formData.forEach(i=>{
       console.log("Posting payload for add user:" ,i)
     })
-    this.reset();
+    // this.reset();
     // *************************************************
     // ************************************************** *
     this.http.request('post', 'users/', '', formData).subscribe(res => {
 
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, "User has been created successfully");
-
-
+        
+       this.myNgForm.resetForm()
         this.newUserFirstName = '';
         this.newUserLastName = '';
         this.newUserRoleValue = 1;
@@ -444,27 +448,23 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     }
 }
 //Rahul change Open dialogBox dynamically(rahul changes) ************************
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      panelClass: 'confirm-remove-project',
-      backdropClass:'cdk-overlay-darker-backdrop',
-      data: {
-          confirmMessage: 'Are you sure to add this employee?'
-      }
-    })
-    dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-        console.log('######################',data)
-        if(data){
-          // call addUser
-          this.addUser();
-          //Reeset the form 
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.myNgForm.resetForm());
-
-        }else{
-          // this.myNgForm.resetForm();
-        }
-    })
-  }       
+  // openDialog(): void {
+    // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    //   panelClass: 'confirm-remove-project',
+    //   backdropClass:'cdk-overlay-darker-backdrop',
+    //   data: {
+    //       confirmMessage: 'Are you sure to add this employee?'
+    //   }
+    // })
+    // dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+    //     console.log('######################',data)
+    //     if(data){
+    //       // call addUser
+    //       this.addUser();
+    //       //Reeset the for
+    //     }
+    // })
+  // }       
   // **************************************************************** 
   getCategories() {
     let category = []
@@ -565,11 +565,39 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
     e.click()
   }
+
+
+
+
+
+
   openConfirmation(){
     // this.confirmationModal.open()
-    this.openDialog()
-
+    // this.openDialog()
+    //Rahul change Open dialogBox dynamically(rahul changes) ************************
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      panelClass: 'confirm-remove-project',
+      backdropClass:'cdk-overlay-darker-backdrop',
+      data: {
+          confirmMessage: 'Are you sure to add this employee?'
+      }
+    })
+    dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+        console.log('######################',data)
+        if(data){
+          // call addUser
+          this.addUser();
+          //Reeset the for
+        }
+    })
+     // ************************************************** *
+      // ************************************************** *
+       // ************************************************** *
+        // ************************************************** *
+         // ************************************************** *
   }
+
+
   closeConfirmation(){
     // this.confirmationModal.close()
     

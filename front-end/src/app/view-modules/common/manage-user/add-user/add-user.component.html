@@ -2,14 +2,14 @@
 <!-- <div > -->
 <!-- <div > -->
   <!-- <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-40"> -->
-  <form  [formGroup]="addUserForm" (ngSubmit)="openDialog()" class="mt-30" #f="ngForm">
+  <form  [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-30" #f="ngForm">
     <div class="wrapper flex col pt-55 pb-55 pl-60 pr-60">
      
       <div class="grid-container">
         <div class="w-100">
           <mat-form-field class="w-50">
             <mat-label>First Name</mat-label>
-            <input autocomplete="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
+            <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
             <mat-error
               *ngIf=" addUserForm.controls.firstName.touched && addUserForm.controls.firstName.hasError('required')">
               Please enter First Name
@@ -18,7 +18,7 @@
 
           <mat-form-field class="w-50"> 
             <mat-label>Last Name</mat-label>
-            <input autocomplete="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
+            <input autocomplete="off"  autofocus="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
             <mat-error
               *ngIf="addUserForm.controls.lastName.touched && addUserForm.controls.lastName.hasError('required')">
               Please enter Last Name
@@ -27,7 +27,7 @@
         </div>
           <mat-form-field>
             <mat-label>Email</mat-label>
-            <input autocomplete="off" matInput formControlName="email" />
+            <input autocomplete="off"  autofocus="off" matInput formControlName="email" />
             <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('required')">
               Please enter Email
             </mat-error>
@@ -42,7 +42,7 @@
 
           <mat-form-field>
             <mat-label>Staff No.</mat-label>
-            <input autocomplete="off" matInput formControlName="staff_no">
+            <input autocomplete="off"  autofocus="off" matInput formControlName="staff_no">
             <mat-error
               *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
               Please enter Staff No.
