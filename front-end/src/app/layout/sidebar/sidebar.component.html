@@ -1,7 +1,8 @@
 <div class="page-wrapper toggled sidebar">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-  </a>
-  <div id="sidebar" class="sidebar__wrapper">
+  <div (click)="onClickMenuToggle()" [class.is-menu-open]="isSidebarOpen" class="sidebar__toggle col-primary-200 flex center-xs middle-xs">
+    <div  [svgIcon]="{url:'./assets/icons-sprite-new.svg#angle-right',w:15}" svg-fill="currentColor"></div>
+  </div>
+  <div id="sidebar" [class.is-open]="isSidebarOpen" class="sidebar__wrapper">
     <div class="sidebar-content">
       <div class="user p-15">
         <div class="user__pic">
@@ -14,7 +15,7 @@
         <ul class="menu">
           <ng-container *ngFor="let item of menu">
             <li class=" mt-10">
-              <ng-container *ngIf=" item.link!='' "  >
+              <ng-container *ngIf=" item.link!='' ">
                 <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+item.link">
                   {{item.text}}
                 </a>
@@ -22,15 +23,13 @@
               <span *ngIf=" item.link=='' ">{{item.text}}</span>
               <ul class="submenu" *ngIf="item.submenu && item.submenu.length > 0">
                 <li *ngFor="let submenu of item.submenu">
-                  <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+submenu.link" >
+                  <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+submenu.link">
                     <span>{{submenu.text}} </span>
                     <ng-container *ngIf="submenu.showRedDot && submenu.link == 'approve-timesheets' ">
                       <div *ngIf="pendingApprovalCount == 0 && rejectedCount == 0"
                         style="background-color: var(--color-success);" class="menu__red-dot"></div>
-                      <div *ngIf="pendingApprovalCount > 0" class="menu__red-dot"
-                         ></div>
-                      <div *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="menu__red-dot"
-                         ></div>
+                      <div *ngIf="pendingApprovalCount > 0" class="menu__red-dot"></div>
+                      <div *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="menu__red-dot"></div>
                     </ng-container>
                     <ng-container *ngIf="submenu.showRedDot && submenu.link == 'rejected-timesheet'">
                       <div class="menu__red-dot"></div>

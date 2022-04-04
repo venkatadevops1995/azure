@@ -2,14 +2,14 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { UserService } from 'src/app/services/user.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import enmTsStatus from 'src/app/enums/timesheet-status.enum';
 import { MatExpansionModule } from '@angular/material/expansion';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatMenuModule} from '@angular/material/menu';
-import {ObjectToKVArrayPipe} from 'src/app/pipes/objectToArray.pipe'
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { ObjectToKVArrayPipe } from 'src/app/pipes/objectToArray.pipe'
 import { KeyValue } from '@angular/common';
 
 
@@ -18,16 +18,20 @@ import { KeyValue } from '@angular/common';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit { 
+
+
+  isSidebarOpen: boolean = false;
+
   // the array to hold the menu
   menu: Array<any> = [
 
   ]
-  originalOrder = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
+  originalOrder = (a: KeyValue<number, string>, b: KeyValue<number, string>): number => {
     return 0;
   }
 
-  menu_array = {"Dashboard":[],"TimeSheet":["Entry","Resolve","Rejected"],"Attendance":[],"EmployeeManagement":["Add","Edit","Transfer","Projects"],"Holiday":[],"LeaveManagement":["ApplyLeave","Policy","Team Leaves","leave"]}
+  menu_array = { "Dashboard": [], "TimeSheet": ["Entry", "Resolve", "Rejected"], "Attendance": [], "EmployeeManagement": ["Add", "Edit", "Transfer", "Projects"], "Holiday": [], "LeaveManagement": ["ApplyLeave", "Policy", "Team Leaves", "leave"] }
   // subject helpful in clearning all subscriptions
   destroy$: Subject<any> = new Subject();
 
@@ -41,9 +45,9 @@ export class SidebarComponent implements OnInit {
   pendingApprovalCount: number;
   rejectedCount: number;
   panelOpenState: boolean = false;
-  toggle:boolean[];
-  isReportsAccessable: Boolean=false;
-  
+  toggle: boolean[];
+  isReportsAccessable: Boolean = false;
+
   constructor(
     private ss: SingletonService,
     private user: UserService,
@@ -56,6 +60,8 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     if (this.ss.loggedIn) {
       this.getInitData();
+      this.isSidebarOpen = true;
+      this.ss.isSidebarOpen = true;
     }
     this.checkHrAccessForreports();
     this.checkForRejectedTimesheet()
@@ -64,6 +70,8 @@ export class SidebarComponent implements OnInit {
       if (val) {
         setTimeout(() => {
           this.getInitData();
+          this.ss.isSidebarOpen = false;
+          this.isSidebarOpen = false;
         })
       }
     })
@@ -72,13 +80,13 @@ export class SidebarComponent implements OnInit {
       let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
       let leave_config_index = undefined
       if (val.key == 'rejected-timesheet') {
-        this.menu.forEach((item,index) => {
+        this.menu.forEach((item, index) => {
           if (item.link == 'rejected-timesheet') {
             item.showRedDot = val.value;
           }
           if (item.link == 'leave-policy-config') {
-            if (is_hr ) {
-              leave_config_index =index;
+            if (is_hr) {
+              leave_config_index = index;
             }
           }
         })
@@ -113,7 +121,7 @@ export class SidebarComponent implements OnInit {
     })
   }
 
-  checkHrAccessForreports(){
+  checkHrAccessForreports() {
 
     this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
       if (res.status == 200) {
@@ -125,6 +133,11 @@ export class SidebarComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(null)
+  }
+
+  onClickMenuToggle() {
+    this.isSidebarOpen = !this.isSidebarOpen; 
+    this.ss.sideBarToggle$.next(this.isSidebarOpen)
   }
 
   // get the initial data once the login is confirmed
@@ -143,52 +156,52 @@ export class SidebarComponent implements OnInit {
         if (res.status == 200) {
           this.http.noLoader(true).request("get", 'leavestatus/').subscribe(leave_res => {
             if (leave_res.status == 200) {
-          console.log(res.body.attendance_flag == false, res.body.attendance_flag)
-          this.ss.attendanceFlag = res.body.attendance_flag;
-          // console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
+              console.log(res.body.attendance_flag == false, res.body.attendance_flag)
+              this.ss.attendanceFlag = res.body.attendance_flag;
+              // console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
 
-          let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
-          if (res.body.attendance_flag == false) {
-            this.menu = this.menu.filter(item => item.link != "attendance");
-          } if(!is_hr && this.user.getDataFromToken('role_id')==1){
-            this.menu = this.menu.filter(item => item.text != "Employee Management" );
-          }
-         if(!is_hr){
-            this.menu = this.menu.filter(item => item.text != "HR Reports" );
+              let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
+              if (res.body.attendance_flag == false) {
+                this.menu = this.menu.filter(item => item.link != "attendance");
+              } if (!is_hr && this.user.getDataFromToken('role_id') == 1) {
+                this.menu = this.menu.filter(item => item.text != "Employee Management");
+              }
+              if (!is_hr) {
+                this.menu = this.menu.filter(item => item.text != "HR Reports");
 
-          }
-          if(!this.isReportsAccessable){
+              }
+              if (!this.isReportsAccessable) {
 
-            this.menu = this.menu.filter(item => item.text != "MIS" );
-          }
+                this.menu = this.menu.filter(item => item.text != "MIS");
+              }
 
-          // if(!is_hr){
-            this.menu.forEach(m=>{
-              if(m.hasOwnProperty("submenu")){
-                if(!is_hr){
+              // if(!is_hr){
+              this.menu.forEach(m => {
+                if (m.hasOwnProperty("submenu")) {
+                  if (!is_hr) {
 
-              m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  )&& (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") &&(item.link!="document-config")&&(item.link!="document-list"));
+                    m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")) && (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") && (item.link != "document-config") && (item.link != "document-list"));
+                  }
+                  if (!is_hr && this.user.getDataFromToken('role_id') == 1) {
+                    m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"))
+                  }
+                  if (res.body.attendance_flag == false) {
+                    m["submenu"] = m["submenu"].filter(item => ((item.link != "report")))
+                  }
                 }
-                if(!is_hr && this.user.getDataFromToken('role_id')==1){
-                  m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"))
-                }
-                if (res.body.attendance_flag == false) {
-                m["submenu"] = m["submenu"].filter(item => ((item.link != "report")))
+
+              })
+              // this.menu = this.menu.filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  && (item.link != "add-user")));
+
+              // }
+              if (leave_res.body.leave_flag == false) {
+                this.menu = this.menu.filter(item => (item.text != "Leave Management" && item.text != "Holidays" && item.text != "Employee Management"));
               }
             }
-
-            })
-            // this.menu = this.menu.filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")  && (item.link != "add-user")));
-
-          // }
-          if(leave_res.body.leave_flag == false){
-            this.menu = this.menu.filter(item => (item.text != "Leave Management" &&  item.text != "Holidays" && item.text != "Employee Management") );
-          }
-        }
-        })
+          })
         }
 
-    })
+      })
       if (this.ss.loggedIn) {
         this.checkForRejectedTimesheet();
         this.checkResolveTimesheet();
@@ -199,17 +212,17 @@ export class SidebarComponent implements OnInit {
         // }
         // console.log("-----------------------",item);
 
-        if(item.text=="Timesheet" && item.hasOwnProperty("submenu")){
+        if (item.text == "Timesheet" && item.hasOwnProperty("submenu")) {
           // console.log("-----------------------",item);
-        item["submenu"].forEach(e=>{
-          if (e.link == 'approve-timesheets') {
-            e.showRedDot =  true;
-            // console.log("---------------set red dot--------",item["submenu"]);
-          }
+          item["submenu"].forEach(e => {
+            if (e.link == 'approve-timesheets') {
+              e.showRedDot = true;
+              // console.log("---------------set red dot--------",item["submenu"]);
+            }
 
-        })
+          })
 
-      }
+        }
 
       });
       console.log(res);
@@ -230,16 +243,16 @@ export class SidebarComponent implements OnInit {
         this.menu.forEach(item => {
 
 
-          if(item.text=="Timesheet" && item.hasOwnProperty("submenu")){
+          if (item.text == "Timesheet" && item.hasOwnProperty("submenu")) {
 
-          item["submenu"].forEach(e=>{
-            if (e.link == 'rejected-timesheet') {
-              e.showRedDot =  (res.body.length > 0);
-            }
+            item["submenu"].forEach(e => {
+              if (e.link == 'rejected-timesheet') {
+                e.showRedDot = (res.body.length > 0);
+              }
 
-          })
+            })
 
-        }
+          }
         })
 
       }

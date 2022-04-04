@@ -10,15 +10,18 @@
 <!-- status message component for notifications -->
 <app-status-message></app-status-message>
 
-<div [class.layout]="!isPreSignIn" [class.presignin-layout]="!isPreSignIn"  >
-  <app-header style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-header>
+<div [class.layout]="!isPreSignIn" [class.presignin-layout]="!isPreSignIn" [class.is-menu-open]="isSideBarOpen" >
 
-  <app-sidebar style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-sidebar>
+  <app-sidebar (toggleSidebar)="onClickToggleSideBar($event)" style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-sidebar> 
+  
+  <app-header style="visibility: hidden;" [ngStyle]="{visibility:(isPreSignIn) ? 'hidden':'visible'}" *ngIf="!isPreSignIn"></app-header>
 
   <main class="main-wrap">
     <div>
       <router-outlet></router-outlet> 
     </div>
   </main>
+
   <app-footer *ngIf="!isPreSignIn"></app-footer>
+
 </div>
