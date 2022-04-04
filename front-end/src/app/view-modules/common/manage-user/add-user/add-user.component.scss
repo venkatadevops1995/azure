@@ -1,3 +1,4 @@
+@use '../../../../../assets/scss/breakpoints' as bp;
 li {
     display: inline-block;
     // padding: 4px;
@@ -11,7 +12,7 @@ li {
 .wrapper{
     background-color:var(--col-primary-A200);
     border-radius:10px;
-    min-width:990px;
+   
    
 }
   // common grid container for each row
@@ -19,6 +20,9 @@ li {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr ;
     column-gap: 4.5em;
+    @media screen and (max-width:bp.$lg) {
+        column-gap: 1.5em;
+      }
     // border-radius: 10px;
     // margin: 0 0 10px;
     // padding: 4px;
@@ -58,6 +62,7 @@ mat-form-field {
 .gap{
     width: 100%;
     height: 2em;
+   
 }
 .container {
     // display: inline-block;

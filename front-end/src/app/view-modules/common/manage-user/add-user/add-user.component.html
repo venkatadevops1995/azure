@@ -2,12 +2,12 @@
 <!-- <div > -->
 <!-- <div > -->
   <!-- <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-40"> -->
-  <form  [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-30" #f="ngForm">
-    <div class="wrapper flex col pt-55 pb-55 pl-60 pr-60">
+  <form  [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-lg-30 mt-xmd-30" #f="ngForm">
+    <div class="wrapper col-lg p-lg-55 p-xmd-25">
      
       <div class="grid-container">
-        <div class="w-100">
-          <mat-form-field class="w-50">
+        <div class="w-lg-100">
+          <mat-form-field class="w-lg-50 w-xmd-50">
             <mat-label>First Name</mat-label>
             <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
             <mat-error
@@ -16,7 +16,7 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field class="w-50"> 
+          <mat-form-field class="w-lg-50 w-xmd-50"> 
             <mat-label>Last Name</mat-label>
             <input autocomplete="off"  autofocus="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
             <mat-error
@@ -81,9 +81,9 @@
             </mat-form-field>
           
              <div class="fs-14" >
-              <mat-label class="mb-5 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
+              <mat-label class="mb-lg-5 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
               <mat-radio-group  formControlName="gender" >
-                <mat-radio-button class="mr-15 mb-5"style="color: var(--col-primary-300);" [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-radio-button>
+                <mat-radio-button class="mr-lg-5 mb-lg-5"style="color: var(--col-primary-300);" [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-radio-button>
               </mat-radio-group>
               <mat-error *ngIf="addUserForm.controls.gender.touched && addUserForm.controls.gender.hasError('required')">
                 Please select Gender
@@ -152,10 +152,10 @@
                   <p style="margin: 0 0 5px 0px;color:var(--col-primary-300);">Atwork Role</p>
                   <div >
                     <ul>
-                      <li  class="mb-5"
+                      <li  class="mb-lg-5"
                       *ngFor="let role of ROLES;let i=index">
                         <!-- <div class="container"> -->
-                        <label class="container mr-15 " style="color:var(--col-primary-100)"> {{role.name}}
+                        <label class="container mr-lg-5 " style="color:var(--col-primary-100)"> {{role.name}}
                           <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
                           <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
                             [checked]="role.selected" [disabled]="role.disabled">
@@ -229,8 +229,8 @@
       <!-- </div> -->
 </div>
       <!-- col has been removed from here ie removed flex-direction colum -->
-        <div class="flex no-wrap center-xs mt-40 "mat-dialog-actions>
-          <div  class="pr-20" style="display: inline-block;padding-bottom: 10px;">
+        <div class="flex no-lg-wrap center-xmd center-lg mt-xmd-30 mt-lg-40 "mat-dialog-actions>
+          <div  class="pr-lg-20 pr-xmd-20" style="display: inline-block;padding-bottom: 10px;">
             <app-button  type="button" theme="grey" (click)="reset()"  >Reset All</app-button>
           </div>
           <div style="padding-bottom: 10px;">
