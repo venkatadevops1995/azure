@@ -222,15 +222,19 @@ export class ApplyLeaveComponent implements OnInit {
         this.applyForm.get('startDateSecondHalf').enable()
       }
       this.chosenDate()
+      let fcEndDate = this.applyForm.get('endDate');
+      if (this.applyForm.get('category').value == 'Multiple Days') {
+        fcEndDate.setValidators([Validators.required])
+      } else {
+        fcEndDate.clearValidators();
+      }
+      fcEndDate.updateValueAndValidity();
     });
 
     this.applyForm.get('category').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       this.disableHalfDayCheckBoxes()
       this.restDates()
       this.chosenDate()
-      this.applyForm.get('endDateFirstHalf').reset()
-      this.applyForm.get('startDateSecondHalf').reset()
-      this.applyForm.get('half').reset()
     })
     this.applyForm.get('endDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       if (val) {
@@ -291,32 +295,32 @@ export class ApplyLeaveComponent implements OnInit {
 
 
   // when the leave selection for half, single, multiple is changing
-  onCategoryChanged(e: MatRadioChange) {
-    let form = this.applyForm;
-    form.get('half').reset();
+  onCategoryChanged(e: MatTabChangeEvent) {
+    // let form = this.applyForm;
+    // form.get('half').reset();
 
-    let startDate = form.get('startDate')
-    let endDate = form.get('endDate')
-    let halfDay = form.get('half')
+    // let startDate = form.get('startDate')
+    // let endDate = form.get('endDate')
+    // let halfDay = form.get('half')
 
-    startDate.reset();
-    startDate.clearValidators()
-    endDate.reset()
-    endDate.clearValidators();
-    halfDay.clearValidators();
-    halfDay.reset(this.leaveHours[0]);
+    // startDate.reset();
+    // startDate.clearValidators()
+    // endDate.reset()
+    // endDate.clearValidators();
+    // halfDay.clearValidators();
+    // halfDay.reset(this.leaveHours[0]);
 
-    form.get('startDateSecondHalf').reset();
-    form.get('endDateFirstHalf').reset();
-    this.chosenDate();
-    if (e.value == "Multiple Days") {
-      startDate.setValidators([Validators.required])
-      endDate.setValidators([Validators.required])
-    } else if (e.value == 'Single Day') {
-      startDate.setValidators([Validators.required])
-    } else if (e.value == 'Half Day') {
-      halfDay.setValidators([Validators.required])
-    }
+    // form.get('startDateSecondHalf').reset();
+    // form.get('endDateFirstHalf').reset();
+    // this.chosenDate();
+    // if (e.tab.textLabel == "Multiple Days") {
+    //   startDate.setValidators([Validators.required])
+    //   endDate.setValidators([Validators.required])
+    // } else if (e.tab.textLabel == 'Single Day') {
+    //   startDate.setValidators([Validators.required])
+    // } else if (e.tab.textLabel == 'Half Day') {
+    //   halfDay.setValidators([Validators.required])
+    // }   
   }
 
   getHolidays() {
@@ -339,15 +343,32 @@ export class ApplyLeaveComponent implements OnInit {
 
   /* selected tab change in apply leave . no of days selection */
   onChangeSelectedTab(data: MatTabChangeEvent) {
-    console.log(data)
     this.selectedIndexLeaveCategory = data.index;
     this.applyForm.get('category').setValue(this.leaveCategories[data.index])
+
+    let fcStartDate = this.applyForm.get('startDate');
+    let fcEndDate = this.applyForm.get('endDate');
+    let halfDay = this.applyForm.get('half')
+    fcStartDate.markAsUntouched()
+    fcStartDate.reset()
+    fcEndDate.markAsUntouched()
+    fcEndDate.reset()
+    this.applyForm.get('endDateFirstHalf').reset()
+    this.applyForm.get('startDateSecondHalf').reset()
+
+    if (data.tab.textLabel != this.leaveCategories[0]) {
+      this.applyForm.get('half').reset()
+      halfDay.clearValidators()
+    } else {
+      halfDay.setValidators([Validators.required])
+      this.applyForm.get('half').setValue(this.leaveHours[0])
+    }
+    halfDay.updateValueAndValidity()
   }
 
   // on closing the leave application modal form
   closeApplyForm() {
     this.applyFormNgForm.resetForm()
-    // this.dialogRefLeaveApplication.close()
     this.applyFormSubmitted = false;
     this.selectedIndexLeaveCategory = 1;
     this.applyForm.get('category').setValue(this.leaveCategories[this.selectedIndexLeaveCategory])
@@ -571,7 +592,6 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   onChangeStartDate(e) {
-    console.log(e)
     let addDaysToDate = this.datePickerLeaveApplcn.addDaysToDate
 
     let dateSelected = e.value;
@@ -589,11 +609,7 @@ export class ApplyLeaveComponent implements OnInit {
       fcEndDate.reset();
     }
 
-    if (this.applyForm.get('category').value == 'Multiple Days') {
-      fcEndDate.setValidators([Validators.required])
-    } else {
-      fcEndDate.clearValidators();
-    }
+
   }
 
   // set the opened date for start date in leave application
@@ -605,9 +621,7 @@ export class ApplyLeaveComponent implements OnInit {
   // set the open date for end date in leave application
   onOpenEndDateDatePicker() {
     this.datePickerEndDate.startAt = this.applyForm.value.endDate || this.datePickerLeaveApplcn.startAtEndDate;
-  }
-
-
+  } 
 
   // get the leave requests available for the current user for special leave types
   getLeaveRequestsAvailability() {
@@ -621,8 +635,7 @@ export class ApplyLeaveComponent implements OnInit {
       }
     })
   }
-
-  // 
+ 
   onSubmitApplyForm() {
 
     // this.applyFormSubmitted = true;

@@ -1,7 +1,31 @@
 :host {
   display: grid;
   grid-template-rows: minmax(250px, 300px) 1fr;
+  position: relative;
 
+  .sidebar__toggle{
+    position: fixed;
+    left: calc(var(--sidebar) - 20px);
+    top:70px;
+    width:40px;
+    height: 40px;
+    border-radius: 50%;
+    background:var(--col-primary-700);
+    z-index: 1111;
+    // box-shadow: 0px 0px 8px 2px rgba(255,255,255,0.1);
+    border:1px solid var(--col-primary-300);
+    cursor: pointer;
+    transition:all 0.3s ease-in-out;
+    > div{
+      transform:rotate(-180deg)
+    }
+    &.is-menu-open{
+      left: -20px;
+      > div{
+        transform:rotate(0deg) translateX(8px);
+      }
+    }
+  }
   .user {
     display: flex;
     justify-content: center;
@@ -119,8 +143,11 @@
   max-height: 100%;
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 999;
   background: var(--col-primary-900);
+  overflow-x: hidden;
+  transition:left 0.3s ease-in-out;
 
   ul {
     list-style-type: none;
@@ -130,6 +157,10 @@
 
   a {
     text-decoration: none;
+  }
+
+  &.is-open{
+    left: -230px;
   }
 }
 

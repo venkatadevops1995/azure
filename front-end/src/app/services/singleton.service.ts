@@ -47,6 +47,12 @@ export class SingletonService {
   // constant to hold the latest state emitted of the loggedIn$
   loggedIn: boolean = false;
 
+  // subject to emit boolean sidebar is opened / closed
+  sideBarToggle$: Subject<boolean> = new Subject();
+
+  // constant to hold sidebar is opened / closed
+  sideBarToggle: boolean = false;
+
   // baseUrl = "http://10.60.62.54:8000/api/";
   baseUrl = environment.apiUrl + 'api/';
 
@@ -66,6 +72,8 @@ export class SingletonService {
   attendanceFlag:boolean = false
 
   leaveFlag:boolean = false;
+
+  isSidebarOpen:boolean = false;
 
   constructor(
     private dialog: MatDialog

@@ -14,7 +14,7 @@ import { UserService } from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  
+
   // ref to the global loader compoonent
   @ViewChild(LoaderComponent, /* TODO: add static flag */   { static: false }) loader;
 
@@ -33,6 +33,9 @@ export class AppComponent {
   // subject to unsubscibe subscriptions
   private destroy$ = new Subject();
 
+
+  isSideBarOpen: boolean = false;
+
   constructor(
     private ss: SingletonService,
     private cdRef: ChangeDetectorRef,
@@ -42,23 +45,26 @@ export class AppComponent {
 
   }
 
+  ngOnInit() {
+    this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
+      this.ss.sideBarToggle = val;
+      this.isSideBarOpen = this.ss.sideBarToggle
+    })
+  }
+
   ngAfterViewInit() {
     // pass the ref to the components to the singleton service properties
     this.ss.loader = this.loader;
     this.ss.progressBar = this.progressBar;
     this.ss.statusMessage = this.statusMessage;
     this.ss.svgComponent = this.svg;
-    this.ss.isPreSignIn$.pipe(takeUntil(this.destroy$),debounceTime(500)).subscribe(val => {
+    this.ss.isPreSignIn$.pipe(takeUntil(this.destroy$), debounceTime(500)).subscribe(val => {
       this.isPreSignIn = val;
       this.cdRef.detectChanges();
-      console.log(this.ss.isPreSignIn)
-      // setTimeout()
       this.redirectBasedOnSession();
     })
-    // this.redirectBasedOnSession();
   }
 
-  // 
   ngOnDestroy() {
     // emit using destroy subject to unsubscribe all subscriptions
     this.destroy$.next(null);
@@ -73,9 +79,17 @@ export class AppComponent {
     this.ss.windowResize$.next(e);
   }
 
-  @HostListener('click',['$event'])
-  onClickHost(e:Event){
+  @HostListener('click', ['$event'])
+  onClickHost(e: Event) {
     this.redirectBasedOnSession();
+  }
+
+  onClickToggleSideBar(toggle) {
+    if (toggle) {
+
+    } else {
+
+    }
   }
 
   redirectBasedOnSession() {
@@ -84,7 +98,7 @@ export class AppComponent {
         // this.user.logout();
         // this.router.navigate(['login']);
       }
-    } else { 
+    } else {
       if (this.user.validateSession()) {
         this.router.navigate([this.user.getDashboardRoute()]);
       }
