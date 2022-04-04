@@ -203,9 +203,8 @@
 
           <mat-form-field class="custompicker">
             <mat-label>Date of joining</mat-label>
-            <app-atai-date-range></app-atai-date-range>
-            <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action"
-              style="color: #3a7bca;">date_range</mat-icon>
+            <app-atai-date-range></app-atai-date-range> 
+
             <mat-error *ngIf="addUserForm.controls.doj.touched && addUserForm.controls.doj.hasError('notNull')">
               Please Select Date of joining
             </mat-error>
