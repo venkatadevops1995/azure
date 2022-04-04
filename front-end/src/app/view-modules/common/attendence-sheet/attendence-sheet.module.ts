@@ -35,10 +35,10 @@ import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
     MatAutocompleteModule,
     MatIconModule,
     SvgIconModule,
-    ReactiveFormsModule,
-    MatTooltipModule,
+    ReactiveFormsModule, 
     AtaiDateRangeModule,
-    ToolTipModule
+    ToolTipModule,
+    TooltipModule
   ]
 })
 export class AttendenceSheetModule { }

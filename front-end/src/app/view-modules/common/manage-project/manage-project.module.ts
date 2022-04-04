@@ -37,7 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
     SvgIconModule,
     FileDownloadModule,
-    MatTooltipModule,
+    TooltipModule,
     MatAutocompleteModule
   ]
 })

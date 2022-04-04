@@ -34,8 +34,8 @@
     -moz-appearance: textfield;
   }
 
-  &.not-editable input {
-    background: #eee;
+  &.not-editable   {
+    background: var(--col-primary-400);
   }
 
   input::-webkit-outer-spin-button,

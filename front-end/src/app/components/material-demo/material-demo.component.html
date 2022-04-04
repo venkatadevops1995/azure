@@ -1,13 +1,11 @@
 <div class="material-demo">
   <h2>Material Components For Demo!</h2>
   <div>
-    <h3>Overlay</h3>
-    <!-- This button triggers the overlay and is it's origin -->
+    <h3>Overlay</h3> 
     <button (click)="isOpen = !isOpen" type="button" mat-raised-button cdkOverlayOrigin #trigger="cdkOverlayOrigin">
       {{isOpen ? "Close" : "Open"}}
     </button>
-
-    <!-- This template displays the overlay content and is connected to the button -->
+ 
     <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
       <ul class="example-list">
         <li>Item 1</li>
@@ -38,9 +36,7 @@
     <h3>Date Range Picker</h3>
     <div style="font-size: 12px" class="flex ">
       <mat-form-field appearance="legacy">
-        <app-atai-date-range [formControl]="dateRange"></app-atai-date-range>
-        <!-- <mat-hint>Hint</mat-hint> -->
-        <!-- <mat-error *ngIf="dateRange.hasError('test')">This is invalid</mat-error> -->
+        <app-atai-date-range [formControl]="dateRange"></app-atai-date-range> 
       </mat-form-field>
     </div>
   </div>
@@ -79,8 +75,7 @@
     <div style="font-size: 12px">
       <mat-form-field color="accent" appearance="outline">
         <mat-label>Small Input </mat-label>
-        <input matInput placeholder="Placeholder">
-        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
+        <input matInput placeholder="Placeholder"> 
         <mat-hint>Hint</mat-hint>
       </mat-form-field>
     </div>
@@ -88,8 +83,7 @@
     <div style="font-size: 12px">
       <mat-form-field color="accent" appearance="legacy">
         <mat-label>Small Input </mat-label>
-        <input matInput placeholder="Placeholder">
-        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
+        <input matInput placeholder="Placeholder"> 
         <mat-hint>Hint</mat-hint>
       </mat-form-field>
     </div>
@@ -97,8 +91,7 @@
     <div>
       <mat-form-field color="accent" appearance="outline">
         <mat-label>Large Input</mat-label>
-        <input matInput placeholder="Placeholder">
-        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
+        <input matInput placeholder="Placeholder"> 
         <mat-hint>Hint</mat-hint>
       </mat-form-field>
     </div>
@@ -158,9 +151,7 @@
     <h3>Search box </h3>
     <mat-toolbar color="accent">
       <div class="search-wrapper">
-        <div class="search-wrapper__inline">
-          <mat-icon class="mat-icon" aria-hidden="true" aria-label="Example home icon" color="accent">
-            search_outline</mat-icon>
+        <div class="search-wrapper__inline"> 
           <input placeholder="Search for a employee">
         </div>
       </div>
@@ -169,8 +160,7 @@
   </div>
   <hr>
   <div>
-    <h3>Icon</h3>
-    <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
+    <h3>Icon</h3> 
   </div>
   <hr>
   <div>
@@ -185,30 +175,24 @@
   <div>
     <h3>Toolbar</h3>
     <mat-toolbar color="accent">
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-        <mat-icon>menu</mat-icon>
+      <button class="example-icon" aria-label="Example icon-button with menu icon"> 
       </button>
       <span>My App</span>
       <span class="example-spacer"></span>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
+      <button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon"> 
       </button>
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
+      <button class="example-icon" aria-label="Example icon-button with share icon"> 
       </button>
     </mat-toolbar>
 
     <mat-toolbar color="accent" style="margin-top:10px;">
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-        <mat-icon>menu</mat-icon>
+      <button class="example-icon" aria-label="Example icon-button with menu icon"> 
       </button>
       <span>My App</span>
       <span class="example-spacer"></span>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
+      <button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon"> 
       </button>
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
+      <button class="example-icon" aria-label="Example icon-button with share icon"> 
       </button>
     </mat-toolbar>
   </div>

@@ -57,6 +57,7 @@ export class SvgIconDirective {
     if (input.disIb !== undefined || input.disIb === false) {
     } else {
       this.element.nativeElement.classList.add("dis-ib");
+      this.element.nativeElement.classList.add("pointer");
     }
 
     // get the svg symbol id from the url property in input

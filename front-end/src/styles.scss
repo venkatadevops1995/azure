@@ -2,10 +2,10 @@
 
 @import "./assets/scss/reset";
 @import "./assets/scss/flex";
-@import "./assets/scss/flex-align"; 
+@import "./assets/scss/flex-align";
 
 
-@import "./assets/scss/typography"; 
+@import "./assets/scss/typography";
 @import "./assets/scss/classes";
 @import "./assets/scss/css-variables";
 @import "./assets/scss/use-mixins";
@@ -13,20 +13,16 @@
 body {
   --padding-sides: 6.25%;
 }
-*{
-  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;;
+
+* {
+  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
+  ;
 }
+
 img {
   max-width: 100%;
 }
-
-.mat-icon {
-  &.mat-icon-small {
-    width: 15px;
-    height: 15px;
-    font-size: 15px;
-  }
-}
+ 
 
 .btn-outline {
   cursor: pointer;
@@ -88,10 +84,68 @@ img {
 }
 
 
-::placeholder{
+.ng-tooltip {
+  position: absolute;
+  max-width: 150px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--col-primary-200);
+  padding: 3px 8px;
+  background: linear-gradient(to bottom, var(--col-primary-500),var(--col-primary-600));
+  border-radius: 4px;
+  z-index: 1000;
+  opacity: 0; 
+  width: 150px;
+}
+
+.ng-tooltip:after {
+  content: "";
+  position: absolute;
+  border-style: solid;
+}
+
+.ng-tooltip-top:after {
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-color: var(--col-primary-500) transparent transparent transparent;
+}
+
+.ng-tooltip-bottom:after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-color: transparent transparent var(--col-primary-500) transparent;
+}
+
+.ng-tooltip-left:after {
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-color: transparent transparent transparent var(--col-primary-500);
+}
+
+.ng-tooltip-right:after {
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-color: transparent var(--col-primary-500) transparent transparent;
+}
+
+.ng-tooltip-show {
+  opacity: 1;
+}
+
+
+::placeholder {
   font-size: 12px;
 }
-input::placeholder{
+
+input::placeholder {
   font-size: 12px;
 }
 
