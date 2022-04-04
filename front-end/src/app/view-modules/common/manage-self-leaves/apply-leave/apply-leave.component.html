@@ -36,18 +36,7 @@
     <div>
       <div *ngIf="applyForm.controls.type.value"
         [@slideAnimation]="(!!(applyForm.controls.type.value )) ? 'open' : 'close'">
-        <div>
-          <!-- <mat-radio-group (change)="onCategoryChanged($event)" class="pb-10 example-radio-group secondary"
-            formControlName="category">
-            <mat-radio-button [disabled]="disableFirst2Categories && category != 'Multiple Days'"
-              class="example-radio-button mr-20" *ngFor="let category of leaveCategories" [value]="category">
-              {{category}}
-            </mat-radio-button>
-            <mat-error class="fs-14 mt-5"
-              [@slideAnimation]="(applyForm.controls.category.touched || applyFormSubmitted) && applyForm.controls.category.hasError('required') ? 'open': 'close'">
-              Please select no of leaves category.
-            </mat-error>
-          </mat-radio-group> -->
+        <div> 
           <mat-tab-group color="accent" (selectedTabChange)="onChangeSelectedTab($event)"
             [selectedIndex]="selectedIndexLeaveCategory">
             <mat-tab
@@ -62,7 +51,7 @@
           <div class="col-md-6 ">
             <div class="w-100">
 
-              <mat-form-field appearance="legacy" class="no-pb w-100">
+              <mat-form-field appearance="legacy" class=" w-100">
                 <mat-label>
                   {{applyForm.controls.category.value == 'Multiple Days' ? 'Select start date':'Select date'}}
                 </mat-label>
@@ -81,13 +70,9 @@
                   Second Half
                 </mat-checkbox>
               </div>
-              <mat-error class="fs-12 mt-5" style="height: 0px;overflow: hidden;"
-                [@slideAnimation]="(applyForm.controls.startDate.touched || applyFormSubmitted) && applyForm.controls.startDate.hasError('required') ? 'open': 'close'">
-                Please Select date
-              </mat-error>
             </div>
-            <mat-radio-group class="pb-10 dis-blk mt-5 example-radio-group secondary fs-12" formControlName="half">
-              <mat-radio-button class="example-radio-button mr-20 button-style" [value]="half"
+            <mat-radio-group class=" dis-blk mt-5 example-radio-group secondary fs-12" formControlName="half">
+              <mat-radio-button   class="example-radio-button mr-20 button-style" [value]="half"
                 *ngFor="let half of leaveHours">
                 {{half | titlecase}} Half
               </mat-radio-button>
@@ -96,6 +81,10 @@
                 Please Select Which half
               </mat-error>
             </mat-radio-group>
+            <mat-error class="fs-12 mt-5" style="height: 0px;overflow: hidden;"
+              [@slideAnimation]="(applyForm.controls.startDate.touched || applyFormSubmitted) && applyForm.controls.startDate.hasError('required') ? 'open': 'close'">
+              Please Select date
+            </mat-error>
           </div>
         </div>
       </div>
@@ -118,10 +107,6 @@
                 <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
               </mat-form-field>
-              <mat-error class="fs-12 mt-5" style="height: 0px;overflow: hidden;"
-                [@slideAnimation]="(applyForm.controls.startDate.touched || applyFormSubmitted) && applyForm.controls.startDate.hasError('required') ? 'open': 'close'">
-                Please Select date
-              </mat-error>
               <div
                 *ngIf="applyForm.controls.category.value == 'Multiple Days' &&  applyForm.controls.type.value.name=='Paid'"
                 class="mt-5">
@@ -130,6 +115,10 @@
                   Second Half
                 </mat-checkbox>
               </div>
+              <mat-error class="fs-12 mt-5" style="height: 0px;overflow: hidden;"
+                [@slideAnimation]="(applyForm.controls.startDate.touched || applyFormSubmitted) && applyForm.controls.startDate.hasError('required') ? 'open': 'close'">
+                Please Select date
+              </mat-error>
             </div>
           </div>
           <div class="col-md-6 " *ngIf="applyForm.controls.category.value == 'Multiple Days'">
@@ -145,16 +134,16 @@
                   [dateClass]="datePickerLeaveApplcn.dateClass('end')" [startAt]="datePickerLeaveApplcn.startAtendDate"
                   #refPicker2 color="primary"></mat-datepicker>
               </mat-form-field>
-              <mat-error style="height: 0px;overflow: hidden;" class="fs-12 mt-5"
-                [@slideAnimation]="(applyForm.controls.endDate.touched || applyFormSubmitted) && applyForm.controls.endDate.hasError('required') && selectedEndDate==undefined ? 'open': 'close'">
-                Please Select date
-              </mat-error>
               <div *ngIf="applyForm.controls.type.value.name=='Paid'" class="mt-5">
                 <mat-checkbox [disabled]="applyForm.controls.endDateFirstHalf.disabled"
                   class="example-margin button-style fs-12" [value]="'FIRST'" formControlName="endDateFirstHalf">First
                   Half
                 </mat-checkbox>
               </div>
+              <mat-error style="height: 0px;overflow: hidden;" class="fs-12 mt-5"
+                [@slideAnimation]="(applyForm.controls.endDate.touched || applyFormSubmitted) && applyForm.controls.endDate.hasError('required') && selectedEndDate==undefined ? 'open': 'close'">
+                Please Select date
+              </mat-error>
             </div>
           </div>
         </div>
