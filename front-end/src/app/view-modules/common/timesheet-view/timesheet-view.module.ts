@@ -10,6 +10,7 @@ import { TimesheetViewComponent } from './timesheet-view.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import { MatIconModule } from '@angular/material/icon';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -19,12 +20,11 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     TimeSheetModule,
     ReactiveFormsModule,
-    ButtonModule,
-    SvgIconModule,
+    ButtonModule, 
     ModalPopupModule,
     MatDialogModule,
-    ConfirmDialogModule,
-    MatIconModule
+    ConfirmDialogModule ,
+    UseSvgModule
   ],
   exports:[
     TimesheetViewComponent

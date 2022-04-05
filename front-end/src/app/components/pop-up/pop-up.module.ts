@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PopUpComponent } from './pop-up.component';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ButtonModule } from '../button/button.module';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { ButtonModule } from '../button/button.module'; 
+import { UseSvgModule } from '../use-svg/use-svg.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     CommonModule,
     MatDialogModule,
     ButtonModule,
-    SvgIconModule
+    UseSvgModule
   ],
   exports: [PopUpComponent],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} },

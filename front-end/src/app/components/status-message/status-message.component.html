@@ -11,38 +11,15 @@
         <ng-container *ngIf="notification.typeof === 'string' && notification.show === true">
             <div [@notificationAnimation] (click)="clickClose($event,i)" class="notification {{notification.status}}">
                 <div class="flex nowrap pl-20" >
-                    <div *ngIf="notification.status === 'success'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite-new.svg#tick-circle',w:15}"></div>
-                    <div *ngIf="notification.status === 'fail'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite-new.svg#close-circle',w:15}"></div>
-                    <div *ngIf="status === 'info'" fill="inherit" [svgIcon]="{url:'/assets/icons-sprite.svg#info',w:15}"></div>
-                    <div *ngIf="status === 'warning'" svg-fill="inherit" [svgIcon]="{url:'/assets/icons-sprite.svg#warning',w:15}" svg-fill="none"
-                        svg-stroke="currentcolor" svg-stroke-linecap="round" svg-stroke-linejoin="round" svg-stroke-width="2"></div>
+                    <svg *ngIf="notification.status === 'success'" class="use-svg" symbol="tick-circle" w="15"></svg>
+                    <svg *ngIf="notification.status === 'fail'" class="use-svg" symbol="close-circle" w="15"></svg>
+                    <svg *ngIf="status === 'info'" class="use-svg" symbol="info" w="15"></svg>
+                    <svg *ngIf="status === 'warning'" class="use-svg" symbol="warning" w="15"></svg>
                     <div class="msg">
                         <p>{{notification.message}}</p>
                     </div>
                 </div>
             </div>
         </ng-container>
-    </ng-container>
-    <!-- <ng-container *ngIf="typeof !== 'TemplateRef'">
-        <div class="tac fs15 p10" style="max-width:980px; margin:0 auto;">
-            <div class="disIB vaMid mR10">
-                <div *ngIf="status === true" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#tick-circle',w:25}"></div>
-                <div *ngIf="status === false" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#into-circle',w:25}"></div>
-                <div *ngIf="status === 'info'" fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#info',w:25}"></div>
-                <div *ngIf="status === 'warning'" svg-fill="inherit" [wynikiSvgIcon]="{url:'/assets/icons_sprite.svg#warning',w:25}" svg-fill="none"
-                    svg-stroke="currentcolor" svg-stroke-linecap="round" svg-stroke-linejoin="round" svg-stroke-width="2"></div>
-            </div>
-            <div class="msg disIB vaMid">
-                <p class="lh1-6" *ngIf="typeof === 'string'">{{message}}</p>
-                <ng-container *ngIf="typeof === 'Array'">
-                    <p class="lh1-6" *ngFor="let string of message">{{string}}</p>
-                </ng-container>
-            </div>
-        </div>
-    </ng-container>
-    <ng-container *ngIf="typeof === 'TemplateRef'">
-        <ng-container *ngTemplateOutlet="message">
-
-        </ng-container>
-    </ng-container> -->
+    </ng-container> 
 </div>

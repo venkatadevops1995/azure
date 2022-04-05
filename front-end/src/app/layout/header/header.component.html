@@ -40,8 +40,7 @@
     </mat-slide-toggle>
   </div>
 
-  <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true">
-    <!-- <div class="flex p-5 center-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">MIS <span [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:15}" style="color:var(--color-tertiary);" svg-fill="currentColor" class="ml-5 mt-3"></span></div> -->
+  <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true"> 
   </div>
   <app-button theme="red" (click)="logout()"  href="javascript:;">
     Logout

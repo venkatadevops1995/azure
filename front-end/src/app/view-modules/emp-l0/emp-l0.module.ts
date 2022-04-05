@@ -1,6 +1,5 @@
 import { TimesheetViewModule } from './../common/timesheet-view/timesheet-view.module';
-import { ReactiveFormsModule } from '@angular/forms';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { ReactiveFormsModule } from '@angular/forms'; 
 import { ButtonModule } from './../../components/button/button.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -25,6 +24,7 @@ import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-atte
 import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
 import { TimeSheetModule } from '../common/time-sheet/time-sheet.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 @NgModule({
@@ -35,7 +35,7 @@ import { TimeSheetModule } from '../common/time-sheet/time-sheet.module';
     TimesheetViewModule,
     TimeSheetModule,
     ButtonModule,
-    SvgIconModule,
+    UseSvgModule,
     ReactiveFormsModule,
     TimesheetViewModule,
     AttendenceSheetModule,

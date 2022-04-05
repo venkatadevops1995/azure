@@ -132,25 +132,21 @@
                                 </a>
                                 <!-- <span *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'" class="ml-10" (click)="editSelectEmp()" [svgIcon]="{url:'./assets/icons-sprite.svg#add',w:20,h:20}" style="color:var(--color-tertiary);margin-top:2px;cursor:pointer;vertical-align: bottom;"
                                                                     svg-fill="var(--color-secondary)"></span> -->
-                                <span
+                                <svg
                                   *ngIf="
                                     optn.option == 'FEW' &&
                                     policyForm.controls.enable_for.value ==
                                       'FEW'
                                   "
-                                  class="ml-10 material-icons"
+                                  class="ml-10 material-icons use-svg col-primary-300 mt-2"
                                   (click)="editSelectEmp()"
-                                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#edit',w:20}"
-                                  svg-fill="currentColor"
-                                  style="
-                                     color: var(--col-primary-300);
-                                    margin-top: 2px;
-                                    cursor: pointer;
+                                  symbol="edit" w="20"
+                                  style="  
                                     vertical-align: bottom;
                                   "
                                 >
                             
-                                        </span>
+                                        </svg>
                           </div>
                               <div
                                 *ngIf="
@@ -661,7 +657,7 @@
 <ng-template #selectedEmpPopup>
   <div>
     <div style="text-align: center">
-      <p class="p-20" *ngIf="SELECTED_EMPLOYEE_DATA.length == 0">
+      <p class="p-20 col-primary-300 fs-14" *ngIf="SELECTED_EMPLOYEE_DATA.length == 0">
         No employee has been selected
       </p>
     </div>

@@ -15,6 +15,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 @NgModule({
@@ -31,7 +32,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     FormsModule,
     MatSelectModule,
     MatAutocompleteModule, 
-    SvgIconModule,
+    UseSvgModule,
     ReactiveFormsModule,
     TooltipModule,
     AtaiDateRangeModule

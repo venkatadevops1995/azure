@@ -10,8 +10,8 @@ import { ModalPopupModule } from '../modal-popup/modal-popup.module';
 import { MatIconModule } from '@angular/material/icon';
 import { EmployeeProfileDetailsModule } from '../employee-profile-details/employee-profile-details.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDialogModule } from '@angular/material/dialog';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { MatDialogModule } from '@angular/material/dialog'; 
+import { UseSvgModule } from '../use-svg/use-svg.module';
 
 
 
@@ -29,7 +29,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatIconModule,
     MatAutocompleteModule,
     MatDialogModule,
-    SvgIconModule
+    UseSvgModule
   ],
   exports: [HeaderSearchComponent]
 })

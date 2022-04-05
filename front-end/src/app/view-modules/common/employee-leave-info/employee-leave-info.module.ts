@@ -6,16 +6,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ButtonModule } from 'src/app/components/button/button.module';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
-import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module'; 
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -33,10 +32,9 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
     ButtonModule,
     MatSelectModule,
     ModalPopupModule,
-    MatCheckboxModule,
-    MatIconModule,
+    MatCheckboxModule, 
     MatDividerModule,
-    SvgIconModule,
+    UseSvgModule,
     FileDownloadModule,
     TooltipModule,
     MatAutocompleteModule

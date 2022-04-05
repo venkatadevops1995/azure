@@ -5,17 +5,12 @@
   <mat-form-field class="w-100 fs-12" appearance="legacy">
     <input matInput placeholder="Enter Employee Name / Staff No." aria-label="Leader" [matAutocomplete]="auto"
       [formControl]="search" [(ngModel)]="value">
-      <div matSuffix class="pointer col-primary-200 mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#search',w:15}" svg-fill="currentColor" (click)="openEmployeepopUp()"></div>
+      <svg matSuffix class="  col-primary-200 mr-5 use-svg" symbol="search" w="15"  (click)="openEmployeepopUp()"></svg>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSubmitResolvedLeaveFilter($event)">
       <mat-option *ngFor="let emp of filteredManagers | async" [value]="emp.emp_name">
         {{emp.emp_name}} ({{emp.staff_no}})
       </mat-option>
     </mat-autocomplete>
-  </mat-form-field> 
-  <!-- <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="openEmployeepopUp()"></div> -->
+  </mat-form-field>  
 </form>
-
-
-<!-- <app-modal-popup #employeeprofilePopup (close)="onClose()" [w]="800" [h]="600">
-  <app-employee-profile-details [data]="employeeInput"></app-employee-profile-details>
-</app-modal-popup> -->
+ 

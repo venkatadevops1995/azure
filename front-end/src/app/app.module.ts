@@ -24,8 +24,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { HeaderSearchModule } from './components/header-search/header-search.module'; 
-import { ButtonModule } from './components/button/button.module';
-import { SvgIconModule } from './directives/svg-icon/svg-icon.module';
+import { ButtonModule } from './components/button/button.module'; 
 import { ModalPopupModule } from './components/modal-popup/modal-popup.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileDownloadModule } from './directives/file-download/file-download.module';
@@ -41,6 +40,7 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
+import { UseSvgModule } from './components/use-svg/use-svg.module';
 
 
 @NgModule({
@@ -53,7 +53,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     HeaderComponent,
     FooterComponent ,
     AddProjectComponent,
-    SidebarComponent,
+    SidebarComponent
   
   ],
   imports: [
@@ -64,8 +64,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     ConfirmDialogModule,
     AppRoutingModule,
     HeaderSearchModule, 
-    ButtonModule,
-    SvgIconModule,
+    ButtonModule, 
     ModalPopupModule,
     FormsModule,
     ReactiveFormsModule,
@@ -79,6 +78,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatDatepickerModule,
     MatRadioModule,
     MatDialogModule,
+    UseSvgModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable

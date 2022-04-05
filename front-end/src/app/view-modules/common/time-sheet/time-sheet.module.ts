@@ -10,6 +10,7 @@ import { ButtonModule } from './../../../components/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -18,7 +19,7 @@ import { MatDialogModule } from '@angular/material/dialog';
   imports: [
     CommonModule,
     ButtonModule, 
-    SvgIconModule,
+    UseSvgModule,
     ReactiveFormsModule,
     ModalPopupModule,
     MatIconModule,

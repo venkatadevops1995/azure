@@ -5,6 +5,7 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { StatusMessageComponent } from './components/status-message/status-message.component';
 import { SvgComponent } from './layout/svg/svg.component';
+import { HttpClientService } from './services/http-client.service';
 import { SingletonService } from './services/singleton.service';
 import { UserService } from './services/user.service';
 
@@ -33,19 +34,25 @@ export class AppComponent {
   // subject to unsubscibe subscriptions
   private destroy$ = new Subject();
 
+  // the svg sprite urls
+  defaultSvgSpriteUrls = ['./assets/icons-sprite-new.svg', './assets/images/icons-sprite.svg'];
 
   isSideBarOpen: boolean = false;
+
+  iconsPrefetched: boolean = false;
 
   constructor(
     private ss: SingletonService,
     private cdRef: ChangeDetectorRef,
     private user: UserService,
     private router: Router,
+    private http: HttpClientService
   ) {
 
   }
 
   ngOnInit() {
+    // this.getDefaultIcons()
     this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
       this.ss.sideBarToggle = val;
       this.isSideBarOpen = this.ss.sideBarToggle
@@ -83,6 +90,24 @@ export class AppComponent {
   onClickHost(e: Event) {
     this.redirectBasedOnSession();
   }
+
+  // get the default svg sprite urls on load of the application
+  getDefaultIcons() {
+    this.defaultSvgSpriteUrls.forEach((url) => {
+      this.http.request('get', url, "", null, {}, { responseType: "text", baseUrl: "" }).subscribe(res => {
+        if(res.status == 200){
+          let svg = res.body;
+          this.ss.svg.push(url); 
+          this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
+            "beforeEnd",
+            svg
+          );
+          this.iconsPrefetched = true; 
+        }
+      });
+    })
+  }
+
 
   onClickToggleSideBar(toggle) {
     if (toggle) {

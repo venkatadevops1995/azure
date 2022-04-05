@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 // import { MatInputModule, MatIconModule } from '@angular/material/mat-';  
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 @NgModule({
   declarations: [PreSignInComponent, ForgotPasswordComponent, LoginComponent, ResetPasswordComponent],
@@ -28,7 +29,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    SvgIconModule,
+    UseSvgModule,
     MatSelectModule,
     ButtonModule 
   ]

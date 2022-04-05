@@ -7,8 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input'; 
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
@@ -16,12 +15,12 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module'; 
 import { StripTableModule } from 'src/app/components/strip-table/strip-table.module';
 import { LeaveDetailsModule } from 'src/app/components/leave-details/leave-details.module';
-import { FileUploadModule } from 'src/app/components/input-file/input-file.module';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { FileUploadModule } from 'src/app/components/input-file/input-file.module'; 
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 @NgModule({
   declarations: [ManageSelfLeavesComponent, ApplyLeaveComponent],
   imports: [
@@ -33,8 +32,7 @@ import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule,
-    MatIconModule,
+    MatInputModule, 
     MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule, 
@@ -43,7 +41,7 @@ import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
     StripTableModule,
     LeaveDetailsModule,
     FileUploadModule,
-    SvgIconModule,
+    UseSvgModule,
     AtaiDateRangeModule,
     PopUpModule,
     MatTabsModule

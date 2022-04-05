@@ -3,19 +3,16 @@ import { CommonModule } from '@angular/common';
 
 import { AttendenceSheetComponent } from './attendence-sheet.component';
 import { MatTableModule } from '@angular/material/table';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { MatInputModule } from '@angular/material/input';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatIconModule } from '@angular/material/icon';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module'; 
 import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 @NgModule({
@@ -32,9 +29,8 @@ import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
     MatInputModule,
     FormsModule,
     MatSelectModule,
-    MatAutocompleteModule,
-    MatIconModule,
-    SvgIconModule,
+    MatAutocompleteModule, 
+    UseSvgModule,
     ReactiveFormsModule, 
     AtaiDateRangeModule,
     ToolTipModule,

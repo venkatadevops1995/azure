@@ -58,8 +58,7 @@
                 <input (focus)="refPicker1.open()" formControlName="startDate"
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput
                   [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
-                <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"
-                  svg-fill="currentColor" (click)="refPicker1.open()"></div>
+                <svg matSuffix class="use-svg" symbol="calendar" w="20"  (click)="refPicker1.open()"></svg>
                 <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
               </mat-form-field>
@@ -102,8 +101,7 @@
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput
                   [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
 
-                <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"
-                  svg-fill="currentColor" (click)="refPicker1.open()"></div>
+                <svg matSuffix class="use-svg" symbol="calendar" w="20"  (click)="refPicker1.open()"></svg>
                 <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
               </mat-form-field>
@@ -128,8 +126,7 @@
                 <input (focus)="refPicker2.open()" formControlName="endDate"
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterEnd" matInput
                   [matDatepicker]="refPicker2" [value]="selectedEndDate" readonly>
-                <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"
-                  svg-fill="currentColor" (click)="refPicker2.open()"></div>
+                <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="refPicker2.open()"></svg>
                 <mat-datepicker (opened)="onOpenEndDateDatePicker()"
                   [dateClass]="datePickerLeaveApplcn.dateClass('end')" [startAt]="datePickerLeaveApplcn.startAtendDate"
                   #refPicker2 color="primary"></mat-datepicker>

@@ -1,13 +1,10 @@
-import { ButtonModule } from './../button/button.module';
-import { MatIconModule } from '@angular/material/icon';
-// import { SvgIconModule } from './../../directives/svg-icon/svg-icon.module';
+import { ButtonModule } from './../button/button.module'; 
 import { ModalPopupComponent } from './modal-popup.component';
 //import { PipesModule } from './../../pipes/pipes.module';
 //import { UtilitiesModule } from './../utilities.module'; 
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { NgModule } from '@angular/core'; 
 // import { ScrollBarModule } from '../scroll-bar/scroll-bar.module';
 
 @NgModule({
@@ -16,8 +13,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     ],
     imports: [
         //PipesModule,
-        CommonModule, RouterModule,  
-        SvgIconModule,
+        CommonModule, RouterModule,   
         ButtonModule
     ],
     exports: [

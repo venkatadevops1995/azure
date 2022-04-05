@@ -11,12 +11,10 @@
   <div class="flex bottom-xs">
     <div class="flex center-xs  col-primary-200 fs-12 mr-30">
       <a [dbdFileDownload]="{endPoint:'downloadwst/', responseType:'blob'}" class="flex middle-xs pointer">
-        <span class="ml-3 mr-10" [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}"
-          svg-fill="currentColor"></span> WTR
+        <svg class="ml-3 mr-10 use-svg" symbol="download" w="20"  ></svg> WTR
       </a>
       <a [dbdFileDownload]="{endPoint:'downloadwsr/',responseType:'blob'}" class="flex middle-xs mr-50 ml-50 pointer">
-        <span class="mr-10" [svgIcon]="{url:'./assets/icons-sprite-new.svg#download',w:20}"
-          svg-fill="currentColor"></span> WSR
+        <svg class="mr-10 use-svg" symbol="download" w="20"  ></svg> WSR
       </a>
     </div>
     <form #searchForm="ngForm" [formGroup]="fgSearch">
@@ -81,7 +79,7 @@
 
 <div *ngIf="timesheetsData?.length == 0" class="flex col center-xs middle-xs fg-1">
   <img src="./assets/images/no-data-sheet.png" alt="" style="max-width: 250px;">
-  <p class="p-15 fs-14 col-primary-400">No time sheets available</p>
+  <p class="p-15 fs-14 col-primary-300">No time sheets available</p>
 </div>
 
 <ng-template #templateRefRejectTimeSheet>

@@ -22,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 @NgModule({
   declarations: [ManageTeamLeavesComponent, ConfirmRejectLeaveComponent],
@@ -46,7 +47,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
     MatAutocompleteModule,
     MatCheckboxModule,
     FileDownloadModule,
-    SvgIconModule,
+    UseSvgModule,
     AtaiDateRangeModule
   ],
   exports: [ManageTeamLeavesComponent]

@@ -16,12 +16,13 @@ import { MatTableModule } from '@angular/material/table';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 @NgModule({
   declarations: [HolidayComponent],
   imports: [
     CommonModule,
-    SvgIconModule,
+    UseSvgModule,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
