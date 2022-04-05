@@ -165,6 +165,10 @@ export class LeaveHistoryComponent implements OnInit{
       startDate: 'startdate',
       endDate: 'enddate'
     }
+    let future_leave = 'false'
+    if(this.Ischecked){
+      future_leave = 'true'
+    }
     let dp: any = this.pickerDirective.value
     // get the sorting
     let params = new HttpParams({
@@ -173,6 +177,7 @@ export class LeaveHistoryComponent implements OnInit{
         is_history: 'true',
         filter: 'history',
         is_hr: 'true',
+        is_future_leave:future_leave,
         emp_name: (this.managerCtrl.value) || "",
         emp_id: String(this.employeeSelected?.emp_id) || "",
         sort_key: mapping[this.sortHistoricKey] || '',

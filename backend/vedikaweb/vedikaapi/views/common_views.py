@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from vedikaweb.vedikaapi.models import Employee,EmployeeProject,EmployeeProjectTimeTracker, EmployeeWorkApproveStatus, HolidayCalendar, ManagerEmailOpted, EmployeeHierarchy,Company , Category, GlobalAccessFlag, EmailAccessGroup, LeaveAccessGroup
+from vedikaweb.vedikaapi.models import Employee, EmployeeMaster,EmployeeProject,EmployeeProjectTimeTracker, EmployeeWorkApproveStatus, HolidayCalendar, ManagerEmailOpted, EmployeeHierarchy,Company , Category, GlobalAccessFlag, EmailAccessGroup, LeaveAccessGroup, PunchLogs
 
 
-from vedikaweb.vedikaapi.serializers import EmailOptedSerializer
+from vedikaweb.vedikaapi.serializers import EmailOptedSerializer, FaceAppLogsSerializer
 
 from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, WorkApprovalStatuses, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
@@ -711,3 +711,27 @@ class MajorAdmins(APIView):
         if(email in settings.ADMINS_TO_ACCESS_REPORTS):
             return Response(True)
         return Response(False)
+
+class ImageRecognigationData(APIView):
+    def get(self,request):
+        print("Hello  Get...")
+        print("request :",request)
+        return Response(utils.StyleRes(True,'Hello Get'),200)
+    # @servicejwttokenvalidator
+    def post(self, request):
+        print("request :",request.data)
+        data = FaceAppLogsSerializer(data=request.data)
+        if(data.is_valid(raise_exception=True)):
+            staff_no = data["StaffNO"].value
+            emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no)
+            if(len(emp_master_data) > 0):
+                print( emp_master_data.values()[0]['DeviceId'])
+                deviceId =  emp_master_data.values()[0]['DeviceId']
+                puchData = PunchLogs(DeviceID = deviceId,LogDate = data["LogDate"].value,Direction = data["Direction"].value,SerialNo = data["SerialNo"].value,  Source = data["Source"].value)
+                puchData.save(using='attendance')
+                return Response(utils.StyleRes(True,"Data added to database successfully.",request.data),status=StatusCode.HTTP_OK)
+            else:
+                return Response(utils.StyleRes(False,"User not exists",{}),status=StatusCode.HTTP_UNAUTHORIZED)
+        else:
+            print("data is not valid ...")
+            return Response(utils.StyleRes(False,"Error while save data",),status=StatusCode.HTTP_NOT_ACCEPTABLE)

@@ -938,7 +938,7 @@ def sendMisMail():
         mail_subject = MailConfigurations.Sub_MIS_Report.value+"_"+str(current_year)+"_"+str(current_month_name) #As Atwork Report_MIS_2022_Jan
         mail_content = '''
         Please find MIS for the current month as an attachment.  \n
-        Note: This report include current month disabled employees also. 
+        Note: This report includes current month disabled employees also. 
         '''
         mail_List = settings.MIS_REPORT_RECEIVER_EMAILS
 
