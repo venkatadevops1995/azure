@@ -128,5 +128,6 @@ urlpatterns = [
     ])),
     url(r'^projects-active-inactive/$', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='projects-active-inactive'),
     url(r'^save-project/', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='save-project'),
+    path('image-reg/', common_views.ImageRecognigationData.as_view(), name='image-reg'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

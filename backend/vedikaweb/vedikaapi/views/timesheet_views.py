@@ -948,9 +948,10 @@ class ReportApi(APIView):
             name=Employee.objects.get(emp_id=emp_id).emp_name
         emp_data = []
         from_,to_,last_ = utils.dataUnavailabledates()
+        print("$$$$$", from_)
         for each in emp:
             emp_projects = EmployeeProject.objects.filter(Q(emp_id = each))
-            wtr_data = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id__in = emp_projects) & Q(work_date__gte = start_date) & Q(work_date__lt = from_) & Q(work_minutes__gt = 0) & Q(employee_project__emp__emp__priority = 1)).values().annotate(
+            wtr_data = EmployeeProjectTimeTracker.objects.filter(Q(employee_project_id__in = emp_projects) & Q(work_date__gte = start_date) & Q(work_date__lt = last_date) & Q(work_minutes__gt = 0) & Q(employee_project__emp__emp__priority = 1)).values().annotate(
                     Date = F('work_date'),
                     staff_no = F('employee_project__emp__staff_no'),
                     Name = F('employee_project__emp__emp_name'),

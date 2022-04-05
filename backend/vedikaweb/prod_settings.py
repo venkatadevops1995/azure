@@ -41,6 +41,7 @@ UPLOAD_INVITATIONS_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_INVITATIONS)
 UPLOAD_PROFILE_PIC_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_PROFILE)
 BASE_POLICIES_PATH = os.path.join(UPLOAD_EMP_PATH,BASE_POLICIES)
 UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH = os.path.join(UPLOAD_MIS_PATH,ADMIN_EMAIL_ATTACHMENT)
+
 #URLS TO access http or https
 INVITATION_IMAGE_URL =  os.path.join(config.get('general', 'IMAGE_URL'),BASE_INVITATIONS)
 PROFILE_IMAGE_URL =  os.path.join(config.get('general', 'IMAGE_URL'),BASE_PROFILE)
@@ -107,9 +108,9 @@ CRONJOBS = [
     ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
     ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
     ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
-    ('5 20 28-31 * *','vedikaweb.vedikaapi.cron.sendMisMail'),#  Cron to Send MIS Mail on the end of the month at 20:05
-    ('10 20 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 20:05
-    ('5 19 * * *','vedikaweb.vedikaapi.cron.relieveEmployee')#Cron to Run  Every day at 19:05 to disable the employee from staged table
+    ('5 22 28-31 * *','vedikaweb.vedikaapi.cron.sendMisMail'),#  Cron to Send MIS Mail on the end of the month at 22:05
+    ('10 22 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 22:05
+    ('5 21 * * *','vedikaweb.vedikaapi.cron.relieveEmployee')#Cron to Run  Every day at 21:05 to disable the employee from staged table
 ]
 
 ROOT_URLCONF = 'vedikaweb.urls'
@@ -302,15 +303,16 @@ LOGGING = {
 }
 ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
-IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com','gd@invecas.com']
 
+IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com','gd@invecas.com']
 SENDEMAILTOALL=True
 CUSTOM_EMAILS = []
+
 
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
 ADMINS_TO_ACCESS_REPORTS = ['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
-STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai']
-MIS_REPORT_RECEIVER_EMAILS =['moulali@atai.ai']
-CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai']
+STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
+MIS_REPORT_RECEIVER_EMAILS =['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
+CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','sabita.koganti@invecas.com']
