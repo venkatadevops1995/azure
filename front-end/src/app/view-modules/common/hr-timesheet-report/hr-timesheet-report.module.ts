@@ -12,6 +12,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { HrTimesheetReportComponent } from './hr-timesheet-report.component';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -27,12 +28,11 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
     MatInputModule,
     FormsModule,
     MatSelectModule,
-    MatAutocompleteModule,
-    MatIconModule,
-    SvgIconModule,
+    MatAutocompleteModule, 
     ReactiveFormsModule,
     TooltipModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    UseSvgModule
   ]
 })
 export class HrTimesheetReportModule { }

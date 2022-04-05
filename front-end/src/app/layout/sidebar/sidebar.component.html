@@ -1,6 +1,6 @@
 <div class="page-wrapper toggled sidebar">
   <div (click)="onClickMenuToggle()" [class.is-menu-open]="isSidebarOpen" class="sidebar__toggle col-primary-200 flex center-xs middle-xs">
-    <div  [svgIcon]="{url:'./assets/icons-sprite-new.svg#angle-right',w:15}" svg-fill="currentColor"></div>
+    <svg class="use-svg" [attr.fill]="'currentColor'" symbol="angle-right" [w]="15"></svg>
   </div>
   <div id="sidebar" [class.is-open]="isSidebarOpen" class="sidebar__wrapper">
     <div class="sidebar-content">

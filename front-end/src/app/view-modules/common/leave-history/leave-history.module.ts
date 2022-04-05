@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeaveHistoryComponent } from './leave-history.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module'; 
+import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module'; 
@@ -13,6 +12,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { ShowTableModule } from '../show-table/show-table.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -24,7 +24,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
     ReactiveFormsModule,
     MatFormFieldModule,
     MatAutocompleteModule,
-    SvgIconModule, 
+    UseSvgModule, 
     MatInputModule,
     FileDownloadModule,
     MatTableModule, 

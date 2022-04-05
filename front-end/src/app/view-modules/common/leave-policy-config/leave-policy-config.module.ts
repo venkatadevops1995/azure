@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatIconModule } from '@angular/material/icon';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -29,7 +30,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     PipesModule,
     ButtonModule,
     MatIconModule,
-    SvgIconModule
+    UseSvgModule
   ]
 })
 export class LeavePolicyConfigModule { }

@@ -1,6 +1,7 @@
 <div class="emp-profile">
-  <div class="emp-profile__close"> 
-      <div class="col-primary-200" (click)="onClickClose()" svg-fill="none" [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:30}"></div>
+  <div class="emp-profile__close">
+    <svg class="use-svg col-primary-200" (click)="onClickClose()" w="30" svg-fill="none"
+      symbol="circle-close-red"></svg>
   </div>
   <div class="emp-profile__head ">
     <div class="emp-profile__photo">
@@ -26,8 +27,10 @@
         <div class="flex middle-xs">
           <p style=" max-width: 300px;  word-break: break-all;">{{data?.emp_details?.email}}</p>
           <div class="pos-r">
-            <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite-new.svg#copy',w:20}" class="ml-10 col-primary-200   pointer" (cdkCopyToClipboardCopied)="onCopy()"
-              [cdkCopyToClipboard]="data?.emp_details?.email"></div>
+            <div>
+              <svg w="20" symbol="copy" class="use-svg ml-10 col-primary-200" (cdkCopyToClipboardCopied)="onCopy()"
+                [cdkCopyToClipboard]="data?.emp_details?.email"></svg>
+            </div>
             <p style="position: absolute;left: -15px; top: -20px;width: 100px;" *ngIf="showToolTip" class="fs-10">Email
               Copied</p>
           </div>

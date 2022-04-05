@@ -1,10 +1,10 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
 
 @Component({
     selector: 'app-svg',
-    template: `
-  `,
-  styles: []
+    templateUrl: './svg.component.svg',
+    styles: [],
+    encapsulation:ViewEncapsulation.None
 })
 export class SvgComponent implements OnInit {
 

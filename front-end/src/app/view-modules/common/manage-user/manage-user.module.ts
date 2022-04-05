@@ -24,6 +24,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import {MatRadioModule} from '@angular/material/radio';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
   // If required extend other NativeDateAdapter methods.
 @NgModule({
   declarations: [ManageUserComponent, AddUserComponent, EditUserComponent,],
@@ -38,7 +39,7 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSelectModule,
     ModalPopupModule,
     MatCheckboxModule,
-    MatIconModule,
+    UseSvgModule,
     MatDividerModule,
     SvgIconModule,
     FileDownloadModule,

@@ -2,11 +2,10 @@
   <h2 class="heading mb-20">
     {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
   </h2>
-  <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData"
-    href="javascript:;" style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs">
-    <!-- <div [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" class="mr-5"></div> -->
-    <div svg-fill="currentColor" [svgIcon]="{url:'./assets/icons-sprite.svg#comments',w:25}" class="mr-5"> 
-    </div>
+  <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData" href="javascript:;"
+    style="color:var(--color-secondary);" class="view-rejection-comments fs-15 flex middle-xs"> 
+    <svg class="mr-5 use-svg" symbol="comments" w="25">
+    </svg>
     <span>View Comments</span>
   </a>
 </div>
@@ -39,8 +38,9 @@
   </div>
   <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
     class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1">
-    <div class="flex middle-xs center-xs wsr__sel-project-toggle">      
-      <div  class=" mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#add-circle',w:14}" svg-fill="currentColor"></div>
+    <div class="flex middle-xs center-xs wsr__sel-project-toggle">
+      <svg class=" mr-5 use-svg" symbol="add-circle" w="14" >
+      </svg>
       Select Project
     </div>
     <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
@@ -70,7 +70,7 @@
 
 
 <ng-template #templateRefManagerComments>
-  <p class="fs-12 fw-300 col-primary-100"  style="word-break: break-all;">
+  <p class="fs-12 fw-300 col-primary-100" style="word-break: break-all;">
     {{weeklyTimeSheetData?.comments}}
   </p>
 </ng-template>

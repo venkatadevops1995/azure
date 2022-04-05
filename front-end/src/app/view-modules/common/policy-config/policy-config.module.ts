@@ -12,6 +12,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { MatTableModule } from '@angular/material/table';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 @NgModule({
   declarations: [PolicyConfigComponent],
@@ -28,7 +29,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatCheckboxModule,
     ModalPopupModule,
     MatTableModule,
-    SvgIconModule
+    UseSvgModule
     
   ]
 })

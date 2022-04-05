@@ -75,8 +75,8 @@
       </div>
       <div class="w-15 flex center-xs middle-xs">
         <div (click)="onClickResolveBtns('view',{empId:data?.emp_id})"
-          class="flex center-xs col col-primary-200 pointer">
-          <div [svgIcon]="{url:'./assets/icons-sprite-new.svg#view-details',w:20}" svg-fill="currentColor"></div>
+          class="flex center-xs col col-primary-200 pointer"> 
+          <svg class="use-svg" symbol="view-details" w="20"></svg>
           <span class="fs-10 mt-5">WSR</span>
         </div>
       </div>
@@ -90,7 +90,7 @@
       <div class="project">
         {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
         {{project?.cumulative?.m | number:'2.' }}] 
-        <div *ngIf="project.priority != 1 && !disable" [attr.data-index]='i' class="timesheet__row-remove col-warn-500" [svgIcon]="{url:'./assets/icons-sprite-new.svg#remove',w:14}" svg-fill="currentColor"></div>
+        <svg *ngIf="project.priority != 1 && !disable" [attr.data-index]='i' class="timesheet__row-remove col-warn-500 use-svg"  symbol="remove" w="14"  ></svg>
       </div>
       <ng-container *ngFor="let day of project?.work_hours;let j=index;">
         <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
@@ -109,7 +109,7 @@
       style="z-index: 1111;">
       <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
         <div class="flex middle-xs center-xs sel-project__btn btn-outline"> 
-          <div  class=" mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#add-circle',w:14}" svg-fill="currentColor"></div>
+          <svg class=" mr-5 use-svg" symbol="add-circle" w="14" ></svg>
           Select Project
         </div>
         <div class="sel-project__project-list" *ngIf="showProjectList && hiddenActiveProjects.length > 0">
@@ -256,7 +256,7 @@
     <!-- <p class="p-15 dis-ib" style="background:#ccc;">None</p> -->
     <div class="flex col middle-xs center-xs pt-50 mt-50">
       <img src="./assets/images/happy_announcement.png" alt="">
-      <p class="col-primary-400 mt-10">No Pending Timesheets to submit</p>
+      <p class="col-primary-300 fs-14 mt-10">No Pending Timesheets to submit</p>
     </div>
   </ng-container>
 </ng-template>

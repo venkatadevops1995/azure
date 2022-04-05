@@ -58,9 +58,8 @@
           [ngStyle]="{'grid-template-columns':'  minmax(120px, 2fr) minmax(130px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) repeat('+(editMode ? locations.length : locationsInSelectedYear.length )+',minmax(80px,1fr))'}">
           <div class="holidays__cell holidays__cell--date holidays__cell--left pos-r">
             <ng-container *ngIf="editMode && holiday.editable">
-              <div [attr.data-index]="i" class="holidays__remove col-warn-400 pointer" svg-fill="currentColor"
-                [svgIcon]="{url:'./assets/icons-sprite-new.svg#remove',w:15}">
-              </div>
+              <svg [attr.data-index]="i" class="holidays__remove col-warn-400 use-svg" symbol="remove" w="15">
+              </svg>
             </ng-container>
             <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
               <ng-container *ngIf="holiday.start_date == holiday.end_date">
@@ -83,8 +82,9 @@
                   {{faHolidayList.controls[i].value.date.end_date | date:'dd-MM-yyyy' }}
                 </ng-container>
               </div>
-              <div class="holidays__calendar-icon" [attr.data-index]="i"
-                [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"></div>
+
+              <svg [attr.data-index]="i" class="holidays__calendar-icon  use-svg" symbol="calendar" w="20">
+              </svg>
               <div
                 *ngIf="(faHolidayList.controls[i].get('date').touched && (faHolidayList.controls[i].get('date').hasError('invalidYear') || faHolidayList.controls[i].get('date').hasError('notUniqueDates') || faHolidayList.controls[i].get('date').hasError('notWeekend'))  )"
                 class="holidays__error">
@@ -158,7 +158,8 @@
 
   <div class="dis-ib mt-15 " *ngIf="editMode">
     <div (click)="addHolidayItem()" class="flex middle-xs center-xs btn-outline ml-10">
-      <div  class=" mr-5" [svgIcon]="{url:'./assets/icons-sprite-new.svg#add-circle',w:14}" svg-fill="currentColor"></div>
+      <svg class=" mr-5 use-svg" symbol="add-circle" w="14" svg-fill="currentColor">
+      </svg>
       Add Holiday
     </div>
   </div>

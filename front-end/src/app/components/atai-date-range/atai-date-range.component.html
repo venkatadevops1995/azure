@@ -4,7 +4,7 @@
       <mat-label>{{label}}</mat-label>
       <input matInput autocomplete="off" #input placeholder="Select Date" [attr.value]="dateMeta.dateString">
     </mat-form-field> 
-    <div (click)="disabled ? null :openDateRangePicker()" class="atai-date-range__calendar-icon pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}"></div>
+    <svg (click)="disabled ? null :openDateRangePicker()" class="atai-date-range__calendar-icon pointer use-svg" symbol="calendar" [w]="20"></svg>
   </div>
 </div>
 <ng-template #calendarTemplate>

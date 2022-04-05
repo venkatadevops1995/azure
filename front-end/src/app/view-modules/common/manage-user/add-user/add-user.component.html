@@ -173,7 +173,7 @@
         <mat-form-field class="custompicker">
           <mat-label>Date of Joining</mat-label> 
           <input  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput  [matDatepicker]="picker" formControlName="doj" (dateChange)="onDate($event)" >
-          <div matSuffix class="pointer" [svgIcon]="{url:'./assets/icons-sprite-new.svg#calendar',w:20}" svg-fill="currentColor" (click)="picker.open()"></div>
+          <svg matSuffix class="use-svg" symbol="calendar" w="20"  (click)="picker.open()"></svg>
           <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker> 
           <mat-error *ngIf="addUserForm.controls.doj.touched ">
             Please select Date of Joining

@@ -1,5 +1,4 @@
-import { ApproveTimesheetsModule } from './../common/approve-timesheets/approve-timesheets.module';
-import { SvgIconModule } from './../../directives/svg-icon/svg-icon.module';
+import { ApproveTimesheetsModule } from './../common/approve-timesheets/approve-timesheets.module'; 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -15,8 +14,7 @@ import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.mod
 import { MatSelectModule } from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
-import { NgCircleProgressModule } from 'ng-circle-progress';
-import { MatIconModule } from '@angular/material/icon';
+import { NgCircleProgressModule } from 'ng-circle-progress'; 
 import { AttendenceSheetModule } from '../common/attendence-sheet/attendence-sheet.module';
 import { ManageProjectModule } from '../common/manage-project/manage-project.module';
 import { LeavePolicyConfigModule } from '../common/leave-policy-config/leave-policy-config.module';
@@ -34,12 +32,12 @@ import { PolicyListModule } from '../common/policy-list/policy-list.module';
 import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-attendance-report.module';
 import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 @NgModule({
   declarations: [EmpL2Component, L2DashboardComponent],
   imports: [
     CommonModule,
-    EmpL2RoutingModule,
-    SvgIconModule,
+    EmpL2RoutingModule, 
     TimesheetViewModule,
     ApproveTimesheetsModule,
     ButtonModule,
@@ -68,7 +66,8 @@ import { DownloadMisModule } from '../common/download-mis/download-mis.module';
     EmpPolicyListModule,
     HrAttendenceReportModule,
     HrTimesheetReportModule,
-    DownloadMisModule
+    DownloadMisModule,
+    UseSvgModule
   ]
 })
 export class EmpL2Module { }

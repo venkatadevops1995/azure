@@ -12,17 +12,21 @@
 
 body {
   --padding-sides: 6.25%;
+  background: #000;
 }
 
 * {
-  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
-  ;
+  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif; 
 }
 
 img {
   max-width: 100%;
 }
  
+/* svg icons */
+.use-svg{
+  cursor: pointer;
+}
 
 .btn-outline {
   cursor: pointer;

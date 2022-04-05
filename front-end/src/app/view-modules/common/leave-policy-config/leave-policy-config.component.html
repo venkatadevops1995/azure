@@ -1,4 +1,4 @@
-<div> 
+<div>
   <div>
     <div class="policy-grid-wrap">
       <div class="policy-grid-left-header pr-5" [ngStyle]="{'grid-template-rows':'50px 1fr'}">
@@ -44,18 +44,15 @@
 
               <div class="policy-grid-cell action">
 
-                <div class="policy-grid-edit-icon col-primary-200 pointer"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#edit',w:20}" [attr.data-index]="i"
+                <svg class="policy-grid-edit-icon col-primary-200 use-svg" symbol="edit" w="20" [attr.data-index]="i"
                   [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="!leaveCredit?.edit" svg-fill="currentColor">
-                </div>
+                </svg>
 
-                <div class="policy-grid-save-button pointer"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#tick-circle',w:17}" [attr.data-index]="i"
-                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></div>
+                <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="17" [attr.data-index]="i"
+                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
-                <div class="policy-grid-close-icon pointer ml-5" svg-fill="none"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:20}" [attr.data-index]="i"
-                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></div>
+                <svg class="policy-grid-close-icon use-svg ml-5" symbol="circle-close-red" w="20" [attr.data-index]="i"
+                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
               </div>
             </ng-container>
@@ -91,18 +88,16 @@
               </ng-container>
               <div class="policy-grid-cell action">
 
-                <div class="policy-grid-edit-icon col-primary-200 pointer"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#edit',w:20}" [attr.data-index]="i"
+                <svg class="policy-grid-edit-icon col-primary-200 use-svg" symbol="edit" w="20" [attr.data-index]="i"
                   [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="!leaveCredit?.edit" svg-fill="currentColor">
-                </div>
+                </svg>
 
-                <div class="policy-grid-save-button pointer"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#tick-circle',w:17}" [attr.data-index]="i"
-                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></div>
+                <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="17" [attr.data-index]="i"
+                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
-                <div class="policy-grid-close-icon pointer ml-5" svg-fill="none"
-                  [svgIcon]="{url:'./assets/icons-sprite-new.svg#circle-close-red',w:20}" [attr.data-index]="i"
-                  [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></div>
+                <svg class="policy-grid-close-icon use-svg ml-5"   symbol="circle-close-red" w="20"
+                  [attr.data-index]="i" [attr.data-emp-type-id]="leaveCredit.category_id"
+                  *ngIf="leaveCredit?.edit"></svg>
               </div>
             </ng-container>
           </ng-container>

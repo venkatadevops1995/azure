@@ -67,15 +67,15 @@ export class SvgIconDirective {
 
     if (this.ss.svg.indexOf(SvgUrl) === -1) {
       this.ss.svg.push(SvgUrl);
-      this.http.get(SvgUrl, { responseType: "text" }).subscribe(res => {
-        let svg = res;
-        index = this.ss.svg.indexOf(SvgUrl);
-        this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
-          "beforeEnd",
-          svg
-        );
-        this.appendSVG(input, symbol);
-      });
+      // this.http.get(SvgUrl, { responseType: "text" }).subscribe(res => {
+      //   let svg = res;
+      //   index = this.ss.svg.indexOf(SvgUrl);
+      //   this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
+      //     "beforeEnd",
+      //     svg
+      //   );
+      //   this.appendSVG(input, symbol);
+      // });
     } else {
       var that_this = this;
       setTimeout(function () {
@@ -103,7 +103,7 @@ export class SvgIconDirective {
       ? svgNS.setAttribute("viewBox", vB)
       : svgNS.setAttribute("viewBox", "0 0 10 10");
 
-    // if the element to which the direct has properties assigned to it with prefix svg assign them to svg element
+    // if the element to which the direct has properties assigned to it with prefix svg assign them to svg element 
     Array.prototype.slice
       .call(this.element.nativeElement.attributes)
       .forEach(function (item) {
