@@ -157,7 +157,8 @@ input::placeholder {
 
 ::-webkit-scrollbar {
   width: 5px;
-  height: 7px; 
+  height: 7px;
+
   position: relative;
   right: -20px;
 }
@@ -184,7 +185,8 @@ input::placeholder {
 ::-webkit-scrollbar-track {
   background: var(--col-primary-900);
   border: 0px none #ffffff;
-  border-radius: 50px; 
+  border-radius: 50px;
+
 }
 
 
