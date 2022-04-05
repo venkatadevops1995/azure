@@ -402,9 +402,15 @@ mat-dialog-container.mat-dialog-container {
 .pl-table-50 {
   padding-left: 50px !important;
 }
-
+// @use '../src/assets/scss/breakpoints' as bp;
 //*******************************************************
-
+//adding class to give padding in every celll of the table in order to clearly distinguise the column
+.p-table-5{
+  // padding: 0 5px 0 5px!important;
+  // @media (max-width:bp.$xmd){
+    padding: 5px !important;
+  // }
+}
 /* apply inter font size */
 
 // input.mat-input-element,
