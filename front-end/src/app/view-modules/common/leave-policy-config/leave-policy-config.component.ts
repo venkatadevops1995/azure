@@ -6,6 +6,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { cloneDeep, differenceBy, flatten, groupBy, toArray } from 'lodash';
 import * as _ from 'lodash'
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 interface LeaveCredit {
     category_id?: number;
@@ -27,26 +28,20 @@ interface LeaveCreditFromHttp {
 export class LeavePolicyConfigComponent implements OnInit {
 
     // the array to hold the employee types
-    employeeTypes: Array<any> = [
-
-    ];
+    employeeTypes: Array<any> = [];
 
     // length of active employee types 
     employeeTypesAll;
 
     // the array to hold the leave types and other configurations
-    leaveTypes: Array<any> = [
-
-    ]
+    leaveTypes: Array<any> = []
 
     // data related to leave credits emptype and leave type
     // leave credits for different emp types and leave type 
     leaveCredits: { response?: Array<LeaveCreditFromHttp>, data?: Array<LeaveCredit>, inEdit?: Array<LeaveCredit>, inEditCopy?: Array<LeaveCredit>, endPointSave: string } = { data: [], inEdit: [], inEditCopy: [], endPointSave: 'leave-config' }
 
-
     // leave credits for different emp types for first month of a new hire
     leaveCreditsNewHire: { response?: any, data?: Array<LeaveCredit>, inEdit?: Array<LeaveCredit>, inEditCopy?: Array<LeaveCredit>, endPointSave: string } = { data: [], inEdit: [], inEditCopy: [], endPointSave: 'new-hire-leave-config' }
-
 
     // new hire time periods
     newHireTimePeriods: Array<any> = []
@@ -57,11 +52,16 @@ export class LeavePolicyConfigComponent implements OnInit {
     // element ref for the grid for the emp type based leave credit leave policy config
     @ViewChild('refPolicyLeaveCreditNewHire') elNewHireLeaveCreditConfig: ElementRef;
 
+    // is less than the XLG (1350)
+    is_LG_LT = false;
+
     constructor(
         private http: HttpClientService,
-        private ss: SingletonService
+        private ss: SingletonService,
     ) {
-
+        this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(match => {
+            this.is_LG_LT = match.matches
+        })
     }
 
     ngOnInit() {

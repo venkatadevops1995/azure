@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
@@ -46,7 +47,8 @@ export class AppComponent {
     private cdRef: ChangeDetectorRef,
     private user: UserService,
     private router: Router,
-    private http: HttpClientService
+    private http: HttpClientService,
+    private responsive:BreakpointObserver
   ) {
 
   }
@@ -57,6 +59,7 @@ export class AppComponent {
       this.ss.sideBarToggle = val;
       this.isSideBarOpen = this.ss.sideBarToggle 
     })
+    this.ss.responsive = this.responsive;
   }
 
   ngAfterViewInit() {

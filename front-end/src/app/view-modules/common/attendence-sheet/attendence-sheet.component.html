@@ -35,7 +35,7 @@
   <b> Please download the data </b>
 </div>
 
-<div *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
+<div class="w-100 of-auto" *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
   <table mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100 ">
 
     <ng-container matColumnDef="date">

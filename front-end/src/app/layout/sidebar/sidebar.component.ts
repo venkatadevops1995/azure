@@ -50,7 +50,7 @@ export class SidebarComponent implements OnInit {
   toggle: boolean[];
   isReportsAccessable: Boolean = false;
 
-  is_XLG_LT : boolean = false;
+  is_LG_LT : boolean = false;
 
   constructor(
     private ss: SingletonService,
@@ -60,13 +60,13 @@ export class SidebarComponent implements OnInit {
   ) {
 
     this.toggle = this.menu.map(i => false);
-    this.responsive.observe(AtaiBreakPoints.XLG_LT).subscribe(val=>{
+    this.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val=>{
       console.log(val)
-      this.is_XLG_LT = val.matches
+      this.is_LG_LT = val.matches
       if(val.matches){ 
         this.setSidebarStatus(false)
       }
-      console.log(this.is_XLG_LT,this.isSidebarOpen)
+      console.log(this.is_LG_LT,this.isSidebarOpen)
     })
   }
 
@@ -80,7 +80,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     if (this.ss.loggedIn) {
       this.getInitData();
-      if(!this.is_XLG_LT){ 
+      if(!this.is_LG_LT){ 
       }
     }
     this.checkHrAccessForreports();

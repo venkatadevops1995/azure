@@ -11,6 +11,7 @@ import { environment } from '../../../src/environments/environment';
 import { take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 @Injectable({
   providedIn: 'root'
 })
@@ -74,6 +75,9 @@ export class SingletonService {
   leaveFlag:boolean = false;
 
   isSidebarOpen:boolean = false;
+
+  // reference to the breakpoint observer (like a global one)
+  responsive:BreakpointObserver;
 
   constructor(
     private dialog: MatDialog
