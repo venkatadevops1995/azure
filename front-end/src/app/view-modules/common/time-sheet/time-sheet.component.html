@@ -1,11 +1,14 @@
-<div class="timesheet {{mode}}" [class.disable]="disable" *ngIf="showTimeSheet && isTimeSheetResolved;else noTimeSheetData">
+<div class="timesheet {{mode}}" [class.disable]="disable"
+  *ngIf="showTimeSheet && isTimeSheetResolved;else noTimeSheetData">
   <div class="timesheet__overlay">
     <div class="timesheet__weekend-overlay">
 
     </div>
   </div>
   <div *ngIf="showHeader" class="timesheet__head header-gradient">
-    <div class="week">Week {{data?.week_number}}</div>
+    <div class="week">
+      <span class="translate-title-text">Week {{data?.week_number}}</span>
+    </div>
     <div class="timesheet_day" *ngFor="let day of data?.days;">
       <ng-container *ngIf="day != 'Total'">
         <span> {{day | date:'dd'}}</span>&nbsp;
@@ -13,7 +16,7 @@
       </ng-container>
 
       <div class="fw-500" *ngIf="day == 'Total'">{{day}}</div>
-    </div> 
+    </div>
   </div>
 
   <div class="timesheet__wrapper">
@@ -75,7 +78,7 @@
       </div>
       <div class="w-15 flex center-xs middle-xs">
         <div (click)="onClickResolveBtns('view',{empId:data?.emp_id})"
-          class="flex center-xs col col-primary-200 pointer"> 
+          class="flex center-xs col col-primary-200 pointer">
           <svg class="use-svg" symbol="view-details" w="20"></svg>
           <span class="fs-10 mt-5">WSR</span>
         </div>
@@ -88,9 +91,12 @@
   <div class="timesheet__body">
     <div class="timesheet__row" *ngFor="let project of visibleActiveProjects;let i=index;">
       <div class="project">
-        {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
-        {{project?.cumulative?.m | number:'2.' }}] 
-        <svg *ngIf="project.priority != 1 && !disable" [attr.data-index]='i' class="timesheet__row-remove col-warn-500 use-svg"  symbol="remove" w="14"  ></svg>
+        <span class="translate-title-text">
+          {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
+          {{project?.cumulative?.m | number:'2.' }}]
+        </span>
+        <svg *ngIf="project.priority != 1 && !disable" [attr.data-index]='i'
+          class="timesheet__row-remove col-warn-500 use-svg" symbol="remove" w="14"></svg>
       </div>
       <ng-container *ngFor="let day of project?.work_hours;let j=index;">
         <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
@@ -103,13 +109,13 @@
           {{day.h | number:'2.'}} :
           {{day.m | number:'2.'}}
         </div>
-      </ng-container> 
+      </ng-container>
     </div>
     <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
       style="z-index: 1111;">
       <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
-        <div class="flex middle-xs center-xs sel-project__btn btn-outline"> 
-          <svg class=" mr-5 use-svg" symbol="add-circle" w="14" ></svg>
+        <div class="flex middle-xs center-xs sel-project__btn btn-outline">
+          <svg class=" mr-5 use-svg" symbol="add-circle" w="14"></svg>
           Select Project
         </div>
         <div class="sel-project__project-list" *ngIf="showProjectList && hiddenActiveProjects.length > 0">
@@ -131,7 +137,9 @@
 
   <div class="timesheet__row timesheet--misc">
     <div class="misc timesheet__row-title">
-      Miscellaneous
+      <span class="translate-title-text">
+        Miscellaneous
+      </span>
     </div>
     <ng-container *ngFor="let day of data?.MISCELLANEOUS?.work_hours;let i=index;">
       <div *ngIf="day.date != 'Total' && mode != 'resolve-timesheet'">
@@ -146,8 +154,10 @@
   </div>
 
   <div class="timesheet__row timesheet--holi">
-    <div class="holi  timesheet__row-title">
-      Holiday
+    <div class="holi timesheet__row-title">
+      <span class="translate-title-text">
+        Holiday
+      </span>
     </div>
     <ng-container *ngFor="let day of data?.HOLIDAY?.work_hours;let i=index;">
       <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
@@ -164,7 +174,9 @@
 
   <div class="timesheet__row  timesheet--vacation">
     <div class="vacation  timesheet__row-title">
-      Vacation
+      <span class="translate-title-text">
+        Vacation
+      </span>
     </div>
     <ng-container *ngFor="let day of data?.VACATION?.work_hours;let i=index;">
       <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
@@ -185,11 +197,14 @@
 
   <div class="timesheet__row timesheet--total">
     <div class="total  timesheet__row-title">
-      Total Hours
+      <span class="translate-title-text">
+        Total Hours
+      </span>
     </div>
     <ng-container *ngFor="let x of [1,2,3,4,5,6,7];let i=index;">
-      <div class=" total-value {{mode}} " [ngClass]="{'total-value__red':(mode == 'resolve-timesheet' && data['total_highlight'][i])}">
-        {{totalDayTimeMeta[i]?.h | number:'2.'}} : {{totalDayTimeMeta[i]?.m | number:'2.'}} 
+      <div class=" total-value {{mode}} "
+        [ngClass]="{'total-value__red':(mode == 'resolve-timesheet' && data['total_highlight'][i])}">
+        {{totalDayTimeMeta[i]?.h | number:'2.'}} : {{totalDayTimeMeta[i]?.m | number:'2.'}}
         <p class="error-total" *ngIf="totalDayTimeMeta[i]?.showError">The total hours for a day has to be less than
           24.
         </p>
@@ -204,7 +219,9 @@
 
   <div class="timesheet__row timesheet--total">
     <div class="sub-total  timesheet__row-title" style="font-weight: 300;">
-      Project Sub Total
+      <span class="translate-title-text">
+        Project Sub Total
+      </span>
     </div>
     <ng-container *ngFor="let x of [1,2,3,4,5,6,7];let i=index;">
       <div class=" time-value">
@@ -222,7 +239,9 @@
   <div class="pb-5">
     <div class="timesheet__row  timesheet--nethours p-2">
       <div class="nethours timesheet__row-title">
-        Net Working Hours<br><span class="fs-12">(from Access Control)</span>
+        <span class="translate-title-text">
+          Net Working Hours<br><span class="fs-12">(from Access Control)</span>
+        </span>
       </div>
       <ng-container *ngFor="let day of data?.net_working_hours;let i=index;">
         <div *ngIf="day?.date != 'Total'" class="total-value">
@@ -236,7 +255,9 @@
 
     <div class="timesheet__row  timesheet--grosshours p-2">
       <div class="grosshours timesheet__row-title">
-        Gross Working Hours<br><span class="fs-12">(from Access Control)</span>
+        <span class="translate-title-text">
+          Gross Working Hours<br><span class="fs-12">(from Access Control)</span>
+        </span>
       </div>
       <ng-container *ngFor="let day of data?.gross_working_hours;let i=index;">
         <div *ngIf="day?.date != 'Total'" class="total-value">

@@ -11,6 +11,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { ObjectToKVArrayPipe } from 'src/app/pipes/objectToArray.pipe'
 import { KeyValue } from '@angular/common';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 
 @Component({
@@ -48,20 +50,38 @@ export class SidebarComponent implements OnInit {
   toggle: boolean[];
   isReportsAccessable: Boolean = false;
 
+  is_XLG_LT : boolean = false;
+
   constructor(
     private ss: SingletonService,
     private user: UserService,
-    private http: HttpClientService
+    private http: HttpClientService,
+    private responsive:BreakpointObserver
   ) {
 
     this.toggle = this.menu.map(i => false);
+    this.responsive.observe(AtaiBreakPoints.XLG_LT).subscribe(val=>{
+      console.log(val)
+      this.is_XLG_LT = val.matches
+      if(val.matches){ 
+        this.setSidebarStatus(false)
+      }
+      console.log(this.is_XLG_LT,this.isSidebarOpen)
+    })
+  }
+
+  setSidebarStatus(status){
+    this.isSidebarOpen = status;
+    this.ss.sideBarToggle = status;
+    this.ss.sideBarToggle$.next(status)
+
   }
 
   ngOnInit(): void {
     if (this.ss.loggedIn) {
       this.getInitData();
-      this.isSidebarOpen = true;
-      this.ss.isSidebarOpen = true;
+      if(!this.is_XLG_LT){ 
+      }
     }
     this.checkHrAccessForreports();
     this.checkForRejectedTimesheet()
@@ -69,9 +89,7 @@ export class SidebarComponent implements OnInit {
     this.ss.loggedIn$.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe(val => {
       if (val) {
         setTimeout(() => {
-          this.getInitData();
-          this.ss.isSidebarOpen = false;
-          this.isSidebarOpen = false;
+          this.getInitData(); 
         })
       }
     })
@@ -136,8 +154,7 @@ export class SidebarComponent implements OnInit {
   }
 
   onClickMenuToggle() {
-    this.isSidebarOpen = !this.isSidebarOpen; 
-    this.ss.sideBarToggle$.next(this.isSidebarOpen)
+    this.setSidebarStatus(!this.isSidebarOpen); 
   }
 
   // get the initial data once the login is confirmed

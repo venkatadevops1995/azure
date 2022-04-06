@@ -55,7 +55,7 @@ export class AppComponent {
     // this.getDefaultIcons()
     this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
       this.ss.sideBarToggle = val;
-      this.isSideBarOpen = this.ss.sideBarToggle
+      this.isSideBarOpen = this.ss.sideBarToggle 
     })
   }
 

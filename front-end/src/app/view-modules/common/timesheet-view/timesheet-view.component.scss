@@ -3,7 +3,7 @@
   display: block;
   .wsr__sel-project {
     color: #333;
-    position: relative;
+    position: absolute;
     font-weight: 500;
     font-size: 14px;
     display: inline-flex;
@@ -47,7 +47,7 @@
   .wsr__text-area-wrap{
     display: grid;
     grid-template-columns: 60% 1fr;
-    column-gap: 30px;
+    column-gap: 30px; 
   }
   .wsr__project-text {
     width: 100%;
@@ -91,5 +91,15 @@
   }
   ::placeholder{
     font-size: 12px;
+  }
+}
+@media screen  and (max-width:768px){
+  :host{
+    .wsr__text-area-wrap{
+      grid-template-columns: 1fr;
+    }
+    .wsr__sel-project {
+      position: relative;
+    }
   }
 }

@@ -8,7 +8,8 @@ export class TooltipDirective {
   @Input() placement: string;
   @Input() delay: number = 10;
   tooltip : HTMLElement;
-  
+ 
+
   offset = 10;
 
   constructor(private el: ElementRef, private renderer: Renderer2) { }
@@ -34,7 +35,7 @@ export class TooltipDirective {
   hide() {
     this.renderer.removeClass(this.tooltip, 'ng-tooltip-show');
     window.setTimeout(() => {
-      if(this.tooltip){
+      if (this.tooltip) {
         this.renderer.removeChild(document.body, this.tooltip);
         this.tooltip = null;
       }
@@ -42,7 +43,6 @@ export class TooltipDirective {
   }
 
   create() {
-
     this.tooltip = this.renderer.createElement('span');
 
     this.tooltip.innerHTML = this.tooltipTitle
@@ -64,6 +64,7 @@ export class TooltipDirective {
     this.renderer.setStyle(this.tooltip, '-moz-transition', `opacity ${this.delay}ms`);
     this.renderer.setStyle(this.tooltip, '-o-transition', `opacity ${this.delay}ms`);
     this.renderer.setStyle(this.tooltip, 'transition', `opacity ${this.delay}ms`);
+
   }
 
   setPosition() {
@@ -99,7 +100,7 @@ export class TooltipDirective {
       left = hostPos.right + this.offset;
     }
 
-    
+
     this.renderer.setStyle(this.tooltip, 'top', `${top + scrollPos}px`);
     this.renderer.setStyle(this.tooltip, 'left', `${left}px`);
   }

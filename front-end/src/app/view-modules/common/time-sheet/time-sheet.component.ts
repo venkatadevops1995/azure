@@ -1,7 +1,7 @@
 import { TimeSheetService } from './time-sheet.service';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
-import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, HostBinding } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
@@ -9,6 +9,8 @@ import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 interface TimeSheet {
 	week?: number;
@@ -37,7 +39,14 @@ export class TimeSheetComponent implements OnInit {
 	@Input() disable: boolean;
 
 	// disable approve and reject resolution in resolve-timesheet
-	@Input() disableResolution : boolean = true
+	@Input() disableResolution: boolean = true
+
+	// the data passed (from backend)
+	@Input() translateTitle: number = 0;
+
+	@HostBinding('style.--translate-title') get translateTitleGet(){
+		return this.translateTitle+'px';
+	}
 
 	// out put event
 	@Output("evChange") onChange: EventEmitter<any> = new EventEmitter();
@@ -67,7 +76,7 @@ export class TimeSheetComponent implements OnInit {
 	showProjectList: boolean = false;
 
 	// initally before showing timesheet or error message
-	isTimeSheetResolved : boolean = false;
+	isTimeSheetResolved: boolean = false;
 
 	// boolean view token to show hide the whole timesheet based on input data 
 	showTimeSheet: boolean = false;
@@ -104,7 +113,8 @@ export class TimeSheetComponent implements OnInit {
 		private cd: ChangeDetectorRef,
 		private el: ElementRef,
 		private tsService: TimeSheetService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private responsive: BreakpointObserver
 	) {
 		this.fgTimeFields = this.ss.fb.group({
 			active_projects: this.ss.fb.array([]),
@@ -370,11 +380,13 @@ export class TimeSheetComponent implements OnInit {
 			// console.log(this.fgTotalTimeFields.value) 
 		})
 
+		this.responsive.observe(AtaiBreakPoints.MD).subscribe((val) => {
+			console.log(val)
+		})
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
 		let data = changes.data;
-		console.log(data)
 		if (data && data.currentValue != data.previousValue) {
 			let dataValue = data.currentValue;
 			if (dataValue) {

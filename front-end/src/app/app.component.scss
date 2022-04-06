@@ -42,6 +42,7 @@
     left: 0;
     height: calc(100vh - 40px);
     width:var(--sidebar);
+    z-index: 111;
 
   }
 
@@ -53,15 +54,28 @@
   &.is-menu-open { 
     padding-left: 0;
     app-sidebar {
-      left:calc(-1 * var(--sidebar));
+      left:0;
     }
   }
 
 }
 
 .presignin-layout {
-
   main {
     width: 100%;
+  }
+}
+
+@media screen and (max-width:1350px){
+  .layout{
+    padding-left: 0px;
+    app-sidebar {
+      left:calc(-1 * var(--sidebar));
+    }
+    &.is-menu-open{
+      app-sidebar{
+        left: 0;
+      }
+    }
   }
 }

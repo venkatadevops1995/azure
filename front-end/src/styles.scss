@@ -13,6 +13,10 @@
 body {
   --padding-sides: 6.25%;
   background: #000;
+  height: 100vh;
+  overflow: auto;
+  display: block;
+
 }
 
 * {
@@ -169,21 +173,21 @@ input::placeholder {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--col-primary-600);
+  background: var(--col-primary-300);
   border: 0px none #ffffff;
   border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--col-primary-500);
+  background: var(--col-primary-200);
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: var(--col-primary-500);
+  background: var(--col-primary-200);
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--col-primary-900);
+  background: var(--col-primary-700);
   border: 0px none #ffffff;
   border-radius: 50px;
 
