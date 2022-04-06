@@ -4,10 +4,10 @@
 </a> -->
 <!-- (click)="onClickChnagePassword()" -->
 
-<div class="flex  fg-1 " >
-    <div style="flex-grow:0.7;"></div>
-    <app-header-search  *ngIf="leaveFlag == true"></app-header-search>
-    <div style="flex-grow:0.3;"></div>
+<div class="flex  fg-1 ">
+  <div style="flex-grow:0.7;"></div>
+  <app-header-search *ngIf="leaveFlag == true"></app-header-search>
+  <div style="flex-grow:0.3;"></div>
 </div>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
@@ -30,21 +30,33 @@
         <circle *ngIf="com.cnt==1 && com.valid" r="11" cx="13" cy="13" fill="none" stroke="url('#red-compliance')"
           stroke-width="3"></circle>
       </svg>
-      <span *ngIf="com.valid"  >{{com.week}}</span>
+      <span *ngIf="com.valid">{{com.week}}</span>
     </div>
 
   </div>
-  <div  *ngIf="showEmailToggle && leaveFlag == true" class="flex col p-10 center-xs middle-xs ml-15 mr-15">
+  <div *ngIf="showEmailToggle && leaveFlag == true" class="flex col p-10 center-xs middle-xs ml-15 mr-15">
     <span class="fs-13">Emails</span>
     <mat-slide-toggle (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled">
     </mat-slide-toggle>
   </div>
 
-  <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true"> 
+  <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true">
   </div>
-  <app-button theme="red" (click)="logout()"  href="javascript:;">
+  <app-button class="logout" theme="red" (click)="logout()" href="javascript:;">
     Logout
   </app-button>
-</div>
 
- 
+  <div class="logout-icon">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+      <defs>
+        <linearGradient id="red-compliance" gradientTransform="rotate(45)">
+          <stop offset="0%" stop-color="var(--col-warn-500)"></stop>
+          <stop offset="100%" stop-color="var(--col-warn-A400)"></stop>
+        </linearGradient>
+      </defs>
+      <circle r="20" cx="22" cy="22" stroke="url(#red-compliance)" stroke-width="2" style="paint-order: stroke;">
+      </circle>
+    </svg>
+    <svg class="use-svg col-warn-500" symbol="eject" w="20" > </svg>
+  </div>
+</div>

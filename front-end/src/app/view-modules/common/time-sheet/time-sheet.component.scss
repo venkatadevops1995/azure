@@ -94,29 +94,31 @@
     }
   }
 
-  .timesheet__head-name{
+  .timesheet__head-name {
     display: grid;
     grid-template-columns: minmax(150px, 250px) 2fr 6fr;
     position: relative;
     align-items: center;
     justify-items: center;
+
     .dot-red {
-        height: 10px;
-        width: 10px;
-        background-color: var(--col-warn);
-        border-radius: 50%;
-        display: inline-block;
+      height: 10px;
+      width: 10px;
+      background-color: var(--col-warn);
+      border-radius: 50%;
+      display: inline-block;
     }
   }
-  
+
   .timesheet__row {
     >* {
       height: 55px;
       display: flex;
       align-items: center;
     }
-    &.timesheet--sel-project{
-      > *{
+
+    &.timesheet--sel-project {
+      >* {
         height: 0;
       }
     }
@@ -125,29 +127,32 @@
       justify-content: center;
     }
 
-    > .total-row-value{
+    >.total-row-value {
       font-size: 13px;
       font-weight: 700;
-      color:var(--col-primary-100);
-      &.disabled{
-        color:var(--col-primary-500);
+      color: var(--col-primary-100);
+
+      &.disabled {
+        color: var(--col-primary-500);
       }
     }
 
-    > .total-value{
-      font-size: 13px; 
-      color:var(--col-primary-100);
-      &.resolve-timesheet{ 
+    >.total-value {
+      font-size: 13px;
+      color: var(--col-primary-100);
+
+      &.resolve-timesheet {
         font-weight: bold;
-        &.total-value__red{
-          color:var(--col-warn-500);
+
+        &.total-value__red {
+          color: var(--col-warn-500);
         }
       }
     }
 
-    > .time-value{
-      font-size: 13px; 
-      color:var(--col-primary-100);
+    >.time-value {
+      font-size: 13px;
+      color: var(--col-primary-100);
     }
 
 
@@ -180,24 +185,25 @@
       font-size: 13px;
       color: var(--col-primary-300);
       padding: 20px 15px 20px 25px;
-      &.total{
+
+      &.total {
         font-size: 14px;
-        color:var(--on-primary-800);
+        color: var(--on-primary-800);
       }
     }
 
     >.sel-project {
       background: var(--color-quaternary);
-      border: 1px solid var(--color-quaternary); 
-      color:var(--col-primary-100);
+      border: 1px solid var(--color-quaternary);
+      color: var(--col-primary-100);
       position: relative;
       height: 0px;
       position: relative;
 
-      .sel-project__btn{
+      .sel-project__btn {
         position: absolute;
         right: 0;
-        top:-17px; 
+        top: -17px;
       }
 
       &.disabled {
@@ -218,7 +224,7 @@
         overflow: auto;
         z-index: 11;
         font-size: 12px;
-        padding-bottom:10px;
+        padding-bottom: 10px;
 
         div {
           height: auto;
@@ -245,11 +251,11 @@
     >.total {}
 
     >.nethours {
-      display: grid;
+      // display: grid;
     }
 
     >.grosshours {
-      display: grid;
+      // display: grid;
     }
 
   }
@@ -281,5 +287,74 @@
 
   .total-value {
     position: relative;
+  }
+}
+
+@media screen and (max-width:1024px) {
+  :host {
+    --translate-title:0px;
+    .translate-title-text{      
+      display: inline-flex;
+      padding-bottom: 5px;
+      left:var(--translate-title);
+      position: relative;
+    }
+
+    .timesheet__row,
+    .timesheet__head {
+      grid-template-columns: repeat(8, 1fr);
+
+      >div.week {
+        grid-column: span 8;
+        justify-content: flex-start;
+        padding-left: 25px;
+      }
+    }
+
+    .timesheet__row {
+
+      .project,
+      .timesheet__row-title {
+        grid-column: span 8;
+        margin-right: 0;
+        padding:5px 20px 5px 25px;
+        > span {
+          span{
+            margin-left: 10px;
+          }
+        }
+      }
+      .timesheet__row-remove{
+        top:40%;
+      }
+
+      .timesheet__row-title {
+
+      }
+
+      >* {
+        height: 35px;
+      }
+
+      &.timesheet--sel-project {
+        height: 40px;
+
+        >.sel-project {
+          width: 100px;
+
+          .sel-project__btn {
+            top: 10px;
+            left: 20px;
+            right: -25px;
+          }
+
+          .sel-project__project-list {
+            left: 25px;
+            top: calc(100% + 25px);
+            right: auto;
+          }
+        }
+      }
+    }
   }
 }

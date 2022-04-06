@@ -2,7 +2,7 @@
   <div (click)="onClickMenuToggle()" [class.is-menu-open]="isSidebarOpen" class="sidebar__toggle col-primary-200 flex center-xs middle-xs">
     <svg class="use-svg" [attr.fill]="'currentColor'" symbol="angle-right" [w]="15"></svg>
   </div>
-  <div id="sidebar" [class.is-open]="isSidebarOpen" class="sidebar__wrapper">
+  <div id="sidebar" [class.is-menu-open]="isSidebarOpen" class="sidebar__wrapper">
     <div class="sidebar-content">
       <div class="user p-15">
         <div class="user__pic">

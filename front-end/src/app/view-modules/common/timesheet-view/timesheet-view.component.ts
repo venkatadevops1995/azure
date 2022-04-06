@@ -4,12 +4,12 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
 import { TimeSheetComponent } from './../../common/time-sheet/time-sheet.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef, TemplateRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef, TemplateRef, Renderer2 } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import enmTsStatus from 'src/app/enums/timesheet-status.enum';
-import { Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
@@ -41,8 +41,14 @@ export class TimesheetViewComponent implements OnInit {
   @ViewChild('selProject') elSelProject: ElementRef;
 
 
+  @ViewChild('refTimesheetWrap') elTimesheetWrap: ElementRef;
+
+
   // template ref of maanger comments
-  @ViewChild('templateRefManagerComments') templateRefManagerComments:TemplateRef<any>;
+  @ViewChild('templateRefManagerComments') templateRefManagerComments: TemplateRef<any>;
+
+  // unlisten function reference for the time sheet wrap element scroll event
+  unlistenScrollTimesheetWrap: Function = null
 
   // reference to the all zeros in project confirmation modal pop up
   // @ViewChild('refModalProjectAllZeros') modalProjectAllZeros: ModalPopupComponent
@@ -114,13 +120,17 @@ export class TimesheetViewComponent implements OnInit {
   // form controls count in wsr projects active projects
   formControlsCount: number = 0;
 
+  // the translation value to set on scroll so the title look fixed
+  translateTimesheetTitle:number = 0;
+  
+
   constructor(
     private http: HttpClientService,
     private cd: ChangeDetectorRef,
     private ss: SingletonService,
     private router: Router,
     private el: ElementRef,
-    private dialog: MatDialog
+    private dialog: MatDialog 
   ) {
     this.fgWsrProjects = this.ss.fb.group({
       active_projects: this.ss.fb.array([]),
@@ -173,6 +183,14 @@ export class TimesheetViewComponent implements OnInit {
 
     // call after the timeshet type is known
     this.getWeeklyTimeSheetData(true)
+  }
+
+  ngAfterViewInit(){ 
+    fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
+      let target:HTMLElement = e['target'];
+      this.translateTimesheetTitle = target.scrollLeft
+      // console.log(target.scrollLeft,target.scrollWidth)
+    })
   }
 
   ngOnDestroy() {
@@ -281,7 +299,7 @@ export class TimesheetViewComponent implements OnInit {
                 element['work_hours'].push({ date: 'Total', enable: true, h: eleHours, m: eleMins });
               }
             });
-            
+
             if (this.timeSheetType == 'regular') {
               if (this.weeklyTimeSheetData.enableSaveSubmit) {
                 this.disableTimesheet = false;
@@ -339,13 +357,13 @@ export class TimesheetViewComponent implements OnInit {
     // }
   }
 
-  openManagerComments(){
-    let dialogRef = this.dialog.open(PopUpComponent,{
-      data:{
-        heading:'Manager Comments',
-        hideFooterButtons:true,
-        template:this.templateRefManagerComments,
-        maxWidth:'500px'
+  openManagerComments() {
+    let dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Manager Comments',
+        hideFooterButtons: true,
+        template: this.templateRefManagerComments,
+        maxWidth: '500px'
       }
     })
   }

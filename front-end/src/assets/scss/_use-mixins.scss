@@ -21,13 +21,11 @@ $value in breakpoints.$breakpoints {
     @include attr-x('font-size', 'fs-', 60, 1, 'px');
     @include attr-x('font-weight', 'fw-', 7, 100, '');
 
-
     // generate classes .ml-1 to .ml-4 with margin-left values. similar for remaining sides
-    @include attr-x('margin-left', 'ml-', 4, 1, 'px');
-    @include attr-x('margin-right', 'mr-', 4, 1, 'px');
-    @include attr-x('margin-top', 'mt-', 4, 1, 'px');
-    @include attr-x('margin-bottom', 'mb-', 4, 1, 'px');
-
+    @include attr-x('margin-left', 'ml-', 5, 1, 'px',0);
+    @include attr-x('margin-right', 'mr-', 5, 1, 'px',0);
+    @include attr-x('margin-top', 'mt-', 5, 1, 'px',0);
+    @include attr-x('margin-bottom', 'mb-', 5, 1, 'px',0);
 
     // generate classes .ml-5 to .ml-60 with margin-left values. similar for remaining sides
     @include attr-x('margin-left', 'ml-', 12, 5, 'px');
@@ -35,13 +33,12 @@ $value in breakpoints.$breakpoints {
     @include attr-x('margin-top', 'mt-', 12, 5, 'px');
     @include attr-x('margin-bottom', 'mb-', 12, 5, 'px');
 
-
     // generate classes .pl-1 to .pl-4 with padding-left values. similar for remaining sides
-    @include attr-x('padding', 'p-', 4, 1, 'px');
-    @include attr-x('padding-left', 'pl-', 4, 1, 'px');
-    @include attr-x('padding-right', 'pr-', 4, 1, 'px');
-    @include attr-x('padding-top', 'pt-', 4, 1, 'px');
-    @include attr-x('padding-bottom', 'pb-', 4, 1, 'px');
+    @include attr-x('padding', 'p-', 5, 1, 'px',0);
+    @include attr-x('padding-left', 'pl-', 5, 1, 'px',0);
+    @include attr-x('padding-right', 'pr-', 5, 1, 'px',0);
+    @include attr-x('padding-top', 'pt-', 5, 1, 'px',0);
+    @include attr-x('padding-bottom', 'pb-', 5, 1, 'px',0);
 
     // generate classes .pl-5 to .pl-60 with padding-left values. similar for remaining sides
     @include attr-x('padding', 'p-', 12, 5, 'px');
@@ -55,17 +52,17 @@ $value in breakpoints.$breakpoints {
     $min-width: map-get($value, "min-width");
 
     @media screen and (min-width: $min-width) {
+
       @include attr-x('width', 'w-'+$key+'-', 20, 5, '%');
       @include attr-x('border-radius', 'br-'+$key+'-', 4, 5, 'px');
       @include attr-x('font-size', 'fs-'+$key+'-', 60, 1, 'px');
       @include attr-x('font-weight', 'fw-'+$key+'-', 7, 100, '');
 
       // generate classes .ml-1 to .ml-4 with margin-left values. similar for remaining sides
-      @include attr-x('margin-left', 'ml-'+$key+'-', 4, 1, 'px');
-      @include attr-x('margin-right', 'mr-'+$key+'-', 4, 1, 'px');
-      @include attr-x('margin-top', 'mt-'+$key+'-', 4, 1, 'px');
-      @include attr-x('margin-bottom', 'mb-'+$key+'-', 4, 1, 'px');
-
+      @include attr-x('margin-left', 'ml-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('margin-right', 'mr-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('margin-top', 'mt-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('margin-bottom', 'mb-'+$key+'-', 5, 1, 'px',0);
 
       // generate classes .ml-5 to .ml-60 with margin-left values. similar for remaining sides
       @include attr-x('margin-left', 'ml-'+$key+'-', 12, 5, 'px');
@@ -73,13 +70,12 @@ $value in breakpoints.$breakpoints {
       @include attr-x('margin-top', 'mt-'+$key+'-', 12, 5, 'px');
       @include attr-x('margin-bottom', 'mb-'+$key+'-', 12, 5, 'px');
 
-
       // generate classes .pl-1 to .pl-4 with padding-left values. similar for remaining sides
-      @include attr-x('padding', 'p-'+$key+'-', 4, 1, 'px');
-      @include attr-x('padding-left', 'pl-'+$key+'-', 4, 1, 'px');
-      @include attr-x('padding-right', 'pr-'+$key+'-', 4, 1, 'px');
-      @include attr-x('padding-top', 'pt-'+$key+'-', 4, 1, 'px');
-      @include attr-x('padding-bottom', 'pb-'+$key+'-', 4, 1, 'px');
+      @include attr-x('padding', 'p-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('padding-left', 'pl-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('padding-right', 'pr-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('padding-top', 'pt-'+$key+'-', 5, 1, 'px',0);
+      @include attr-x('padding-bottom', 'pb-'+$key+'-', 5, 1, 'px',0);
 
       // generate classes .pl-5 to .pl-60 with padding-left values. similar for remaining sides
       @include attr-x('padding', 'p-'+$key+'-', 12, 5, 'px');

@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
-
+import {LayoutModule} from '@angular/cdk/layout';
 
 
 @NgModule({
@@ -24,7 +24,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     ModalPopupModule,
     MatIconModule,
     ConfirmDialogModule,
-    MatDialogModule
+    MatDialogModule,
+    // LayoutModule
   ],
   exports:[TimeSheetComponent],
   providers:[TimeSheetService]

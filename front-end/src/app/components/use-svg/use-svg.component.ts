@@ -29,7 +29,6 @@ export class UseSvgComponent implements OnInit {
       let symbolSVG = svg.querySelector(
         "symbol#" + this.symbol
       );
-      console.log(this.symbol)
       let vB = symbolSVG.getAttribute("viewBox");
       let vBSplit: any = vB ? vB.split(" ") : [0, 0, 0, 0];
       this.height = (vBSplit[3] * Number(this.w)) / vBSplit[2];
