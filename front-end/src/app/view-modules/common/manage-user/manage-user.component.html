@@ -1,13 +1,13 @@
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
-    <div class="flex middle-xs between-xs" >
+    <div class="flex pb-20 flex-col-xs flex-row-md  between-xs" >
       <h2 class="col--accent-500 fs-24">
         Transfer Employee
       </h2>
-      <div class="flex fs-14 w-50 end-xs middle-xs" style="justify-content:space-evenly;">
+      <div class="flex fs-14 w-md-60 w-xmd-50 middle-xs  end-md ">
 
 
-        <mat-form-field class="w-50 mr-10">
+        <mat-form-field class="no-pb w-50 mr-10">
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
             [(ngModel)]="value">
           <svg matSuffix class="col-primary-300 use-svg" (click)="clear()" symbol="triangle-down" w="8"></svg>
@@ -17,7 +17,7 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <div class="flex end-xs middle-xs" style="margin-top: -25px;">
+        <div class="flex end-xs middle-xs" style="margin-top: -8px;">
           <app-button>Submit
           </app-button>
         </div>
@@ -29,7 +29,10 @@
 </div>
 
 
-
+ <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
+  **********************************************************************
+  ************************************************************ -->
+  <div style="overflow-x: auto;width: 100%;">
 <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
   <ng-container matColumnDef="serial_no">
     <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
@@ -95,6 +98,10 @@
   <tr mat-header-row class="header-gradient" *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+  </div>
+<!-- *****************************************
+  **********************************************************************
+  ************************************************************ -->
 <div *ngIf="USERS_DATA.length==0 && showMessage==true" style="padding-left:20px">
   NO DATA AVAILABLE
 </div>

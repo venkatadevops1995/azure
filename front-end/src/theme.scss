@@ -385,9 +385,9 @@ mat-dialog-container.mat-dialog-container {
 
 // ********************************************************
 // Rahulchange (adding font family for table universal)**********************
-// table.mat-table{
-//   font-family: 'Inter';
-// }
+table.mat-table{
+ min-width:800px;
+}
 // ********************************************************
 
 // File upload component styles ( inside mat form field)

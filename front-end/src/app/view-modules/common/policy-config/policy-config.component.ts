@@ -280,7 +280,7 @@ export class PolicyConfigComponent implements OnInit {
     data: {
       heading: 'Select Employees',
       template:this.selectEmp,
-      maxWidth:'750px',
+      maxWidth:'850px',
       hideFooterButtons: true,
       showCloseButton: true,
       padding_horizontal:false,
@@ -331,7 +331,7 @@ export class PolicyConfigComponent implements OnInit {
       data: {
         heading: 'Selected Employees',
         template:this.selectedEmpPopup,
-        maxWidth:'750px',
+        maxWidth:'850px',
         hideFooterButtons: true,
         showCloseButton: true,
         padding_horizontal:false,

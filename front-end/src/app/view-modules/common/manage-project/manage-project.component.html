@@ -1,11 +1,11 @@
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="search(managerCtrl.value)">
 
-    <div class="flex nowrap middle-xs between-xs">
+    <div class="flex nowrap flex-col-xs flex-row-md  between-xs">
       <h2 class="col-accent-500 fs-24 fw-600">
         Project change
       </h2>
-      <div class="fs-14 flex nowrap w-40">
+      <div class="flex fs-14 w-md-60 w-xmd-50   end-md ">
 
         <mat-form-field class="w-50  mr-30">
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
@@ -47,6 +47,11 @@
         </div>
     </form> -->
 </div>
+
+<!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
+  **********************************************************************
+  ************************************************************ -->
+  <div style="width:100%; overflow-x: auto;">
 <table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0"
   class="mat-elevation-z8 w-100">
   <ng-container matColumnDef="serial_no">
@@ -153,7 +158,10 @@
 
 
 </table>
-
+</div>
+<!-- *****************************************
+  **********************************************************************
+  ************************************************************ -->
 <div *ngIf="EMP_PROJECTS_FILTERED_DATA.length==0 && showMessage == true" class="p-20">
   NO DATA AVAILABLE
 
