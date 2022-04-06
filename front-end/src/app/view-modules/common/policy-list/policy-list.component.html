@@ -4,36 +4,38 @@
     <p class="fs-14">There are no policies available</p>
   </div>
   <div>
+    <!-- Rahulchange(adding a horizontal scroll bar in table)********************************** -->
+    <div style="width:100%;overflow-x: auto;">
     <table mat-table [dataSource]="EMPLOYEE_FILTERED_DATA" *ngIf="EMPLOYEE_FILTERED_DATA.length != 0"
       class="w-100 mat-elevation-z8">
       <ng-container matColumnDef="sno">
-        <th mat-header-cell *matHeaderCellDef>Serial No.</th>
-        <td mat-cell *matCellDef="let element; let i = index">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Serial No.</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element; let i = index">
           {{ i + 1 }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="policy_name">
         <!-- Rahul change ********* -->
-        <th class="table-colum-left" mat-header-cell *matHeaderCellDef>Policy Name</th>
-        <td class="table-colum-left" mat-cell *matCellDef="let element"
+        <th  class="table-colum-left p-table-5" mat-header-cell *matHeaderCellDef>Policy Name</th>
+        <td  class="table-colum-left p-table-5" mat-cell *matCellDef="let element"
           [ngClass]="{ selectedBg: element.selected == true }">
           {{ element.policy_name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updated_date">
-        <th mat-header-cell *matHeaderCellDef>Updated on</th>
-        <td mat-cell *matCellDef="let element" [ngClass]="{ selectedBg: element.selected == true }">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Updated on</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="{ selectedBg: element.selected == true }">
           {{ element.enable_on }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="company">
         <!-- Rahul change ********* -->
-        <th class="w-25 table-colum-left  w-350px" mat-header-cell *matHeaderCellDef>Groups</th>
+        <th class="w-25 table-colum-left  w-350px p-table-5" mat-header-cell *matHeaderCellDef>Groups</th>
         <!-- Rahul change ********* -->
-        <td class="table-colum-left flex w-350px middle-xs " mat-cell *matCellDef="let element">
+        <td  class="table-colum-left flex w-350px middle-xs p-table-5" mat-cell *matCellDef="let element">
 
           <div class="company" *ngFor="let com of element.company_list">
             {{ com.company_name }}
@@ -43,8 +45,8 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="view">
-        <th mat-header-cell *matHeaderCellDef>View</th>
-        <td mat-cell *matCellDef="let element" title="View Policy">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>View</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element" title="View Policy">
           <svg class="ml-5 col-primary-300 use-svg " symbol="view-details" w="20"
             (click)="openPolicyDetails(element.policy_name,element.id)" style=" 
               margin-top: 0px; 
@@ -52,8 +54,8 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef>Edit</th>
-        <td class="pointer" mat-cell *matCellDef="let element" title="Edit Policy">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Edit</th>
+        <td class="pointer p-table-5" mat-cell *matCellDef="let element" title="Edit Policy">
           <!-- Rahul change **************** -->
           <!-- <span
             class="ml-5 material-icons"
@@ -65,8 +67,8 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element" title="Delete Policy">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Delete</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element" title="Delete Policy">
           <svg class="ml-5 use-svg" symbol="delete" w="20" (click)="openDeletePolicy(element.id)" style=" 
               margin-top: 0px; 
             " fill="#FF0000"></svg>
@@ -76,6 +78,8 @@
       <tr mat-header-row *matHeaderRowDef="employeePopupColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: employeePopupColumns"></tr>
     </table>
+  </div>
+  <!-- ********************************************************************************** -->
   </div>
 </div>
 

@@ -7,7 +7,8 @@ export class TooltipDirective {
   @Input('tooltip') tooltipTitle: string;
   @Input() placement: string;
   @Input() delay: number = 10;
-  tooltip: HTMLElement;
+  tooltip : HTMLElement;
+ 
 
   offset = 10;
 
@@ -23,10 +24,11 @@ export class TooltipDirective {
   }
 
   show() {
-    if (this.tooltipTitle.trim()) {
-      this.create();
-      this.setPosition();
-      this.renderer.addClass(this.tooltip, 'ng-tooltip-show');
+    if(this.tooltipTitle.trim())
+    {
+    this.create();
+    this.setPosition();
+    this.renderer.addClass(this.tooltip, 'ng-tooltip-show');
     }
   }
 
