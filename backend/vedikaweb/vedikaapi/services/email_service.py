@@ -365,7 +365,7 @@ class email_service():
             else:
                 log.info("No access to send mail to {}".format(emp_list[0].email))
 
-        manager_ids,manager_emails = email_service.getUniqueManagers(emp_id, True)
+        manager_ids,manager_emails = email_service.getUniqueManagers(emp_id, False)
         if(len(manager_emails)==0):
             log.info("Manager details not available for emp-id:{}, While sending {} email".format(emp_id, mail_type))
         
