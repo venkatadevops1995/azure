@@ -2,12 +2,12 @@
 <!-- <div > -->
 <!-- <div > -->
   <!-- <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-40"> -->
-  <form  [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-lg-30 mt-xmd-30" #f="ngForm">
-    <div class="wrapper col-lg p-lg-55 p-xmd-25">
+  <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-lg-30 mt-xmd-30 mt-20" #f="ngForm">
+    <div   class="wrapper grid-container col-lg p-lg-55 p-xmd-25 p-20">
      
-      <div class="grid-container">
-        <div class="w-lg-100">
-          <mat-form-field class="w-lg-50 w-xmd-50">
+      <!-- <div class="grid-container"> -->
+        <div class="w-100">
+          <mat-form-field class="w-50 ">
             <mat-label>First Name</mat-label>
             <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
             <mat-error
@@ -16,7 +16,7 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field class="w-lg-50 w-xmd-50"> 
+          <mat-form-field class="w-50 "> 
             <mat-label>Last Name</mat-label>
             <input autocomplete="off"  autofocus="off" matInput formControlName="lastName" [(ngModel)]='newUserLastName'>
             <mat-error
@@ -25,6 +25,8 @@
             </mat-error>
           </mat-form-field>
         </div>
+
+
           <mat-form-field>
             <mat-label>Email</mat-label>
             <input autocomplete="off"  autofocus="off" matInput formControlName="email" />
@@ -52,11 +54,11 @@
               Entered Staff No. already exists
             </mat-error>
           </mat-form-field>
-      </div>
+      <!-- </div> -->
 
-      <div class="gap"></div>
+      <!-- <div class="gap"></div> -->
 
-      <div class="grid-container">
+      <!-- <div class="grid-container"> -->
         <!-- <mat-form-field>
           <mat-label>Gender</mat-label>
           <mat-select formControlName="gender">
@@ -81,9 +83,9 @@
             </mat-form-field>
           
              <div class="fs-14" >
-              <mat-label class="mb-lg-5 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
+              <mat-label class="mb-10 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
               <mat-radio-group  formControlName="gender" >
-                <mat-radio-button class="mr-lg-5 mb-lg-5"style="color: var(--col-primary-300);" [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-radio-button>
+                <mat-radio-button class="mr-20 mb-5 ml-5" style="color: var(--col-primary-300);" [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-radio-button>
               </mat-radio-group>
               <mat-error *ngIf="addUserForm.controls.gender.touched && addUserForm.controls.gender.hasError('required')">
                 Please select Gender
@@ -101,16 +103,16 @@
                   Please select Group
                 </mat-error>
               </mat-form-field>
-      </div>
+      <!-- </div> -->
 
-      <div class="gap"></div>
+      <!-- <div class="gap"></div> -->
       
      
 <!-- 
     *****************************************************************************
     ******************************************************************************* -->
 
-      <div class="grid-container">
+      <!-- <div class="grid-container"> -->
         <mat-form-field>
           <mat-label>Category</mat-label>
           <mat-select formControlName="category">
@@ -155,7 +157,7 @@
                       <li  class="mb-lg-5"
                       *ngFor="let role of ROLES;let i=index">
                         <!-- <div class="container"> -->
-                        <label class="container mr-lg-5 " style="color:var(--col-primary-100)"> {{role.name}}
+                        <label class="container mr-10 mb-5 " style="color:var(--col-primary-100)"> {{role.name}}
                           <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
                           <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
                             [checked]="role.selected" [disabled]="role.disabled">
@@ -177,10 +179,10 @@
             Please select Date of Joining
           </mat-error>
         </mat-form-field>
-      </div> 
+      <!-- </div>  -->
  
-        <div class="gap"></div>
-        <div *ngIf="!makeSelfFM" class="grid-container">
+        <!-- <div class="gap"></div> -->
+        <ng-container *ngIf="!makeSelfFM">
           <mat-form-field>
             <mat-label>Functional Owner</mat-label>
             <mat-select formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
@@ -219,7 +221,7 @@
               Please select Reporting Manager
             </mat-error>
           </mat-form-field >
-        </div>
+        </ng-container>
         <!-- <div> -->
      
         <!-- </div> -->
@@ -229,8 +231,8 @@
       <!-- </div> -->
 </div>
       <!-- col has been removed from here ie removed flex-direction colum -->
-        <div class="flex no-lg-wrap center-xmd center-lg mt-xmd-30 mt-lg-40 "mat-dialog-actions>
-          <div  class="pr-lg-20 pr-xmd-20" style="display: inline-block;padding-bottom: 10px;">
+        <div class="flex no-lg-wrap center-xs mt-xmd-30 mt-20 "mat-dialog-actions>
+          <div  class="pr-20" style="display: inline-block;padding-bottom: 10px;">
             <app-button  type="button" theme="grey" (click)="reset()"  >Reset All</app-button>
           </div>
           <div style="padding-bottom: 10px;">

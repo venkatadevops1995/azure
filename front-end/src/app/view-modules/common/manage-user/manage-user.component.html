@@ -1,6 +1,6 @@
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
-    <div class="flex middle-xs" style="justify-content:space-between;">
+    <div class="flex middle-xs between-xs" >
       <h2 class="col--accent-500 fs-24">
         Transfer Employee
       </h2>
@@ -32,36 +32,36 @@
 
 <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
   <ng-container matColumnDef="serial_no">
-    <th mat-header-cell *matHeaderCellDef> S.NO </th>
-    <td mat-cell *matCellDef="let element;let i =index;"
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
+    <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
       [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{i+1}} </td>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let element" [style.cursor]="element.staging_status !== null ? 'pointer': ' '"
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
+    <td class="p-table-5" mat-cell *matCellDef="let element" [style.cursor]="element.staging_status !== null ? 'pointer': ' '"
       title="{{element.staging_status !== null ? 'Employee will be disbled on'+ ' '+element.staging_relieved : ''}}"
       [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{element.emp_name}} </td>
   </ng-container>
 
   <ng-container matColumnDef="staff_no">
-    <th mat-header-cell *matHeaderCellDef>Staff No. </th>
-    <td mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
+    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
       {{element.staff_no}} </td>
   </ng-container>
 
 
   <ng-container matColumnDef="company">
-    <th mat-header-cell *matHeaderCellDef> Group </th>
-    <td mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
+    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
       {{element.company}} </td>
   </ng-container>
 
   <ng-container matColumnDef="reporting_manager">
-    <th mat-header-cell *matHeaderCellDef>Reporting Manager</th>
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef>Reporting Manager</th>
 
 
-    <td mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
 
       <div style="display:inline;">{{element.managers['1']['emp_name']}}</div>
 
@@ -69,15 +69,15 @@
   </ng-container>
 
   <ng-container matColumnDef="managers_manager">
-    <th mat-header-cell *matHeaderCellDef>Manager's Manager</th>
-    <td mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef>Manager's Manager</th>
+    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
       <div style="display:inline;">{{element.managers['2']['emp_name']}}</div>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="functional_manager">
-    <th mat-header-cell *matHeaderCellDef>Functional Owner</th>
-    <td mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef>Functional Owner</th>
+    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
       <div style="display:inline;">{{element.managers['3']['emp_name']}}</div>
     </td>
   </ng-container>
@@ -85,8 +85,8 @@
 
 
   <ng-container matColumnDef="edit">
-    <th mat-header-cell *matHeaderCellDef> Edit</th>
-    <td mat-cell *matCellDef="let element;let i = index"
+    <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
+    <td class="p-table-5" mat-cell *matCellDef="let element;let i = index"
       [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
       <svg class="use-svg col-primary-300" (click)="editManagers(i)" symbol="edit" w="16"></svg>
     </td>
