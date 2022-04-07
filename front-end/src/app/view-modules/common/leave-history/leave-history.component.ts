@@ -108,7 +108,7 @@ export class LeaveHistoryComponent implements OnInit{
   onSubmitResolvedLeaveFilter(e) {
     // console.log("Checked:", e.checked)
     let isFutureLeave= false
-    if(e.checked){
+    if(this.Ischecked){
       isFutureLeave = true
     }else{
       isFutureLeave = false
