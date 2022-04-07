@@ -1494,7 +1494,6 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
             leave_req_dict[eachleaverequest.id]=eachleaverequest
         for key, value in groupby(LEAVES_INFO, key_func):
             value=list(value)
-            print("Key is",key)
             # leave_q_details = LeaveRequest.objects.select_related('emp').filter(id=key,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1]).annotate(
             #     day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
             #         When(leave__day_leave_type='FIRST_HALF', then=0.5),
