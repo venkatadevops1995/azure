@@ -306,7 +306,7 @@ SUPPORT_EMAIL = 'atwork@atai.ai'
 
 IGNORE_ADMIN_EMAILS=[]
 SENDEMAILTOALL=False
-CUSTOM_EMAILS = ['mahab@atai.ai','sravan@atai.ai','moulali@atai.ai','rhitam@atai.ai']
+CUSTOM_EMAILS = ['moulali@atai.ai','dipak@atai.ai']
 
 
 MONTH_CYCLE_START_DATE = 26
