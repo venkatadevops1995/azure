@@ -735,3 +735,19 @@ class ImageRecognigationData(APIView):
         else:
             print("data is not valid ...")
             return Response(utils.StyleRes(False,"Error while save data",),status=StatusCode.HTTP_NOT_ACCEPTABLE)
+
+class ReportRegistartionIssue(APIView):
+    def get(self,request):
+        print("Report for registartion issue:",request.data)
+        return Response(utils.StyleRes(True,"GET Report Data",request.data),200)
+    def post(self,request):
+        print("post data",request.data)
+        return Response(utils.StyleRes(True,"POST Report Data",request.data),200)
+
+class ReportCheckINOutIssue(APIView):
+    def get(self,request):
+        print("Report for Check in out issue:",request.data)
+        return Response(utils.StyleRes(True,"GET Check in out issue Data",request.data),200)
+    def post(self,request):
+        print("post Check in out issue Data ",request.data)
+        return Response(utils.StyleRes(True,"POST Check in out issue Data",request.data),200)
