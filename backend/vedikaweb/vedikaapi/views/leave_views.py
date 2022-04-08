@@ -1452,7 +1452,8 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         else:
             start_and_end_dates = start_date,end_date
         start_and_end_dates = start_date,end_date
-        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=leave_type_filters,leave_request__emp__status=1)
+        leaves = Leave.objects.filter(Q(leave_on__gte=start_and_end_dates[0]) & Q(leave_on__lte=start_and_end_dates[1]) &Q(leave_request__status__in=leave_type_filters) & Q(leave_request__emp__status=1) & (~Q(leave_request__leavediscrepancy__status = 1)))
+
         if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         else:
@@ -1486,6 +1487,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
                 leave_type_name = F("leave_type_id__name"),
                 emp_name = F('emp__emp_name'),
                 emp_staff_no = F('emp__staff_no'),
+                discrepancy_status=F('leavediscrepancy__status')
             )
         leave_req_dict = {}
         for eachleaverequest in leave_q_details_obj:
