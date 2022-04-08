@@ -38,9 +38,11 @@ This Release covers the following features/changes.
     5. HR leave history
         a) Date restriction remove in date filter
         b) Added "Future Leaves Only" filter
+        c) Approved leave "correction" records are not showing
     6. Employee self leave
         a) Apply past leave for last 60 day or upto 1st day of current year(whichever comes first)
         b) apply leave upto the end of current year
+        c) Approved leave "correction" records are not showing
     7. Policy UI changes    
     8. In the Resolve timesheet page added counter
     9. "S.No" column added in Edit employee, Transfer employee and Project change pages (UI) 
