@@ -1,7 +1,7 @@
 <div class="mb-20">
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
 
-    <div class="flex middle-xs " style="justify-content:space-between;">
+    <div class="flex middle-xmd flex-col-xs flex-row-xmd " style="justify-content:space-between;">
       <h2 class="fs-24 fw-600" style="color:var(--col-accent-500)">
         Dashboard
       </h2>
@@ -13,7 +13,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field> -->
-      <div class="flex w-40  end-xs bottom-xs fs-14">
+      <div class="flex w-xmd-50 w-sm-70 w-100  end-xmd start-xs bottom-xs fs-14 mb-20 mb-xmd-0">
 
         <mat-form-field class="w-50 mr-10 no-pb">
           <mat-label>Manager name</mat-label>
@@ -59,78 +59,77 @@
         </div>
       </form> -->
 </div>
-<div style="display: grid;grid-template-columns:repeat(4,1fr);column-gap:35px;row-gap:20px;">
+<div class="row">
   <!-- ****************************** card-1 for emp-l2 in dashboard component*****************************************************************
 ******************************************************************************************************************************************** -->
   <ng-container *ngFor="let week of weekWiseData;let i = index">
-    <div *ngFor="let i of[1,2,3]" class="db-head p-15 pr-40 pl-40 pb-30 "
-      style="box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);">
+    <div class="col-xs-12 col-md-6 col-xmd-4  col-lg-3  mb-30" *ngFor="let i of[1,2,3]">
+      <div  class="db-head w-100 p-15 pr-40 pl-40 pb-30 "
+        style="box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);">
 
-      <div class="fs-20 tac" style="color: var(--color-primary);">
-        <div class="db-head-name mb-11 mt-50">
+        <div class="fs-20 tac" style="color: var(--color-primary);">
+          <div class="db-head-name mb-11 mt-20 mt-md-50">
 
-          Week {{week.work_week}}
+            Week {{week.work_week}}
+          </div>
+          <div class="fs-12 mb-45 col-primary-400">
+            ({{week.week_start | date:'MMMM dd'}} - {{week.week_end | date:'MMMM dd'}})
+          </div>
+
         </div>
-        <div class="fs-12 mb-45 col-primary-400">
-          ({{week.week_start | date:'MMMM dd'}} - {{week.week_end | date:'MMMM dd'}})
-        </div>
-
-      </div>
-      <div class="flex">
-        <div class="flex middle-xs">
-          <svg class=" use-svg col-accent-500" symbol="user" w="17"></svg>
-          <div class="db-total-emp">
-            {{week.emp_cnt}}
+        <div class="flex">
+          <div class="flex middle-xs">
+            <svg class=" use-svg col-accent-500" symbol="user" w="17"></svg>
+            <div class="db-total-emp">
+              {{week.emp_cnt}}
+            </div>
+          </div>
+          <div class="tac middle-xs" style="flex: 1; display: flex; justify-content: end;">
+            <svg class=" use-svg col-accent-500" symbol="watch" w="17"></svg>
+            <div class="db-total-emp">
+              {{week.total_hours}} : {{week.total_mins | number :'2.'}}
+            </div>
           </div>
         </div>
-        <div class="tac middle-xs" style="flex: 1; display: flex; justify-content: end;"> 
-          <svg class=" use-svg" symbol="watch" w="17"></svg>
-          <div class="db-total-emp">
-            {{week.total_hours}} : {{week.total_mins | number :'2.'}}
+        <div class="mt-25 mt-md-55 flex center-xs middle-xs" style="gap:40px;">
+          <div class=" flex center-xs middle-xs" style="height:170px;width:170px;">
+            <circle-progress #cp1 [percent]="getPercentage(week.entry_comp_cnt,week.emp_cnt)" [radius]="100"
+              [outerStrokeWidth]="13" [innerStrokeWidth]="13" [space]="-13" [outerStrokeColor]="'#777777'"
+              [innerStrokeColor]="'#222222'" [unitsFontSize]="'28'" titleColor="#C4C4C4" unitsColor="#C4C4C4"
+              [showSubtitle]="true" subtitle="Entry NC" subtitleFontSize="16" subtitleColor="#555" [animation]="true"
+              [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true" [responsive]="true"
+              [renderOnClick]=false>
+            </circle-progress> 
+          </div>
+          <div class=" flex center-xs middle-xs" style="height:170px;width:170px;">
+            <circle-progress #cp2 [percent]="getPercentage(week.approval_comp_cnt,week.emp_cnt)" [radius]="100"
+              [outerStrokeWidth]="13" [innerStrokeWidth]="13" [space]="-13" [outerStrokeColor]="'#777777'"
+              [innerStrokeColor]="'#222222'" [unitsFontSize]="'28'" titleColor="#C4C4C4" unitsColor="#C4C4C4"
+              [showSubtitle]="true" subtitle=" Approval NC" subtitleFontSize="16" subtitleColor="#555"
+              [animation]="true" [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true"
+              [responsive]="true" [renderOnClick]=false></circle-progress> 
           </div>
         </div>
-      </div>
-      <div class="mt-55 flex center-xs middle-xs" style="gap:40px;">
-        <div class=" flex center-xs middle-xs" style="height:170px;width:170px;">
-          <circle-progress #cp1 [percent]="getPercentage(week.entry_comp_cnt,week.emp_cnt)" [radius]="100"
-            [outerStrokeWidth]="13" [innerStrokeWidth]="13" [space]="-13" [outerStrokeColor]="'#777777'"
-            [innerStrokeColor]="'#222222'" [unitsFontSize]="'28'" titleColor="#C4C4C4" unitsColor="#C4C4C4"
-            [showSubtitle]="true" subtitle="Entry NC" subtitleFontSize="16" subtitleColor="#555" [animation]="true"
-            [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true" [responsive]="true"
-            [renderOnClick]=false>
-          </circle-progress>
-          <!-- <p class="flex center-xs middle-xs center-xs"> <span class="dot mr-5"></span> Entry NC</p> -->
-        </div>
-        <div class=" flex center-xs middle-xs" style="height:170px;width:170px;">
-          <circle-progress #cp2 [percent]="getPercentage(week.approval_comp_cnt,week.emp_cnt)" [radius]="100"
-            [outerStrokeWidth]="13" [innerStrokeWidth]="13" [space]="-13" [outerStrokeColor]="'#777777'"
-            [innerStrokeColor]="'#222222'" [unitsFontSize]="'28'" titleColor="#C4C4C4" unitsColor="#C4C4C4"
-            [showSubtitle]="true" subtitle=" Approval NC" subtitleFontSize="16" subtitleColor="#555" [animation]="true"
-            [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true" [responsive]="true"
-            [renderOnClick]=false></circle-progress>
-          <!-- <p class="flex center-xs middle-xs"> <span class="dot mr-5"></span> Approval NC</p> -->
-        </div>
-      </div>
-      <div style="display: grid;grid-template-columns: repeat(3,1fr);grid-column-gap: 1px;" class="mt-55">
-        <div class="flex middle-xs  fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
-          style="cursor:pointer;flex-direction: column;"
-          [dbdFileDownload]="{endPoint:'downloadwst/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}"> 
-            <svg fill="#9B9B9B" class=" use-svg col-accent-500 ml-5" symbol="download-new" w="20"></svg><span>WTR</span>
-        </div>
+        <div style="display: grid;grid-template-columns: repeat(3,1fr);grid-column-gap: 1px;" class="mt-25 mt-md-55">
+          <div class="flex middle-xs  fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
+            style="cursor:pointer;flex-direction: column;"
+            [dbdFileDownload]="{endPoint:'downloadwst/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
+            <svg fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg><span>WTR</span>
+          </div>
 
-        <div class="flex middle-xs fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
-          style="cursor:pointer;flex-direction: column;"
-          [dbdFileDownload]="{endPoint:'downloadwsr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
-          <svg fill="#9B9B9B" class=" use-svg col-accent-500 ml-5" symbol="download-new" w="20"></svg>WSR
-        </div>
+          <div class="flex middle-xs fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
+            style="cursor:pointer;flex-direction: column;"
+            [dbdFileDownload]="{endPoint:'downloadwsr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
+            <svg fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg>WSR
+          </div>
 
-        <div class="flex middle-xs fg-5 p-5 center-xs fs-14 mr-10 download-bn col-primary-400"
-          style="cursor:pointer;flex-direction: column;"
-          [dbdFileDownload]="{endPoint:'downloadncr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
-          <svg fill="#9B9B9B" class=" use-svg col-accent-500 ml-5 mt-3" symbol="download-new" w="20"></svg>NCR
+          <div class="flex middle-xs fg-5 p-5 center-xs fs-14 mr-10 download-bn col-primary-400"
+            style="cursor:pointer;flex-direction: column;"
+            [dbdFileDownload]="{endPoint:'downloadncr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
+            <svg fill="#9B9B9B" class="use-svg   ml-5 mt-3" symbol="excel-green" w="20"></svg>NCR
+          </div>
         </div>
-      </div>
-      <!-- <div style="display: grid;grid-template-columns: repeat(2,1fr);grid-column-gap: 10px;" class="mt-10">
+        <!-- <div style="display: grid;grid-template-columns: repeat(2,1fr);grid-column-gap: 10px;" class="mt-10">
                 <div class="flex p-10 center-xs fs-18" style="color: #067bca;">Compliance <span
                         [svgIcon]="{url:'./assets/icons-sprite.svg#download',w:15}" style="color:var(--color-tertiary);"
                         svg-fill="currentColor" class="ml-5 mt-3"></span></div>
@@ -139,6 +138,7 @@
                         svg-fill="currentColor" class="ml-5 mt-3"></span></div> 
 
             </div> -->
+      </div>
     </div>
   </ng-container>
   <!-- ************************************************************************************************************************************* -->

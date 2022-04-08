@@ -22,6 +22,11 @@
         *ngIf="fileUpdateForm.controls.file.touched && fileUpdateForm.controls.file.hasError('required')">
         This field is required
       </mat-error>
+
+      <mat-error class="fs-12"
+        *ngIf="fileUpdateForm.controls.file.touched && fileUpdateForm.controls.file.hasError('unAcceptedFile')">
+        Only xlsx format allowed
+      </mat-error>
     </mat-form-field>
     <div class="flex center-xs mt-15">
       <app-button size='small' theme="blue-lite" type="button" (click)="uploadLeaveExcel()"

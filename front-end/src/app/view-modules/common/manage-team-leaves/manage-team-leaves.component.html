@@ -52,7 +52,7 @@
           </ng-container>
 
           <ng-container matColumnDef="view">
-            <th mat-header-cell *matHeaderCellDef> Action</th>
+            <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
             <td mat-cell *matCellDef="let element;let i = index">
               <div class="flex middle-xs center-xs">
                 <!-- <app-button class=" view-leave-details mr-5" title="View Details" type="button" theme="blue-lite"
@@ -145,7 +145,7 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs center-xs">
 
@@ -234,7 +234,7 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs center-xs">
 
@@ -312,7 +312,7 @@
     </ng-container>
 
 
-    <div style="overflow-y: auto;max-height: 450px;" #refTableWrap class="mt-20">
+    <div style="overflow: auto;max-height: 450px;" #refTableWrap class="mt-20">
       <table mat-table [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0"
         class="mat-elevation-z8 w-100">
 
@@ -375,7 +375,7 @@
         </ng-container>
 
         <ng-container matColumnDef="view">
-          <th mat-header-cell *matHeaderCellDef> Action</th>
+          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs center-xs">
               <svg class="col-primary-200  view-leave-details-history use-svg" title="View Details"

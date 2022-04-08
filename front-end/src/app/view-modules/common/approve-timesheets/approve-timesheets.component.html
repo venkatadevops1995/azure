@@ -5,16 +5,16 @@
   <span *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="dot"
     style="background-color: var(--color-warning);"></span>
 </div>
-<div class="pb-20 flex between-xs">
+<div class="pb-20 flex between-xmd flex-col-xs flex-row-xmd">
   <h2 class="heading">Team Timesheets
   </h2>
   <div class="flex bottom-xs">
     <div class="flex center-xs  col-primary-200 fs-12 mr-30">
       <a [dbdFileDownload]="{endPoint:'downloadwst/', responseType:'blob'}" class="flex middle-xs pointer">
-        <svg class="ml-3 mr-10 use-svg" symbol="download" w="20"  ></svg> WTR
+        <svg class="ml-3 mr-10 use-svg" symbol="download" w="20"></svg> WTR
       </a>
       <a [dbdFileDownload]="{endPoint:'downloadwsr/',responseType:'blob'}" class="flex middle-xs mr-50 ml-50 pointer">
-        <svg class="mr-10 use-svg" symbol="download" w="20"  ></svg> WSR
+        <svg class="mr-10 use-svg" symbol="download" w="20"></svg> WSR
       </a>
     </div>
     <form #searchForm="ngForm" [formGroup]="fgSearch">
@@ -30,45 +30,18 @@
       </div>
     </form>
   </div>
-</div>
-<!-- <div class="flex end-xs mb-10">
-    <span class="dot"></span>
-</div> -->
-<!-- <form #searchForm="ngForm" class="mt-30" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch()">
-    <div class="flex " style="max-width:800px;">
-        <mat-form-field class="formField lite" style="flex-grow:1;">
-            <mat-label>Search <sup>*</sup>
-            </mat-label>
-            <input autocomplete="off" matInput type="email" placeholder="Enter username" formControlName="username">
-            <mat-error *ngIf="fgSearch.controls.username.hasError('required')">
-                Please enter a username string
-            </mat-error>
-        </mat-form-field>
-        <div class="flex middle-xs" style="height:60px;">
-            <app-button type="button" theme="black" (click)="searchForm.resetForm()" class=" ml-15">Reset</app-button>
-            <app-button class=" ml-15">Submit</app-button>
-        </div>
-    </div>
-</form> -->
-<div class="timesheet">
-  <!-- <div class="timesheet__overlay">
-    <div class="timesheet__weekend-overlay">
+</div> 
+<div class="timesheet"> 
 
-    </div>
-  </div> -->
-  <!-- {{timesheetsData | json}} -->
-  <!-- <div class="timesheet__head-days header-gradient" *ngIf="timesheetsData.length > 0">
-    <div class="week">Week {{timesheetsData[0]?.week_number}}</div>
-    <div *ngFor="let day of timesheetsData[0]?.days;" >{{day | date:'dd'}}&nbsp;<span>{{day | date:'EEE'}}</span></div>
-    <div class="fw-500">Total</div>
-  </div> -->
-
-  <ng-container *ngFor="let timesheet of timesheetsData;let ts_index=index">
-    <app-time-sheet (event)="onEventEmitTimeSheet($event)" [disable]="!enableFlag" [showHeader]="ts_index == 0"
-      mode="resolve-timesheet" [disable]="true" [disableResolution]="!enableFlag" [data]='timesheet'
-      class="mb-15 dis-blk">
-    </app-time-sheet>
-  </ng-container>
+  <div class="timesheet-wrap w-100" style="overflow-x:auto;" #refTimesheetWrap>
+    <ng-container *ngFor="let timesheet of timesheetsData;let ts_index=index">
+      <app-time-sheet [translateTitle]="translateTimesheetTitle" [ngStyle]="{minWidth:timesheet ? '800px':'auto'}"
+        (event)="onEventEmitTimeSheet($event)" [disable]="!enableFlag" [showHeader]="ts_index == 0"
+        mode="resolve-timesheet" [disable]="true" [disableResolution]="!enableFlag" [data]='timesheet'
+        class="mb-15 dis-blk">
+      </app-time-sheet>
+    </ng-container>
+  </div>
 
 
 </div>
@@ -84,7 +57,7 @@
 
 <ng-template #templateRefRejectTimeSheet>
   <form #commentForm="ngForm" [formGroup]="fgRejectionComments" (ngSubmit)="onSubmitApprove(fgRejectionComments.value)">
-    <textarea  formControlName="comments" class="textarea-black" placeholder="Enter comments *"></textarea>
+    <textarea formControlName="comments" class="textarea-black" placeholder="Enter comments *"></textarea>
     <div class="flex end-xs middle-xs mt-20">
       <app-button [disabled]="!fgRejectionComments?.controls['comments']?.value?.length">Submit
       </app-button>
@@ -100,13 +73,13 @@
         <div *ngFor="let project of data.active_projects;let i=index;">
           <ng-container *ngIf="project.visibilityFlag">
             <div class="resolve-popup__project-name fs-14 mb-15 pl-10">{{project?.project_name}}</div>
-            <textarea disabled class="textarea-black mb-30 ">{{project.work_report}}</textarea>
+            <textarea disabled class="textarea-black mb-30 fs-14 fs-xmd-16 ">{{project.work_report}}</textarea>
           </ng-container>
         </div>
       </div>
       <ng-container *ngIf="data.GENERAL.visibilityFlag">
         <div class="resolve-popup__project-name fs-14 mb-15 pl-10">General</div>
-        <textarea disabled class="textarea-black  ">{{data.GENERAL.work_report}}</textarea>
+        <textarea disabled class="textarea-black fs-14 fs-xmd-16  ">{{data.GENERAL.work_report}}</textarea>
       </ng-container>
     </ng-container>
   </div>

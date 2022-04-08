@@ -6,7 +6,7 @@
     transition: all 1s;   
     box-sizing: border-box; 
     padding: 5px;
-    width: 320px;
+    min-width: 320px;
     cursor: pointer;
 }
  
@@ -38,3 +38,9 @@
 //     background: #06b4e8;
 //     color: #040404;
 // }
+
+@media screen and (max-width:1024px){
+    .header-search-form{
+        min-width:250px;
+    }
+}

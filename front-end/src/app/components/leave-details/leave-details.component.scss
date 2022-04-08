@@ -1,4 +1,4 @@
-:host { 
+:host {
   .abs-image-zoom {
     position: absolute;
     top: 0px;
@@ -59,11 +59,31 @@
     margin: 0px 15px;
     height: 30px;
     line-height: 30px;
-    border:none;
+    border: none;
     outline: none;
     border-bottom: 1px solid var(--col-accent-500);
-    color:#fff;
+    color: #fff;
     text-align: center;
+  }
+}
+
+@media screen and (max-width:1024px) {
+  :host {
+
+    .leave-details {
+      .leave-details__data {
+        grid-template-columns: repeat(2,1fr);
+        .leave-details__single { 
+          margin-bottom: 20px;
+          &.leave-details__single--span-2 {
+            grid-column: initial;
+          }
+          &.leave-details__single--span-4 {
+            grid-column: span 2;
+          }
+        }
+      }
+    }
   }
 }
 

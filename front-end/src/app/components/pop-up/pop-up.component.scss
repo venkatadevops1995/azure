@@ -7,12 +7,12 @@
 
   &.resolve-popup--reject-timesheet {
     max-width: 500px;
-  } 
+  }
 
   .popup__close {
     position: absolute;
     top: 50%;
-    right: 10px; 
+    right: 10px;
     transform: translateY(-50%);
   }
 
@@ -31,20 +31,49 @@
     // overflow: auto;
     position: relative;
   }
-  
+
 }
-.p-v{
-  padding-top:50px;
-  padding-bottom:50px;
+
+.p-v {
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
-.p-h{
-padding-left: 50px;
-padding-right:50px;
+
+.p-h {
+  padding-left: 50px;
+  padding-right: 50px;
 }
+
 .popup {}
-.overflow{
+
+.overflow {
   overflow: auto;
 }
-.mb_30{
+
+.mb_30 {
   margin-bottom: 30px;
+}
+
+@media screen and (max-width:1024px) {
+
+  .p-v {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .p-h {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .popup__heading h2 {
+    font-size: 20px;
+  }
+  :host {
+    .popup__close{
+      position: relative;
+      top: auto;
+      right: 0;
+      transform: none;
+    }
+  }
 }

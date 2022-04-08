@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-md-6">
-        <mat-form-field>
+        <mat-form-field class="w-100">
           <mat-label>Type</mat-label>
           <mat-select formControlName="type">
             <ng-container *ngFor="let type of leaveTypes">
@@ -18,7 +18,7 @@
         </mat-form-field>
       </div>
       <div class="col-md-6" *ngIf="applyForm.controls.type.value?.name == 'Paid'">
-        <mat-form-field>
+        <mat-form-field class="w-100">
           <mat-label>Leave Reason (Optional)</mat-label>
           <mat-select formControlName="reason">
             <mat-option *ngFor="let reason of leaveReasons" [value]="reason">
@@ -48,10 +48,10 @@
 
       <div class=" br-10 p-15 pt-25 pb-25 primary-500" *ngIf="applyForm.controls.category.value == 'Half Day'">
         <div class="row">
-          <div class="col-md-6 ">
+          <div class="col-md-6 flex-col-xs">
             <div class="w-100">
 
-              <mat-form-field appearance="legacy" class=" w-100">
+              <mat-form-field appearance="legacy" class="no-pb w-100">
                 <mat-label>
                   {{applyForm.controls.category.value == 'Multiple Days' ? 'Select start date':'Select date'}}
                 </mat-label>
@@ -71,7 +71,7 @@
               </div>
             </div>
             <mat-radio-group class=" dis-blk mt-5 example-radio-group secondary fs-12" formControlName="half">
-              <mat-radio-button   class="example-radio-button mr-20 button-style" [value]="half"
+              <mat-radio-button   class="example-radio-button mr-5 mr-xmd-20 button-style" [value]="half"
                 *ngFor="let half of leaveHours">
                 {{half | titlecase}} Half
               </mat-radio-button>

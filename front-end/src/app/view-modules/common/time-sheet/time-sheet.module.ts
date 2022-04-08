@@ -12,6 +12,7 @@ import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import {LayoutModule} from '@angular/cdk/layout';
+import { AffixModule } from 'src/app/directives/affix/affix.module';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {LayoutModule} from '@angular/cdk/layout';
     MatIconModule,
     ConfirmDialogModule,
     MatDialogModule,
+    AffixModule
     // LayoutModule
   ],
   exports:[TimeSheetComponent],

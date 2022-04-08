@@ -1,5 +1,5 @@
 <ng-container *ngIf="isPageAccessable;else not_access">
-  <div class="flex fs-14 mb-20 center-xs middle-xs">
+  <div class="flex fs-xmd-14 fs-12 fs-md-13 mb-20 center-xs middle-xs">
     <mat-form-field class=" mr-50 no-pb">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
         [(ngModel)]="value">
@@ -21,16 +21,16 @@
   </div>
 </ng-container>
 <ng-template #not_access>
-  <div>Sorry, You Don't have access to this page</div>
+  <div class="f-14 col-primary-300">Sorry, You Don't have access to this page</div>
 </ng-template>
 
 
 <div class="flex col middle-xs center-xs mt-50 pt-50">
-  <img src="./assets/images/at_work_downloads.png" alt="">
-  <p class="col-primary-400 mt-10 fs-24 fw-700">Download the report</p>
-  <div class="fs-16 col-primary-300 mt-20 flex middle-xs">
-    <svg symbol="exclamation-yellow" w="20" class="mr-10 use-svg"></svg>
-    <span>
+  <img class="img-report" src="./assets/images/at_work_downloads.png" alt="">
+  <p class="col-primary-400 mt-10 fs-md-20 fs-18 fs-xmd-24 fw-700">Download the report</p>
+  <div class="fs-16 col-primary-300 mt-5 mt-md-10 mt-xmd-20 flex middle-xs">
+    <svg symbol="exclamation-yellow" w="25" class="mr-10 use-svg"></svg>
+    <span class="fs-xmd-16 fs-md-14 fs-13">
       {{message}}
     </span>
   </div>

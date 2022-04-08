@@ -11,7 +11,7 @@ export class UseSvgComponent implements OnInit {
   @Input() symbol: string = "";
 
   // the id of the symbol that is to be rendered
-  @Input() w: number | string= 15;
+  @Input() w: number | string = 15;
 
   // the id of the symbol that is to be rendered
   @Input() fill: string = "currentColor";
@@ -21,28 +21,30 @@ export class UseSvgComponent implements OnInit {
 
   height: any = 15
 
-  constructor(private cdRef:ChangeDetectorRef) { }
+  constructor(private cdRef: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     let svg = document.querySelector('app-svg svg');
-    if(svg){
+    if (svg) {
       let symbolSVG = svg.querySelector(
         "symbol#" + this.symbol
       );
-      let vB = symbolSVG.getAttribute("viewBox");
-      let vBSplit: any = vB ? vB.split(" ") : [0, 0, 0, 0];
-      this.height = (vBSplit[3] * Number(this.w)) / vBSplit[2];
-      this.cdRef.detectChanges()
+      if (symbolSVG) {
+        let vB = symbolSVG.getAttribute("viewBox");
+        let vBSplit: any = vB ? vB.split(" ") : [0, 0, 0, 0];
+        this.height = (vBSplit[3] * Number(this.w)) / vBSplit[2];
+        this.cdRef.detectChanges()
+      }
     }
   }
 
-  @HostBinding('attr.width') get widthBind(){
+  @HostBinding('attr.width') get widthBind() {
     return this.w;
   }
 
-  @HostBinding('attr.height') get heightBind(){
+  @HostBinding('attr.height') get heightBind() {
     return this.height;
   }
- 
+
 
 }

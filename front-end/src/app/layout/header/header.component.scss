@@ -86,4 +86,11 @@
   .hr-grid {
     grid-template-columns: 1fr 20px 50px;
   }
+  .l0-grid {
+    // grid-template-columns: 250px 180px 1fr;
+  }
+  
+  .l2-l3-grid {
+    grid-template-columns: 200px 90px 1fr;
+  }
 }

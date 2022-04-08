@@ -1,5 +1,5 @@
 <ng-container *ngIf="isPageAccessable;else not_access">
-  <div class="flex end-xs bottom-xs mb-20 fs-14">
+  <div class="flex fs-xmd-14 fs-12 fs-md-13 mb-20 center-xs middle-xs">
     <mat-form-field class="no-pb mr-30">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
         [(ngModel)]="value">
@@ -27,7 +27,7 @@
     <b> Please download the data </b>
   </div>
 
-  <div *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
+  <div class="w-100 of-x-auto" *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
 
 
     <table mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100">

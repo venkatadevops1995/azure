@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module'; 
 import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { AffixModule } from 'src/app/directives/affix/affix.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     ReactiveFormsModule, 
     AtaiDateRangeModule,
     ToolTipModule,
-    TooltipModule
+    TooltipModule,
+    AffixModule
   ]
 })
 export class AttendenceSheetModule { }
