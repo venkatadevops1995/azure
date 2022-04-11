@@ -51,6 +51,12 @@
 	.flex-row-#{$key}{
 		flex-direction: row ;
 	}
+	.flex-wrap-#{$key}{
+		flex-wrap: wrap ;
+	}
+	.flex-nowrap-#{$key}{
+		flex-wrap: nowrap ;
+	}
 };
 
 @each $key, $value in breakpoints.$breakpoints {

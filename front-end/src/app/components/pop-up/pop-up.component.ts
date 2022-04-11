@@ -1,8 +1,11 @@
 import { Component, HostBinding, Inject, OnInit, Optional, Self, TemplateRef } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subject, take, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { SingletonService } from 'src/app/services/singleton.service';
 
 
-type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth:any,padding_horizontal?:boolean,padding_vertical?:boolean,vertical_scroll:boolean,mb_30:boolean}
+type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth: any, padding_horizontal?: boolean, padding_vertical?: boolean, vertical_scroll: boolean, mb_30: boolean }
 
 @Component({
   selector: 'app-pop-up',
@@ -11,6 +14,8 @@ type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?:
 })
 export class PopUpComponent implements OnInit {
 
+  destroy$ : Subject<any> = new Subject();
+
   // default settings data for the pop up
   defaultData: PopUpData = {
     heading: 'Heading',
@@ -18,23 +23,38 @@ export class PopUpComponent implements OnInit {
     showCloseButton: true,
     maxWidth: '600px',
     template: null,
-    minWidth:'200px',
-    padding_horizontal:true,
-    padding_vertical:true,
-    vertical_scroll:true,
-    mb_30:true
+    minWidth: '200px',
+    padding_horizontal: true,
+    padding_vertical: true,
+    vertical_scroll: true,
+    mb_30: true
   }
 
   /* merged data passed with default data */
   dataMerged: PopUpData = this.defaultData;
 
+  // is medium resolutin in responsive resolutions
+  is_MD : boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: PopUpData,  @Inject(MatDialogRef) public dialogRef) {
-    console.log(data)
+
+  // Rename the property to whatever you want it to be
+  dialogConfig: MatDialogConfig;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: PopUpData, @Inject(MatDialogRef) public dialogRef, private ss: SingletonService) { 
     this.dataMerged = { ...this.defaultData, ...data }
+    this.ss.responsive.observe(AtaiBreakPoints.MD).pipe(takeUntil(this.destroy$)).subscribe(val=>{
+      this.is_MD = val.matches
+    })
   }
 
   ngOnInit(): void {
+    console.dir(`Dialog config: ${this.dialogConfig}`);
+  }
+
+
+  ngOnDestroy(){
+    this.destroy$.next(null)
+    this.destroy$.complete()
   }
 
   @HostBinding('style.max-width') get maxWidth() {

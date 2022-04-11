@@ -152,6 +152,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // mat calendar 
   @ViewChild(MatCalendar) calendar: MatCalendar<any>;
 
+  // dateIconWidth: number = 20;
+
   // for mat
   get value(): any {
     return this._model.selection;
@@ -230,7 +232,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   focused = false;
 
   // boolean to hold if the current width is less than LG (1350px)
-  is_LG_LT : boolean = false;
+  is_LG_LT: boolean = false;
 
   @HostBinding('attr.aria-describedby') describedBy = '';
 
@@ -258,7 +260,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     @Optional() @Self() public override ngControl: NgControl,
     private fm: FocusMonitor,
     private renderer: Renderer2,
-    private responsive:BreakpointObserver
+    private responsive: BreakpointObserver
   ) {
     super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl)
     fm.monitor(el.nativeElement, true).subscribe(origin => {
@@ -291,7 +293,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       })
     }
 
-    this.responsive.observe(AtaiBreakPoints.LG_LT).pipe(takeUntil(this.destroy$)).subscribe(val=>{
+    this.responsive.observe(AtaiBreakPoints.LG_LT).pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.is_LG_LT = val.matches
     })
 
@@ -307,6 +309,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         e.preventDefault();
       })
     }
+    // let svgFontSize = parseInt((getComputedStyle(this.el.nativeElement.querySelector('.use-svg') as any)).fontSize);
+    // this.dateIconWidth = svgFontSize * 1.5;
+    // this.cdRef.detectChanges()
+    // console.log(svgFontSize)
   }
 
   ngDoCheck() {
@@ -545,7 +551,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       .withFlexibleDimensions(false)
       .withPush(false);
 
-      
+
 
     let globalPositionStrategy = this.overlay.position().global().centerHorizontally().centerVertically();
 

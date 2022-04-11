@@ -11,6 +11,7 @@ import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { ReportComponent } from './report.component';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { DownloadReportMessageModule } from 'src/app/components/download-report-message/download-report-message.module';
 
 
 
@@ -30,7 +31,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     UseSvgModule, 
     ReactiveFormsModule,
     TooltipModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    DownloadReportMessageModule
   ]
 })
 export class ReportModule { }

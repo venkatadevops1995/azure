@@ -14,10 +14,10 @@
   </div>
 </div>
 <div>
-  <div *ngIf="isAdmin" style="display: flex;justify-content:space-between;">
+  <div class="flex between-xs mb-20" *ngIf="isAdmin" >
 
     <div style="display: flex;">
-      <mat-form-field style=" max-width: 350px;">
+      <mat-form-field style=" max-width: 150px;" class="no-pb">
         <mat-label>Select Year</mat-label>
         <mat-select (selectionChange)="changeYear($event)" [(ngModel)]="selectedYear">
           <mat-option *ngFor="let year of displayedYear" [value]="year">

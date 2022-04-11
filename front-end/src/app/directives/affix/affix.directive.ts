@@ -55,7 +55,7 @@ export class AffixDirective {
             let offsetHeight = reference.offsetHeight;
             return (offsetHeight < 200 && (reference.offsetTop < (reference.scrollTop + this.win.innerHeight)));
         })).subscribe(e => {
-            console.log('scrolled')
+            // console.log('scrolled')
             if (!this.ataiAffix.disable) {
                 let reference
                 if (this.ataiAffix.referenceElement) {
@@ -78,7 +78,7 @@ export class AffixDirective {
                 let referenceRect = reference.getBoundingClientRect()
                 this.wrapperDiv.style.width = referenceRect.width+'px';
                 this.wrapperDiv.style.overflowX = 'auto'
-                console.log(this.ataiAffix.scrollX)
+                // console.log(this.ataiAffix.scrollX)
                 if(this.ataiAffix.scrollX){
                     this.wrapperDiv.scrollLeft = this.scrollX
                 }

@@ -12,9 +12,10 @@ import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import ValidateEmail from 'src/app/functions/validations/email';
 import { UserService } from 'src/app/services/user.service';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators'; 
+import { Observable, Subject } from 'rxjs';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export function NotNull(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -58,7 +59,7 @@ export interface ProjectData {
 export class ManageUserComponent implements OnInit {
   selected_emp: UserData;
   // Rahul change *******************************
-  @ViewChild("EditManagerDialog") EditManagerDialog : TemplateRef<any>;
+  @ViewChild("EditManagerDialog") EditManagerDialog: TemplateRef<any>;
   // **********************************************
   @ViewChild('addUserDialog') addUserPopup: ModalPopupComponent;
 
@@ -66,21 +67,21 @@ export class ManageUserComponent implements OnInit {
 
   @ViewChild('editManagerDialog') editManagerPopup: ModalPopupComponent;
 
-  @ViewChild('transferEmps') transferEmpPopUp:ModalPopupComponent;
+  @ViewChild('transferEmps') transferEmpPopUp: ModalPopupComponent;
 
-  @ViewChild('updateLeave') updateLeavePopUp:ModalPopupComponent;
+  @ViewChild('updateLeave') updateLeavePopUp: ModalPopupComponent;
 
-  @ViewChild('updateMis') updateMisPopUp:ModalPopupComponent;
+  @ViewChild('updateMis') updateMisPopUp: ModalPopupComponent;
 
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
-  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
+  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
   data: UserData[] = [];
   USERS_DATA: any = [];
   RM_DATA: UserData[] = [];
   MM_DATA: UserData[] = [];
   FM_DATA: UserData[] = [];
   edited_emp_role: any;
-  edited_emp_name:any = ""
+  edited_emp_name: any = ""
   PROJECT_LIST: ProjectData[] = []
   GROUPS_DATA = []
 
@@ -104,16 +105,21 @@ export class ManageUserComponent implements OnInit {
   filteredManagers: Observable<any>;
   //filter for Dashboard
   filterArray = [];
-  is_emp_admin : boolean = false;
-  ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
-  MARITAL_STATUS = [{name:"Married",value:true},{name:"Unmarried",value:false}]
+  is_emp_admin: boolean = false;
+  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }]
+  MARITAL_STATUS = [{ name: "Married", value: true }, { name: "Unmarried", value: false }]
   employeeList: any = [];
 
-  value:any;
+  value: any;
   employeeListSearch: any = [];
   showMessage = false;
-  selectedRoleValue: number=0;
-  PreviousRoleVlaue: number=0;
+  selectedRoleValue: number = 0;
+  PreviousRoleVlaue: number = 0;
+
+  destroy$ : Subject<any> = new Subject();
+
+  // is medium resolution
+  is_MD_LT:boolean = false;
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -121,42 +127,44 @@ export class ManageUserComponent implements OnInit {
     private fb: FormBuilder,
     private datepipe: DatePipe,
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
-    public dialogRef: MatDialogRef<any>,  
-//*****************************************************************************************
+    public dialogRef: MatDialogRef<any>,
+    //*****************************************************************************************
     private user: UserService) {
-      this.fgSearch = this.ss.fb.group({
-        filtervalue: ["", [Validators.required]],
-      }),
+    this.fgSearch = this.ss.fb.group({
+      filtervalue: ["", [Validators.required]],
+    }),
       this.filteredManagers = this.managerCtrl.valueChanges
         .pipe(
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
-     }
-     private filterManagerList(value: string) {
-      const filterValue = value.toLowerCase();
-      return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))
-      // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
-    }
+  }
 
-    clear(){
-      this.managerCtrl.reset();
-      this.managerCtrl.setValue('');
-     }
 
-     // on submitting the search by filter form
-    onSubmitSearch(value?) {
-      console.log(value);
-      console.log(this.USERS_DATA);
-      if(value !="ALL"){
+  private filterManagerList(value: string) {
+    const filterValue = value.toLowerCase();
+    return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))
+    // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  clear() {
+    this.managerCtrl.reset();
+    this.managerCtrl.setValue('');
+  }
+
+  // on submitting the search by filter form
+  onSubmitSearch(value?) {
+    console.log(value);
+    console.log(this.USERS_DATA);
+    if (value != "ALL") {
       const filterValue = value.toLowerCase();
-      this.USERS_DATA =  this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue))
+      this.USERS_DATA = this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue))
       console.log(this.USERS_DATA);
     }
-    else{
+    else {
       this.USERS_DATA = this.employeeList;
     }
-    }
+  }
 
 
 
@@ -173,9 +181,9 @@ export class ManageUserComponent implements OnInit {
     'email': ['', [Validators.required, ValidateEmail]],
     'role': [1, Validators.required],
 
-    'category': ['',Validators.required],
+    'category': ['', Validators.required],
     'doj': ['', [Validators.required, NoDate()]],
-    'gender' : ['',Validators.required],
+    'gender': ['', Validators.required],
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -201,8 +209,8 @@ export class ManageUserComponent implements OnInit {
   })
 
   fileUpdateForm = this.fb.group({
-    'file':['',Validators.required],
-    'password':[]
+    'file': ['', Validators.required],
+    'password': []
   })
 
 
@@ -215,10 +223,14 @@ export class ManageUserComponent implements OnInit {
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     this.getAllReportes();
+    this.ss.responsive.observe([AtaiBreakPoints.MD_LT]).pipe(takeUntil(this.destroy$)).subscribe(val=>{
+      this.is_MD_LT = val.matches
+      console.log(this.is_MD_LT)
+    })
   }
 
-  ngAfterViewInit(){
-    
+  ngOnDestroy() {
+    this.destroy$.complete();
   }
 
 
@@ -237,11 +249,11 @@ export class ManageUserComponent implements OnInit {
         this.USERS_DATA = emp_list;
         this.employeeList = [...this.USERS_DATA]
         let employeeList = [...this.USERS_DATA];
-        this.employeeListSearch.push({emp_id:-1,emp_name:'ALL'});
+        this.employeeListSearch.push({ emp_id: -1, emp_name: 'ALL' });
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
         });
-        
+
         this.showMessage = true;
       } else {
         this.ss.statusMessage.showStatusMessage(false, "error in fetching users");
@@ -250,7 +262,7 @@ export class ManageUserComponent implements OnInit {
     });
 
   }
-  
+
   async getFunOwners() {
 
     this.RM_DATA = [];
@@ -299,24 +311,24 @@ export class ManageUserComponent implements OnInit {
   }
 
 
-  selectRole(selectedRole, is_deselected,onload=true) {
-    
-    
-    if(onload){
+  selectRole(selectedRole, is_deselected, onload = true) {
+
+
+    if (onload) {
       this.PreviousRoleVlaue = this.ROLES[selectedRole].value;
       // console.log(this.PreviousRoleVlaue,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
       this.ROLES[selectedRole].selected = true;
       this.ROLES[selectedRole].disabled = true;
     }
-    else{
+    else {
       is_deselected = is_deselected?.target?.checked;
     }
-    this.selectedRoleValue=selectedRole+1;
+    this.selectedRoleValue = selectedRole + 1;
 
     //setting role in the form
     if (is_deselected == true) {
       this.addUserForm.controls.role.setValue("1");
-      this.selectedRoleValue=this.PreviousRoleVlaue-1;
+      this.selectedRoleValue = this.PreviousRoleVlaue - 1;
     } else {
       this.addUserForm.controls.role.setValue(this.ROLES[selectedRole].value);
     }
@@ -327,17 +339,17 @@ export class ManageUserComponent implements OnInit {
     this.MM_DATA = []
     this.RM_DATA = []
     // console.log(this.PreviousRoleVlaue,"===================>>>>>>>>>>>>",this.ROLES,onload,is_deselected)
-    if(is_deselected){
-      this.selectedRoleValue = selectedRole+1;
-      for(let i=0;i<=selectedRole-1;i++){
+    if (is_deselected) {
+      this.selectedRoleValue = selectedRole + 1;
+      for (let i = 0; i <= selectedRole - 1; i++) {
         this.ROLES[i].selected = true;
         this.ROLES[i].disabled = true;
       }
     }
-    else{
-      this.selectedRoleValue=this.PreviousRoleVlaue;
+    else {
+      this.selectedRoleValue = this.PreviousRoleVlaue;
       // console.log(selectedRole,this.PreviousRoleVlaue,"%%%%%%%%%%%%")
-      for(let i=selectedRole-1;i>this.PreviousRoleVlaue-1;i--){
+      for (let i = selectedRole - 1; i > this.PreviousRoleVlaue - 1; i--) {
         this.ROLES[i].selected = false;
         this.ROLES[i].disabled = false;
       }
@@ -360,16 +372,16 @@ export class ManageUserComponent implements OnInit {
     //   }
     // }
     // }
-    
+
     // this.ROLES[selectedRole].selected = !this.ROLES[selectedRole].selected;
-    
+
 
 
 
     this.makeSelfFM = this.ROLES[3].disabled;
     this.makeSelfMM = this.ROLES[2].disabled;
     this.makeSelfRM = this.ROLES[1].disabled;
-    console.log(this.makeSelfFM,this.ROLES,selectedRole)
+    console.log(this.makeSelfFM, this.ROLES, selectedRole)
     // if (this.makeSelfFM) {
     //   // this.addUserForm.controls.fun_own.setValue('Self (' + this.newUserFirstName + ' ' + this.newUserLastName + ')');
     //   this.addUserForm.controls.fun_own.setValue(0);
@@ -467,7 +479,7 @@ export class ManageUserComponent implements OnInit {
 
     formData.append('email', this.addUserForm.controls.email.value);
     formData.append('role', this.addUserForm.controls.role.value);
-    
+
     formData.append('category', this.addUserForm.controls.category.value);
     formData.append('gender', this.addUserForm.controls.gender.value);
     formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value.startDate._d, 'yyyy-MM-dd'));
@@ -505,11 +517,11 @@ export class ManageUserComponent implements OnInit {
 
 
   }
-  onMaritalStatusChange(){
-    if(this.addUserForm.controls.is_married.value==false){
-    this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
+  onMaritalStatusChange() {
+    if (this.addUserForm.controls.is_married.value == false) {
+      this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
     }
-}
+  }
 
   getCategories() {
     let category = []
@@ -525,58 +537,58 @@ export class ManageUserComponent implements OnInit {
 
   async editManagers(i) {
     this.editableItem.setValue('manager');
-    this.ROLES=cloneDeep(this.ATWORK_ROLES)
-    this.selectRole(this.USERS_DATA[i]['role']-1,true);
-    if(this.user_role_id===4 ||  this.is_emp_admin==true){
+    this.ROLES = cloneDeep(this.ATWORK_ROLES)
+    this.selectRole(this.USERS_DATA[i]['role'] - 1, true);
+    if (this.user_role_id === 4 || this.is_emp_admin == true) {
       await this.getFunOwners();
     }
-    else{
-      this.FM_DATA = [ this.USERS_DATA[i].managers['3']];
+    else {
+      this.FM_DATA = [this.USERS_DATA[i].managers['3']];
     }
-    
+
     // this.editManagerPopup.open();
-  //Rahul chaange  opening EditManagerDialog on clicking edit icon
-      this.dialogRef = this.dialog.open(PopUpComponent, {
-        data: {
-          heading: 'Transfer',
-          template:this.EditManagerDialog,
-          maxWidth:'420px',
-          hideFooterButtons: true,
-          showCloseButton: true,
-        },
-        autoFocus: false,
-      })
-/////////////////////////////////////
+    //Rahul chaange  opening EditManagerDialog on clicking edit icon
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Transfer',
+        template: this.EditManagerDialog,
+        maxWidth: '420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+      },
+      autoFocus: false,
+    })
+    /////////////////////////////////////
     this.edited_emp_name = this.USERS_DATA[i].emp_name
-    console.log(this.edited_emp_name,this.USERS_DATA[i].emp_name.value)
-    this.changeRoleForm.controls.emp_id.setValue(this.USERS_DATA[i].emp_id); 
+    console.log(this.edited_emp_name, this.USERS_DATA[i].emp_name.value)
+    this.changeRoleForm.controls.emp_id.setValue(this.USERS_DATA[i].emp_id);
     this.changeRoleForm.controls.role_id.setValue(this.USERS_DATA[i].role)
     this.editManagerForm.controls.emp_id.setValue(this.USERS_DATA[i].emp_id);
     this.edited_emp_role = this.USERS_DATA[i].role;
-    
+
     // if (this.USERS_DATA[i]['staged_managers']['3'] !== undefined) {
     //   this.editManagerForm.controls.fun_own.setValue(this.USERS_DATA[i]['staged_managers']['3'].emp_id);
     // } else {
-      this.editManagerForm.controls.fun_own.setValue(this.USERS_DATA[i].managers['3'].emp_id);
+    this.editManagerForm.controls.fun_own.setValue(this.USERS_DATA[i].managers['3'].emp_id);
     // }
-    if(this.user_role_id>2 ||  this.is_emp_admin==true){
-    this.changeFM( this.USERS_DATA[i].managers['3'].emp_id, this.edited_emp_role);
-    }else{
-      this.MM_DATA =  [this.USERS_DATA[i].managers['2']];
+    if (this.user_role_id > 2 || this.is_emp_admin == true) {
+      this.changeFM(this.USERS_DATA[i].managers['3'].emp_id, this.edited_emp_role);
+    } else {
+      this.MM_DATA = [this.USERS_DATA[i].managers['2']];
     }
     // if (this.USERS_DATA[i]['staged_managers']['2'] !== undefined) {
     //   this.editManagerForm.controls.man_manager.setValue(this.USERS_DATA[i]['staged_managers']['2'].emp_id);
     // } else {
-      this.editManagerForm.controls.man_manager.setValue(this.USERS_DATA[i].managers['2'].emp_id);
+    this.editManagerForm.controls.man_manager.setValue(this.USERS_DATA[i].managers['2'].emp_id);
     // }
     this.changeMM(this.USERS_DATA[i].managers['2'].emp_id, this.edited_emp_role);
 
     // if (this.USERS_DATA[i]['staged_managers']['1'] !== undefined) {
     //   this.editManagerForm.controls.rep_manager.setValue(this.USERS_DATA[i]['staged_managers']['1'].emp_id);
     // } else {
-      this.editManagerForm.controls.rep_manager.setValue(this.USERS_DATA[i].managers['1'].emp_id);
+    this.editManagerForm.controls.rep_manager.setValue(this.USERS_DATA[i].managers['1'].emp_id);
     // }
-    console.log("---------edit value----------",this.editManagerForm.value)
+    console.log("---------edit value----------", this.editManagerForm.value)
 
 
 
@@ -585,9 +597,9 @@ export class ManageUserComponent implements OnInit {
 
 
   }
-  
+
   updateManager() {
-   
+
     this.http.request('post', 'emp-mgr/', '', this.editManagerForm.value).subscribe(res => {
 
       if (res.status == 200) {
@@ -598,7 +610,7 @@ export class ManageUserComponent implements OnInit {
         this.dialogRef.close()
         //*************************************************************************** 
         this.getAllReportes();
-        
+
       } else {
         this.ss.statusMessage.showStatusMessage(false, "Issue while updating managers")
       }
@@ -663,26 +675,26 @@ export class ManageUserComponent implements OnInit {
     })
   }
 
-  async getEffectedEmpList(){
+  async getEffectedEmpList() {
     let emp = this.changeRoleForm.controls.emp_id.value;
-    
+
     this.effected_emp_count = 0
-    let res= await this.http.request('get','transfer-emp','emp_id='+emp).toPromise();
+    let res = await this.http.request('get', 'transfer-emp', 'emp_id=' + emp).toPromise();
     let emp_list = []
-     res.body["results"].forEach(e=>{
+    res.body["results"].forEach(e => {
       emp_list.push(e["emp_name"])
-     })
-     this.effected_emp_count  = emp_list.length
-     return emp_list
+    })
+    this.effected_emp_count = emp_list.length
+    return emp_list
   }
-  async openTransferEmp(){
+  async openTransferEmp() {
     // await this.getEffectedEmpList(this.editManagerForm.controls.emp_id.value)
     this.newUserRoleValue = this.changeRoleForm.controls.role_id.value;
     this.transferEmpForm.controls.emp_id.setValue(this.editManagerForm.controls.emp_id.value);
     this.transferEmpPopUp.open();
   }
-  transferEmp(){
-    console.log("===========",this.transferEmpForm.value)
+  transferEmp() {
+    console.log("===========", this.transferEmpForm.value)
     this.http.request('post', 'transfer-emp/', '', this.transferEmpForm.value).subscribe(res => {
 
       if (res.status == 200) {
@@ -694,10 +706,10 @@ export class ManageUserComponent implements OnInit {
       }
     })
   }
-  changeRole(){
+  changeRole() {
     this.changeRoleForm.controls.role_id.setValue(this.selectedRoleValue);
     console.log(this.changeRoleForm.value)
-    console.log("----------role---change",this.changeRoleForm.value,this.addUserForm.controls.role)
+    console.log("----------role---change", this.changeRoleForm.value, this.addUserForm.controls.role)
 
     this.http.request('post', 'change-role/', '', this.changeRoleForm.value).subscribe(res => {
 
@@ -712,7 +724,7 @@ export class ManageUserComponent implements OnInit {
     })
   }
 
-  openLeavePopup(){
+  openLeavePopup() {
     this.updateLeavePopUp.open()
     this.fileUpdateForm.reset()
     this.fileUpdateForm.controls["password"].setValidators(null);
@@ -721,12 +733,12 @@ export class ManageUserComponent implements OnInit {
 
 
 
-  uploadLeaveExcel(){
+  uploadLeaveExcel() {
 
     var data = new FormData();
-    data.append("file",this.fileUpdateForm.controls.file.value)
+    data.append("file", this.fileUpdateForm.controls.file.value)
 
-    this.http.request('post', 'leave/config/export-emp-leave/', '',data ).subscribe(res => {
+    this.http.request('post', 'leave/config/export-emp-leave/', '', data).subscribe(res => {
 
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, "Leaves have been imported successfully");
@@ -735,11 +747,11 @@ export class ManageUserComponent implements OnInit {
         this.ss.statusMessage.showStatusMessage(false, "Issue while importing leaves");
       }
     })
-    
+
   }
 
-  openMisPopup(){
-    
+  openMisPopup() {
+
     this.fileUpdateForm.reset()
     this.fileUpdateForm.controls["password"].setValidators(Validators.required);
     this.fileUpdateForm.controls["password"].updateValueAndValidity()
@@ -748,13 +760,13 @@ export class ManageUserComponent implements OnInit {
 
 
 
-  uploadMis(){
+  uploadMis() {
 
     var data = new FormData();
-    data.append("file",this.fileUpdateForm.controls.file.value)
-    data.append("api_key",this.fileUpdateForm.controls.password.value)
+    data.append("file", this.fileUpdateForm.controls.file.value)
+    data.append("api_key", this.fileUpdateForm.controls.password.value)
 
-    this.http.request('post', 'mis-upload/', '',data ).subscribe(res => {
+    this.http.request('post', 'mis-upload/', '', data).subscribe(res => {
 
       if (res.status == 200) {
         this.ss.statusMessage.showStatusMessage(true, "Mis has been imported successfully");
@@ -763,7 +775,7 @@ export class ManageUserComponent implements OnInit {
         this.ss.statusMessage.showStatusMessage(false, "Issue while importing Mis");
       }
     })
-    
+
   }
 
 }

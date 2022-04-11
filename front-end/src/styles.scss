@@ -60,36 +60,6 @@ img {
   color: var(--col-primary-100);
 }
 
-/* in apply leave pop  up the tabs content need not be shown */
-.apply-leave {
-  .mat-tab-body-wrapper {
-    display: none;
-  }
-
-  .mat-tab-header {
-    border-bottom: none;
-  }
-
-  .mat-tab-group.mat-accent .mat-ink-bar,
-  .mat-tab-nav-bar.mat-accent .mat-ink-bar {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, var(--col-accent-700) 29%, var(--col-accent-500) 31%, var(--col-accent-300) 50%, var(--col-accent-500) 70%, var(--col-accent-700) 72%, rgba(0, 0, 0, 0) 100%);
-
-  }
-
-  .mat-ink-bar {
-    height: 3px;
-  }
-
-  .mat-tab-label {
-    flex-grow: 1;
-  }
-
-  .slide-anim {
-    height: 0px;
-    overflow: hidden;
-  }
-
-}
 
 
 .ng-tooltip {

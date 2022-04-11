@@ -1,8 +1,8 @@
 <ng-container *ngIf="isPageAccessable;else not_access">
-  <div class="flex fs-xmd-14 fs-12 fs-md-13 mb-20 center-xs middle-xs">
-    <mat-form-field class=" mr-50 no-pb">
+  <div class="flex fs-xmd-14 fs-12 fs-md-13 flex-col-xs flex-row-md mb-20 center-xs middle-xs">
+    <mat-form-field  style="min-width:200px;" class="mr-0 mr-md-50 no-pb">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
-        [(ngModel)]="value">
+        [(ngModel)]="value" />
       <svg matSuffix class="col-primary-300 use-svg" (click)="clear()" symbol="triangle-down" w="8"></svg>
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)='selectEmp($event.option.value)'>
         <mat-option *ngFor="let emp of filteredManagers | async" [value]="emp['emp_name']">
@@ -11,11 +11,11 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field style="flex-basis:200px;" appearance="legacy" class="no-pb atai-date-range">
+    <mat-form-field style="min-width:200px;" appearance="legacy" class="no-pb atai-date-range mt-15 mt-md-0">
       <app-atai-date-range [presets]="datePickerPresets" [maxDate]="maxDate" (dateSelected)="onDateSelection($event)">
       </app-atai-date-range>
     </mat-form-field>
-    <svg class="export_icon ml-50 use-svg" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
+    <svg class="export_icon ml-50 mt-15 mt-md-0 use-svg" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
       symbol="excel-green" w="25">
     </svg>
   </div>
@@ -23,15 +23,5 @@
 <ng-template #not_access>
   <div class="f-14 col-primary-300">Sorry, You Don't have access to this page</div>
 </ng-template>
-
-
-<div class="flex col middle-xs center-xs mt-50 pt-50">
-  <img class="img-report" src="./assets/images/at_work_downloads.png" alt="">
-  <p class="col-primary-400 mt-10 fs-md-20 fs-18 fs-xmd-24 fw-700">Download the report</p>
-  <div class="fs-16 col-primary-300 mt-5 mt-md-10 mt-xmd-20 flex middle-xs">
-    <svg symbol="exclamation-yellow" w="25" class="mr-10 use-svg"></svg>
-    <span class="fs-xmd-16 fs-md-14 fs-13">
-      {{message}}
-    </span>
-  </div>
-</div>
+ 
+<app-download-report-message [message]="message"></app-download-report-message>

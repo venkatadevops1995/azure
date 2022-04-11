@@ -77,3 +77,18 @@
     }
   }
 }
+@media screen and (max-width:550px) {
+  :host{
+    width:90vw;
+  }
+  .p-v {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .p-h {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+}

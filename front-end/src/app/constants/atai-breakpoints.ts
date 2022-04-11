@@ -8,4 +8,5 @@ export const AtaiBreakPoints = {
     XXLG: '(min-width:1651px)',
     LG_LT: '(max-width:1350px)',
     XMD_LT: '(max-width:1024px)',
+    MD_LT: '(max-width:768px)',
 }

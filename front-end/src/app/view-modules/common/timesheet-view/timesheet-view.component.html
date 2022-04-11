@@ -17,7 +17,7 @@
 </div>
 
 <div *ngIf="showWsr" class="wsr mt-30" [formGroup]="fgWsrProjects">
-  <h2 class="heading flex middle-sm between-sm">Weekly Status Report
+  <h2 class="heading flex middle-sm flex-col-xs flex-row-sm between-sm">Weekly Status Report
     <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p>
   </h2>
   <div class="wsr__text-area-wrap pb-md-50">
