@@ -2,19 +2,23 @@
   <div>
     <div class="policy-grid-wrap">
       <ng-container *ngIf="is_LG_LT;">
-        <div class="flex">
-          <ng-container [ngTemplateOutlet]="templateEmployeeType"></ng-container>
-          <ng-container [ngTemplateOutlet]="templateLeaveCreditDefault"></ng-container>
+        <div style="overflow-x:auto;overflow-y:hidden;" #refLeaveCreditContainer>
+          <div class="flex policy-min-width  mt-60 " >
+            <ng-container *ngTemplateOutlet="templateEmployeeType;context:translateLeaveCredit;"></ng-container>
+            <ng-container [ngTemplateOutlet]="templateLeaveCreditDefault"></ng-container>
+          </div>
         </div>
-        <div class="flex mt-60 pt-60">
-          <ng-container [ngTemplateOutlet]="templateEmployeeType"></ng-container>
-          <ng-container [ngTemplateOutlet]="templateLeaveCreditNewHire"></ng-container>
+        <div style="overflow-x:auto;overflow-y:hidden;"  #refNewHireContainer>
+          <div class="flex mt-60 pt-60 policy-min-width">
+            <ng-container *ngTemplateOutlet="templateEmployeeType;context:translateNewHire;"></ng-container>
+            <ng-container [ngTemplateOutlet]="templateLeaveCreditNewHire"></ng-container>
+          </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="!is_LG_LT;">
-        <ng-container [ngTemplateOutlet]="templateEmployeeType"></ng-container>
-        <ng-container [ngTemplateOutlet]="templateLeaveCreditDefault"></ng-container>
-        <ng-container [ngTemplateOutlet]="templateLeaveCreditNewHire"></ng-container>
+      <ng-container *ngIf="!is_LG_LT;">  
+            <ng-container [ngTemplateOutlet]="templateEmployeeType"></ng-container>
+            <ng-container [ngTemplateOutlet]="templateLeaveCreditDefault"></ng-container>
+            <ng-container [ngTemplateOutlet]="templateLeaveCreditNewHire"></ng-container> 
       </ng-container>
     </div>
     <!-- <div class="flex center-xs mt-20" *ngIf="leaveCredits?.inEdit.length > 1">
@@ -26,39 +30,16 @@
     </div> -->
   </div>
 </div>
+ 
 
-<div>
-  <div class="policy-grid-wrap">
-    <!-- <div class="policy-grid-left-header"
-      [ngStyle]="{'grid-template-rows':'repeat('+(employeeTypes?.length + 1)+',50px)'}">
-      <div class="policy-grid-cell"></div>
-      <ng-container *ngFor="let empType of employeeTypes">
-        <div class="policy-grid-cell bold" *ngIf="empType.status != 0">
-          {{empType?.name}}
-        </div>
-      </ng-container>
-    </div> -->
-
-  </div>
-  <!-- <div class="flex center-xs mt-20" *ngIf="leaveCreditsNewHire?.inEdit.length > 1">
-    <app-button class="policy-grid-cancel-all" theme="black"
-      (click)="resetEmpTypeRows('cancel-all','leave-credit-new-hire')" size="default" class="mr-20">Cancel All
-    </app-button>
-    <app-button class="policy-grid-save-all" theme="blue-lite" size="default">Save All
-    </app-button>
-  </div> -->
-</div>
-
-
-<ng-template #templateEmployeeType>
-  <div class="policy-grid-left-header pr-5" [ngStyle]="{'grid-template-rows':'50px 1fr'}">
+<ng-template #templateEmployeeType let-translateX="value">
+  <div class="policy-grid-left-header pr-5 pos-r" [ngStyle]="{'z-index':10, 'grid-template-rows':'50px 1fr',transform:'translateX('+translateX+'px)'}">
     <div class="policy-grid-cell"></div>
-    <div class="policy-grid-cell br-10 mt-5 header-gradient fs-12 col-primary-200 fw-500 "
-      style="display: grid;height:auto;"
-      [ngStyle]="{'grid-row': '2 / span '+(employeeTypes.length), 'grid-template-rows' : 'repeat('+(employeeTypes.length)+', 50px)'}">
+    <div class="policy-grid-cell br-10 mt-5 header-gradient fs-11 fs-md-12 col-primary-200 fw-500 "
+      style="display: grid;height:auto;" [ngStyle]="{'grid-row': '2 / span '+(employeeTypes.length), 'grid-template-rows' : 'repeat('+(employeeTypes.length)+', 50px)'}">
       <ng-container *ngFor="let empType of employeeTypes">
         <div class="policy-grid-cell  " *ngIf="empType.status != 0">
-          {{empType?.name}}
+          {{empType?.name}} 
         </div>
       </ng-container>
     </div>
@@ -70,7 +51,7 @@
   <div class="policy-grid-right pos-r" (click)="onClickLeaveCreditGrid($event,'leave-credit-default');"
     #refPolicyLeaveCredit [ngStyle]="{'grid-template-columns':'repeat('+(leaveTypes.length + 1)+',1fr)'}">
     <h2 class="heading">Leave Policy Configuration</h2>
-    <div class="policy-grid-cell col-primary-100   header-gradient br-10 fs-14"
+    <div class="policy-grid-cell col-primary-100  header-gradient br-10 fs-12 fs-md-14"
       [ngStyle]="{'grid-column': 'span '+(leaveTypes.length+1), 'grid-template-columns' : 'repeat('+(leaveTypes.length+1)+', 1fr)'}"
       style="display: grid;justify-items: center;padding:0px;">
       <ng-container *ngFor="let leaveType of leaveTypes">
@@ -87,7 +68,7 @@
         <ng-container *ngIf="employeeTypesAll[i].status != 0">
 
           <ng-container *ngFor="let leaveType of leaveCredit.leave_type_credits;">
-            <div class="policy-grid-cell">
+            <div class="policy-grid-cell  fs-12 fs-md-14">
               <span *ngIf="!leaveCredit?.edit || leaveType?.status == 0">
                 {{leaveType?.status == 0 ? 'NA' : leaveType?.value }}
               </span>
@@ -124,7 +105,7 @@
     <div class="grid header-gradient br-10 fs-14 col-primary-100"
       [ngStyle]="{'grid-column': 'span '+(newHireTimePeriods.length + 1),'grid-template-columns':'repeat('+(newHireTimePeriods.length + 1)+', 1fr)'}">
       <ng-container *ngFor="let timePeriod of newHireTimePeriods">
-        <div class="policy-grid-cell">
+        <div class="policy-grid-cell  fs-12 fs-md-14">
           {{timePeriod?.start_date}} - {{timePeriod?.end_date}}
         </div>
       </ng-container>
@@ -136,7 +117,7 @@
       <ng-container *ngFor="let leaveCredit of leaveCreditsNewHire?.data;let i=index">
         <ng-container *ngIf="employeeTypesAll[i].status != 0">
           <ng-container *ngFor="let leaveType of leaveCredit.leave_type_credits ;">
-            <div class="policy-grid-cell">
+            <div class="policy-grid-cell  fs-12 fs-md-14">
               <span *ngIf="!leaveCredit?.edit || leaveType?.status == 0">
                 {{leaveType?.status == 0 ? 'NA' : (leaveType?.value) }}
               </span>

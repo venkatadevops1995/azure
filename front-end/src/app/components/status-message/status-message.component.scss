@@ -60,3 +60,9 @@
 .notification.orange{
       background: #404040;
 }
+
+@media screen and (max-width:550px){
+      .overlay_status{
+            width:280px;
+      }
+}

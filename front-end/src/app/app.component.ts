@@ -9,7 +9,8 @@ import { SvgComponent } from './layout/svg/svg.component';
 import { HttpClientService } from './services/http-client.service';
 import { SingletonService } from './services/singleton.service';
 import { UserService } from './services/user.service';
-
+import * as _ from 'lodash';
+import { AtaiBreakPoints } from './constants/atai-breakpoints';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -48,7 +49,7 @@ export class AppComponent {
     private user: UserService,
     private router: Router,
     private http: HttpClientService,
-    private responsive:BreakpointObserver
+    private responsive: BreakpointObserver
   ) {
 
   }
@@ -57,9 +58,13 @@ export class AppComponent {
     // this.getDefaultIcons()
     this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
       this.ss.sideBarToggle = val;
-      this.isSideBarOpen = this.ss.sideBarToggle 
+      this.isSideBarOpen = this.ss.sideBarToggle
     })
     this.ss.responsive = this.responsive;
+    this.ss.responsive.observe([..._.values(AtaiBreakPoints)]).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      console.log(val)
+      this.ss.responsiveState = val.breakpoints;
+    })
   }
 
   ngAfterViewInit() {
@@ -98,14 +103,14 @@ export class AppComponent {
   getDefaultIcons() {
     this.defaultSvgSpriteUrls.forEach((url) => {
       this.http.request('get', url, "", null, {}, { responseType: "text", baseUrl: "" }).subscribe(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           let svg = res.body;
-          this.ss.svg.push(url); 
+          this.ss.svg.push(url);
           this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
             "beforeEnd",
             svg
           );
-          this.iconsPrefetched = true; 
+          this.iconsPrefetched = true;
         }
       });
     })

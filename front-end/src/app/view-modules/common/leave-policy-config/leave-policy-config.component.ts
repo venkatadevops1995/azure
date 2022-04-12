@@ -7,6 +7,7 @@ import { SingletonService } from 'src/app/services/singleton.service';
 import { cloneDeep, differenceBy, flatten, groupBy, toArray } from 'lodash';
 import * as _ from 'lodash'
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { fromEvent, Subject, takeUntil } from 'rxjs';
 
 interface LeaveCredit {
     category_id?: number;
@@ -26,6 +27,9 @@ interface LeaveCreditFromHttp {
     styleUrls: ['./leave-policy-config.component.scss']
 })
 export class LeavePolicyConfigComponent implements OnInit {
+
+    // subject to emit for clearing the subscriptions
+    destroy$: Subject<any> = new Subject();
 
     // the array to hold the employee types
     employeeTypes: Array<any> = [];
@@ -52,16 +56,27 @@ export class LeavePolicyConfigComponent implements OnInit {
     // element ref for the grid for the emp type based leave credit leave policy config
     @ViewChild('refPolicyLeaveCreditNewHire') elNewHireLeaveCreditConfig: ElementRef;
 
+    // element ref for the grid for the emp type based leave credit leave policy config
+    @ViewChild('refLeaveCreditContainer') elLeaveCreditContainer: ElementRef;
+
+    // element ref for the grid for the emp type based leave credit leave policy config
+    @ViewChild('refNewHireContainer') elNewHireContainer: ElementRef;
+
+    // 
+    translateLeaveCredit: { value: number } = { value: 0 };
+
+    translateNewHire: { value: number } = { value: 0 };
+
+
     // is less than the XLG (1350)
-    is_LG_LT = false;
+    get is_LG_LT() {
+        return this.ss.responsiveState[AtaiBreakPoints.LG_LT]
+    };
 
     constructor(
         private http: HttpClientService,
         private ss: SingletonService,
     ) {
-        this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(match => {
-            this.is_LG_LT = match.matches
-        })
     }
 
     ngOnInit() {
@@ -70,6 +85,28 @@ export class LeavePolicyConfigComponent implements OnInit {
             this.getLeaveConfig();
             this.getLeaveConfig('leave-credit-new-hire')
         }, 1000)
+    }
+
+    ngAfterViewInit() {
+        fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+            if(window.innerWidth > 1024){
+
+            }else{
+                let target: HTMLElement = e['target'];
+                this.translateLeaveCredit.value = target.scrollLeft
+                console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
+            }
+        })
+        fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+            let target: HTMLElement = e['target'];
+            this.translateNewHire.value = target.scrollLeft
+            console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
+        })
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(null);
+        this.destroy$.complete()
     }
 
     // method to get the leave types

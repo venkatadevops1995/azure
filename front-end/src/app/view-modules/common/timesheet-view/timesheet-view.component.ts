@@ -14,6 +14,7 @@ import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 @Component({
   selector: 'app-timesheet-view',
@@ -120,6 +121,10 @@ export class TimesheetViewComponent implements OnInit {
 
   // the translation value to set on scroll so the title look fixed
   translateTimesheetTitle:number = 0;
+
+  get is_MD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
   
 
   constructor(
@@ -135,6 +140,7 @@ export class TimesheetViewComponent implements OnInit {
       general: new FormControl('')
     });
     this.hasRejectedValueChange = this.timeSheetType != 'rejected';
+ 
   }
 
   ngOnInit(): void {
@@ -193,6 +199,7 @@ export class TimesheetViewComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next(null);
+    this.destroy$.complete()
   }
 
   // event listener on document to check if active mins is clicked

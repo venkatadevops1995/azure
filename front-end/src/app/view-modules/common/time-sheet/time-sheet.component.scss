@@ -1,4 +1,6 @@
 :host {
+  display: flex;
+  flex-direction: column;
   --cell-gap: 5px;
 
   .timesheet {
@@ -292,13 +294,14 @@
 
 @media screen and (max-width:1024px) {
   :host {
-    --translate-title:0px;
-    .translate-title-text{      
+    --translate-title: 0px;
+
+    .translate-title-text {
       display: inline-flex;
       padding-bottom: 5px;
-      left:var(--translate-title);
+      left: var(--translate-title);
       position: relative;
-      transition:all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
     }
 
     .timesheet__row,
@@ -318,20 +321,20 @@
       .timesheet__row-title {
         grid-column: span 8;
         margin-right: 0;
-        padding:5px 20px 5px 25px;
-        > span {
-          span{
+        padding: 5px 20px 5px 25px;
+
+        >span {
+          span {
             margin-left: 10px;
           }
         }
       }
-      .timesheet__row-remove{
-        top:40%;
+
+      .timesheet__row-remove {
+        top: 40%;
       }
 
-      .timesheet__row-title {
-
-      }
+      .timesheet__row-title {}
 
       >* {
         height: 35px;

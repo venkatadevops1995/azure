@@ -1,5 +1,7 @@
 :host {
   // min-width: 850px; 
+  display: flex;
+  flex-direction: column;
   display: block;
   .wsr__sel-project {
     color: #333;

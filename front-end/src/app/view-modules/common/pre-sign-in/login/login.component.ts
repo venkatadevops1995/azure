@@ -6,6 +6,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 // import { TweenMax, TimelineMax, Power2 } from 'gsap'; 
 import ValidateEmail from 'src/app/functions/validations/email';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +21,12 @@ export class LoginComponent implements OnInit {
 
   // form group for login form
   fgLogin: FormGroup;
+
+  // is view port less than sm and greater than xs
+  get is_XS() {
+    return this.ss.responsiveState[AtaiBreakPoints.SM_LT]
+  }
+
 
   constructor(
     private ss: SingletonService,
@@ -58,8 +66,8 @@ export class LoginComponent implements OnInit {
             this.router.navigate([redirectRoute]);
           }, 1000);
         } else if (res.error.message == 'invalidlogins') {
-          this.ss.statusMessage.showStatusMessage(false, 'Invalid logins.');
-        }else if (res.error.message == 'In_Active_Employee') {
+          this.ss.statusMessage.showStatusMessage(false, 'Invalid logins.', 5000, 'invalid-logins');
+        } else if (res.error.message == 'In_Active_Employee') {
           this.ss.statusMessage.showStatusMessage(false, 'This account is currently inactive. Contact HR for any query.');
         }
       })

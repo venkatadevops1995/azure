@@ -1,15 +1,18 @@
 import { UserService } from 'src/app/services/user.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import MatchPassword from 'src/app/functions/validations/password';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
+import { isDescendant } from 'src/app/functions/isDescendent.fn';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  animations: [slideAnimationTrigger]
 })
 export class HeaderComponent implements OnInit {
 
@@ -31,14 +34,22 @@ export class HeaderComponent implements OnInit {
   // template ref element for the modal pop up of change password
   @ViewChild('refModalChangePassword') modalChangePassword: ModalPopupComponent;
 
-  is_MD_LT: boolean = false
-
+  get is_MD_LT(): boolean {
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
 
   // form group for Change password form
   fgChangePassword: FormGroup;
 
   //Change password form reference to reset the form
   @ViewChild('changePasswordForm') changePasswordForm;
+
+  @ViewChild('refHeaderSearchMobile') elHeaderSearchMobile: ElementRef<any>;
+
+  @ViewChild('refOpenUserSearchMobile') elOpenUserSearchMobile: ElementRef<any>;
+
+  // is user search mobile open 
+  isUserSearchMobileOpen: boolean = false;
 
   constructor(
     private user: UserService,
@@ -51,9 +62,20 @@ export class HeaderComponent implements OnInit {
       retypeNewPassword: ["", [Validators.required, MatchPassword('password')]]
     });
     this.fgChangePassword.get('newPassword').setValidators([Validators.required, MatchPassword('retypeNewPassword')])
-    this.ss.responsive.observe(AtaiBreakPoints.MD_LT).subscribe((val) => {
-      this.is_MD_LT = val.matches
-    })
+  }
+
+
+  @HostListener('document:click', ['$event'])
+  onClickDocument(e: Event) {
+    let target = e.target;
+    let cond1 = this.elHeaderSearchMobile ? target != this.elHeaderSearchMobile.nativeElement : true;
+    let cond2 = this.elHeaderSearchMobile ? !isDescendant(this.elHeaderSearchMobile, target) : true;
+    let cond3 = target != (<any>this.elOpenUserSearchMobile.nativeElement);
+    let cond4 = !isDescendant(this.elOpenUserSearchMobile.nativeElement, target);
+
+    if (cond1 && cond2 && cond3 && cond4) { 
+      this.isUserSearchMobileOpen = false;
+    }
   }
 
   ngOnInit(): void {
@@ -69,6 +91,11 @@ export class HeaderComponent implements OnInit {
       this.leaveFlag = leave_res.body.leave_flag;
     })
   }
+
+  onClickUserSearchMobile(e) {
+    e.stopPropagation();
+  }
+
   getEmailToggleStatus() {
     this.http.request('get', 'leave/mail-opted', "",).subscribe(res => {
       console.log(res)

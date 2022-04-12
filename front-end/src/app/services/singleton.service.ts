@@ -79,6 +79,9 @@ export class SingletonService {
   // reference to the breakpoint observer (like a global one)
   responsive:BreakpointObserver;
 
+  // responsive state to find out the current state of each break points
+  responsiveState: any;
+
   constructor(
     private dialog: MatDialog
   ) {

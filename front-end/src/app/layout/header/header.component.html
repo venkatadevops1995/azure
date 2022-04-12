@@ -1,19 +1,19 @@
-<!-- <a class="change-password flex middle-xs  mr-20 fs-18" href="javascript:;">
-    <div class="mr-5" style="color:var(--color-tertiary)" svg-fill="currentColor"></div>
-    Change Password
-</a> -->
-<!-- (click)="onClickChnagePassword()" -->
-
 <div class="flex  fg-1 " *ngIf="leaveFlag == true && !is_MD_LT">
   <div style="flex-grow:0.7;"></div>
-  <app-header-search   ></app-header-search>
+  <app-header-search></app-header-search>
   <div style="flex-grow:0.3;"></div>
+</div>
+<div #refHeaderSearchMobile class="user-search-mobile flex center-xs"
+  *ngIf="(leaveFlag && is_MD_LT && isUserSearchMobileOpen)">
+  <app-header-search (userSelected)="isUserSearchMobileOpen = false;" [stopOptionClickPropagation]="true"
+    (click)="onClickUserSearchMobile($event) " class="mt-10"></app-header-search>
+  <svg class="use-svg col-primary-200 user-search-mobile__close" (click)="isUserSearchMobileOpen = false;"
+    symbol="circle-close-red" w="25"></svg>
 </div>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
   <div class="compliances" *ngIf="leaveFlag == true">
-
-    <div class="compliances__item mr-10 mr-sm-15" *ngFor="let com of compliances">
+    <div class="compliances__item mr-5 mr-sm-15" *ngFor="let com of compliances">
       <svg width="26" height="26">
         <defs>
           <linearGradient id="red-compliance" gradientTransform="rotate(45)">
@@ -34,29 +34,33 @@
     </div>
 
   </div>
-  <div *ngIf="showEmailToggle && leaveFlag == true" class="flex col p-10 center-xs middle-xs ml-15 mr-15">
+  <div #refOpenUserSearchMobile class="user-search-open" (click)="isUserSearchMobileOpen = true;">
+    <svg symbol="search" w="20" class="use-svg  col-primary-200"></svg>
+  </div>
+  <div *ngIf="showEmailToggle && leaveFlag == true" class="flex col p-10 center-xs middle-xs ml-5 mr-5 ml-sm-15 mr-sm-15">
     <span class="fs-13">Emails</span>
     <mat-slide-toggle (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled">
     </mat-slide-toggle>
   </div>
 
-  <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true">
-  </div>
+  <!-- <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true">
+  </div> -->
+
   <app-button class="logout" theme="red" (click)="logout()" href="javascript:;">
     Logout
   </app-button>
 
   <div class="logout-icon" (click)="logout()">
-    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
       <defs>
         <linearGradient id="red-compliance" gradientTransform="rotate(45)">
           <stop offset="0%" stop-color="var(--col-warn-500)"></stop>
           <stop offset="100%" stop-color="var(--col-warn-A400)"></stop>
         </linearGradient>
       </defs>
-      <circle r="20" cx="22" cy="22" stroke="url(#red-compliance)" stroke-width="2" style="paint-order: stroke;">
+      <circle r="16" cx="18" cy="18" stroke="url(#red-compliance)" stroke-width="2" style="paint-order: stroke;">
       </circle>
     </svg>
-    <svg class="use-svg col-warn-500" symbol="eject" w="20" > </svg>
+    <svg class="use-svg col-warn-500" symbol="eject" w="16"> </svg>
   </div>
 </div>

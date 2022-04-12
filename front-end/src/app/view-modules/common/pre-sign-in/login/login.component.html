@@ -5,8 +5,8 @@
   </div>
   <!-- <h2 class="heading tac">Login!</h2> -->
   <form #form="ngForm" class="fs-14" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
-    <div class="  middle-xs flex" matPrefix>
-      <svg class="mr-10 use-svg" symbol="user" w="25" style="color:var(--col-accent-500);"></svg>
+    <div class="  middle-xs flex  fs-12 fs-sm-14" matPrefix>
+      <svg class="mr-10 use-svg" symbol="user" [w]="is_XS ? 18 : 25" style="color:var(--col-accent-500);"></svg>
       <mat-form-field class="formField lite fs-13" style="flex-grow: 1;" color="primary">
         <mat-label>Email
         </mat-label>
@@ -20,8 +20,8 @@
       </mat-form-field>
     </div>
 
-    <div class="mt-15 middle-xs flex" matPrefix>
-      <svg class="mr-10 use-svg" symbol="key" w="25" style="color:var(--col-accent-500);"></svg>
+    <div class="mt-15 middle-xs flex fs-12 fs-sm-14" matPrefix>
+      <svg class="mr-10 use-svg" symbol="key" [w]="is_XS ? 18 : 25" style="color:var(--col-accent-500);"></svg>
       <mat-form-field class="formField lite" style="flex-grow: 1;">
         <mat-label>Password
         </mat-label>

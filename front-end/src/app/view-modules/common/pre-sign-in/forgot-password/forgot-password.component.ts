@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import validateEmail from 'src/app/functions/validations/email';
 import { SingletonService } from 'src/app/services/singleton.service';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { Subject, take, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-forgot-password',
@@ -16,10 +18,16 @@ export class ForgotPasswordComponent implements OnInit {
     fgForgotPassword: FormGroup;
 
     // show success message boolean value
-    showSuccessMessage : boolean = false;
+    showSuccessMessage: boolean = false;
 
     // ref to the ngForm . helpful in reset .
     @ViewChild("form") ngForm: NgForm;
+
+    // is less than md resolutions
+    is_MD_LT: boolean = false;
+
+    // destroy
+    destroy$: Subject<any> = new Subject();
 
     constructor(
         private authHttp: HttpClientService,
@@ -28,14 +36,22 @@ export class ForgotPasswordComponent implements OnInit {
         this.fgForgotPassword = this.ss.fb.group({
             email: ["", [Validators.required, validateEmail]]
         });
+
+        this.ss.responsive.observe(AtaiBreakPoints.MD_LT).pipe(takeUntil(this.destroy$)).subscribe((val) => {
+            this.is_MD_LT = val.matches
+        })
     }
 
     ngOnInit() {
     }
 
+    ngOnDestroy() {
+        this.destroy$.next(null)
+        this.destroy$.complete()
+    }
     // on submiting the forgot password form
     onSubmit(e) {
-        this.showSuccessMessage= true;
+        this.showSuccessMessage = true;
         if (this.fgForgotPassword.valid) {
             // this.authHttp.noAuth().request('post', 'forgot-password/', "", this.fgForgotPassword.value).subscribe(res => {
             //     if (res.status === 200) {
@@ -49,6 +65,6 @@ export class ForgotPasswordComponent implements OnInit {
             // });
         }
     }
- 
+
 
 }
