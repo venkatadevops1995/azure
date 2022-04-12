@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -38,7 +38,7 @@ export class EditUserComponent implements OnInit {
 
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
-
+  @ViewChild("table")table:ElementRef;
   //  ***********************************************************************
   // ********************************************************************
   // ***************************************************************
@@ -56,6 +56,10 @@ export class EditUserComponent implements OnInit {
 
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
 
+
+
+
+
   displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   constructor(public dialog: MatDialog,
@@ -66,6 +70,8 @@ export class EditUserComponent implements OnInit {
     private user: UserService,
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
     public dialogRef: MatDialogRef<any>,
+  
+    private el: ElementRef
     //*****************************************************************************************
     // ***********************************************************************************************
   ) {
@@ -93,6 +99,9 @@ export class EditUserComponent implements OnInit {
   delete_emp_success_msg: string = '';
   ngOnInit(): void {
     this.getAllReportes();
+    // this.renderer.listen(this.table?.nativeElement,'click',(evt)=>{
+    //   console.log('hello u clicked on the table!!!')
+    // })
   }
   private filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
@@ -100,6 +109,39 @@ export class EditUserComponent implements OnInit {
     // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
   }
   searchField = this.fb.control('ALL', [Validators.required])
+  
+//Rahul change(adding event daligation for table row when clicking on edit and disable icon) *******************************
+  @HostListener('click',['$event'])
+  onClickHost(e){
+  let target:any = e.target;
+  let tempTarget = target;
+  console.log("--------------click");
+// if(e.target.classList.contains('edit')){
+//   let index=e.target.getAttribute("index");
+//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+//   this.editUser(index);
+// }
+
+ while(tempTarget != this.el.nativeElement){
+  if(tempTarget.classList.contains('edit')){
+    console.log('::::::::::::::clicked on the edit icon');
+      let index = tempTarget.getAttribute("index");
+        this.editUser(index);
+        break;
+       }
+       if(tempTarget.classList.contains('disable')){
+        console.log('::::::::::::::clicked on the disable icon');
+          let index = tempTarget.getAttribute("index");
+          this.setId(index);
+           this.disableEmppopupopen()
+            break;
+           }
+       tempTarget = tempTarget.parentNode;
+    }
+   
+  }
+  
+  //**************************************************************************** 
 
   editUserForm = this.fb.group({
     'emp_id': ['', Validators.required],

@@ -29,6 +29,8 @@
 
   <div class="w-100 of-x-auto" *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
 
+<div style="width:100%;overflow-x: auto;">
+
 
     <table mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100">
 
@@ -90,6 +92,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+  </div>
   </div>
 </ng-container>
 

@@ -2,9 +2,9 @@
   <h2 class="heading mb-20">Download Employee Details</h2>
 
   <div class="mis__body p-50 primary-900 flex center-xs">
-    <div class="mis__datepicker fs-14 flex" style="max-width: 600px;margin: 30px 0;">
+    <div class="center-xs mis__datepicker fs-14 flex flex-col-xs flex-row-md" [class.middle-xs]="Is_match" [ngClass]=" Is_match ? 'ml-30':'ml-5'"  style="max-width: 600px;">
       <div>
-        <mat-form-field class="no-pb atai-date-range" style="min-width: 225px;">
+        <mat-form-field class="mr-md-30 no-pb atai-date-range" style="min-width: 225px;">
           <app-atai-date-range [minDate]="minDate" [disabled]="!Ischecked" (dateSelected)="onDateSelect($event)">
           </app-atai-date-range>
         </mat-form-field>
@@ -15,7 +15,7 @@
           </mat-checkbox>
         </div>
       </div>
-      <app-button size="small" class="ml-30" style="width: 140px;"
+      <app-button size="small" [class.mt-20]="Is_match" style="width: 140px;"
         [dbdFileDownload]="{endPoint:'downloadmis/?'+'disable='+ Ischecked+'&startdate='+fromdate+'&enddate='+todate ,responseType:'blob'}">
         <div class="flex middle-xs center-xs">
           <svg symbol="download" w="15"  class="ml-5 use-svg  mr-10"></svg> <span>MIS</span>

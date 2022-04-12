@@ -64,7 +64,7 @@ export class SidebarComponent implements OnInit {
       console.log(val)
       this.is_LG_LT = val.matches
       if(val.matches){ 
-        this.setSidebarStatus(false)
+        this.setSidebarStatus(false);
       }
       console.log(this.is_LG_LT,this.isSidebarOpen)
     })

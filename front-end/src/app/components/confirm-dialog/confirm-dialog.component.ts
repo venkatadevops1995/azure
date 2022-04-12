@@ -5,7 +5,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { SingletonService } from 'src/app/services/singleton.service';
 
-type ConfirmPopUpData = { heading: string, confirmMessage?: string, hideFooterButtons?: boolean, showCloseButton?: boolean, maxWidth?: any, template?: TemplateRef<any>, minWidth: any, onlyForAlert?: boolean, showTextbox?: boolean, placeholderTextField?: any }
+type ConfirmPopUpData = { heading: string, confirmMessage?: string, 
+  hideFooterButtons?: boolean, showCloseButton?: boolean,
+   maxWidth?: any, template?: TemplateRef<any>, minWidth: any, onlyForAlert?: boolean, 
+   showTextbox?: boolean, placeholderTextField?:any,Cancel:string,Proceed:string}
+
+
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
@@ -22,7 +27,9 @@ export class ConfirmDialogComponent implements OnInit {
     template: null,
     minWidth: '420px',
     showTextbox: false,
-    placeholderTextField: 'Enter comments'
+    placeholderTextField:'Enter comments',
+    Cancel:'Cancel',
+    Proceed:'Proceed'
   }
 
   destroy$: Subject<any> = new Subject();

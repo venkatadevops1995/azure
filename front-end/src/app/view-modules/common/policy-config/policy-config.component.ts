@@ -12,6 +12,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { take } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export interface Task {
   id?: Number,
@@ -42,6 +44,12 @@ export class PolicyConfigComponent implements OnInit {
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
   tabList = []
   // tabList = ["View Only", "Digitally Acknowledged", "Download and Upload"]
+
+
+//  Rahul change(setting a boolean var to find out range is matches to meadiaquery)*****
+Is_match:boolean;
+//  ******************************************************************************
+DisableCheck:boolean=false;
 
   employeePopupColumns = ["select", "staff_no", "emp_name", "company"]
   selectedEmployeePopupColumns = ["serial_no", "staff_no", "emp_name", "company"]
@@ -75,7 +83,7 @@ export class PolicyConfigComponent implements OnInit {
 
   // to avoid the start slide animation of tab group
   showView:boolean = false;
-
+  
   constructor(private fb: FormBuilder,
     private http: HttpClientService,
     private ss: SingletonService,
@@ -84,7 +92,9 @@ export class PolicyConfigComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public dialog:MatDialog,
     public dialogRef: MatDialogRef<any>,  
-    private changeDetectorRef: ChangeDetectorRef) {
+    private changeDetectorRef: ChangeDetectorRef,
+    private responsive :BreakpointObserver
+    ) {
     this.getCompanies()
 
 
@@ -116,6 +126,23 @@ export class PolicyConfigComponent implements OnInit {
       this.showUploadBlock = true;
       this.getPolicyType()
     }
+    // Rahul change(Using breakpoint observer Api)************
+    this.responsive.observe([AtaiBreakPoints.XS,
+      AtaiBreakPoints.SM,AtaiBreakPoints.MD
+     ]
+      ).subscribe(res=>{
+      // console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches)
+      this.Is_match=res.matches;
+      if(res.matches)
+      {
+        console.log('hello the breakpoints has been matches');
+      }
+       console.log('!!!!!!!!!!@@@@@@@@@@@##########',this.Is_match);
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches);
+    })
+   
+    // ***********************************************************
+    // *****************************************************
   }
 
   subs: any;
@@ -178,20 +205,66 @@ export class PolicyConfigComponent implements OnInit {
 
     const allComplete = this.companyList.subtasks != null && this.companyList.subtasks.every(t => t.completed);
     this.companyList.completed = allComplete
+
+    console.log('###@@@@@@@@@@@@@@@333########',this.companyList  )
+    // if(this.companyList.completed==false && this.companyList.subtasks.length==3){
+    //   this.DisableCheck=true;
+    //   console.log('DisableCheck1',this.DisableCheck)
+    // }else{
+    //   this.DisableCheck=false;
+    //   console.log('DisableCheck2',this.DisableCheck)
+    // }
+    
+    if(this.companyList.completed==false){
+      let cnt = 0
+      this.companyList.subtasks.map((sub_task)=>{
+        console.log("syb tasks,", sub_task)
+        if(sub_task.completed == false){
+          cnt +=1;
+        }
+        console.log("!!!!!!!!!!!!!!!!->count1", cnt)
+        if(cnt == 3){
+          this.DisableCheck=true;
+        }else{
+          this.DisableCheck=false;
+        }
+        console.log("###############->count2", cnt)
+      })
+      cnt=0;
+  }else{
+    this.DisableCheck=false;
+  }
+        
     this.updateFilterData()
 
   }
 
 
+// ********************************************************
+// *******************************************************
+// ********************************************************
+// *****************************************************
+// *****************************************************
   setAll(e) {
     console.log("------------------------------------------------------", e);
 
     var completed = e.target.checked
     this.companyList.completed = completed
+   
     if (this.companyList.subtasks == null) {
       return;
     }
     this.companyList.subtasks.forEach(t => t.completed = completed);
+    
+    if(this.companyList.completed == false){
+      this.DisableCheck=true;
+    }else{
+      this.DisableCheck=false;
+    }
+
+   console.log('%%%%%%%%%%%%%%%%%%',this.companyList)
+
+ 
     this.updateFilterData()
 
   }
@@ -205,7 +278,7 @@ export class PolicyConfigComponent implements OnInit {
         comList.push({ id: e['id'], name: e['name'], completed: true })
       })
       this.companyList.subtasks = comList;
-
+      
     } else {
       this.ss.statusMessage.showStatusMessage(false, "Issue while fetching companies");
 
@@ -281,11 +354,12 @@ export class PolicyConfigComponent implements OnInit {
       heading: 'Select Employees',
       template:this.selectEmp,
       maxWidth:'850px',
+      // minWidth:'false? 80vw :420px',
       hideFooterButtons: true,
       showCloseButton: true,
       padding_horizontal:false,
       padding_vertical:false,
-      vertical_scroll:false,
+      // vertical_scroll:false,
       mb_30:false
     },
     autoFocus: false,
