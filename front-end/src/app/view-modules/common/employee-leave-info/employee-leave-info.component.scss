@@ -15,3 +15,8 @@ input[type=number] {
     background-color: inherit;
     // background-color: var(--color-gray-lite);
 }
+@media screen and (max-width:768px){
+    .mat-table{
+        min-width: 500px;
+    }
+}

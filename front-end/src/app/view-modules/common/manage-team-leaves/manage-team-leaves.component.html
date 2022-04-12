@@ -52,7 +52,7 @@
           </ng-container>
 
           <ng-container matColumnDef="view">
-            <th mat-header-cell *matHeaderCellDef> Action</th>
+            <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
             <td mat-cell *matCellDef="let element;let i = index">
               <div class="flex middle-xs center-xs">
                 <!-- <app-button class=" view-leave-details mr-5" title="View Details" type="button" theme="blue-lite"
@@ -145,7 +145,7 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs center-xs">
 
@@ -234,7 +234,7 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs center-xs">
 
@@ -269,9 +269,9 @@
   <div class="flex between-xs">
     <h2 class="heading mb-20"> Leave History </h2>
   </div>
-  <div class="flex fs-14 bottom-xs">
+  <div class="flex fs-14 bottom-md flex-col-xs flex-row-md top-xs">
     <form [formGroup]="fgFilter" class="flex middle-xs">
-      <div style="min-width: 250px; " class="">
+      <div style="min-width: 225px; " class="mb-15 mb-md-0">
         <mat-form-field class="w-100 mr-10 no-pb">
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
             [(ngModel)]="value">
@@ -285,12 +285,12 @@
         </mat-form-field>
       </div>
     </form>
-    <mat-form-field appearance="legacy" style="min-width:225px" class="ml-15 no-pb atai-date-range">
+    <mat-form-field appearance="legacy" style="min-width:225px" class="ml-md-15 mb-15 mb-md-0 no-pb atai-date-range">
       <app-atai-date-range [maxDate]="maxDate" [allowSameDateRange]="false" [showInput]="true" [showPresets]="true"
         (dateSelected)="onDateSelect($event)"></app-atai-date-range>
     </mat-form-field>
 
-    <svg class="export_icon ml-15 pointer pos-r use-svg" style="z-index: 10;" (click)="onClickExportResolved()"
+    <svg class="export_icon ml-md-15 pointer pos-r use-svg" style="z-index: 10;" (click)="onClickExportResolved()"
       symbol="excel-green" w="25" style="color:var(--color-tertiary);margin-top:0px;cursor:pointer"
       svg-fill="currentColor">
     </svg>
@@ -312,7 +312,7 @@
     </ng-container>
 
 
-    <div style="overflow-y: auto;max-height: 450px;" #refTableWrap class="mt-20">
+    <div style="overflow: auto;max-height: 450px;" #refTableWrap class="mt-20">
       <table mat-table [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0"
         class="mat-elevation-z8 w-100">
 
@@ -375,7 +375,7 @@
         </ng-container>
 
         <ng-container matColumnDef="view">
-          <th mat-header-cell *matHeaderCellDef> Action</th>
+          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs center-xs">
               <svg class="col-primary-200  view-leave-details-history use-svg" title="View Details"

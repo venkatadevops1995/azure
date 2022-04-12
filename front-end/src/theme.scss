@@ -190,6 +190,7 @@ td.mat-footer-cell {
 .mat-calendar-table-header {
   color: var(--col-accent-500) !important;
 }
+
 // .mat-calendar-body-label{
 //   opacity: 0;
 // }
@@ -236,7 +237,7 @@ mat-dialog-container.mat-dialog-container {
 }
 
 // remove padding bottom from the mat form field components
-.no-pb { 
+.no-pb {
   &.mat-form-field-appearance-legacy .mat-form-field-wrapper {
     padding-bottom: 0;
   }
@@ -249,8 +250,9 @@ mat-dialog-container.mat-dialog-container {
     &.mat-form-field-appearance-legacy .mat-form-field-infix {
       padding-bottom: 0 !important;
     }
-    &.mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper{
-      top:100%;
+
+    &.mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {
+      top: 100%;
     }
   }
 
@@ -324,7 +326,7 @@ mat-dialog-container.mat-dialog-container {
     }
 
     .mat-radio-label-content {
-      padding: 5px 20px;
+      padding: 0.35em 1.2em;
       border: 1px solid var(--col-primary-300);
       border-radius: 20px;
       font-size: inherit;
@@ -352,7 +354,7 @@ mat-dialog-container.mat-dialog-container {
     }
 
     .mat-checkbox-label {
-      padding: 5px 20px;
+      padding: 0.35em 1.2em;
       border: 1px solid var(--col-primary-300);
       border-radius: 20px;
       font-size: inherit;
@@ -385,12 +387,14 @@ mat-dialog-container.mat-dialog-container {
 
 // ******************************************************** 
 // Rahulchange (adding font family for table universal)**********************
+
 .mat-table{
  min-width:800px;
       &.modifier{
         min-width:unset !important;
       }
 }
+
 
 
 // ********************************************************
@@ -407,46 +411,84 @@ mat-dialog-container.mat-dialog-container {
 .pl-table-50 {
   padding-left: 50px !important;
 }
+
 // @use '../src/assets/scss/breakpoints' as bp;
 //*******************************************************
 //adding class to give padding in every celll of the table in order to clearly distinguise the column
-.p-table-5{
+.p-table-5 {
   // padding: 0 5px 0 5px!important;
   // @media (max-width:bp.$xmd){
-    padding: 5px !important;
+  padding: 5px !important;
   // }
 }
-/* apply inter font size */
 
-// input.mat-input-element,
-// .mat-form-field {
-//   font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
-// }
 
-/* table.mat-table {
-  tbody {
-    display: block;
-    max-height: 500px;
-    overflow: auto;
-    width: calc(100% + 15px);
-    padding-right: 10px;
-    background-color: unset;
+/* Mat Tabs group */
+
+/* in apply leave pop  up the tabs content need not be shown */
+.apply-leave {
+  .mat-tab-body-wrapper {
+    display: none;
+  }
+
+  .mat-tab-header {
+    border-bottom: none;
+  }
+
+  .mat-tab-group.mat-accent .mat-ink-bar,
+  .mat-tab-nav-bar.mat-accent .mat-ink-bar {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, var(--col-accent-700) 29%, var(--col-accent-500) 31%, var(--col-accent-300) 50%, var(--col-accent-500) 70%, var(--col-accent-700) 72%, rgba(0, 0, 0, 0) 100%);
 
   }
 
-  tr {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-    margin-top: 0;
-    background:var(--col-primary-A200);
-    &.mat-row:first-of-type{
-      margin-top: 0;
+  .mat-ink-bar {
+    height: 3px;
+  }
+
+  .mat-tab-label,
+  .mat-tab-link {
+    font-size: inherit;
+  }
+
+  .mat-tab-label {
+    flex-grow: 1;
+  }
+
+  .slide-anim {
+    height: 0px;
+    overflow: hidden;
+  }
+
+}
+
+@media screen and (max-width:768px) {
+  .apply-leave {
+    .mat-tab-label {
+      padding: 0 12px;
+      min-width: 50px;
     }
   }
-  thead {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
+}
+
+@media screen and (max-width:550px) {
+
+  .mat-paginator-page-size {
+    position: relative;
+    right: 0;
   }
-} */
+  .mat-paginator-container{
+    flex-direction: column;
+    margin-top: 20px;
+  }
+  .mat-paginator-page-size-select{
+    margin-top: 0px;
+  }
+}
+
+@media screen and (max-width:400px) {
+  .apply-leave {
+    .mat-tab-label {
+      padding: 0 8px;
+    }
+  }
+}

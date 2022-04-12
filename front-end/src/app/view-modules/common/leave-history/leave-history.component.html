@@ -1,11 +1,11 @@
 <ng-container>
-  <div class="bg-box mt-20">
+  <div class=" flex between-xmd top-md flex-row-xmd flex-col-xs middle-xmd mt-20">
     <div class="flex between-xs">
       <h2 class="heading">Leave History </h2>
     </div>
 
-    <div class="flex bottom-xs end-xs  fs-14">
-      <mat-form-field class="  mr-50 no-pb">
+    <div class="flex bottom-md flex-col-xs flex-row-md end-xs fs-14 middle-xs ">
+      <mat-form-field style="width:200px;" class="mr-md-50 no-pb mb-15 mb-md-0">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
           [(ngModel)]="value">
         <div *ngIf="value" class="use-svg" style="position: absolute;right: 5px;top:50%;transform:translateY(-50%);"
@@ -22,7 +22,7 @@
         <app-atai-date-range [maxDate]="maxDate" (dateSelected)="onDateSelect($event)"></app-atai-date-range>
       </mat-form-field>
 
-      <svg title="Download" class="export_icon ml-50 use-svg" (click)="onClickExportResolved()" symbol="excel-green"
+      <svg title="Download" class="export_icon ml-md-50 use-svg mt-15 mt-md-0" (click)="onClickExportResolved()" symbol="excel-green"
         w="25">
       </svg>
     </div>

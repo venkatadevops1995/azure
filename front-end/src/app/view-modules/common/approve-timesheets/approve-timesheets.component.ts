@@ -2,7 +2,7 @@ import { ModalPopupComponent } from './../../../components/modal-popup/modal-pop
 import { SingletonService } from 'src/app/services/singleton.service';
 import { Component, OnInit, HostListener, ElementRef, ViewChild, TemplateRef } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
-import { Subject, take } from 'rxjs';
+import { fromEvent, Subject, take, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -25,6 +25,8 @@ export class ApproveTimesheetsComponent implements OnInit {
 
   // template ref element for the modal pop up of view wsr
   @ViewChild('refModalViewWsr') modalViewWsr: ModalPopupComponent;
+
+  @ViewChild('refTimesheetWrap') elTimesheetWrap: ElementRef;
 
   // form group for search form
   fgSearch: FormGroup;
@@ -69,6 +71,9 @@ export class ApproveTimesheetsComponent implements OnInit {
 
   // reference to the dialog component for wsr data viewing
   dialogRef: MatDialogRef<any> = null;
+
+  // the translation value to set on scroll so the title look fixed
+  translateTimesheetTitle:number = 0;
 
   //timesheets length
   totalTimesheetsLength = 0;
@@ -171,6 +176,14 @@ export class ApproveTimesheetsComponent implements OnInit {
     this.onSubmitSearch(-1, 1, this.paginator.pageSize);
   }
 
+
+  ngAfterViewInit(){ 
+    fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
+      let target:HTMLElement = e['target'];
+      this.translateTimesheetTitle = target.scrollLeft
+      console.log(target.scrollLeft,target.scrollWidth)
+    })
+  }
   // onclicking the host
   @HostListener('click', ['$event'])
   onClickHost(e: Event) {

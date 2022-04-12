@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject, TemplateRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subject, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { SingletonService } from 'src/app/services/singleton.service';
 
 type ConfirmPopUpData = { heading: string, confirmMessage?: string, 
   hideFooterButtons?: boolean, showCloseButton?: boolean,
@@ -28,16 +31,24 @@ export class ConfirmDialogComponent implements OnInit {
     Cancel:'Cancel',
     Proceed:'Proceed'
   }
-  
+
+  destroy$: Subject<any> = new Subject();
+
   /* merged data passed with default data */
   dataMerged: ConfirmPopUpData = this.defaultData;
 
   fcText: FormControl = new FormControl('')
 
+  is_XMD_LT: boolean = false;
+
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmPopUpData
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmPopUpData,
+    private ss: SingletonService
   ) {
     this.dataMerged = { ...this.defaultData, ...data }
+    this.ss.responsive.observe(AtaiBreakPoints.XMD_LT).pipe(takeUntil(this.destroy$)).subscribe(val=>{
+      this.is_XMD_LT = val.matches
+    })
   }
 
   ngOnInit(): void {

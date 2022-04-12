@@ -40,9 +40,7 @@ export class TimesheetViewComponent implements OnInit {
   // reference to the active mins element
   @ViewChild('selProject') elSelProject: ElementRef;
 
-
   @ViewChild('refTimesheetWrap') elTimesheetWrap: ElementRef;
-
 
   // template ref of maanger comments
   @ViewChild('templateRefManagerComments') templateRefManagerComments: TemplateRef<any>;
@@ -189,7 +187,7 @@ export class TimesheetViewComponent implements OnInit {
     fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
       let target:HTMLElement = e['target'];
       this.translateTimesheetTitle = target.scrollLeft
-      // console.log(target.scrollLeft,target.scrollWidth)
+      console.log(target.scrollLeft,target.scrollWidth)
     })
   }
 

@@ -11,8 +11,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { UseSvgModule } from '../use-svg/use-svg.module';
 
 

@@ -11,6 +11,7 @@ import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
@@ -206,6 +207,8 @@ export class ApplyLeaveComponent implements OnInit {
       "invitationUpload": [null],
       "comment": ['', Validators.required]
     })
+
+    // this.ss.responsive.observe(AtaiBreakPoints.)
 
   }
 

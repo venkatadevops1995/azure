@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "./assets/scss/reset";
-@import "./assets/scss/flex";
+@import "./assets/scss/flex-grid";
 @import "./assets/scss/flex-align";
 
 
@@ -20,15 +20,15 @@ body {
 }
 
 * {
-  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif; 
+  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
 }
 
 img {
   max-width: 100%;
 }
- 
+
 /* svg icons */
-.use-svg{
+.use-svg {
   cursor: pointer;
 }
 
@@ -60,36 +60,6 @@ img {
   color: var(--col-primary-100);
 }
 
-/* in apply leave pop  up the tabs content need not be shown */
-.apply-leave {
-  .mat-tab-body-wrapper {
-    display: none;
-  }
-
-  .mat-tab-header {
-    border-bottom: none;
-  }
-
-  .mat-tab-group.mat-accent .mat-ink-bar,
-  .mat-tab-nav-bar.mat-accent .mat-ink-bar {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, var(--col-accent-700) 29%, var(--col-accent-500) 31%, var(--col-accent-300) 50%, var(--col-accent-500) 70%, var(--col-accent-700) 72%, rgba(0, 0, 0, 0) 100%);
-
-  }
-
-  .mat-ink-bar {
-    height: 3px;
-  }
-
-  .mat-tab-label {
-    flex-grow: 1;
-  }
-
-  .slide-anim {
-    height: 0px;
-    overflow: hidden;
-  }
-
-}
 
 
 .ng-tooltip {
@@ -99,10 +69,10 @@ img {
   text-align: center;
   color: var(--col-primary-200);
   padding: 3px 8px;
-  background: linear-gradient(to bottom, var(--col-primary-500),var(--col-primary-600));
+  background: linear-gradient(to bottom, var(--col-primary-500), var(--col-primary-600));
   border-radius: 4px;
   z-index: 1000;
-  opacity: 0; 
+  opacity: 0;
   width: 150px;
 }
 
@@ -148,6 +118,17 @@ img {
   opacity: 1;
 }
 
+// affix directive classes for fixing the elements
+.affix-target {
+  position: fixed !important;
+  top: 0px;
+  z-index: 11;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+}
 
 ::placeholder {
   font-size: 12px;
@@ -162,9 +143,7 @@ input::placeholder {
 ::-webkit-scrollbar {
   width: 5px;
   height: 7px;
-
-  position: relative;
-  right: -20px;
+  position: relative; 
 }
 
 ::-webkit-scrollbar-button {

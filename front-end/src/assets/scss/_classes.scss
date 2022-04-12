@@ -50,8 +50,14 @@
 .fg-1{
     flex-grow: 1;
 }
+.fg-5 {
+  gap: 5px;
+}
 .of-auto{
     overflow: auto;
+}
+.of-x-auto{
+    overflow-x: auto;
 }
 .header-gradient{    
     background: linear-gradient(170.84deg, var(--col-primary-500) -49.76%, var(--col-primary-900) 190.96%);

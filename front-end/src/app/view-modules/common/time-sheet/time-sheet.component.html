@@ -5,7 +5,7 @@
 
     </div>
   </div>
-  <div *ngIf="showHeader" class="timesheet__head header-gradient">
+  <div [ataiAffix]="{top:0 ,referenceHierarchy:'p.p.p', disable:false }" [scrollX]="translateTitle" *ngIf="showHeader" class="timesheet__head header-gradient">
     <div class="week">
       <span class="translate-title-text">Week {{data?.week_number}}</span>
     </div>

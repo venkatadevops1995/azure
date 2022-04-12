@@ -1,4 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ConnectionPositionPair, Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, OnInit, Optional, Output, Renderer2, Self, SimpleChange, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
@@ -6,7 +7,8 @@ import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, NG_VALUE_A
 import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState, NativeDateAdapter } from '@angular/material/core';
 import { DateRange, MatCalendar, MatCalendarCell, MatCalendarCellCssClasses, MatCalendarUserEvent, MatDateSelectionModel, MatRangeDateSelectionModel, MatSingleDateSelectionModel } from '@angular/material/datepicker';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject, Subscription, take } from 'rxjs';
+import { Subject, Subscription, take, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export type SelectionPresetTypes = Array<'Last 7 Days' | 'Last 30 Days' | 'This Month' | 'Last Month'>
 
@@ -150,6 +152,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // mat calendar 
   @ViewChild(MatCalendar) calendar: MatCalendar<any>;
 
+  // dateIconWidth: number = 20;
+
   // for mat
   get value(): any {
     return this._model.selection;
@@ -227,6 +231,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // for mat
   focused = false;
 
+  // boolean to hold if the current width is less than LG (1350px)
+  is_LG_LT: boolean = false;
+
   @HostBinding('attr.aria-describedby') describedBy = '';
 
   setDescribedByIds(ids: string[]) {
@@ -252,7 +259,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     @Optional() public override _parentFormGroup: FormGroupDirective,
     @Optional() @Self() public override ngControl: NgControl,
     private fm: FocusMonitor,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private responsive: BreakpointObserver
   ) {
     super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl)
     fm.monitor(el.nativeElement, true).subscribe(origin => {
@@ -285,6 +293,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       })
     }
 
+    this.responsive.observe(AtaiBreakPoints.LG_LT).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      this.is_LG_LT = val.matches
+    })
+
     // to set the startAt monthView
     this._model.add(new Date)
     this._model.add(new Date)
@@ -297,6 +309,10 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         e.preventDefault();
       })
     }
+    // let svgFontSize = parseInt((getComputedStyle(this.el.nativeElement.querySelector('.use-svg') as any)).fontSize);
+    // this.dateIconWidth = svgFontSize * 1.5;
+    // this.cdRef.detectChanges()
+    // console.log(svgFontSize)
   }
 
   ngDoCheck() {
@@ -535,10 +551,14 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       .withFlexibleDimensions(false)
       .withPush(false);
 
+
+
+    let globalPositionStrategy = this.overlay.position().global().centerHorizontally().centerVertically();
+
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       panelClass: ['atai-date-range-calendar-wrap', 'is-active'],
-      positionStrategy: positionStrategy
+      positionStrategy: this.is_LG_LT ? globalPositionStrategy : positionStrategy
     })
 
     this.overlay.position().flexibleConnectedTo(this.dateFieldRef).withPositions

@@ -4,16 +4,16 @@
 </a> -->
 <!-- (click)="onClickChnagePassword()" -->
 
-<div class="flex  fg-1 ">
+<div class="flex  fg-1 " *ngIf="leaveFlag == true && !is_MD_LT">
   <div style="flex-grow:0.7;"></div>
-  <app-header-search *ngIf="leaveFlag == true"></app-header-search>
+  <app-header-search   ></app-header-search>
   <div style="flex-grow:0.3;"></div>
 </div>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
   <div class="compliances" *ngIf="leaveFlag == true">
 
-    <div class="compliances__item" *ngFor="let com of compliances">
+    <div class="compliances__item mr-10 mr-sm-15" *ngFor="let com of compliances">
       <svg width="26" height="26">
         <defs>
           <linearGradient id="red-compliance" gradientTransform="rotate(45)">
@@ -46,7 +46,7 @@
     Logout
   </app-button>
 
-  <div class="logout-icon">
+  <div class="logout-icon" (click)="logout()">
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
       <defs>
         <linearGradient id="red-compliance" gradientTransform="rotate(45)">

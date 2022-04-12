@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ButtonModule } from '../button/button.module';
 import { ReactiveFormsModule } from '@angular/forms';

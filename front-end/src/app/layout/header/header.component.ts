@@ -5,6 +5,7 @@ import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import MatchPassword from 'src/app/functions/validations/password';
 import { HttpClientService } from 'src/app/services/http-client.service';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -14,22 +15,23 @@ export class HeaderComponent implements OnInit {
 
   // boolean properties used to toggle password to text and text to password for both the fields
   // com = [{'week':1,'cnt':1},{'week':2,'cnt':0},{'week':3,'cnt':0},{'week':4,'cnt':0},{'week':5,'cnt':1}]
-  compliances :any;
+  compliances: any;
   isHr: boolean = false;
-  showEmailToggle :boolean = false;
-  isEmailEnabled:boolean = false;
+  showEmailToggle: boolean = false;
+  isEmailEnabled: boolean = false;
   hide: any = {
     password: true,
     retypePassword: true
   }
-  value:any;
-  
-  role_id:Number=this.user.getRoleId();
-  is_admin:Boolean=this.user.getIsEmpAdmin();
-  leaveFlag:Boolean = false;
+  value: any;
+
+  role_id: Number = this.user.getRoleId();
+  is_admin: Boolean = this.user.getIsEmpAdmin();
+  leaveFlag: Boolean = false;
   // template ref element for the modal pop up of change password
   @ViewChild('refModalChangePassword') modalChangePassword: ModalPopupComponent;
 
+  is_MD_LT: boolean = false
 
 
   // form group for Change password form
@@ -41,69 +43,72 @@ export class HeaderComponent implements OnInit {
   constructor(
     private user: UserService,
     private ss: SingletonService,
-    private http:HttpClientService
+    private http: HttpClientService
   ) {
     this.fgChangePassword = this.ss.fb.group({
       currentpassword: ["", [Validators.required]],
       newPassword: ["", [Validators.required]],
       retypeNewPassword: ["", [Validators.required, MatchPassword('password')]]
-      });
-        this.fgChangePassword.get('newPassword').setValidators([Validators.required, MatchPassword('retypeNewPassword')])
-        
+    });
+    this.fgChangePassword.get('newPassword').setValidators([Validators.required, MatchPassword('retypeNewPassword')])
+    this.ss.responsive.observe(AtaiBreakPoints.MD_LT).subscribe((val) => {
+      this.is_MD_LT = val.matches
+    })
   }
 
   ngOnInit(): void {
-   
+
     this.isHr = this.user.getIsEmpAdmin();
-    this.showEmailToggle = (this.user.getRoleId()>2);
-    if(this.showEmailToggle ){
+    this.showEmailToggle = (this.user.getRoleId() > 2);
+    if (this.showEmailToggle) {
       this.getEmailToggleStatus();
-  }
+    }
     this.getCompliance();
-    ;
-    console.log("---------------------------leaveFlag",this.leaveFlag)
+    console.log("---------------------------leaveFlag", this.leaveFlag)
     this.http.noLoader(true).request("get", 'leavestatus/').subscribe(leave_res => {
       this.leaveFlag = leave_res.body.leave_flag;
     })
   }
-  getEmailToggleStatus(){
-    this.http.request('get', 'leave/mail-opted', "", ).subscribe(res => {
+  getEmailToggleStatus() {
+    this.http.request('get', 'leave/mail-opted', "",).subscribe(res => {
       console.log(res)
       if (res.status == 200) {
-        this.isEmailEnabled=res.body.results['email-opted'].toLowerCase() == 'true' ? true : false;
-      }})
+        this.isEmailEnabled = res.body.results['email-opted'].toLowerCase() == 'true' ? true : false;
+      }
+    })
   }
-  onEmailToggle(event){
+  onEmailToggle(event) {
     let status = 0;
-    if(event.checked){
-      status=1
+    if (event.checked) {
+      status = 1
     }
-    let requestBody={'status': status}
+    let requestBody = { 'status': status }
     this.http.request('post', 'leave/mail-opted/', '', requestBody).subscribe(res => {
       let status = res.status
       if (status == 200) {
         this.ss.statusMessage.showStatusMessage(true, res.body.message)
       } else {
-          this.ss.statusMessage.showStatusMessage(false, res.error['message'])
+        this.ss.statusMessage.showStatusMessage(false, res.error['message'])
       }
-    }); 
+    });
   }
-  getCompliance(){
-    this.http.request('get', 'compliance/', "", ).subscribe(res => {
+  getCompliance() {
+    this.http.request('get', 'compliance/', "",).subscribe(res => {
       console.log(res)
       if (res.status == 200) {
-        this.compliances=res.body.results;
-      }})
+        this.compliances = res.body.results;
+      }
+    })
 
   }
- 
- 
+
+
 
   //on clicking on change password link
   onClickChnagePassword() {
     this.modalChangePassword.open()
   }
-  
+
 
   //on changing passsword
   onModalChangePasswordSubmit(value) {
@@ -114,7 +119,7 @@ export class HeaderComponent implements OnInit {
   onChangeInput() {
     this.fgChangePassword.get('retypeNewPassword').updateValueAndValidity();
     this.fgChangePassword.get('newPassword').updateValueAndValidity();
-}
+  }
 
   logout() {
     this.user.logout();
