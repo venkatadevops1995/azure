@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, Inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
@@ -123,7 +123,8 @@ export class ManageUserComponent implements OnInit {
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
     public dialogRef: MatDialogRef<any>,  
 //*****************************************************************************************
-    private user: UserService) {
+    private user: UserService,
+    private el:ElementRef) {
       this.fgSearch = this.ss.fb.group({
         filtervalue: ["", [Validators.required]],
       }),
@@ -133,6 +134,33 @@ export class ManageUserComponent implements OnInit {
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
      }
+
+     //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
+@HostListener('click',['$event'])
+onClickHost(e){
+let target:any = e.target;
+let tempTarget = target;
+console.log("--------------click");
+// if(e.target.classList.contains('edit')){
+//   let index=e.target.getAttribute("index");
+//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+//   this.editUser(index);
+// }
+
+while(tempTarget != this.el.nativeElement){
+if(tempTarget.classList.contains('edit')){
+  console.log('::::::::::::::clicked on the edit icon');
+    let index = tempTarget.getAttribute("index");
+      this.editManagers(index);
+      break;
+     }
+     tempTarget = tempTarget.parentNode;
+  }
+ 
+}
+
+//**************************************************************************** 
+
      private filterManagerList(value: string) {
       const filterValue = value.toLowerCase();
       return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))

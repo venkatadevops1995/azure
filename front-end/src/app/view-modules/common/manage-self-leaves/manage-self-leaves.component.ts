@@ -237,7 +237,9 @@ export class ManageSelfLeavesComponent implements OnInit {
         let target = e.target;
         let dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
-                confirmMessage: "Are you sure you want to cancel leave application ?"
+                confirmMessage: "Are you sure you want to cancel leave application ?",
+                Cancel:'No',
+                Proceed:'Yes'
             },
             panelClass: 'confirm-popup'
         })

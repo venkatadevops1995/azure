@@ -24,7 +24,7 @@
   <div style="overflow-x: auto;width: 100%;">
 
 
-  <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
+  <table  mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
     <ng-container  matColumnDef="serial_no">
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
       <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
@@ -62,21 +62,35 @@
     <ng-container   matColumnDef="edit">
     
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
-      <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
+      <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
       
-        <svg (click)="editUser(i)" class="use-svg" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg>
+<!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+<!-- Previous code-->
+        <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> --> 
+ <!-- new code -->
+        <svg [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg>
+        <!-- ****************************************************** -->
       </td>
     </ng-container>
     <ng-container   matColumnDef="disable">
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> Disable</th>
       <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
-
-        <button class="action--btn" (click)="setId(i); disableEmppopupopen()"
+<!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+<!-- Previous code-->
+   <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
+          [disabled]="element.staging_status !== null ? true : false"
+          [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
+          title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
+          svg-fill="currentColor"> -->
+          <!-- ****************************************************** -->
+<!-- new code -->
+          <button class="action--btn disable" [attr.index] = 'i' 
           [disabled]="element.staging_status !== null ? true : false"
           [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
           title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
           svg-fill="currentColor">
           <svg class="use-svg" symbol="disable" [w]="16"></svg>
+            
         </button>
       </td>
     </ng-container>

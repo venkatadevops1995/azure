@@ -1,6 +1,6 @@
 <div >
   <h2 class="heading">Document Configuration</h2>
-  <div style="margin: 10px 0px 0px 100px" > 
+  <div [ngClass]="Is_match ? 'margin_next' : 'margin_prev'" > 
     <mat-tab-group color="accent" [animationDuration]="100"
       [selectedIndex]="tabIndexControl.value"
       (selectedIndexChange)="setTab($event)"
@@ -423,9 +423,10 @@
         <input [formControl]="employeeSearchControl" matInput />
       </mat-form-field>
     </div>
-
-    <div style="display: flex; justify-content: space-between">
-      <div class="custom_checkbox" style="margin: 0px 10px 0px;accent-color:var(--col-accent-500)">
+    <!-- Rahul change In order to get previous layout remove flex-class and add style->display:flex -->
+<div [ngClass]="Is_match ?'w-90':'w-70'" class="flex between-xs" >
+    <div class="flex">
+      <div class="custom_checkbox mr-10" style="accent-color:var(--col-accent-500)">
         <input
           type="checkbox"
           id="allIn"
@@ -438,8 +439,9 @@
         <label for="allIn">All</label>
       </div>
       <div
-        class="custom_checkbox"
-        style="margin: 0px 10px 0px;accent-color:var(--col-accent-500)"
+        class="custom_checkbox mr-15"
+        
+        style="accent-color:var(--col-accent-500)"
         *ngFor="let com of companyList.subtasks"
       >
 
@@ -456,7 +458,7 @@
                     {{com}} -->
       </div>
       <!-- Rahul change(adding select and done button in same column)**************** -->
-      <app-button
+      <!-- <app-button
       style="float: right"
       size="small"
       theme="blue-lite"
@@ -464,10 +466,10 @@
       w="130"
       (click)="selectEmployeeList()"
       >Done
-    </app-button>
+    </app-button> -->
       <!-- *************************************************** -->
     </div>
-    <!-- <div>
+    <div>
       <app-button
         style="float: right"
         size="small"
@@ -477,14 +479,26 @@
         (click)="selectEmployeeList()"
         >Done
       </app-button>
-    </div> -->
+    </div>
+
+</div>
+
   </div>
-  <div  style="max-height:500px;overflow: auto;">
+<!-- Rahul change(Showing No employee Data when disable all button)******** -->
+  <div style="text-align: center">
+    <p class="p-20 col-primary-300 fs-14"
+     *ngIf="DisableCheck">
+      No employee Data
+    </p>
+  </div>
+<!-- ******************************************************
+********************************************* -->
+  <div  style="max-height:325px;overflow: auto;">
     <table
       mat-table
       [dataSource]="EMPLOYEE_FILTERED_DATA"
       *ngIf="EMPLOYEE_FILTERED_DATA.length != 0"
-      class="w-100 mat-elevation-z8"
+      class="modifier w-100 mat-elevation-z8"
     >
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef style="width: 80px">
@@ -675,12 +689,12 @@
         No employee has been selected
       </p>
     </div>
-    <div style="max-height:500px; overflow: auto;">
+    <div style="max-height:400px; overflow: auto;">
     <table
       mat-table
       [dataSource]="SELECTED_EMPLOYEE_DATA"
       *ngIf="SELECTED_EMPLOYEE_DATA.length != 0"
-      class=" w-100 mat-elevation-z8"
+      class="modifier w-100 mat-elevation-z8"
     >
       <ng-container matColumnDef="serial_no">
         <th mat-header-cell *matHeaderCellDef>S.No.</th>

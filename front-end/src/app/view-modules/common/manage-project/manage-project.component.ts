@@ -66,7 +66,8 @@ export class ManageProjectComponent implements OnInit {
 //*****************************************************************************************
 
 // ***********************************************************************************************
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private el:ElementRef) {
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
     }),
@@ -115,6 +116,31 @@ export class ManageProjectComponent implements OnInit {
 
 
   }
+//Rahul change(adding event daligation for table row when clicking on edit ) *******************************
+@HostListener('click',['$event'])
+onClickHost(e){
+let target:any = e.target;
+let tempTarget = target;
+console.log("--------------click");
+// if(e.target.classList.contains('edit')){
+//   let index=e.target.getAttribute("index");
+//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+//   this.editUser(index);
+// }
+
+while(tempTarget != this.el.nativeElement){
+if(tempTarget.classList.contains('edit')){
+  console.log('::::::::::::::clicked on the edit icon');
+    let index = tempTarget.getAttribute("index");
+      this.openEditDialog(index);
+      break;
+     }
+     tempTarget = tempTarget.parentNode;
+  }
+ 
+}
+
+//**************************************************************************** 
 
   
   filterManagerList(value: string) {

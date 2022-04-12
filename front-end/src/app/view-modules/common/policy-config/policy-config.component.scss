@@ -108,7 +108,7 @@ label input {
 .custom_checkbox>input[type=checkbox]+label {
     display: inline-block; 
     border-radius: 20px;
-    padding: 5px 19px;
+    padding: 3px 19px;
     margin-bottom: 0;
     font-size: 12px;
     line-height: 1.70;
@@ -123,8 +123,11 @@ label input {
 .custom_checkbox>input[type=checkbox]:checked+label {
     background-image: none;
     outline: 0; 
-    border: 2px solid var(--col-accent-500);    
+    border: 2px solid var(--col-accent-500);  
+    // border: 2px solid var(--col-primary-200);   
+    // background:var(--col-primary-400) ;
     color:var(--col-primary-200);  
+    // color:#fff;
 }
 
 // .selectedBg {
@@ -134,3 +137,9 @@ label input {
     display: none;
   }
 
+.margin_prev{
+    margin:10px 0px 0px 100px;
+}
+.margin_next{
+margin:  10px 0px 0px 0px;
+}

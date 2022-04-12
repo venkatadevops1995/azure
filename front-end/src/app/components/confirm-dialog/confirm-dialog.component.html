@@ -17,12 +17,12 @@
   </ng-template>
   <div style="position: relative;top:0px;" *ngIf="!dataMerged?.template">
     <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
-      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial theme="grey" type="button">
-        Cancel
+      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial  theme="grey" type="button">
+        {{ dataMerged?.Cancel}}
       </app-button>
       <div class="mr-5 ml-10" *ngIf="!dataMerged?.onlyForAlert">
-        <app-button [mat-dialog-close]="dataMerged?.showTextbox ? {text:fcText.value}: true" theme="blue-lite" type="button">
-          Proceed</app-button>
+        <app-button [mat-dialog-close]="dataMerged?.showTextbox ? {text:fcText.value}: true"  theme="blue-lite" type="button">
+          {{ dataMerged?.Proceed}}</app-button>
       </div>
     </mat-dialog-actions>
   </div>
