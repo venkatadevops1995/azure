@@ -123,11 +123,11 @@ label input {
 .custom_checkbox>input[type=checkbox]:checked+label {
     background-image: none;
     outline: 0; 
-    border: 2px solid var(--col-accent-500);  
-    // border: 2px solid var(--col-primary-200);   
-    // background:var(--col-primary-400) ;
-    color:var(--col-primary-200);  
-    // color:#fff;
+    // border: 2px solid var(--col-accent-500);  
+    border: 2px solid var(--col-primary-200);   
+    background:var(--col-primary-400) ;
+    // color:var(--col-primary-200);  
+    color:#fff;
 }
 
 // .selectedBg {
