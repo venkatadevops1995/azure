@@ -31,37 +31,7 @@ li {
         grid-template-columns:repeat(3,1fr) ;
     }
    
-}
-  // common grid container for each row
-// .grid-container {
-//     display: grid;
-//     grid-template-columns: 1fr 1fr 1fr ;
-//     column-gap: 4.5em;
-//     @media (max-width:bp.$lg+'px') {
-//         column-gap:1.5em;
-//     }
-    // border-radius: 10px;
-    // margin: 0 0 10px;
-    // padding: 4px;
-// }
-// .grid-container-mod2{
-//     display: grid;
-//     grid-template-columns: 1fr 1fr;
-   
-// }
-// .grid-container-mod3{
-//     display: grid;
-
-//     grid-template-columns: 1fr 1fr 1fr;
-// }
-//css for material date picker
-
-// setting the mat-form-field for taking full avalable width inside 
-// grid cell
-// ::ng-deep .mat-form-field-wrapper {
-//     width: 100%;
-// }
-/////////////////////////////////////
+} 
 .box2 {
     grid-row: 3 /span 1;
 }
@@ -70,9 +40,7 @@ li {
     grid-row: 4;
 }
 
-mat-form-field {
-    // width: 200px;
-    font-size:14px !important;
+mat-form-field { 
     padding: 4px;
 }
 

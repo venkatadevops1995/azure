@@ -57,7 +57,7 @@
 }
 
 .hr-grid {
-//   grid-template-columns: 250px 0.5fr 180px;
+  //   grid-template-columns: 250px 0.5fr 180px;
 }
 
 .logout-icon {
@@ -112,7 +112,7 @@
   }
 
   .hr-grid {
-    grid-template-columns: 1fr  40px;
+    grid-template-columns: 1fr 40px;
   }
 
   .l0-grid {
@@ -130,11 +130,20 @@
     justify-content: space-between;
     width: 100%;
   }
+
+  .compliances {
+    .compliances__item {
+        height: 22px;
+        span{
+            font-size: 8px;
+        }
+    }
+  }
 }
 
 @media screen and (max-width:550px) {
   .compliances {
-    max-width: 100px;
+    max-width: 130px;
     justify-content: center;
     flex-wrap: wrap;
   }

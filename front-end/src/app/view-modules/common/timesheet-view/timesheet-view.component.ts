@@ -215,6 +215,7 @@ export class TimesheetViewComponent implements OnInit {
           this.wsrActiveProjectsVisible.push(projectToBeAdded);
           this.wsrActiveProjectsHidden.splice(index, 1);
           (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
+          this.showProjectList = false;
           break;
         } else if (tempTarget.classList.contains('wsr__sel-project-toggle')) {
           this.showProjectList = !this.showProjectList;

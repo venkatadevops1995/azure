@@ -388,11 +388,12 @@ mat-dialog-container.mat-dialog-container {
 // ******************************************************** 
 // Rahulchange (adding font family for table universal)**********************
 
-.mat-table{
- min-width:800px;
-      &.modifier{
-        min-width:unset !important;
-      }
+.mat-table {
+  min-width: 800px;
+
+  &.modifier {
+    min-width: unset !important;
+  }
 }
 
 
@@ -461,6 +462,31 @@ mat-dialog-container.mat-dialog-container {
 
 }
 
+/* Mat toggle small switch button */
+.mat-slide-toggle {
+  &.small {
+    .mat-slide-toggle-bar {
+      width: 27px;
+      height: 10px;
+    }
+    .mat-slide-toggle-thumb-container{
+      width: 15px;
+      height: 15px;
+      top:-2px;
+    }
+    .mat-slide-toggle-ripple{
+      width: 30px;
+      height: 30px;
+      top: calc(50% - 15px);
+      left: calc(50% - 15px);
+    }
+    .mat-slide-toggle-thumb{
+      width: 15px;
+      height: 15px;
+    }
+  }
+}
+
 @media screen and (max-width:768px) {
   .apply-leave {
     .mat-tab-label {
@@ -476,11 +502,13 @@ mat-dialog-container.mat-dialog-container {
     position: relative;
     right: 0;
   }
-  .mat-paginator-container{
+
+  .mat-paginator-container {
     flex-direction: column;
     margin-top: 20px;
   }
-  .mat-paginator-page-size-select{
+
+  .mat-paginator-page-size-select {
     margin-top: 0px;
   }
 }

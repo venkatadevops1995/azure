@@ -89,18 +89,21 @@ export class LeavePolicyConfigComponent implements OnInit {
 
     ngAfterViewInit() {
         fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            if(window.innerWidth > 1024){
-
-            }else{
+            if (window.innerWidth > 1024) {
+                this.translateLeaveCredit.value = 0
+            } else {
                 let target: HTMLElement = e['target'];
                 this.translateLeaveCredit.value = target.scrollLeft
-                console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
             }
         })
         fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            let target: HTMLElement = e['target'];
-            this.translateNewHire.value = target.scrollLeft
-            console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
+            if (window.innerWidth > 1024) {
+                this.translateLeaveCredit.value = 0
+            } else {
+                let target: HTMLElement = e['target'];
+                this.translateNewHire.value = target.scrollLeft
+                console.log(this.translateLeaveCredit, target.scrollLeft, target.scrollWidth)
+            }
         })
     }
 

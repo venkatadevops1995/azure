@@ -51,6 +51,8 @@ export class HeaderComponent implements OnInit {
   // is user search mobile open 
   isUserSearchMobileOpen: boolean = false;
 
+  // get 
+
   constructor(
     private user: UserService,
     private ss: SingletonService,
