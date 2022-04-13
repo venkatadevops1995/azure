@@ -12,7 +12,7 @@
         </mat-autocomplete>
       </mat-form-field>
       <div class="flex end-xs middle-xs" style="margin-top: -8px;">
-        <app-button [disabled]="searchField.invalid" (click)="getAllReportes()">Submit
+        <app-button [disabled]="searchField.invalid" [size]="is_XMD_LT ? 'small' : 'default'"  (click)="getAllReportes()">Submit
         </app-button>
       </div>
 

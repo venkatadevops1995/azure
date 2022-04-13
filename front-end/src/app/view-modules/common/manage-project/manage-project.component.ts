@@ -12,7 +12,9 @@ import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
 
 import { ComponentPortal } from '@angular/cdk/portal';
-
+import { take} from 'rxjs/operators';
+import { Subject, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 export interface Project {
   id: number,
   name: string
@@ -57,7 +59,11 @@ export class ManageProjectComponent implements OnInit {
   filtervalue = new FormControl();
   employeeList: any[] = [];
   showMessage = false
-
+//Rahul change(adding variable for use breakpoint observer api using singlton service)************
+get is_XMD_LT(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+}
+//*******************************************************************************************
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
@@ -76,7 +82,7 @@ export class ManageProjectComponent implements OnInit {
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeList)
         );
-
+ 
 
   }
 

@@ -47,7 +47,15 @@ export class PolicyConfigComponent implements OnInit {
 
 
 //  Rahul change(setting a boolean var to find out range is matches to meadiaquery)*****
-Is_match:boolean;
+// Is_match:boolean;
+get Is_match(){
+  return this.ss.responsive.isMatched([AtaiBreakPoints.XMD_LT,
+     ])
+}
+get Is_SM(){
+  return this.ss.responsive.isMatched([AtaiBreakPoints.SM,AtaiBreakPoints.XS
+     ])
+}
 //  ******************************************************************************
 DisableCheck:boolean=false;
 
@@ -126,20 +134,20 @@ DisableCheck:boolean=false;
       this.showUploadBlock = true;
       this.getPolicyType()
     }
-    // Rahul change(Using breakpoint observer Api)************
-    this.responsive.observe([AtaiBreakPoints.XS,
-      AtaiBreakPoints.SM,AtaiBreakPoints.MD
-     ]
-      ).subscribe(res=>{
-      // console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches)
-      this.Is_match=res.matches;
-      if(res.matches)
-      {
-        console.log('hello the breakpoints has been matches');
-      }
-       console.log('!!!!!!!!!!@@@@@@@@@@@##########',this.Is_match);
-      console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches);
-    })
+    // // Rahul change(Using breakpoint observer Api)************
+    // this.responsive.observe([AtaiBreakPoints.XS,
+    //   AtaiBreakPoints.SM,AtaiBreakPoints.MD
+    //  ]
+    //   ).subscribe(res=>{
+    //   // console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches)
+    //   this.Is_match=res.matches;
+    //   if(res.matches)
+    //   {
+    //     console.log('hello the breakpoints has been matches');
+    //   }
+    //    console.log('!!!!!!!!!!@@@@@@@@@@@##########',this.Is_match);
+    //   console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches);
+    // })
    
     // ***********************************************************
     // *****************************************************

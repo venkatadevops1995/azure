@@ -13,7 +13,8 @@ import { map, startWith, take } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-
+import { Subject, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export interface UserData {
   emp_id: number;
@@ -56,7 +57,11 @@ export class EditUserComponent implements OnInit {
 
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
 
-
+  //Rahul change(adding variable for use breakpoint observer api using singlton service)************
+  get is_XMD_LT(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+  }
+  //*******************************************************************************************
 
 
 
@@ -80,6 +85,9 @@ export class EditUserComponent implements OnInit {
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
       );
+
+  
+
   }
   deleteUserForm = this.fb.group({
     'dol': ['', [Validators.required, NoDate()]],

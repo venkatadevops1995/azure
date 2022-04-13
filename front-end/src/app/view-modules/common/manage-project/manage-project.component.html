@@ -19,7 +19,7 @@
         </mat-form-field>
         <!-- <p *ngIf="show" style="color: var(--color-danger);">Select Leader from list</p> -->
         <div class="flex end-xs middle-xs" style="margin-top: -25px;">
-          <app-button>Submit
+          <app-button [size]="is_XMD_LT ? 'small' : 'default'">Submit
           </app-button>
         </div>
       </div>
@@ -57,7 +57,7 @@
   <ng-container matColumnDef="serial_no">
     <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
     <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
-      [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{i+1}} {{element.staging_status}} </td>
+      [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{i+1}}  </td>
   </ng-container>
 
   <ng-container matColumnDef="emp_name">

@@ -84,7 +84,11 @@ export class ManageUserComponent implements OnInit {
   edited_emp_name: any = ""
   PROJECT_LIST: ProjectData[] = []
   GROUPS_DATA = []
-
+//Rahul change(adding variable for use breakpoint observer api using singlton service)************
+get is_XMD_LT(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+}
+//*******************************************************************************************
   ALL_CATEGORIES = []
   effected_emp_count = 0;
 
@@ -139,6 +143,7 @@ export class ManageUserComponent implements OnInit {
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
+
      }
 
      //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
@@ -745,8 +750,14 @@ if(tempTarget.classList.contains('edit')){
 
       if (res.status == 200) {
         this.ss.statusMessage.showStatusMessage(true, "Role has been changed successfully");
-        this.edited_emp_name = ""
-        this.editManagerPopup.close();
+        this.edited_emp_name = "";
+        //Previous code 
+        // this.editManagerPopup.close();
+        //New code
+         // Rahul change (closing the EditManagerDialog when employee role changed successfully)***************************************
+         this.dialogRef.close()
+         //*************************************************************************** 
+        console.log('@@@@@@!!!!!!!!!$$$$$$$$$$$ edit manager popup close successfully');
         this.getAllReportes();
       } else {
         this.ss.statusMessage.showStatusMessage(false, "Issue while changing the role");

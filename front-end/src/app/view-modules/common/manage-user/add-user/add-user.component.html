@@ -157,7 +157,7 @@
                       <li  class="mb-lg-5"
                       *ngFor="let role of ROLES;let i=index">
                         <!-- <div class="container"> -->
-                        <label class="container mr-10 mb-5 " style="color:var(--col-primary-100)"> {{role.name}}
+                        <label class="container mr-25 mb-5 " style="color:var(--col-primary-100)"> {{role.name}}
                           <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
                           <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
                             [checked]="role.selected" [disabled]="role.disabled">
@@ -233,10 +233,11 @@
       <!-- col has been removed from here ie removed flex-direction colum -->
         <div class="flex no-lg-wrap center-xs mt-xmd-30 mt-20 "mat-dialog-actions>
           <div  class="pr-20" style="display: inline-block;padding-bottom: 10px;">
-            <app-button  type="button" theme="grey" (click)="reset()"  >Reset All</app-button>
+            <app-button  type="button" theme="grey" [size]="is_XMD_LT ? 'small' : 'default'" (click)="reset()"  >Reset All</app-button>
           </div>
           <div style="padding-bottom: 10px;">
-            <app-button  type="submit"  [disabled]="!addUserForm.valid" >Add Employee</app-button>
+            <app-button  type="submit" [size]="is_XMD_LT ? 'small' : 'default'"
+            [disabled]="!addUserForm.valid" >Add Employee</app-button>
           </div>
        
         
