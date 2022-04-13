@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
@@ -12,6 +13,11 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./import-export-leave.component.scss']
 })
 export class ImportExportLeaveComponent implements OnInit {
+
+
+  get is_MD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,

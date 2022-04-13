@@ -6,13 +6,13 @@
 <div #refHeaderSearchMobile class="user-search-mobile flex center-xs"
   *ngIf="(leaveFlag && is_MD_LT && isUserSearchMobileOpen)">
   <app-header-search (userSelected)="isUserSearchMobileOpen = false;" [stopOptionClickPropagation]="true"
-    (click)="onClickUserSearchMobile($event) " class="mt-10"></app-header-search>
+    (click)="onClickUserSearchMobile($event)" class="mt-10"></app-header-search>
   <svg class="use-svg col-primary-200 user-search-mobile__close" (click)="isUserSearchMobileOpen = false;"
     symbol="circle-close-red" w="25"></svg>
 </div>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
-  <div class="compliances" *ngIf="leaveFlag == true">
+  <div class="compliances mr-sm-25" *ngIf="leaveFlag == true">
     <div class="compliances__item mr-1 mr-sm-5 mr-md-10 mr-xmd-15" *ngFor="let com of compliances">
       <svg [attr.width]="is_MD_LT ? 22 : 26" [attr.height]="is_MD_LT ? 22 : 26">
         <defs>
@@ -52,18 +52,8 @@
     Logout
   </app-button>
 
-  <div class="logout-icon" (click)="logout()">
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-      <defs>
-        <linearGradient id="red-compliance" gradientTransform="rotate(45)">
-          <stop offset="0%" stop-color="var(--col-warn-500)"></stop>
-          <stop offset="100%" stop-color="var(--col-warn-A400)"></stop>
-        </linearGradient>
-      </defs>
-      <circle r="16" cx="18" cy="18" stroke="url(#red-compliance)" stroke-width="2" style="paint-order: stroke;">
-      </circle>
-    </svg>
-    <svg class="use-svg col-warn-500" symbol="eject" w="16"> </svg>
+  <div class="logout-icon" (click)="logout()"> 
+    <svg class="use-svg col-warn-500" symbol="logout" w="22"> </svg>
   </div>
 
 </div>

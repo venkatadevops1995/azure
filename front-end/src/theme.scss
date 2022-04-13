@@ -487,6 +487,10 @@ mat-dialog-container.mat-dialog-container {
   }
 }
 
+.mat-datepicker-content{
+  background: #111;
+  border:1px solid #777;
+}
 @media screen and (max-width:768px) {
   .apply-leave {
     .mat-tab-label {

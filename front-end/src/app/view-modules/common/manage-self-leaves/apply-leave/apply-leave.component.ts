@@ -295,36 +295,7 @@ export class ApplyLeaveComponent implements OnInit {
     this.destroy$.complete();
   }
 
-
-
-  // when the leave selection for half, single, multiple is changing
-  onCategoryChanged(e: MatTabChangeEvent) {
-    // let form = this.applyForm;
-    // form.get('half').reset();
-
-    // let startDate = form.get('startDate')
-    // let endDate = form.get('endDate')
-    // let halfDay = form.get('half')
-
-    // startDate.reset();
-    // startDate.clearValidators()
-    // endDate.reset()
-    // endDate.clearValidators();
-    // halfDay.clearValidators();
-    // halfDay.reset(this.leaveHours[0]);
-
-    // form.get('startDateSecondHalf').reset();
-    // form.get('endDateFirstHalf').reset();
-    // this.chosenDate();
-    // if (e.tab.textLabel == "Multiple Days") {
-    //   startDate.setValidators([Validators.required])
-    //   endDate.setValidators([Validators.required])
-    // } else if (e.tab.textLabel == 'Single Day') {
-    //   startDate.setValidators([Validators.required])
-    // } else if (e.tab.textLabel == 'Half Day') {
-    //   halfDay.setValidators([Validators.required])
-    // }   
-  }
+ 
 
   getHolidays() {
     let emp_id = this.user.getEmpId()
@@ -420,7 +391,8 @@ export class ApplyLeaveComponent implements OnInit {
                 heading: 'Submitted timesheet',
                 showCloseButton: true,
                 hideFooterButtons: true,
-                maxWidth: '800px'
+                maxWidth: '800px',
+                minWidth:'300px'
               }
             })
           }
@@ -482,8 +454,7 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   openApplyPopUp() {
-    this.applyForm.reset({ "daterange": { value: '', disabled: true } });
-    // this.applyForm.controls.daterange.disable();
+    this.applyForm.reset({ "daterange": { value: '', disabled: true } }); 
     this.leaveTypes = []
     this.http.request('get', 'leave/types').subscribe(res => {
       if (res.status == 200) {
@@ -505,18 +476,14 @@ export class ApplyLeaveComponent implements OnInit {
             }
             this.leaveTypes.push(element);
           }
-        });
-
+        }); 
 
         this.applyForm.reset()
         this.applyForm.markAsUntouched()
         this.applyForm.markAsPristine()
         this.applyFormSubmitted = false;
         this.applyForm.get('type').setValue(valToSet);
-        this.applyForm.get('category').setValue('Single Day');
-
-
-
+        this.applyForm.get('category').setValue('Single Day'); 
       }
       else {
         this.ss.statusMessage.showStatusMessage(false, "Could not get the leave types")

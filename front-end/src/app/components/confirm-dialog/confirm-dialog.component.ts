@@ -39,16 +39,15 @@ export class ConfirmDialogComponent implements OnInit {
 
   fcText: FormControl = new FormControl('')
 
-  is_XMD_LT: boolean = false;
+  get is_XMD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.XMD_LT];
+  }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ConfirmPopUpData,
     private ss: SingletonService
   ) {
-    this.dataMerged = { ...this.defaultData, ...data }
-    this.ss.responsive.observe(AtaiBreakPoints.XMD_LT).pipe(takeUntil(this.destroy$)).subscribe(val=>{
-      this.is_XMD_LT = val.matches
-    })
+    this.dataMerged = { ...this.defaultData, ...data } 
   }
 
   ngOnInit(): void {

@@ -62,8 +62,8 @@
 
 .logout-icon {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 22px;
+  height: 22px;
   position: relative;
 
   >svg {
@@ -79,7 +79,7 @@
   width: 100vw;
   top: 0px;
   height: 95px;
-  background: var(--col-primary-500);
+  background: var(--col-primary-700);
   z-index: 11;
   left: 0;
 
@@ -112,7 +112,7 @@
   }
 
   .hr-grid {
-    grid-template-columns: 1fr 40px;
+    grid-template-columns: 1fr  22px;
   }
 
   .l0-grid {

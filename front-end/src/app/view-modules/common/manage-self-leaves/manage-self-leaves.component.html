@@ -1,17 +1,19 @@
 <!-- <div class="grid container"> -->
 <div class="leaves">
-  <div class="row">
-    <div class="leaves__stats col-xs-12  col-xmd-8 col-lg-6  between-xs  middle-xs flex flex-col-xs flex-row-sm ">
-      <div class="leaves__count flex middle-xs">
-        <span class="flex center-xs middle-xs fs-20 fw-700 mr-30"
-          [ngClass]="{'negative-balance':currentBalance<0,'positive-balance':currentBalance>=0}">{{currentBalance}}</span>
-        <div class="flex col col-primary-100">
-          <span class="fs-18">Available</span>
-          <span class="fs-10">Leaves</span>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="leaves__stats col-xs-12  col-xmd-8 col-lg-6  between-xs  middle-xs flex flex-col-xs flex-row-sm ">
+        <div class="leaves__count flex middle-xs">
+          <span class="flex center-xs middle-xs fs-20 fw-700 mr-30"
+            [ngClass]="{'negative-balance':currentBalance<0,'positive-balance':currentBalance>=0}">{{currentBalance}}</span>
+          <div class="flex col col-primary-100">
+            <span class="fs-18">Available</span>
+            <span class="fs-10">Leaves</span>
+          </div>
         </div>
-      </div>
-      <div class="leaves__apply ml-sm-50 mt-20 mt-sm-0">
-        <app-button (click)="openApplyPopUp()">Apply Leave</app-button>
+        <div class="leaves__apply ml-sm-50 mt-20 mt-sm-0">
+          <app-button (click)="openApplyPopUp()">Apply Leave</app-button>
+        </div>
       </div>
     </div>
   </div>

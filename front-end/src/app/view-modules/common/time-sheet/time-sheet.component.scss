@@ -205,7 +205,7 @@
       .sel-project__btn {
         position: absolute;
         right: 0;
-        top: -17px;
+        top: -5px;
       }
 
       &.disabled {
@@ -356,6 +356,23 @@
             left: 25px;
             top: calc(100% + 25px);
             right: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width:550px) {
+  :host {
+    .timesheet__row {
+      .timesheet__row-title {
+        >span {
+          span {
+            display: inline-block;
+            max-width: 100px;
+            overflow-x: hidden;
+            word-break: keep-all;
           }
         }
       }

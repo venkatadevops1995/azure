@@ -6,10 +6,15 @@ $gutter-width: 30px;
 $half-gutter-width: $gutter-width / 2;
 $gutter-compensation: -1 * $half-gutter-width;
 
-.flex { 
-  display: flex; 
-  flex: 0 1 auto; 
-  flex-direction: row; 
+body {
+    --flex-grid-gutter: 30px;
+    --flex-grid-gutter-half: calc(var(--flex-grid-gutter) / 2);
+}
+
+.flex {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
   flex-wrap: wrap;
 
   &.inline {
@@ -23,8 +28,8 @@ $gutter-compensation: -1 * $half-gutter-width;
   display: flex;
   flex: 0 1 auto;
   flex-wrap: wrap;
-  margin-right: $gutter-compensation;
-  margin-left: $gutter-compensation;
+  margin-right: calc(-1 * var(--flex-grid-gutter-half));
+  margin-left: calc(-1 * var(--flex-grid-gutter-half));
 }
 
 @mixin grid-row-direction ($reverse:false) {
@@ -80,8 +85,8 @@ $gutter-compensation: -1 * $half-gutter-width;
   flex: 0 1 auto;
   flex-grow: 0;
   flex-shrink: 0;
-  padding-right: $half-gutter-width;
-  padding-left: $half-gutter-width;
+  padding-right: var(--flex-grid-gutter-half);
+  padding-left: var(--flex-grid-gutter-half);
 }
 
 @mixin grid-column-direction ($reverse:false) {
@@ -135,8 +140,8 @@ $gutter-compensation: -1 * $half-gutter-width;
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
-  padding-right: 2rem;
-  padding-left: 2rem;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .row {
@@ -152,11 +157,12 @@ $gutter-compensation: -1 * $half-gutter-width;
 }
 
 .flex.col {
-    -ms-flex-direction: column;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
-  }
+  -ms-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+}
+
 @mixin example-viewport ($key) {
   .col-#{$key} {
     $str: "&";

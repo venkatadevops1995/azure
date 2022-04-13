@@ -9,6 +9,7 @@ import { DateRange, MatCalendar, MatCalendarCell, MatCalendarCellCssClasses, Mat
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, Subscription, take, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { SingletonService } from 'src/app/services/singleton.service';
 
 export type SelectionPresetTypes = Array<'Last 7 Days' | 'Last 30 Days' | 'This Month' | 'Last Month'>
 
@@ -42,9 +43,7 @@ const _MatDateRangeMixinBase = mixinErrorState(MatDateRangeCompBase);
 
 })
 export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements OnInit, ControlValueAccessor, MatFormFieldControl<any>, CanUpdateErrorState {
-
-  // used to unsubscribe subscriptions
-  destroy$: Subject<any> = new Subject();
+ 
 
   // mat form field error state matcher
   @Input() override errorStateMatcher: ErrorStateMatcher;
@@ -232,7 +231,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   focused = false;
 
   // boolean to hold if the current width is less than LG (1350px)
-  is_LG_LT: boolean = false;
+  get is_LG_LT (){
+    return this.ss.responsiveState[AtaiBreakPoints.LG_LT];
+  }
 
   @HostBinding('attr.aria-describedby') describedBy = '';
 
@@ -255,6 +256,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     private nativeDateAdapter: NativeDateAdapter,
     private cdRef: ChangeDetectorRef,
     public override _defaultErrorStateMatcher: ErrorStateMatcher,
+    private ss:SingletonService,
     @Optional() public override _parentForm: NgForm,
     @Optional() public override _parentFormGroup: FormGroupDirective,
     @Optional() @Self() public override ngControl: NgControl,
@@ -292,10 +294,6 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         this.stateChanges.next()
       })
     }
-
-    this.responsive.observe(AtaiBreakPoints.LG_LT).pipe(takeUntil(this.destroy$)).subscribe(val => {
-      this.is_LG_LT = val.matches
-    })
 
     // to set the startAt monthView
     this._model.add(new Date)
@@ -709,8 +707,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   }
 
   ngOnDestroy() {
-    this.stateChanges.complete();
-    // this.destroy$.next(null);
+    this.stateChanges.complete(); 
     this.fm.stopMonitoring(this.el.nativeElement);
   }
 

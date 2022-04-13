@@ -12,9 +12,7 @@ type PopUpData = { heading?: any, hideFooterButtons?: boolean, showCloseButton?:
   templateUrl: './pop-up.component.html',
   styleUrls: ['./pop-up.component.scss']
 })
-export class PopUpComponent implements OnInit {
-
-  destroy$ : Subject<any> = new Subject();
+export class PopUpComponent implements OnInit { 
 
   // default settings data for the pop up
   defaultData: PopUpData = {
@@ -34,28 +32,22 @@ export class PopUpComponent implements OnInit {
   dataMerged: PopUpData = this.defaultData;
 
   // is medium resolutin in responsive resolutions
-  is_MD : boolean = false;
+  get is_MD(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD];
+  }
 
 
   // Rename the property to whatever you want it to be
   dialogConfig: MatDialogConfig;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: PopUpData, @Inject(MatDialogRef) public dialogRef, private ss: SingletonService) { 
-    this.dataMerged = { ...this.defaultData, ...data }
-    this.ss.responsive.observe(AtaiBreakPoints.MD).pipe(takeUntil(this.destroy$)).subscribe(val=>{
-      this.is_MD = val.matches
-    })
+    this.dataMerged = { ...this.defaultData, ...data } 
   }
 
   ngOnInit(): void {
     console.dir(`Dialog config: ${this.dialogConfig}`);
   }
-
-
-  ngOnDestroy(){
-    this.destroy$.next(null)
-    this.destroy$.complete()
-  }
+ 
 
   @HostBinding('style.max-width') get maxWidth() {
     return this.dataMerged.maxWidth;

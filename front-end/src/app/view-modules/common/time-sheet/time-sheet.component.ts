@@ -379,10 +379,7 @@ export class TimeSheetComponent implements OnInit {
 			})
 			// console.log(this.fgTotalTimeFields.value) 
 		})
-
-		this.responsive.observe(AtaiBreakPoints.MD).subscribe((val) => {
-			console.log(val)
-		})
+ 
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
