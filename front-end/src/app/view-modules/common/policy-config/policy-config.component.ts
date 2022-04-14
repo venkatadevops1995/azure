@@ -53,7 +53,7 @@ get Is_match(){
      ])
 }
 get Is_SM(){
-  return this.ss.responsive.isMatched([AtaiBreakPoints.SM,AtaiBreakPoints.XS
+  return this.ss.responsive.isMatched([AtaiBreakPoints.XS,AtaiBreakPoints.SM
      ])
 }
 //  ******************************************************************************
