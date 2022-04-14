@@ -29,11 +29,11 @@ export interface Task {
   animations: [slideAnimationTrigger]
 })
 export class PolicyConfigComponent implements OnInit {
-//  Rahul change************
-@ViewChild('selectEmp') selectEmp:TemplateRef<any>;
-@ViewChild('selectedEmpPopup') selectedEmpPopup:TemplateRef<any>;
+  //  Rahul change************
+  @ViewChild('selectEmp') selectEmp: TemplateRef<any>;
+  @ViewChild('selectedEmpPopup') selectedEmpPopup: TemplateRef<any>;
 
-//**********************
+  //**********************
   // @ViewChild('selectEmployeePopup') selectEmpModal: ModalPopupComponent;
   @ViewChild('selectedEmployeePopup') selectedEmpModal: ModalPopupComponent;
 
@@ -80,7 +80,7 @@ DisableCheck:boolean=false;
   //   "expire_on":['']
   // })
   employeeSearchControl = this.fb.control('')
-  policyUploadControl = this.fb.control('',[Validators.required])
+  policyUploadControl = this.fb.control('', [Validators.required])
   edit_policy = false
   policy_id = ''
   emp_count = 0;
@@ -90,19 +90,19 @@ DisableCheck:boolean=false;
   showUploadBlock: boolean;
 
   // to avoid the start slide animation of tab group
-  showView:boolean = false;
-  
+  showView: boolean = false;
+
   constructor(private fb: FormBuilder,
     private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    public dialog:MatDialog,
-    public dialogRef: MatDialogRef<any>,  
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<any>,
     private changeDetectorRef: ChangeDetectorRef,
-    private responsive :BreakpointObserver
-    ) {
+    private responsive: BreakpointObserver
+  ) {
     this.getCompanies()
 
 
@@ -156,7 +156,7 @@ DisableCheck:boolean=false;
   subs: any;
 
   @HostBinding('style.visibility') get visibility() {
-    return this.showView ? 'visible': 'hidden';
+    return this.showView ? 'visible' : 'hidden';
   }
 
 
@@ -214,7 +214,7 @@ DisableCheck:boolean=false;
     const allComplete = this.companyList.subtasks != null && this.companyList.subtasks.every(t => t.completed);
     this.companyList.completed = allComplete
 
-    console.log('###@@@@@@@@@@@@@@@333########',this.companyList  )
+    console.log('###@@@@@@@@@@@@@@@333########', this.companyList)
     // if(this.companyList.completed==false && this.companyList.subtasks.length==3){
     //   this.DisableCheck=true;
     //   console.log('DisableCheck1',this.DisableCheck)
@@ -222,57 +222,57 @@ DisableCheck:boolean=false;
     //   this.DisableCheck=false;
     //   console.log('DisableCheck2',this.DisableCheck)
     // }
-    
-    if(this.companyList.completed==false){
+
+    if (this.companyList.completed == false) {
       let cnt = 0
-      this.companyList.subtasks.map((sub_task)=>{
+      this.companyList.subtasks.map((sub_task) => {
         console.log("syb tasks,", sub_task)
-        if(sub_task.completed == false){
-          cnt +=1;
+        if (sub_task.completed == false) {
+          cnt += 1;
         }
         console.log("!!!!!!!!!!!!!!!!->count1", cnt)
-        if(cnt == 3){
-          this.DisableCheck=true;
-        }else{
-          this.DisableCheck=false;
+        if (cnt == 3) {
+          this.DisableCheck = true;
+        } else {
+          this.DisableCheck = false;
         }
         console.log("###############->count2", cnt)
       })
-      cnt=0;
-  }else{
-    this.DisableCheck=false;
-  }
-        
+      cnt = 0;
+    } else {
+      this.DisableCheck = false;
+    }
+
     this.updateFilterData()
 
   }
 
 
-// ********************************************************
-// *******************************************************
-// ********************************************************
-// *****************************************************
-// *****************************************************
+  // ********************************************************
+  // *******************************************************
+  // ********************************************************
+  // *****************************************************
+  // *****************************************************
   setAll(e) {
     console.log("------------------------------------------------------", e);
 
     var completed = e.target.checked
     this.companyList.completed = completed
-   
+
     if (this.companyList.subtasks == null) {
       return;
     }
     this.companyList.subtasks.forEach(t => t.completed = completed);
-    
-    if(this.companyList.completed == false){
-      this.DisableCheck=true;
-    }else{
-      this.DisableCheck=false;
+
+    if (this.companyList.completed == false) {
+      this.DisableCheck = true;
+    } else {
+      this.DisableCheck = false;
     }
 
-   console.log('%%%%%%%%%%%%%%%%%%',this.companyList)
+    console.log('%%%%%%%%%%%%%%%%%%', this.companyList)
 
- 
+
     this.updateFilterData()
 
   }
@@ -286,7 +286,7 @@ DisableCheck:boolean=false;
         comList.push({ id: e['id'], name: e['name'], completed: true })
       })
       this.companyList.subtasks = comList;
-      
+
     } else {
       this.ss.statusMessage.showStatusMessage(false, "Issue while fetching companies");
 
@@ -302,25 +302,25 @@ DisableCheck:boolean=false;
       if (this.emp_count > 0) {
         // this.discardSelectModal.open()
 
- //Rahul change Open dialogBox dynamically(rahul changes) ************************
+        //Rahul change Open dialogBox dynamically(rahul changes) ************************
         // this.publishPolicyModal.open();
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           panelClass: 'confirm-remove-project',
-          backdropClass:'cdk-overlay-darker-backdrop',
+          backdropClass: 'cdk-overlay-darker-backdrop',
           data: {
-              confirmMessage: `Are you sure to discard${this.emp_count}selected employee(s) ?`
+            confirmMessage: `Are you sure to discard${this.emp_count}selected employee(s) ?`
           }
         })
         dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-            console.log('######################',data)
-            if(data==true){
-           this.discardSelection()
-            }else{
-              this.closeDiscardSelectModal()
-            }
+          console.log('######################', data)
+          if (data == true) {
+            this.discardSelection()
+          } else {
+            this.closeDiscardSelectModal()
+          }
         })
-      
-      // **************************************************************** 
+
+        // **************************************************************** 
 
       } else {
         this.policyForm.removeControl('emp_list');
@@ -348,31 +348,31 @@ DisableCheck:boolean=false;
       this.isFetched = true
       // this.emp_count = 0
       await this.getAllUser()
-    
+
     }
-    console.log("====================", this.EMPLOYEE_DATA); 
+    console.log("====================", this.EMPLOYEE_DATA);
 
     this.updateFilterData()
     this.employeeSearchControl.reset('')
-   
-  // Rahul change (opening selected)********************************
-   // this.selectEmpModal.open();
-  this.dialogRef= this.dialog.open(PopUpComponent, {
-    data: {
-      heading: 'Select Employees',
-      template:this.selectEmp,
-      maxWidth:'850px',
-      // minWidth:'false? 80vw :420px',
-      hideFooterButtons: true,
-      showCloseButton: true,
-      padding_horizontal:false,
-      padding_vertical:false,
-      // vertical_scroll:false,
-      mb_30:false
-    },
-    autoFocus: false,
-  })
-  //*************************************
+
+    // Rahul change (opening selected)********************************
+    // this.selectEmpModal.open();
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Select Employees',
+        template: this.selectEmp,
+        maxWidth: '850px',
+        // minWidth:'false? 80vw :420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+        padding_horizontal: false,
+        padding_vertical: false,
+        // vertical_scroll:false,
+        mb_30: false
+      },
+      autoFocus: false,
+    })
+    //*************************************
     let selectedComps = []
     this.companyList.subtasks.forEach(c => {
       if (c.completed == true) {
@@ -381,7 +381,7 @@ DisableCheck:boolean=false;
     })
 
     this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedComps.indexOf(emp.company) != -1) });
-   
+
     this.subs = this.employeeSearchControl.valueChanges.subscribe(val => {
       let selectedCompanies = []
       this.companyList.subtasks.forEach(c => {
@@ -394,36 +394,37 @@ DisableCheck:boolean=false;
 
       if (val.trim() == '') {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) });
-       
+
       } else {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => {
-        
-           return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(this.searchKey) })
+
+          return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(this.searchKey)
+        })
       }
       this.updateEmpSelection()
       console.log(this.EMPLOYEE_FILTERED_DATA)
-    
+
     })
   }
 
   openSelectedEmp() {
     // Rahul change (opening modified popup for selected employee)****************
     // this.selectedEmpModal.open()
-    this.dialogRef= this.dialog.open(PopUpComponent, {
+    this.dialogRef = this.dialog.open(PopUpComponent, {
       data: {
         heading: 'Selected Employees',
-        template:this.selectedEmpPopup,
-        maxWidth:'850px',
+        template: this.selectedEmpPopup,
+        maxWidth: '850px',
         hideFooterButtons: true,
         showCloseButton: true,
-        padding_horizontal:false,
-      padding_vertical:false,
-      vertical_scroll:false,
-      mb_30:false
+        padding_horizontal: false,
+        padding_vertical: false,
+        vertical_scroll: false,
+        mb_30: false
       },
       autoFocus: false,
     })
-   // **************************************************************
+    // **************************************************************
   }
 
   closeSelectEmp(isCancelled = false) {
@@ -469,7 +470,7 @@ DisableCheck:boolean=false;
     // this.selectEmpModal.close();
     this.dialogRef.close();
     //*************************************
-    }
+  }
 
   uploadFile() {
 
@@ -577,8 +578,8 @@ DisableCheck:boolean=false;
     if (res.status == 200) {
       res.body['results'].forEach(e => {
         var emp = e;
-       
-      // console.log('!!!!!!!!!!!!!',typeof(e))
+
+        // console.log('!!!!!!!!!!!!!',typeof(e))
 
         if (this.EDITED_EMP_IDS.indexOf(e.emp_id) == -1) {
           emp["selected"] = false;
@@ -589,8 +590,8 @@ DisableCheck:boolean=false;
           this.SELECTED_EMPLOYEE_DATA.push(e)
         }
         this.EMPLOYEE_DATA.push(emp)
-        console.log('#######################',emp)
-       
+        console.log('#######################', emp)
+
       })
     } else {
       this.ss.statusMessage.showStatusMessage(false, "Issue while getting users");
@@ -674,7 +675,7 @@ DisableCheck:boolean=false;
       var comp_list = []
       res.body["results"][0]["company_list"].forEach(element => {
         comp_list.push(element.cmpny_id)
-      
+
       });
 
       this.companyList.subtasks.forEach(t => {
@@ -711,30 +712,30 @@ DisableCheck:boolean=false;
 
     // }
     if (this.policyForm.valid) {
-   
-          //Rahul change Open dialogBox dynamically(rahul changes) ************************
-        // this.publishPolicyModal.open();
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-          panelClass: 'confirm-remove-project',
-          backdropClass:'cdk-overlay-darker-backdrop',
-          data: {
-              confirmMessage: 'Are you sure to publish Policy with the selected groups?'
-          }
-        })
-        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-            console.log('######################',data)
-            if(data==true){
-           this.publishPolicy()
-            }else{
-             this.dialog.closeAll()
-            }
-        })
-      
+
+      //Rahul change Open dialogBox dynamically(rahul changes) ************************
+      // this.publishPolicyModal.open();
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        panelClass: 'confirm-remove-project',
+        backdropClass: 'cdk-overlay-darker-backdrop',
+        data: {
+          confirmMessage: 'Are you sure to publish Policy with the selected groups?'
+        }
+      })
+      dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+        console.log('######################', data)
+        if (data == true) {
+          this.publishPolicy()
+        } else {
+          this.dialog.closeAll()
+        }
+      })
+
       // **************************************************************** 
     }
   }
   closeConfirmation() {
-    
+
     // this.publishPolicyModal.close()
   }
 
@@ -745,7 +746,7 @@ DisableCheck:boolean=false;
 
 
 
-    
+
 
 
 

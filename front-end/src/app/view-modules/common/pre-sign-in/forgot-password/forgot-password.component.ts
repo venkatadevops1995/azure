@@ -24,10 +24,9 @@ export class ForgotPasswordComponent implements OnInit {
     @ViewChild("form") ngForm: NgForm;
 
     // is less than md resolutions
-    is_MD_LT: boolean = false;
-
-    // destroy
-    destroy$: Subject<any> = new Subject();
+    get is_MD_LT() {
+        return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
+    };
 
     constructor(
         private authHttp: HttpClientService,
@@ -36,19 +35,11 @@ export class ForgotPasswordComponent implements OnInit {
         this.fgForgotPassword = this.ss.fb.group({
             email: ["", [Validators.required, validateEmail]]
         });
-
-        this.ss.responsive.observe(AtaiBreakPoints.MD_LT).pipe(takeUntil(this.destroy$)).subscribe((val) => {
-            this.is_MD_LT = val.matches
-        })
     }
 
     ngOnInit() {
     }
 
-    ngOnDestroy() {
-        this.destroy$.next(null)
-        this.destroy$.complete()
-    }
     // on submiting the forgot password form
     onSubmit(e) {
         this.showSuccessMessage = true;

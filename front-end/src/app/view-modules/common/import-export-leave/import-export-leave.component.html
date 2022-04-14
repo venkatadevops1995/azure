@@ -1,11 +1,11 @@
 <h2 class="heading">
   Bulk Leave Update
 </h2>
-<div class="flex end-xs">
-  <app-button theme="grey" [dbdFileDownload]="{endPoint:'leave/config/export-emp-leave/?',responseType:'blob'}">
+<div class="flex start-xs end-md mt-15 mt-md-0">
+  <app-button theme="grey" [size]="is_MD_LT ? 'small' : 'default'" [dbdFileDownload]="{endPoint:'leave/config/export-emp-leave/?',responseType:'blob'}">
     <div class="flex middle-xs center-xs col-primary-100">
-      <svg symbol="download" w="20" class="use-svg"></svg>
-      <span class="ml-15">Download Leave Balance Sheet</span>
+      <svg symbol="excel-green" [w]="is_MD_LT ? 18 : 25" class="use-svg"></svg>
+      <span class="ml-15 fs-13 fs-md-14">Download Leave Balance Sheet</span>
     </div>
   </app-button>
 </div>

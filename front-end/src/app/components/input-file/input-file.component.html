@@ -15,8 +15,7 @@
       </circle>
     </svg>
   </div>
-  <div (keyup)="keyUp($event, $event.target)" tabindex="0" class="file-wrap"
-    [ngStyle]="{backgroundColor:(bgColor || 'var(--col-primary-900)')}">
+  <div (keyup)="keyUp($event, $event.target)" tabindex="0" class="file-wrap" [ngStyle]="{backgroundColor:(bgColor || 'var(--col-primary-900)')}">
     <!--Upload button connected using for attribute to file input to trigger the file browser on click-->
     <label #fileLabel class="btn-file flex middle-xs" for="{{idd}}" [ngStyle]="{borderColor:(borderColor)}"
       *ngIf="fileArray.length < 1">
@@ -34,14 +33,14 @@
 
     <div class="file-list flex start-xs" *ngIf="fileArray.length > 0">
       <ng-container *ngIf="fileArray.length < 6;else noOfFiles">
-        <div [class.single]="multiple === false" class="file fs-13 flex middle-xs center-xs mr-5 "
+        <div [class.single]="multiple === false" class="file fs-13 fs-md-16 flex middle-xs center-xs mr-5 "
           *ngFor="let file of fileArray;let i = index;">
           {{file.name}} - ({{file.size | fileSize}})
           <svg symbol="remove" class="use-svg  ml-15 col-warn-500" w="25" (click)="upDateFileList($event,i)"></svg>
         </div>
       </ng-container>
       <ng-template #noOfFiles>
-        <div class="file fs13 flex middle-xs center-xs mr-5">
+        <div class="file fs-13 fs-md-16 flex middle-xs center-xs mr-5" >
           {{fileArray.length }} files selected ({{control?.fileSize | fileSize}})
           <svg symbol="circle-close-red" class="use-svg" w="25" (click)="upDateFileList($event,undefined)"></svg>
         </div>

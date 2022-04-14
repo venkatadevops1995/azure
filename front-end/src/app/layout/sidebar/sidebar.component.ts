@@ -55,13 +55,11 @@ export class SidebarComponent implements OnInit {
   constructor(
     private ss: SingletonService,
     private user: UserService,
-    private http: HttpClientService,
-    private responsive:BreakpointObserver
+    private http: HttpClientService, 
   ) {
 
     this.toggle = this.menu.map(i => false);
-    this.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val=>{
-      console.log(val)
+    this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val=>{ 
       this.is_LG_LT = val.matches
       if(val.matches){ 
         this.setSidebarStatus(false);

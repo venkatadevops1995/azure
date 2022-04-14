@@ -3,14 +3,14 @@
     <svg class="use-svg col-primary-200" (click)="onClickClose()" w="30" svg-fill="none"
       symbol="circle-close-red"></svg>
   </div>
-  <div class="emp-profile__head ">
+  <div class="emp-profile__head pt-20 pt-md-0">
     <div class="emp-profile__photo">
       <div>
         <img src="/assets/images/avatar-profile.png" alt="">
       </div>
     </div>
     <div class="emp-profile__name">
-      <h2 class="col-primary-50 fw-500">{{data?.emp_name}}</h2>
+      <h2 class="col-primary-50 fw-500 mt-10 mt-md-0">{{data?.emp_name}}</h2>
       <div class="fs-13 col-secondary-text-primary-500 mb-10">
         <!-- On leave 13/01/2022 -->&nbsp;
       </div>
@@ -19,13 +19,13 @@
   <div class="emp-profile__body primary-900">
     <div class="emp-profile__details mt-20">
       <div>
-        <span class="pale-text">ID no</span>
-        <div>{{data?.emp_details?.staff_no}}</div>
+        <span class="col-primary-500 emp-profile__title">ID no</span>
+        <div  class="fs-14 fs-md-16">{{data?.emp_details?.staff_no}}</div>
       </div>
       <div>
-        <span class="pale-text">Email</span>
+        <span class="col-primary-500 emp-profile__title">Email</span>
         <div class="flex middle-xs">
-          <p style=" max-width: 300px;  word-break: break-all;">{{data?.emp_details?.email}}</p>
+          <p style=" max-width: 300px;  word-break: break-all;"  class="fs-14 fs-md-16">{{data?.emp_details?.email}}</p>
           <div class="pos-r">
             <div>
               <svg w="20" symbol="copy" class="use-svg ml-10 col-primary-200" (cdkCopyToClipboardCopied)="onCopy()"
@@ -39,16 +39,16 @@
     </div>
     <div class="emp-profile__hierarchy mt-40 pb-30">
       <div class="emp-profile__single mb-20">
-        <div class="pale-text">Reporting Manager</div>
-        <div>{{data?.emp_details?.reporting_manager}}</div>
+        <div class="col-primary-500 emp-profile__title">Reporting Manager</div>
+        <div class="fs-14 fs-md-16">{{data?.emp_details?.reporting_manager}}</div>
       </div>
       <div class="emp-profile__single mb-20">
-        <div class="pale-text">Manager's Manager</div>
-        <div>{{data?.emp_details?.managers_manager}}</div>
+        <div class="col-primary-500 emp-profile__title">Manager's Manager</div>
+        <div class="fs-14 fs-md-16">{{data?.emp_details?.managers_manager}}</div>
       </div>
       <div class="emp-profile__single mb-20">
-        <div class="pale-text">Functional Owner</div>
-        <div>{{data?.emp_details?.functional_manager}}</div>
+        <div class="col-primary-500 emp-profile__title">Functional Owner</div>
+        <div class="fs-14 fs-md-16">{{data?.emp_details?.functional_manager}}</div>
       </div>
     </div>
   </div>

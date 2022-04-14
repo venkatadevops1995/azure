@@ -10,11 +10,13 @@
         </ng-container>
         <ng-container *ngIf="notification.typeof === 'string' && notification.show === true">
             <div [@notificationAnimation] (click)="clickClose($event,i)" class="notification {{notification.status}}">
-                <div class="flex nowrap pl-20" >
-                    <svg *ngIf="notification.status === 'success'" class="use-svg" symbol="tick-circle" w="15"></svg>
-                    <svg *ngIf="notification.status === 'fail'" class="use-svg" symbol="close-circle" w="15"></svg>
-                    <svg *ngIf="status === 'info'" class="use-svg" symbol="info" w="15"></svg>
-                    <svg *ngIf="status === 'warning'" class="use-svg" symbol="warning" w="15"></svg>
+                <div class="flex nowrap pl-sm-20" >
+                    <div class="notification__icon">
+                        <svg *ngIf="notification.status === 'success'" class="use-svg" symbol="tick-circle" w="15"></svg>
+                        <svg *ngIf="notification.status === 'fail'" class="use-svg" symbol="close-circle" w="15"></svg>
+                        <svg *ngIf="status === 'info'" class="use-svg" symbol="info" w="15"></svg>
+                        <svg *ngIf="status === 'warning'" class="use-svg" symbol="warning" w="15"></svg>
+                    </div>
                     <div class="msg">
                         <p>{{notification.message}}</p>
                     </div>

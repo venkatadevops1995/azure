@@ -12,9 +12,8 @@ import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
 
 import { ComponentPortal } from '@angular/cdk/portal';
-import { take} from 'rxjs/operators';
-import { Subject, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+
 export interface Project {
   id: number,
   name: string
@@ -38,15 +37,15 @@ export interface ProjectData {
 export class ManageProjectComponent implements OnInit {
 
 
-//  Rahul change(using Viewchild for EditProjectDialog)**************************
-@ViewChild("EditProjectDialog") EditProjectDialog : TemplateRef<any>;
+  //  Rahul change(using Viewchild for EditProjectDialog)**************************
+  @ViewChild("EditProjectDialog") EditProjectDialog: TemplateRef<any>;
 
-//  ***********************************************************************
+  //  ***********************************************************************
   @ViewChild('editProjectDialog') editProjectPopup: ModalPopupComponent;
   PROJECTS = [] //["ab","bc","ca","ad"]
   PROJECTS_LIST = {}
   EMP_PROJECTS_DATA: ProjectData[] = [];
-  displayedColumns = ['serial_no','staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
+  displayedColumns = ['serial_no', 'staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
   loading_emp_data = true;
   EMP_PROJECTS_FILTERED_DATA: ProjectData[] = [];
   filteredOptions: Observable<any[]>;
@@ -68,12 +67,12 @@ get is_XMD_LT(){
     private ss: SingletonService,
     private http: HttpClientService,
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
-    public dialogRef: MatDialogRef<any>,  
-//*****************************************************************************************
+    public dialogRef: MatDialogRef<any>,
+    //*****************************************************************************************
 
-// ***********************************************************************************************
+    // ***********************************************************************************************
     private fb: FormBuilder,
-    private el:ElementRef) {
+    private el: ElementRef) {
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
     }),
@@ -109,7 +108,11 @@ get is_XMD_LT(){
 
   managerCtrl = new FormControl();
 
-  filteredManagers: Observable<any>;
+  filteredManagers: Observable<any>; 
+  
+  get is_MD_LT() {
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
+  }
 
   getControls() {
     return (this.editProjectForm.get('projects') as FormArray).controls;
@@ -122,33 +125,33 @@ get is_XMD_LT(){
 
 
   }
-//Rahul change(adding event daligation for table row when clicking on edit ) *******************************
-@HostListener('click',['$event'])
-onClickHost(e){
-let target:any = e.target;
-let tempTarget = target;
-console.log("--------------click");
-// if(e.target.classList.contains('edit')){
-//   let index=e.target.getAttribute("index");
-//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
-//   this.editUser(index);
-// }
+  //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
+  @HostListener('click', ['$event'])
+  onClickHost(e) {
+    let target: any = e.target;
+    let tempTarget = target;
+    console.log("--------------click");
+    // if(e.target.classList.contains('edit')){
+    //   let index=e.target.getAttribute("index");
+    //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+    //   this.editUser(index);
+    // }
 
-while(tempTarget != this.el.nativeElement){
-if(tempTarget.classList.contains('edit')){
-  console.log('::::::::::::::clicked on the edit icon');
-    let index = tempTarget.getAttribute("index");
-      this.openEditDialog(index);
-      break;
-     }
-     tempTarget = tempTarget.parentNode;
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('edit')) {
+        console.log('::::::::::::::clicked on the edit icon');
+        let index = tempTarget.getAttribute("index");
+        this.openEditDialog(index);
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
+    }
+
   }
- 
-}
 
-//**************************************************************************** 
+  //**************************************************************************** 
 
-  
+
   filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
 
@@ -259,18 +262,18 @@ if(tempTarget.classList.contains('edit')){
     this.editProjectForm.controls.proj3.setValue(this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"]["id"] !== "" ? this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"]["id"] == 0 ? "" : this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"] : this.EMP_PROJECTS_FILTERED_DATA[index]["proj3"]);
     // this.editProjectPopup.open();
     //  Rahulchange(opening EditProjectDialog) ***********************************
-  //  ********************************************
-  this.dialogRef = this.dialog.open(PopUpComponent, {
-    data: {
-      heading: 'Edit Project',
-      template:this.EditProjectDialog,
-      maxWidth:'420px',
-      hideFooterButtons: true,
-      showCloseButton: true,
-      
-    },
-    autoFocus: false,
-  })
+    //  ********************************************
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Edit Project',
+        template: this.EditProjectDialog,
+        maxWidth: '420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+
+      },
+      autoFocus: false,
+    })
 
 
   }
@@ -375,7 +378,7 @@ if(tempTarget.classList.contains('edit')){
 
           emp_projects.push({
             emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],
-            staging_status:element['staging_status'],staging_relieved:element['staging_relieved'],
+            staging_status: element['staging_status'], staging_relieved: element['staging_relieved'],
             company: element["company"], proj1: this.getProjectById(element["p1"]), proj2: this.getProjectById(element["p2"]), proj3: this.getProjectById(element["p3"]), staged_proj1: this.getProjectById(element["staged"]["p1"]), staged_proj2: this.getProjectById(element["staged"]["p2"]), staged_proj3: this.getProjectById(element["staged"]["p3"])
           });
 
@@ -389,11 +392,11 @@ if(tempTarget.classList.contains('edit')){
   }
 
 
-// Rahul change(adding function for closing EditProjectDialog when user clicks on EditProjectDialog close button)*******
-// closeEditDialog(){
-//   this.dialogRef.close();
-// }
-// ****************************************************************************************
+  // Rahul change(adding function for closing EditProjectDialog when user clicks on EditProjectDialog close button)*******
+  // closeEditDialog(){
+  //   this.dialogRef.close();
+  // }
+  // ****************************************************************************************
 
 }
 

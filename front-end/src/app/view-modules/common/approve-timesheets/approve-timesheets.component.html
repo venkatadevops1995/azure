@@ -50,8 +50,8 @@
   [pageSize]="paginator.pageSize" [pageSizeOptions]="paginator.pageSizeOptions" (page)="onChangePage($event)">
 </mat-paginator>
 
-<div *ngIf="timesheetsData?.length == 0" class="flex col center-xs middle-xs fg-1">
-  <img src="./assets/images/no-data-sheet.png" alt="" style="max-width: 250px;">
+<div *ngIf="timesheetsData?.length == 0" class="flex col center-xs middle-xs fg-1 mt-20 mt-sm-40">
+  <img src="./assets/images/no-data-sheet.png" alt=""  class="no-timesheet-data">
   <p class="p-15 fs-14 col-primary-300">No time sheets available</p>
 </div>
 

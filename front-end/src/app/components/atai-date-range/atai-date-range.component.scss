@@ -1,7 +1,8 @@
 app-atai-date-range {
   position: relative;
-  .atai-date-range{
-    &.disabled{
+
+  .atai-date-range {
+    &.disabled {
       pointer-events: none;
       opacity: 0.5;
     }
@@ -9,17 +10,14 @@ app-atai-date-range {
 
   .mat-form-field-appearance-legacy .mat-form-field-underline {
     padding-bottom: 0;
-    // display: none;
-    
   }
-
 
   .mat-form-field-appearance-legacy .mat-form-field-wrapper {
     padding-bottom: 0px;
   }
 
   .mat-form-field-flex {
-    position: relative; 
+    position: relative;
   }
 
   .atai-date-range__calendar-icon {
@@ -27,18 +25,19 @@ app-atai-date-range {
     right: 0px;
     top: 0.75em;
   }
+
 }
 
 .atai-calendar {
-  background: rgba(0, 0, 0, 1);
+  background: #111;
   border: 1px solid #777;
   border-radius: 5px;
   width: 350px;
 
-//   .mat-calendar-body tr:first-child {
-//     // display: none;
-//     // visibility: hidden;
-//   }
+  //   .mat-calendar-body tr:first-child {
+  //     // display: none;
+  //     // visibility: hidden;
+  //   }
 
   .mat-calendar-previous-button,
   .mat-calendar-next-button {
@@ -111,4 +110,14 @@ app-atai-date-range {
 .mat-menu-panel.atai-calendar {
   max-width: 500px;
   width: 100%;
+}
+
+
+@media screen and (max-width:550px) {
+  .atai-calendar {
+    max-width: 300px;
+  }
+  .atai-date-range__calendar .selection-presets{
+    font-size: 10px;
+  }
 }

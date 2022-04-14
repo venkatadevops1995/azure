@@ -73,6 +73,13 @@ export class LeavePolicyConfigComponent implements OnInit {
         return this.ss.responsiveState[AtaiBreakPoints.LG_LT]
     };
 
+    get leaveCreditContainer() {
+        return this.elLeaveCreditContainer.nativeElement || null
+    }
+    get newHireContainer() {
+        return this.elNewHireContainer.nativeElement || null
+    }
+
     constructor(
         private http: HttpClientService,
         private ss: SingletonService,
@@ -85,23 +92,16 @@ export class LeavePolicyConfigComponent implements OnInit {
             this.getLeaveConfig();
             this.getLeaveConfig('leave-credit-new-hire')
         }, 1000)
+
+        this.ss.responsive.observe([AtaiBreakPoints.LG_LT]).pipe(takeUntil(this.destroy$)).subscribe(val => {
+            if (val.matches) {
+                this.addHorizontalScrollAffix();
+            }  
+        })
     }
 
     ngAfterViewInit() {
-        fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            if(window.innerWidth > 1024){
-
-            }else{
-                let target: HTMLElement = e['target'];
-                this.translateLeaveCredit.value = target.scrollLeft
-                console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
-            }
-        })
-        fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            let target: HTMLElement = e['target'];
-            this.translateNewHire.value = target.scrollLeft
-            console.log(this.translateLeaveCredit,target.scrollLeft, target.scrollWidth)
-        })
+        this.addHorizontalScrollAffix();
     }
 
     ngOnDestroy() {
@@ -109,6 +109,25 @@ export class LeavePolicyConfigComponent implements OnInit {
         this.destroy$.complete()
     }
 
+    // on horizontal scroll affix the employee type
+    addHorizontalScrollAffix() {
+        fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+            if (window.innerWidth > 1024) {
+                this.translateLeaveCredit.value = 0
+            } else {
+                let target: HTMLElement = e['target'];
+                this.translateLeaveCredit.value = target.scrollLeft
+            }
+        })
+        fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+            if (window.innerWidth > 1024) {
+                this.translateLeaveCredit.value = 0
+            } else {
+                let target: HTMLElement = e['target'];
+                this.translateNewHire.value = target.scrollLeft 
+            }
+        })
+    }
     // method to get the leave types
     getLeaveTypes() {
         this.http.request('get', 'leave/types/').subscribe(res => {

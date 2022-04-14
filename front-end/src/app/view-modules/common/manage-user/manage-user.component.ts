@@ -120,10 +120,12 @@ get is_XMD_LT(){
   selectedRoleValue: number = 0;
   PreviousRoleVlaue: number = 0;
 
-  destroy$ : Subject<any> = new Subject();
+  destroy$: Subject<any> = new Subject();
 
   // is medium resolution
-  is_MD_LT:boolean = false;
+  get is_MD_LT() {
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
+  };
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
@@ -131,56 +133,55 @@ get is_XMD_LT(){
     private fb: FormBuilder,
     private datepipe: DatePipe,
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
-    public dialogRef: MatDialogRef<any>,  
-//*****************************************************************************************
+    public dialogRef: MatDialogRef<any>,
+    //*****************************************************************************************
     private user: UserService,
-    private el:ElementRef) {
-      this.fgSearch = this.ss.fb.group({
-        filtervalue: ["", [Validators.required]],
-      }),
+    private el: ElementRef) {
+    this.fgSearch = this.ss.fb.group({
+      filtervalue: ["", [Validators.required]],
+    }),
       this.filteredManagers = this.managerCtrl.valueChanges
         .pipe(
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
-
-     }
-
-     //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
-@HostListener('click',['$event'])
-onClickHost(e){
-let target:any = e.target;
-let tempTarget = target;
-console.log("--------------click");
-// if(e.target.classList.contains('edit')){
-//   let index=e.target.getAttribute("index");
-//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
-//   this.editUser(index);
-// }
-
-while(tempTarget != this.el.nativeElement){
-if(tempTarget.classList.contains('edit')){
-  console.log('::::::::::::::clicked on the edit icon');
-    let index = tempTarget.getAttribute("index");
-      this.editManagers(index);
-      break;
-     }
-     tempTarget = tempTarget.parentNode;
   }
- 
-}
 
+  //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
+  @HostListener('click', ['$event'])
+  onClickHost(e) {
+    let target: any = e.target;
+    let tempTarget = target;
+    console.log("--------------click");
+    // if(e.target.classList.contains('edit')){
+    //   let index=e.target.getAttribute("index");
+    //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+    //   this.editUser(index);
+    // }
 
-//**************************************************************************** 
-
-     private filterManagerList(value: string) {
-      const filterValue = value.toLowerCase();
-      return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))
-      // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('edit')) {
+        console.log('::::::::::::::clicked on the edit icon');
+        let index = tempTarget.getAttribute("index");
+        this.editManagers(index);
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
     }
 
+  }
 
- 
+
+  //**************************************************************************** 
+
+  private filterManagerList(value: string) {
+    const filterValue = value.toLowerCase();
+    return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))
+    // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+
+
 
   clear() {
     this.managerCtrl.reset();
@@ -258,10 +259,6 @@ if(tempTarget.classList.contains('edit')){
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     this.getAllReportes();
-    this.ss.responsive.observe([AtaiBreakPoints.MD_LT]).pipe(takeUntil(this.destroy$)).subscribe(val=>{
-      this.is_MD_LT = val.matches
-      console.log(this.is_MD_LT)
-    })
   }
 
   ngOnDestroy() {

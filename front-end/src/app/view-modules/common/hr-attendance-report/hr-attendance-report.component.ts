@@ -134,9 +134,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.option.reset();
     this.option.setValue('');
   }
-  // selectEmp(){
-  //   this.getAttendenceData(this.fromdate,this.todate,this.option.value)
-  // }
+  
   getReporters() {
     if (this.user.getRoleId() > 1) {
       this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
@@ -150,16 +148,7 @@ export class HrAttendanceReportComponent implements OnInit {
         res.body['results'].forEach(element => {
           this.EMPS.push(element)
         });
-
-        // this.EMPS.push({'email': res.body['results']['email'],
-        // 'emp_id': res.body['results']['emp_id'],
-        // 'emp_name': res.body['results']['emp_name']})
-        // res.body['results']['reporters'].forEach(each=>{
-        //   if(each['emp_id'] !== res.body['results']['emp_id']){
-        //   this.EMPS.push(each);
-        //   }
-        //   console.log(this.EMPS,"-------------------------")
-        // })
+ 
         this.EMPS.forEach(element => {
           if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
