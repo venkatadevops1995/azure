@@ -12,11 +12,13 @@ import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { take } from 'rxjs/operators';
+import { take} from 'rxjs/operators';
+import { Subject, takeUntil } from 'rxjs';
 // Rahul changes *****************************
 import { MAT_DATE_LOCALE, NativeDateAdapter } from "@angular/material/core";
 import { DateAdapter,MAT_DATE_FORMATS } from '@angular/material/core';
 import { formatDate } from '@angular/common';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -107,7 +109,12 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
   ALL_CATEGORIES = []
   effected_emp_count = 0;
-
+  //Rahul change(adding variable for use breakpoint observer api using singlton service)************
+ 
+  get is_XMD_LT(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+  }
+  //*******************************************************************************************
   // ROLES = [...this.ATWORK_ROLES]; //[{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   ROLES = cloneDeep(this.ATWORK_ROLES)
   newUserFirstName = '';
@@ -127,7 +134,10 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     private http: HttpClientService,
     private fb: FormBuilder,
     private datepipe: DatePipe,
-    private user: UserService) { }
+    private user: UserService,
+    ) {
+      
+     }
 
 
 

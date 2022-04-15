@@ -166,10 +166,10 @@
   </div> 
   <div class="flex no-lg-wrap center-xs mt-xmd-30 mt-20 " mat-dialog-actions>
     <div class="pr-20" style="display: inline-block;padding-bottom: 10px;">
-      <app-button type="button" theme="grey" (click)="reset()">Reset All</app-button>
+      <app-button type="button" theme="grey" (click)="reset()" [size]="is_XMD_LT ? 'small' : 'default'">Reset All</app-button>
     </div>
     <div style="padding-bottom: 10px;">
-      <app-button type="submit" [disabled]="!addUserForm.valid">Add Employee</app-button>
+      <app-button type="submit" [disabled]="!addUserForm.valid" [size]="is_XMD_LT ? 'small' : 'default'">Add Employee</app-button>
     </div>
 
 

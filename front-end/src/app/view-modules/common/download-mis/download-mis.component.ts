@@ -3,6 +3,7 @@ import { DatePipe, formatDate } from '@angular/common';
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { SingletonService } from 'src/app/services/singleton.service';
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 
 
@@ -20,19 +21,21 @@ export class DownloadMisComponent implements OnInit {
   showMessage = false;
   date4;
   todate: any;
-  Is_match:boolean;
+  // Is_match:boolean;
   minDate = new Date(this.today.getTime() - (365 * 2 * 86400000))
   selected: any = {};
   selectedEmpId: any;
   value: any;
-
+  get Is_match(){
+    return this.ss.responsive.isMatched([AtaiBreakPoints.XS,AtaiBreakPoints.SM])
+  }
 
   @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
-  constructor(public datepipe: DatePipe,private bp:BreakpointObserver) {
-    this.bp.observe([AtaiBreakPoints.XS,AtaiBreakPoints.SM]).subscribe(res=> {
-        this.Is_match=res.matches;
-        console.log('#########$@@@@@@@@@@ console for Is_match variable',this.Is_match);
-    })
+  constructor(public datepipe: DatePipe,private ss:SingletonService) {
+    // this.bp.observe([AtaiBreakPoints.XS,AtaiBreakPoints.SM]).subscribe(res=> {
+    //     this.Is_match=res.matches;
+    //     console.log('#########$@@@@@@@@@@ console for Is_match variable',this.Is_match);
+    // })
 
    }
 

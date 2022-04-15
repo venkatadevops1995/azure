@@ -58,7 +58,11 @@ export class ManageProjectComponent implements OnInit {
   filtervalue = new FormControl();
   employeeList: any[] = [];
   showMessage = false
-
+//Rahul change(adding variable for use breakpoint observer api using singlton service)************
+get is_XMD_LT(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+}
+//*******************************************************************************************
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
@@ -77,7 +81,7 @@ export class ManageProjectComponent implements OnInit {
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeList)
         );
-
+ 
 
   }
 
