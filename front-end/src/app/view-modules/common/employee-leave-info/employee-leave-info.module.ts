@@ -15,6 +15,7 @@ import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.mod
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module'; 
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 
 
 
@@ -37,7 +38,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     UseSvgModule,
     FileDownloadModule,
     TooltipModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    TableAffixModule
   ],
   exports:[EmployeeLeaveInfoComponent]
 })

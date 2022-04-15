@@ -32,16 +32,16 @@
 
     <div *ngIf="isAdmin">
       <app-button *ngIf="!editMode && holidayList.length != 0 && isSelectedYearEditable" type="submit"
-        (click)="onClickEdit()">Edit
+        (click)="onClickEdit()" [size]="is_MD_LT ? 'small' :'default'">Edit
       </app-button>
       <app-button *ngIf="editMode" theme="red" type="submit" (click)="onClickCancel()">Cancel</app-button>
     </div>
   </div>
 
-  <div class="holidays__wrap w-100 of-auto" >
+  <div class="holidays__wrap w-100 of-auto" #refHolidaysWrap>
 
     <div class="holidays" [ngStyle]="{minWidth: (760 + ((editMode ? locations.length : locationsInSelectedYear.length)*80))+'px'}" *ngIf="(holidayList.length != 0) || (editMode==true)">
-      <div class="holidays__head header-gradient"
+      <div class="holidays__head header-gradient" [ataiAffix]="{referenceHierarchy:'p.p.p'}" [scrollX]="scrollXHolidayAffix" 
         [ngStyle]="{'grid-template-columns':'  minmax(120px, 2fr) minmax(130px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) repeat('+(editMode ? locations.length : locationsInSelectedYear.length )+',minmax(80px,100px))'}">
         <div class="holidays__col " *ngFor="let column of tableHeadColumns;let i = index;"
           [class.holidays__col--left]="i < 4">

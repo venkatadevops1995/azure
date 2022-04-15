@@ -29,8 +29,8 @@
 <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
   **********************************************************************
   ************************************************************ -->
-<div style="overflow-x: auto;width: 100%;">
-  <table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
+<div style="overflow-x: auto;width: 100%;" [tableAffix] *ngIf="USERS_DATA.length!=0">
+  <table mat-table [dataSource]="USERS_DATA"  class="mat-elevation-z8 w-100">
     <ng-container matColumnDef="serial_no">
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
       <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
@@ -110,7 +110,7 @@
 <!-- *****************************************
   **********************************************************************
   ************************************************************ -->
-<div *ngIf="USERS_DATA.length==0 && showMessage==true" style="padding-left:20px">
+<div *ngIf="USERS_DATA.length==0 && showMessage==true" style="padding-left:20px" class="pl-20 fs-14 col-primary-300">
   NO DATA AVAILABLE
 </div>
 

@@ -48,8 +48,8 @@
 <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
   **********************************************************************
   ************************************************************ -->
-<div style="width:100%; overflow-x: auto;">
-  <table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0"
+<div style="width:100%; overflow-x: auto;" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0" [tableAffix]>
+  <table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" 
     class="mat-elevation-z8 w-100">
     <ng-container matColumnDef="serial_no">
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>

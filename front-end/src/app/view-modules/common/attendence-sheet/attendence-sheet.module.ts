@@ -14,6 +14,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
 import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { AffixModule } from 'src/app/directives/affix/affix.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { AffixModule } from 'src/app/directives/affix/affix.module';
     AtaiDateRangeModule,
     ToolTipModule,
     TooltipModule,
-    AffixModule
+    TableAffixModule
   ]
 })
 export class AttendenceSheetModule { }

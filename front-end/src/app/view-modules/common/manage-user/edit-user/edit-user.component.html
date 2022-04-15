@@ -1,7 +1,7 @@
 <div>
-  <div class="pb-20 flex flex-col-xs flex-row-md  center-xs between-xs" >
+  <div class="pb-20 flex flex-col-xs flex-row-md  center-xs between-xs">
     <h2 class="heading fw-600">Edit Employee</h2>
-    <div class="fs-14 flex w-md-70 w-xmd-50 end-md middle-xs">
+    <div class="fs-14 flex w-md-70 w-xmd-50 end-md middle-xs mt-15 mt-md-0">
       <mat-form-field class="no-pb w-50 mr-10">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField">
         <svg matSuffix class="use-svg col-primary-300" symbol="triangle-down" [w]="8" (click)="clear()"></svg>
@@ -11,99 +11,98 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div class="flex end-xs middle-xs" style="margin-top: -8px;">
-        <app-button [disabled]="searchField.invalid" (click)="getAllReportes()">Submit
-        </app-button>
-      </div>
+      <app-button [disabled]="searchField.invalid" [size]="is_MD_LT ? 'small' : 'default'" (click)="getAllReportes()">Submit
+      </app-button>
 
     </div>
   </div>
   <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
   **********************************************************************
   ************************************************************ -->
-  <div style="overflow-x: auto;width: 100%;">
+
+  <div class="w-100 of-x-auto" [tableAffix] *ngIf="USERS_DATA.length!=0">
+
+    <table style="min-width:800px;" mat-table [dataSource]="USERS_DATA" class="mat-elevation-z8 w-100">
+      <ng-container matColumnDef="serial_no">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="staff_no">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Email </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
 
 
-  <table  mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8 w-100">
-    <ng-container  matColumnDef="serial_no">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
-      <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
-    </ng-container>
+      <ng-container matColumnDef="company">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.company}} </td>
+      </ng-container>
 
-    <ng-container   matColumnDef="name">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
-      <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
-    </ng-container>
-
-    <ng-container   matColumnDef="staff_no">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
-      <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
-    </ng-container>
-
-    <ng-container   matColumnDef="email">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef>Email </th>
-      <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.email}} </td>
-    </ng-container>
-
-
-    <ng-container   matColumnDef="company">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
-      <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.company}} </td>
-    </ng-container>
-
-    <ng-container   matColumnDef="category">
-      <th class="p-table-5"mat-header-cell *matHeaderCellDef> Category </th>
-      <td  class="p-table-5"mat-cell *matCellDef="let element"> {{element.category_name}} </td>
-    </ng-container>
+      <ng-container matColumnDef="category">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Category </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.category_name}} </td>
+      </ng-container>
 
 
 
 
-    <ng-container   matColumnDef="edit">
-    
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
-      <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
-      
-<!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
-<!-- Previous code-->
-        <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> --> 
- <!-- new code -->
-        <svg [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg>
-        <!-- ****************************************************** -->
-      </td>
-    </ng-container>
-    <ng-container   matColumnDef="disable">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Disable</th>
-      <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
-<!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
-<!-- Previous code-->
-   <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
+      <ng-container matColumnDef="edit">
+
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
+        <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
+
+          <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+          <!-- Previous code-->
+          <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> -->
+          <!-- new code -->
+          <svg [attr.index]='i' class="use-svg edit" symbol="edit" [w]="16"
+            style="color: var(--col-primary-300);"></svg>
+          <!-- ****************************************************** -->
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="disable">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Disable</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
+          <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+          <!-- Previous code-->
+          <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
           [disabled]="element.staging_status !== null ? true : false"
           [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
           title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
           svg-fill="currentColor"> -->
           <!-- ****************************************************** -->
-<!-- new code -->
-          <button class="action--btn disable" [attr.index] = 'i' 
-          [disabled]="element.staging_status !== null ? true : false"
-          [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
-          title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
-          svg-fill="currentColor">
-          <svg class="use-svg" symbol="disable" [w]="16"></svg>
-            
-        </button>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</div>
-<!-- ****************************************************************************************
+          <!-- new code -->
+          <button class="action--btn disable" [attr.index]='i'
+            [disabled]="element.staging_status !== null ? true : false"
+            [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '"
+            style="border: none;cursor: pointer;  "
+            title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
+            svg-fill="currentColor">
+            <svg class="use-svg" symbol="disable" [w]="16"></svg>
+
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <!-- ****************************************************************************************
 ******************************************************************************
 ***************************************************************************** -->
-  <div *ngIf="USERS_DATA.length==0 && show_message==true" class="p-20">
+  <div *ngIf="USERS_DATA.length==0 && show_message==true" class="p-20 fs-14 col-primary-300">
     NO DATA AVAILABLE
-
   </div>
 
   <!-- **************************************************************
@@ -223,22 +222,23 @@
   <ng-template #errorOnDisablePopup>
     <div class=" flex col nowrap center-xs" style="gap:1em;">
       <div class="flex center-xs">
-      <svg class="use-svg" symbol="yellow_alert" w="40" style=" color: var(--col-primary-300); margin-top: 0px;"></svg>
-    </div>
+        <svg class="use-svg" symbol="yellow_alert" w="40"
+          style=" color: var(--col-primary-300); margin-top: 0px;"></svg>
+      </div>
       <h1>{{errorMessage}}</h1>
       <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Got it
       </app-button>
     </div>
   </ng-template>
   <!-- *************************************************************************************************************** -->
- 
+
   <ng-template #successOnDisablePopup>
     <div class=" flex col nowrap center-xs" style="gap:1em;">
       <div class="flex center-xs">
-      <svg class="use-svg" symbol="success-tick-circle" w="40" style=" color: var(--col-primary-300);  "></svg> 
-       </div>
+        <svg class="use-svg" symbol="success-tick-circle" w="40" style=" color: var(--col-primary-300);  "></svg>
+      </div>
       <h1>{{delete_emp_success_msg}}</h1>
       <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Done
       </app-button>
     </div>
-  </ng-template> 
+  </ng-template>

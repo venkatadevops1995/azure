@@ -192,8 +192,7 @@ export class TimesheetViewComponent implements OnInit {
   ngAfterViewInit(){ 
     fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
       let target:HTMLElement = e['target'];
-      this.translateTimesheetTitle = target.scrollLeft
-      console.log(target.scrollLeft,target.scrollWidth)
+      this.translateTimesheetTitle = target.scrollLeft 
     })
   }
 

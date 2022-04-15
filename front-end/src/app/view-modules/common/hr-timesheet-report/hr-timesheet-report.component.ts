@@ -83,6 +83,7 @@ export class HrTimesheetReportComponent implements OnInit {
         this.isPageAccessable = res.body;
         this.cdRef.detectChanges()
         if (this.isPageAccessable) {
+          this.dateRange.maxDate = this.maxDate;
           this.dateRange.setPresetValue('Last 30 Days');
         }
       }
@@ -98,8 +99,10 @@ export class HrTimesheetReportComponent implements OnInit {
         // set the max date
         this.maxDate = new Date(this.maxDate.getTime() - (days * MILLISECONDS_DAY));
         this.maxDate.setHours(0,0,0,0)
-        this.dateRange.maxDate = this.maxDate;
-        this.dateRange.setPresetValue('Last 30 Days');
+        if(this.dateRange){
+          this.dateRange.maxDate = this.maxDate;
+          this.dateRange.setPresetValue('Last 30 Days');
+        }
       }
     })
   }

@@ -13,6 +13,7 @@ import { map, startWith, take } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 
 export interface UserData {
@@ -62,6 +63,10 @@ export class EditUserComponent implements OnInit {
 
   displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
+
+  get is_MD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
   constructor(public dialog: MatDialog,
     private datepipe: DatePipe,
     private ss: SingletonService,
