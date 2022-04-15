@@ -125,8 +125,6 @@ export class TimesheetViewComponent implements OnInit {
   get is_MD_LT(){
     return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
   }
-  
-
   constructor(
     private http: HttpClientService,
     private cd: ChangeDetectorRef,

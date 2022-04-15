@@ -41,6 +41,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
 import { UseSvgModule } from './components/use-svg/use-svg.module';
+import { FocusDirective } from './directives/focuseDirective/focus.directive';
 
 
 @NgModule({
@@ -53,12 +54,12 @@ import { UseSvgModule } from './components/use-svg/use-svg.module';
     HeaderComponent,
     FooterComponent ,
     AddProjectComponent,
-    SidebarComponent
+    SidebarComponent,
+    FocusDirective,
   
   ],
   imports: [
     BrowserModule, 
-   
     BrowserAnimationsModule,
     HttpClientModule,
     ConfirmDialogModule,

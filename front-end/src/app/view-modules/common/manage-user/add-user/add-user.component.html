@@ -7,7 +7,7 @@
     <div class="w-100">
       <mat-form-field class="w-50 ">
         <mat-label>First Name</mat-label>
-        <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName'>
+        <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName' autofocus>
         <mat-error
           *ngIf=" addUserForm.controls.firstName.touched && addUserForm.controls.firstName.hasError('required')">
           Please enter First Name
@@ -114,7 +114,7 @@
 
     <mat-form-field class="custompicker">
       <mat-label>Date of Joining</mat-label>
-      <input autocomplete="off" (keydown)="false" (click)="picker.open()" matInput [matDatepicker]="picker"
+      <input (focus)="picker.open()"  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput [matDatepicker]="picker"
         formControlName="doj" (dateChange)="onDate($event)">
       <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="picker.open()"></svg>
       <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
@@ -126,8 +126,8 @@
     <ng-container *ngIf="!makeSelfFM">
       <mat-form-field>
         <mat-label>Functional Owner</mat-label>
-        <mat-select formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
-          <mat-option [value]=0 *ngIf="newUserRoleValue==4" class="self-option">Self
+        <mat-select  formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
+          <mat-option  [value]=0 *ngIf="newUserRoleValue==4" class="self-option">Self
             ({{newUserFirstName +" "+newUserLastName}})</mat-option>
           <ng-container *ngIf="newUserRoleValue!=4">
             <mat-option [value]="emp['emp_id']" *ngFor="let emp of FM_DATA">{{emp["emp_name"]}}</mat-option>

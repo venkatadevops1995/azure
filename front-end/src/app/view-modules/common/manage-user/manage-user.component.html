@@ -1,12 +1,12 @@
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
-    <div class="flex pb-20 flex-col-xs flex-row-md  between-xs">
-      <h2 class="col--accent-500 fs-24">
+    <div class="flex mb-20 flex-col-xs flex-row-md  between-xs middle-md">
+      <h2 class="col--accent-500 fs-24 fw-600">
         Transfer Employee
       </h2>
-      <div class="flex fs-14 w-md-60 w-xmd-50 middle-xs  end-md mt-15 mt-md-0">
+      <div class="flex fs-14 w-md-60 w-xmd-50 middle-xs bottom-xs end-md mt-15 mt-md-0">
 
-        <mat-form-field class="no-pb w-50 mr-10">
+        <mat-form-field class="no-pb w-50 mr-30">
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
             [(ngModel)]="value">
           <svg matSuffix class="col-primary-300 use-svg" (click)="clear()" symbol="triangle-down" w="8"></svg>
@@ -110,7 +110,7 @@
 <!-- *****************************************
   **********************************************************************
   ************************************************************ -->
-<div *ngIf="USERS_DATA.length==0 && showMessage==true" style="padding-left:20px">
+<div *ngIf="USERS_DATA.length==0 && showMessage==true" class=" fs-14 col-primary-300">
   NO DATA AVAILABLE
 </div>
 

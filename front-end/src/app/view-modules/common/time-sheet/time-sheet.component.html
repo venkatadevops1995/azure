@@ -114,7 +114,7 @@
     <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
       style="z-index: 11;">
       <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
-        <div class="flex middle-xs center-xs sel-project__btn btn-outline">
+        <div tabindex="0" class="flex middle-xs center-xs sel-project__btn btn-outline">
           <svg class=" mr-5 use-svg" symbol="add-circle" w="14"></svg>
           Select Project
         </div>

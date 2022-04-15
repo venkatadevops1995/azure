@@ -12,7 +12,7 @@ import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-d
 import { MatIconModule } from '@angular/material/icon';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
-
+import {A11yModule} from '@angular/cdk/a11y';
 
 @NgModule({
   declarations: [TimesheetViewComponent],
@@ -24,7 +24,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     ModalPopupModule,
     MatDialogModule,
     ConfirmDialogModule ,
-    UseSvgModule
+    UseSvgModule,
+    A11yModule
   ],
   exports:[
     TimesheetViewComponent

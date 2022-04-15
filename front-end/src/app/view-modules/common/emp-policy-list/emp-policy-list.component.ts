@@ -22,6 +22,7 @@ export class EmpPolicyListComponent implements OnInit {
   employeePopupColumns = ["sno", "policy_name", "updated_date", "view"]
   EMPLOYEE_FILTERED_DATA = []
   deleteId = 0;
+  status:boolean=false;
   clicked_policy_name:string
   filepathUrl: any;
   isLoaderVisible:boolean = true
@@ -46,8 +47,10 @@ export class EmpPolicyListComponent implements OnInit {
     this.EMPLOYEE_FILTERED_DATA = []
       this.http.request("GET","policy/emp-policy/","","").subscribe(res=>{
         if(res.status = 200){
+          this.status=true;
           this.EMPLOYEE_FILTERED_DATA = res.body["results"]
         }else{
+          this.status=true;
           this.ss.statusMessage.showStatusMessage(false,"Error while getting policies")
         }
       })

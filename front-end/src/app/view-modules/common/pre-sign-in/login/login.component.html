@@ -10,7 +10,7 @@
       <mat-form-field class="formField lite fs-13" style="flex-grow: 1;" color="primary">
         <mat-label>Email
         </mat-label>
-        <input autocomplete="off" matInput type="email" placeholder="Enter email" formControlName="email">
+        <input autocomplete="off" matInput type="email" placeholder="Enter email" formControlName="email" autofocus>
         <mat-error *ngIf="fgLogin.controls.email.hasError('email')">
           Please enter a valid email
         </mat-error>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="flex end-xs mb-30 mt-20">
-      <a style="color:var(--col-accent-500);" class="fs-12" [routerLink]="'/forgot-password'">Forgot password</a>
+      <a tabindex="0" style="color:var(--col-accent-500);" class="fs-12" [routerLink]="'/forgot-password'">Forgot password</a>
     </div>
     <div class="flex center-xs">
       <app-button type="submit" style="width: 100%;" theme="black">Login</app-button>

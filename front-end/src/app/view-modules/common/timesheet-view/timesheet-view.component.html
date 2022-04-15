@@ -1,5 +1,6 @@
-<div class="flex middle-sm between-sm mb-15 flex-col-xs flex-row-sm">
-  <h2 class="heading mb ">
+
+<div  class="flex middle-sm between-sm mb-15 flex-col-xs flex-row-sm">
+  <h2 class="dis-ib" tabindex="0"  class="heading mb ">
     {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
   </h2>
   <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData" href="javascript:;"
@@ -32,7 +33,7 @@
 
       <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
         class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1">
-        <div class="flex middle-xs center-xs wsr__sel-project-toggle">
+        <div  tabindex="0" class="flex middle-xs center-xs wsr__sel-project-toggle">
           <svg class=" mr-5 use-svg" symbol="add-circle" w="14">
           </svg>
           Select Project

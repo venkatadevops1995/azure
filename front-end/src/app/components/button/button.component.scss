@@ -62,6 +62,17 @@
             }
         }
     }
+    //Rahul change(adding tab focuse for all button)*******************
+    &:focus{
+      svg{
+          rect{
+              fill-opacity: 1;
+              // stroke-opacity: 0;
+              stroke-width:1;
+          }
+      }
+  }
+  //************************************************************************
     &.success {
       background: var(--color-success);
     }
