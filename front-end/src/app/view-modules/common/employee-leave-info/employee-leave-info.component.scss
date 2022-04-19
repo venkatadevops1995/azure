@@ -15,8 +15,14 @@ input[type=number] {
     background-color: inherit;
     // background-color: var(--color-gray-lite);
 }
+.manager-control{
+    width: 220px; 
+}
 @media screen and (max-width:768px){
     .mat-table{
         min-width: 500px;
+    }
+    .manager-control{
+        width: 180px; 
     }
 }

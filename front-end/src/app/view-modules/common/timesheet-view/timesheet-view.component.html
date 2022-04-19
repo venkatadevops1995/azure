@@ -28,7 +28,7 @@
         <div></div>
         <textarea placeholder="Add details  of the project"
           [formControl]="fgWsrProjects['controls']['active_projects']['controls'][i] "
-          class="wsr__project-text"></textarea>
+          class="wsr__project-text  fs-14 fs-md-16"></textarea>
       </div>
 
       <div   tabindex="0" (keydown.enter)="key_pressed($event)"  *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
@@ -49,11 +49,10 @@
     <div class="flex col">
       <div class="wsr__project-name general mt-20 mb-10 between-xs">
         General Project
-        <!-- <p class="wsr__char-count" [class.error]="wsrCharCount > 5000">{{wsrCharCount}} / 5000</p> -->
       </div>
       <div></div>
       <textarea placeholder="General details to include" formControlName="general"
-        class="wsr__project-text fg-1"></textarea>
+        class="wsr__project-text fg-1 fs-14 fs-md-16"></textarea>
     </div>
   </div>
   <ng-container *ngIf="this.timeSheetType == 'rejected'">

@@ -25,6 +25,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import {MatRadioModule} from '@angular/material/radio';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
   // If required extend other NativeDateAdapter methods.
 @NgModule({
   declarations: [ManageUserComponent, AddUserComponent, EditUserComponent,],
@@ -50,7 +51,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     MatDatepickerModule,
     MatDialogModule,
     ConfirmDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    TableAffixModule
     // NgxDaterangepickerMd.forRoot()
   ]
 })

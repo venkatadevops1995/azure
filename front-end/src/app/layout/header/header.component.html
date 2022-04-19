@@ -12,8 +12,13 @@
 </div>
 <div class="common-grid"
   [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
-  <div class="compliances mr-sm-25" *ngIf="leaveFlag == true">
-    <div class="compliances__item mr-1 mr-sm-5 mr-md-10 mr-xmd-15" *ngFor="let com of compliances">
+
+  <div #refOpenUserSearchMobile class="user-search-open" (click)="isUserSearchMobileOpen = true;">
+    <svg symbol="user-search" w="22" class="use-svg  col-primary-200"></svg>
+  </div>
+  <div class="compliances " *ngIf="leaveFlag == true">
+    <div class="compliances__item " [ngClass]="{'mr-1':i != 4,'mr-sm-5':i != 4, 'mr-md-10': i !!= 4, 'mr-xmd-15':i != 4}"
+      *ngFor="let com of compliances; let i=index;">
       <svg [attr.width]="is_MD_LT ? 22 : 26" [attr.height]="is_MD_LT ? 22 : 26">
         <defs>
           <linearGradient id="red-compliance" gradientTransform="rotate(45)">
@@ -37,22 +42,18 @@
     </div>
   </div>
 
-  <div #refOpenUserSearchMobile class="user-search-open" (click)="isUserSearchMobileOpen = true;">
-    <svg symbol="user-search" w="22" class="use-svg  col-primary-200"></svg>
-  </div>
-
   <div *ngIf="showEmailToggle && leaveFlag == true"
-    class="flex col p-5 center-xs middle-xs ml-5 mr-5 ml-sm-15 mr-sm-15">
+    class="flex col p-5 center-xs middle-xs ml-sm-15 mr-sm-15">
     <span class="fs-12 fs-md-13">Emails</span>
     <mat-slide-toggle [class.small]="is_MD_LT" (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled">
     </mat-slide-toggle>
   </div>
 
-  <app-button class="logout" theme="red" (click)="logout()" href="javascript:;">
+  <app-button style="max-width: 120px;justify-self: end;" class="logout" theme="red" (click)="logout()">
     Logout
   </app-button>
 
-  <div class="logout-icon" (click)="logout()"> 
+  <div class="logout-icon" (click)="logout()">
     <svg class="use-svg col-warn-500" symbol="logout" w="22"> </svg>
   </div>
 

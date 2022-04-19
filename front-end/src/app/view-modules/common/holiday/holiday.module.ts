@@ -17,6 +17,7 @@ import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-dat
 import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { AffixModule } from 'src/app/directives/affix/affix.module';
 
 @NgModule({
   declarations: [HolidayComponent],
@@ -35,7 +36,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     MatFormFieldModule,
     AtaiDateRangeModule,
     PopUpModule,
-    MatDialogModule
+    MatDialogModule,
+    AffixModule
   ],
   providers: [DatePipe]
 })

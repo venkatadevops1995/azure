@@ -39,7 +39,7 @@ export class EditUserComponent implements OnInit {
 
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
-  @ViewChild("table")table:ElementRef;
+  @ViewChild("table") table: ElementRef;
   //  ***********************************************************************
   // ********************************************************************
   // ***************************************************************
@@ -58,7 +58,7 @@ export class EditUserComponent implements OnInit {
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
 
   //Rahul change(adding variable for use breakpoint observer api using singlton service)************
-  get is_XMD_LT(){
+  get is_XMD_LT() {
     return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
   }
   //*******************************************************************************************
@@ -67,6 +67,7 @@ export class EditUserComponent implements OnInit {
 
   displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
+
   constructor(public dialog: MatDialog,
     private datepipe: DatePipe,
     private ss: SingletonService,
@@ -75,7 +76,7 @@ export class EditUserComponent implements OnInit {
     private user: UserService,
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
     public dialogRef: MatDialogRef<any>,
-  
+
     private el: ElementRef
     //*****************************************************************************************
     // ***********************************************************************************************
@@ -86,7 +87,7 @@ export class EditUserComponent implements OnInit {
         map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
       );
 
-  
+
 
   }
   deleteUserForm = this.fb.group({
@@ -107,6 +108,8 @@ export class EditUserComponent implements OnInit {
   delete_emp_success_msg: string = '';
   ngOnInit(): void {
     this.getAllReportes();
+    this.getCompanies()
+    this.getCategories();
     // this.renderer.listen(this.table?.nativeElement,'click',(evt)=>{
     //   console.log('hello u clicked on the table!!!')
     // })
@@ -117,38 +120,38 @@ export class EditUserComponent implements OnInit {
     // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
   }
   searchField = this.fb.control('ALL', [Validators.required])
-  
-//Rahul change(adding event daligation for table row when clicking on edit and disable icon) *******************************
-  @HostListener('click',['$event'])
-  onClickHost(e){
-  let target:any = e.target;
-  let tempTarget = target;
-  console.log("--------------click");
-// if(e.target.classList.contains('edit')){
-//   let index=e.target.getAttribute("index");
-//   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
-//   this.editUser(index);
-// }
 
- while(tempTarget != this.el.nativeElement){
-  if(tempTarget.classList.contains('edit')){
-    console.log('::::::::::::::clicked on the edit icon');
-      let index = tempTarget.getAttribute("index");
+  //Rahul change(adding event daligation for table row when clicking on edit and disable icon) *******************************
+  @HostListener('click', ['$event'])
+  onClickHost(e) {
+    let target: any = e.target;
+    let tempTarget = target;
+    console.log("--------------click");
+    // if(e.target.classList.contains('edit')){
+    //   let index=e.target.getAttribute("index");
+    //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+    //   this.editUser(index);
+    // }
+
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('edit')) {
+        console.log('::::::::::::::clicked on the edit icon');
+        let index = tempTarget.getAttribute("index");
         this.editUser(index);
         break;
-       }
-       if(tempTarget.classList.contains('disable')){
+      }
+      if (tempTarget.classList.contains('disable')) {
         console.log('::::::::::::::clicked on the disable icon');
-          let index = tempTarget.getAttribute("index");
-          this.setId(index);
-           this.disableEmppopupopen()
-            break;
-           }
-       tempTarget = tempTarget.parentNode;
+        let index = tempTarget.getAttribute("index");
+        this.setId(index);
+        this.disableEmppopupopen()
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
     }
-   
+
   }
-  
+
   //**************************************************************************** 
 
   editUserForm = this.fb.group({
@@ -168,6 +171,7 @@ export class EditUserComponent implements OnInit {
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
+
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {
@@ -179,11 +183,13 @@ export class EditUserComponent implements OnInit {
       }
     })
   }
+
   clear() {
     this.searchField.reset();
     this.searchField.setValue('');
     this.searchField.updateValueAndValidity()
   }
+
   getAllReportes(): void {
     this.employeeListSearch = []
     const params = new HttpParams().set("type", "hr").set("search", this.searchField.value)
@@ -242,9 +248,7 @@ export class EditUserComponent implements OnInit {
   }
   //***************************************************************************** */
 
-  editUser(i) {
-    this.getCompanies()
-    this.getCategories()
+  editUser(i) { 
 
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
     this.editUserForm.controls.emp_name.setValue(this.USERS_DATA[i]["emp_name"]);
@@ -254,8 +258,7 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
     // Rahul change(opening modal popup)******************************
-    // this.editUserPopup.open()
-
+    // this.editUserPopup.open() 
     this.dialogRef = this.dialog.open(PopUpComponent, {
       data: {
         heading: 'Edit Employee',
@@ -272,6 +275,7 @@ export class EditUserComponent implements OnInit {
     console.log(i,)
     this
   }
+
   close() {
     this.editUserForm.reset()
     // this.editUserPopup.close()
@@ -297,8 +301,6 @@ export class EditUserComponent implements OnInit {
 
   disableUser(i) {
     console.log(i);
-    this.getCompanies()
-    this.getCategories();
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
     this.disableEmp();
   }
@@ -422,6 +424,8 @@ export class EditUserComponent implements OnInit {
   //Rahul change (disableEmppopupopen() and disableEmppopupclose() are added)in order to open and close disable employee squre
   // popup
   disableEmppopupopen() {
+    this.deleteUserForm.get('dol').setValue("")
+    this.deleteUserForm.get('dol').markAsUntouched();
     this.dialogRef = this.dialog.open(PopUpComponent, {
       data: {
         heading: 'Edit Employee',

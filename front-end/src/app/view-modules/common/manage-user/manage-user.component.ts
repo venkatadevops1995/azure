@@ -438,12 +438,12 @@ get is_XMD_LT(){
   closeConfirmationDialog(): void {
     this.confirmationPopup.close();
   }
+
   closeAllDialog(): void {
     this.confirmationPopup.close();
     this.addUserPopup.closeModel = true;
     this.addUserPopup.close();
     this.addUserPopup.closeModel = false;
-
   }
 
 

@@ -125,17 +125,12 @@ export class ManageSelfLeavesComponent implements OnInit {
         this.selectedHistoryRange["endDate"] = null;
 
 
-    }
-
-    ngAfterViewInit() {
-
-    }
+    } 
 
     ngOnDestroy() {
         this.destroy$.next(null)
         this.destroy$.complete();
     }
-
 
     getCurrentLeaveBalance() {
         this.http.request('get', 'leave/balance/').subscribe(res => {
@@ -144,9 +139,6 @@ export class ManageSelfLeavesComponent implements OnInit {
             }
         })
     }
-
-
-
 
     convertDatefmt(date) {
         return this.datepipe.transform(date, 'yyyy-MM-dd');
@@ -169,7 +161,6 @@ export class ManageSelfLeavesComponent implements OnInit {
             this.applyLeaveRef.onClose()
         });
     }
-
 
     // on clicking the raise discrepancy button
     onClickRaiseDiscrepancy(e, data) {
@@ -207,7 +198,6 @@ export class ManageSelfLeavesComponent implements OnInit {
         })
     }
 
-
     openLeaveDetails() {
         this.dialog.open(PopUpComponent, {
             panelClass: 'leave-details',
@@ -220,7 +210,6 @@ export class ManageSelfLeavesComponent implements OnInit {
             }
         })
     }
-
 
     eventHandlerApplyLeave(data: { type: any, data: any }) {
         if (data.type == 'submitted') {

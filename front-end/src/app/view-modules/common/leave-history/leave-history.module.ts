@@ -13,6 +13,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { ShowTableModule } from '../show-table/show-table.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 
@@ -36,7 +37,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     MatSlideToggleModule,
     MatSortModule,
     ShowTableModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    MatCheckboxModule
   ]
 })
 export class LeaveHistoryModule { }

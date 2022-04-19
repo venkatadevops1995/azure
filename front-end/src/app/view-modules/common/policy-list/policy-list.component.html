@@ -5,8 +5,8 @@
   </div>
   <div>
     <!-- Rahulchange(adding a horizontal scroll bar in table)********************************** -->
-    <div style="width:100%;overflow-x: auto;">
-    <table mat-table [dataSource]="EMPLOYEE_FILTERED_DATA" *ngIf="EMPLOYEE_FILTERED_DATA.length != 0"
+    <div style="width:100%;overflow-x: auto;" [tableAffix] *ngIf="EMPLOYEE_FILTERED_DATA.length != 0">
+    <table mat-table [dataSource]="EMPLOYEE_FILTERED_DATA" 
       class="w-100 mat-elevation-z8">
       <ng-container matColumnDef="sno">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef>Serial No.</th>

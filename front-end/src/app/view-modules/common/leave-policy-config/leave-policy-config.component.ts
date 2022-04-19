@@ -96,7 +96,7 @@ export class LeavePolicyConfigComponent implements OnInit {
         this.ss.responsive.observe([AtaiBreakPoints.LG_LT]).pipe(takeUntil(this.destroy$)).subscribe(val => {
             if (val.matches) {
                 this.addHorizontalScrollAffix();
-            }  
+            }
         })
     }
 
@@ -111,22 +111,24 @@ export class LeavePolicyConfigComponent implements OnInit {
 
     // on horizontal scroll affix the employee type
     addHorizontalScrollAffix() {
-        fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            if (window.innerWidth > 1024) {
-                this.translateLeaveCredit.value = 0
-            } else {
-                let target: HTMLElement = e['target'];
-                this.translateLeaveCredit.value = target.scrollLeft
-            }
-        })
-        fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
-            if (window.innerWidth > 1024) {
-                this.translateLeaveCredit.value = 0
-            } else {
-                let target: HTMLElement = e['target'];
-                this.translateNewHire.value = target.scrollLeft 
-            }
-        })
+        if (this.elLeaveCreditContainer) {
+            fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+                if (window.innerWidth > 1024) {
+                    this.translateLeaveCredit.value = 0
+                } else {
+                    let target: HTMLElement = e['target'];
+                    this.translateLeaveCredit.value = target.scrollLeft
+                }
+            })
+            fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+                if (window.innerWidth > 1024) {
+                    this.translateLeaveCredit.value = 0
+                } else {
+                    let target: HTMLElement = e['target'];
+                    this.translateNewHire.value = target.scrollLeft
+                }
+            })
+        }
     }
     // method to get the leave types
     getLeaveTypes() {

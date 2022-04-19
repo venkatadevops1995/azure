@@ -4,7 +4,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DateRange } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription, take } from 'rxjs';
+import { from, fromEvent, Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
@@ -13,6 +13,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
 import * as _ from 'lodash'
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export function YearVd(year: String): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -80,6 +81,8 @@ export class HolidayComponent implements OnInit {
 
   @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
 
+  @ViewChild('refHolidaysWrap') elHolidaysWrap: ElementRef;
+
   // the min date for the calendar when opening for date selection for a holiday row in edit mode
   minDate = new Date()
 
@@ -143,8 +146,18 @@ export class HolidayComponent implements OnInit {
   // newly added indexes in holiday list to help on clicking cancel button to revert the holidaylist
   appendedHolidays = []
 
+  // subject to emit for clearing the subscriptions
+  destroy$: Subject<any> = new Subject();
+
+  scrollXHolidayAffix:number = 0;
+
   // holiday template reference 
   @ViewChild('templateRefHolidayForm') templateHolidayForm: TemplateRef<any>;
+
+
+  get is_MD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -166,6 +179,19 @@ export class HolidayComponent implements OnInit {
     this.isAdmin = this.user.getIsEmpAdmin();
   }
 
+
+  ngAfterViewInit() {
+    fromEvent(this.elHolidaysWrap.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe(val => {
+      this.scrollXHolidayAffix = this.elHolidaysWrap.nativeElement.scrollLeft
+    })
+  }
+
+
+
+  ngOnDestroy() {
+    this.destroy$.next(null);
+    this.destroy$.complete()
+  }
 
   @ViewChild('addHoliday') elAddHoliday: ElementRef;
 

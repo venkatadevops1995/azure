@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 
@@ -60,6 +61,11 @@ export class EmployeeLeaveInfoComponent implements OnInit {
   edited_emp_name = ""
 
   showMessage = false;
+
+
+  get is_XMD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.XMD_LT]
+  }
 
   constructor(public dialog: MatDialog,
     private ss: SingletonService,

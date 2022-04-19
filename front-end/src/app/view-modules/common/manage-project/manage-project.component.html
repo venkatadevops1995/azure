@@ -1,13 +1,13 @@
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="search(managerCtrl.value)">
 
-    <div class="flex nowrap flex-col-xs flex-row-md  between-xs mb-20 middle-md">
+    <div class="flex nowrap flex-col-xs flex-row-xmd  between-xs mb-20 middle-xmd">
       <h2 class="col-accent-500 fs-24 fw-600">
         Project change
       </h2>
-      <div class="flex fs-14 w-md-60 w-xmd-50 end-md mt-15 mt-md-0 bottom-xs">
+      <div class="flex fs-14 w-md-60 w-xmd-50 end-xmd bottom-xs mt-15 mt-xmd-0 ">
 
-        <mat-form-field class="w-50  mr-30 no-pb">
+        <mat-form-field class="w-50  mr-30 no-pb top-form-field single-row">
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
             [(ngModel)]="value">
           <svg matSuffix class="col-primary-300 use-svg" (click)="clear()" symbol="triangle-down" w="8"></svg>
@@ -50,67 +50,72 @@
 <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
   **********************************************************************
   ************************************************************ -->
-  <div style="width:100%; overflow-x: auto;">
-<table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0"
-  class="mat-elevation-z8 w-100">
-  <ng-container matColumnDef="serial_no">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
-    <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
-      [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{i+1}}  </td>
-  </ng-container>
+<div style="width:100%; overflow-x: auto;" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0" [tableAffix]>
+  <table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" class="mat-elevation-z8 w-100">
+    <ng-container matColumnDef="serial_no">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
+      <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{i+1}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="emp_name">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      <div placement="bottom" 
-        tooltip="{{element.staging_status !== null ? 'Employee will be disbled on'+ ' '+element.staging_relieved : ''}}">
-        {{element.emp_name}}
-      </div>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="emp_name">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        <div placement="bottom"
+          tooltip="{{element.staging_status !== null ? 'Employee will be disbled on'+ ' '+element.staging_relieved : ''}}">
+          {{element.emp_name}}
+        </div>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="company">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      {{element.company}} </td>
-  </ng-container>
+    <ng-container matColumnDef="company">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        {{element.company}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="staff_no">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      {{element.staff_no}} </td>
-  </ng-container>
+    <ng-container matColumnDef="staff_no">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        {{element.staff_no}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="proj1">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 1 </th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue'
-        tooltip="Current Project: <span class='col-accent-500'>{{element.proj1?.name}}</span>" placement="bottom">
-        {{element.staged_proj1?.name}}</div>
-      <div style="display:inline;" *ngIf="element.staged_proj1.id === ''">{{element.proj1?.name}}</div>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="proj1">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 1 </th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        <div style="display:inline;" *ngIf="element.staged_proj1.id !== ''" class='fc_blue'
+          tooltip="Current Project: <span class='col-accent-500'>{{element.proj1?.name}}</span>" placement="bottom">
+          {{element.staged_proj1?.name}}</div>
+        <div style="display:inline;" *ngIf="element.staged_proj1.id === ''">{{element.proj1?.name}}</div>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="proj2">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 2</th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue'
-        tooltip="Current Project: <span class='col-accent-500'>{{element.proj2?.name}}</span" placement="bottom">
-        {{element.staged_proj2?.name}}</div>
-      <div style="display:inline;" *ngIf="element.staged_proj2.id === ''">{{element.proj2?.name}}</div>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="proj3">
-    <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 3</th>
-    <td class="p-table-5" mat-cell *matCellDef="let element" [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
-      <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue'
-        tooltip="Current Project: <span class='col-accent-500'>{{element.proj3?.name}}</span" placement="bottom">
-        {{element.staged_proj3?.name}}</div>
-      <div style="display:inline;" *ngIf="element.staged_proj3.id === ''">{{element.proj3?.name}}</div>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="proj2">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 2</th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        <div style="display:inline;" *ngIf="element.staged_proj2.id !== ''" class='fc_blue'
+          tooltip="Current Project: <span class='col-accent-500'>{{element.proj2?.name}}</span" placement="bottom">
+          {{element.staged_proj2?.name}}</div>
+        <div style="display:inline;" *ngIf="element.staged_proj2.id === ''">{{element.proj2?.name}}</div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="proj3">
+      <th class="p-table-5" mat-header-cell *matHeaderCellDef style="width:20%;"> Project 3</th>
+      <td class="p-table-5" mat-cell *matCellDef="let element"
+        [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
+        <div style="display:inline;" *ngIf="element.staged_proj3.id !== ''" class='fc_blue'
+          tooltip="Current Project: <span class='col-accent-500'>{{element.proj3?.name}}</span" placement="bottom">
+          {{element.staged_proj3?.name}}</div>
+        <div style="display:inline;" *ngIf="element.staged_proj3.id === ''">{{element.proj3?.name}}</div>
+      </td>
+    </ng-container>
 
-  <!-- 
+    <!-- 
 <div style="width:100%; overflow-x: auto;">
   <table mat-table [dataSource]="EMP_PROJECTS_FILTERED_DATA" *ngIf="EMP_PROJECTS_FILTERED_DATA.length!=0"
     class="mat-elevation-z8 w-100">

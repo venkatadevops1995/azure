@@ -32,7 +32,7 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     TimeSheetModule,
     PopUpModule,
     MatDialogModule, 
-    StylePaginatorModule,
+    StylePaginatorModule
   ]
 })
 export class ApproveTimesheetsModule { }

@@ -591,7 +591,7 @@ export class ApplyLeaveComponent implements OnInit {
   // set the open date for end date in leave application
   onOpenEndDateDatePicker() {
     this.datePickerEndDate.startAt = this.applyForm.value.endDate || this.datePickerLeaveApplcn.startAtEndDate;
-  } 
+  }
 
   // get the leave requests available for the current user for special leave types
   getLeaveRequestsAvailability() {

@@ -1,38 +1,36 @@
 <form [formGroup]="applyForm" #f="ngForm" class="fs-14">
-  <div>
-    <div class="container-fluid">
-      <div class="row fs-12 fs-sm-14 ">
-        <div class="col-xs-6">
-          <mat-form-field class="w-100">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="type">
-              <ng-container *ngFor="let type of leaveTypes">
-                <mat-option [value]="type">
-                  {{type.name == 'Paid' ? 'General': type.name}}
-                </mat-option>
-              </ng-container>
-            </mat-select>
-            <mat-error class="fs-14"
-              [@slideAnimation]="(applyForm.controls.type.touched || applyFormSubmitted) && applyForm.controls.type.hasError('required') ? 'open': 'close'">
-              Please Select Type
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-xs-6" *ngIf="applyForm.controls.type.value?.name == 'Paid'">
-          <mat-form-field class="w-100">
-            <mat-label>Leave Reason (Optional)</mat-label>
-            <mat-select formControlName="reason">
-              <mat-option *ngFor="let reason of leaveReasons" [value]="reason">
-                {{reason}}
+  <div class="container-fluid">
+    <div class="row fs-12 fs-sm-14 ">
+      <div class="col-xs-6">
+        <mat-form-field class="w-100">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
+            <ng-container *ngFor="let type of leaveTypes">
+              <mat-option [value]="type">
+                {{type.name == 'Paid' ? 'General': type.name}}
               </mat-option>
-            </mat-select>
+            </ng-container>
+          </mat-select>
+          <mat-error class="fs-14"
+            [@slideAnimation]="(applyForm.controls.type.touched || applyFormSubmitted) && applyForm.controls.type.hasError('required') ? 'open': 'close'">
+            Please Select Type
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-xs-6" *ngIf="applyForm.controls.type.value?.name == 'Paid'">
+        <mat-form-field class="w-100">
+          <mat-label>Leave Reason (Optional)</mat-label>
+          <mat-select formControlName="reason">
+            <mat-option *ngFor="let reason of leaveReasons" [value]="reason">
+              {{reason}}
+            </mat-option>
+          </mat-select>
 
-            <mat-error class="fs-14"
-              [@slideAnimation]="(applyForm.controls.reason.touched || applyFormSubmitted) && applyForm.controls.reason.hasError('required') ? 'open': 'close'">
-              Please Select Type
-            </mat-error>
-          </mat-form-field>
-        </div>
+          <mat-error class="fs-14"
+            [@slideAnimation]="(applyForm.controls.reason.touched || applyFormSubmitted) && applyForm.controls.reason.hasError('required') ? 'open': 'close'">
+            Please Select Type
+          </mat-error>
+        </mat-form-field>
       </div>
     </div>
     <div>
@@ -213,8 +211,7 @@
       be changed on
       submission of the request</p>
     <div class="w-100 of-auto">
-      <table style="min-width: 500px;" mat-table [dataSource]="TIMESHEET_DISCREPANCY_DATA"
-        *ngIf="TIMESHEET_DISCREPANCY_DATA.length!=0">
+      <table style="min-width: 500px;" mat-table [dataSource]="TIMESHEET_DISCREPANCY_DATA" *ngIf="TIMESHEET_DISCREPANCY_DATA.length!=0">
 
         <ng-container matColumnDef="serial">
           <th mat-header-cell *matHeaderCellDef style="width: 80px;"> S No </th>

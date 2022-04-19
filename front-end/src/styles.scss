@@ -122,12 +122,36 @@ img {
 .affix-target {
   position: fixed !important;
   top: 0px;
-  z-index: 11;
+  z-index: 110;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
+}
+
+// the form field in the top form of the many of the views
+.top-form-field {
+  width: 215px;
+  &.atai-date-rande{
+    // min-width: 220px;
+  }
+}
+
+@media screen and (max-width:768px) {
+  .top-form-field {
+    width: 70vw;
+    max-width: 180px;
+  }
+}
+
+@media screen and (max-width:550px) {
+  .top-form-field { 
+    // max-width: 150px;
+    &.single-row{
+      max-width: 150px;
+    }
+  }
 }
 
 ::placeholder {
@@ -143,7 +167,7 @@ input::placeholder {
 ::-webkit-scrollbar {
   width: 5px;
   height: 7px;
-  position: relative; 
+  position: relative;
 }
 
 ::-webkit-scrollbar-button {

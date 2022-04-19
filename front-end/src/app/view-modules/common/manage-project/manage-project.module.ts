@@ -15,6 +15,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module'; 
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     UseSvgModule,
     FileDownloadModule,
     TooltipModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    TableAffixModule
   ]
 })
 export class ManageProjectModule { }

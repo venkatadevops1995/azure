@@ -3,6 +3,7 @@ import { HttpParams } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table'; 
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
@@ -51,6 +52,9 @@ export class LeaveHistoryComponent implements OnInit {
   @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
 
   isPageAccessable: Boolean = false;
+
+  futureLeavesOnly: boolean = false;
+
   constructor(private ss: SingletonService,
     private http: HttpClientService,
     private datepipe: DatePipe,
@@ -105,6 +109,11 @@ export class LeaveHistoryComponent implements OnInit {
     let fgValue: any = this.managerCtrl.value
     this.getLeaveApplications(true, fgValue)
 
+  }
+
+
+  onClickFutureLeavesOnly(data:MatCheckboxChange){
+    this.futureLeavesOnly = data.checked;    
   }
 
   onSubmitResolvedLeaveFilter(e) {

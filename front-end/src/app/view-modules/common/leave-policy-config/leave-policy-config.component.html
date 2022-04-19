@@ -33,7 +33,7 @@
  
 
 <ng-template #templateEmployeeType let-translateX="value">
-  <div class="policy-grid-left-header pr-5 pos-r" [ngStyle]="{'z-index':10, 'grid-template-rows':'50px 1fr',transform:'translateX('+translateX+'px)'}">
+  <div class="policy-grid-left-header pr-5 pos-r  primary-A100" [ngStyle]="{'z-index':10, 'grid-template-rows':'50px 1fr',transform:'translateX('+translateX+'px)'}">
     <div class="policy-grid-cell"></div>
     <div class="policy-grid-cell br-10 mt-5 header-gradient fs-11 fs-md-12 col-primary-200 fw-500 "
       style="display: grid;height:auto;" [ngStyle]="{'grid-row': '2 / span '+(employeeTypes.length), 'grid-template-rows' : 'repeat('+(employeeTypes.length)+', 50px)'}">

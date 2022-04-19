@@ -77,7 +77,7 @@ body {
 }
 
 .mat-sort-header-container {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .table-colum-left {
@@ -133,7 +133,7 @@ th.mat-header-cell:first-of-type {
 th.mat-header-cell:first-of-type,
 td.mat-cell:first-of-type,
 td.mat-footer-cell:first-of-type {
-  padding-left: 0px !important;
+  padding-left: 15px !important;
 }
 
 //giving border radious to right side of last header cell
@@ -160,7 +160,7 @@ td.mat-cell,
 td.mat-footer-cell {
   border-bottom-width: 0px !important;
   vertical-align: middle !important;
-  text-align: center !important;
+  text-align: left !important;
 
   // rahul change (making policy column left align in policy component)***********
   &.table-colum-left {

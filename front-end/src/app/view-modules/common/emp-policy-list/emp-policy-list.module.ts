@@ -7,6 +7,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ButtonModule } from 'src/app/components/button/button.module';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 
 
 
@@ -18,7 +19,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     UseSvgModule,
     ModalPopupModule,
     ButtonModule, 
-    PdfViewerModule
+    PdfViewerModule,
+    TableAffixModule
   ]
 })
 export class EmpPolicyListModule { }
