@@ -78,7 +78,7 @@ export class AffixDirective {
                 this.wrapperDiv.style.width = referenceRect.width+'px';
                 this.wrapperDiv.style.overflowX = 'auto'
 
-                console.log(referenceRect.top, targetRect.height)
+                // console.log(referenceRect.top, targetRect.height)
 
                 if(this.ataiAffix.scrollX){
                     this.wrapperDiv.scrollLeft = this.scrollX

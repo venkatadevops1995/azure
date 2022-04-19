@@ -5,7 +5,7 @@
     </div>
 
     <div class="flex bottom-md flex-col-xs flex-row-md end-xs fs-12 fs-md-14 middle-xs ">
-      <mat-form-field style="width:200px;" class="mr-md-30 no-pb mb-15 mb-md-0">
+      <mat-form-field   class="mr-md-30 no-pb mb-15 mb-md-0 top-form-field">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
           [(ngModel)]="value">
         <div *ngIf="value" class="use-svg" style="position: absolute;right: 5px;top:50%;transform:translateY(-50%);"
@@ -19,7 +19,7 @@
       </mat-form-field>
 
 
-      <mat-form-field class="no-pb atai-date-range no-pb" style="width: 200px;">
+      <mat-form-field class="no-pb atai-date-range no-pb  top-form-field"  >
         <app-atai-date-range [maxDate]="maxDate" (dateSelected)="onDateSelect($event)"></app-atai-date-range>
       </mat-form-field>
 
