@@ -43,6 +43,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { UseSvgModule } from './components/use-svg/use-svg.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,12 +54,12 @@ import { UseSvgModule } from './components/use-svg/use-svg.module';
     HeaderComponent,
     FooterComponent ,
     AddProjectComponent,
-    SidebarComponent
+    SidebarComponent,
+  
   
   ],
   imports: [
     BrowserModule, 
-   
     BrowserAnimationsModule,
     HttpClientModule,
     ConfirmDialogModule,

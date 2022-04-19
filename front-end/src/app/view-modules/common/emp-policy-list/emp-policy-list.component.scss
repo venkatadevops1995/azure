@@ -1,9 +1,10 @@
 .not--exsiting-policy{
     display: flex;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
-    font-size: 20px;
-    margin-top: 100px;
+    font-size: 14px;
+    // margin-top: 100px;
+    color: var(--col-primary-300);
 }
 // style for loader
 .loader--string{

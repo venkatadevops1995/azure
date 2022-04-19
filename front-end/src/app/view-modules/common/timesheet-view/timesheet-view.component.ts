@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { ListKeyManager } from '@angular/cdk/a11y';
+import { UP_ARROW, DOWN_ARROW, ENTER, E } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-timesheet-view',
@@ -125,7 +127,111 @@ export class TimesheetViewComponent implements OnInit {
   get is_MD_LT(){
     return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
   }
+  public activeIndex: number = 0;
+  list:any=0;
+  @ViewChild('select')select:ElementRef;
+   keyboardEventsManager:ListKeyManager<any>;
+   users = [];
+  public key_pressed(event) {
+    this.showProjectList = !this.showProjectList;
+    this.list= Array.from(event.target.children).length;
+    // this.users = this.keyboardEventsManager.activeItem.item.name;
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!',event)
+    if (event.keyCode === 13) {
+      // passing the event to key manager so we get a change fired
+   console.log('enter has been pressed')
+    }
+    switch(event.keyCode){
+      case 38:
+        if(this.activeIndex==0){
+          this.activeIndex=this.list-1
+        }
+        else{
+          --this.activeIndex;
+        }
+        this.rendrer.addClass(this.select.nativeElement,'active')
+        console.log('keyup')
+        console.log('selected index:::38',this.activeIndex);
+        break
+      case 40:
+        if(this.activeIndex==this.list-1){
+          this.activeIndex=0;
+        }else{
+        ++this.activeIndex;
+        }
+      this.rendrer.addClass(this.select.nativeElement,'active')
+        console.log('keyDown')
+        console.log('selected index:::40',this.activeIndex);
+        // return this.nextActiveMatch();
+        break
+      default:
+        this.activeIndex = 0
+  }
+}
+    //  key_pressed_1(event:any){
+     
+    //    console.log('list:::',this.list);
+    //console.log('universal key index',this.activeIndex);
   
+    // switch(event.keyCode){
+    //   case 38:
+        // if(this.activeIndex > 0){
+        //   this.activeIndex= --this.activeIndex  ;
+        // }else if(this.activeIndex == 0){
+        //   this.activeIndex = this.list
+        // }
+        // else
+        //   this.activeIndex = this.activeIndex;
+      //   if(this.activeIndex==0){
+      //     this.activeIndex=this.list-1
+      //   }
+      //   else{
+      //     --this.activeIndex;
+      //   }
+      //   this.rendrer.addClass(this.select.nativeElement,'active')
+      //   console.log('keyup')
+      //   console.log('selected index:::38',this.activeIndex);
+      //   break
+      // case 40:
+        // if(this.activeIndex <= this.list-1){ // 0 
+        //   this.activeIndex= ++this.activeIndex;
+        // }
+        // // else if(this.activeIndex == 0){
+        // //   this.activeIndex = 0
+        // // }
+        // else{
+        // this.activeIndex = this.activeIndex;
+        // }
+    //     if(this.activeIndex==this.list-1){
+    //       this.activeIndex=0;
+    //     }else{
+    //     ++this.activeIndex;
+    //     }
+    //   this.rendrer.addClass(this.select.nativeElement,'active')
+    //     console.log('keyDown')
+    //     console.log('selected index:::40',this.activeIndex);
+    //     // return this.nextActiveMatch();
+    //     break
+    //   default:
+    //     this.activeIndex = 0
+
+    // }
+    // if(this.activeIndex == )
+    // console.log("^^^^^",event.target.children)
+
+
+// }
+
+
+  // public nextActiveMatch() {
+  //   // this.rendrer.addClass(this.select.nativeElement,'select');
+    
+  // public prevActiveMatch () {
+  //   // this.rendrer.addClass(this.select.nativeElement,'select');
+    
+  // }
+
+
 
   constructor(
     private http: HttpClientService,
@@ -133,7 +239,9 @@ export class TimesheetViewComponent implements OnInit {
     private ss: SingletonService,
     private router: Router,
     private el: ElementRef,
-    private dialog: MatDialog 
+    private dialog: MatDialog ,
+    private rendrer:Renderer2
+  
   ) {
     this.fgWsrProjects = this.ss.fb.group({
       active_projects: this.ss.fb.array([]),

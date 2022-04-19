@@ -17,8 +17,10 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        <div class="flex end-xs middle-xs">
         <app-button [size]="is_XMD_LT ? 'small' : 'default'">Submit
         </app-button>
+        </div>
       </div>
       <!-- <div *ngIf="showMisDownload" class="fs-18 p-10 download-bn" style="color: #067bca;cursor:pointer;justify-content:space-between;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">
                 MIS
@@ -236,7 +238,7 @@
 <!-- *****************************************
   **********************************************************************
   ************************************************************ -->
-<div *ngIf="EMP_PROJECTS_FILTERED_DATA.length==0 && showMessage == true" class="p-20">
+<div *ngIf="EMP_PROJECTS_FILTERED_DATA.length==0 && showMessage == true" class="fs-14 col-primary-300">
   NO DATA AVAILABLE
 
 </div>
