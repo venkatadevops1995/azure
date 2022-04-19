@@ -1,4 +1,4 @@
-<input #input type="number" [class.empty]="disabled" [disabled]="disabled" maxlength="2"
+<input  #input type="number" [class.empty]="disabled" [disabled]="disabled" maxlength="2"
   [class.black-text]="(input.value != '0' && input.value != '00')" [attr.maxlength]="2" min="0" max="24">
 <p *ngIf="showErrorHours">Number must be between 0 and 24</p>
 <p *ngIf="showErrorHoliday" class="{{errorTotalType}}">Hours filled for holiday</p>

@@ -1,6 +1,6 @@
 
 <div  class="flex middle-sm between-sm mb-15 flex-col-xs flex-row-sm">
-  <h2 class="dis-ib" tabindex="0"  class="heading mb ">
+  <h2 class="dis-ib"  appFocus class="heading mb ">
     {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
   </h2>
   <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData" href="javascript:;"
@@ -11,9 +11,9 @@
   </a>
 </div>
 
-<div class="timesheet-wrap w-100" style="overflow-x:auto;" #refTimesheetWrap>
+<div class="timesheet-wrap w-100" style="overflow-x:auto;" #refTimesheetWrap >
   <app-time-sheet [translateTitle]="translateTimesheetTitle" [ngStyle]="{minWidth:weeklyTimeSheetData ? '800px':'auto'}"
-    class="dis-blk" [disable]="disableTimesheet" (evChange)="onTimeSheetChange($event)" [data]='weeklyTimeSheetData'>
+    class="dis-blk"  [disable]="disableTimesheet" (evChange)="onTimeSheetChange($event)" [data]='weeklyTimeSheetData'>
   </app-time-sheet>
 </div>
 
@@ -31,16 +31,16 @@
           class="wsr__project-text"></textarea>
       </div>
 
-      <div *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
+      <div   tabindex="0" (keydown.enter)="key_pressed($event)"  *ngIf="weeklyTimeSheetData?.enableSaveSubmit && wsrActiveProjectsHidden.length > 0" #selProject
         class="wsr__sel-project flex middle-xs mt-15" [class.disabled]="wsrActiveProjectsHidden.length < 1">
-        <div  tabindex="0" class="flex middle-xs center-xs wsr__sel-project-toggle">
+        <div  class="flex middle-xs center-xs wsr__sel-project-toggle">
           <svg class=" mr-5 use-svg" symbol="add-circle" w="14">
           </svg>
           Select Project
         </div>
-        <div class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
-          <div class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
-            *ngFor="let project of wsrActiveProjectsHidden;let i = index;">
+        <div  tabindex="0"  class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
+          <div id="select" #select   class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
+            *ngFor="let project of wsrActiveProjectsHidden;let i = index;" tabindex="index" >
             {{project?.project_name}}
           </div>
         </div>

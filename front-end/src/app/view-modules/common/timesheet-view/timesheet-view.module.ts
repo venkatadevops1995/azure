@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 import {A11yModule} from '@angular/cdk/a11y';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 @NgModule({
   declarations: [TimesheetViewComponent],
@@ -25,7 +26,8 @@ import {A11yModule} from '@angular/cdk/a11y';
     MatDialogModule,
     ConfirmDialogModule ,
     UseSvgModule,
-    A11yModule
+    A11yModule,
+    FocusModule
   ],
   exports:[
     TimesheetViewComponent

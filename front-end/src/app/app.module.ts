@@ -41,7 +41,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
 import { UseSvgModule } from './components/use-svg/use-svg.module';
-import { FocusDirective } from './directives/focuseDirective/focus.directive';
+
 
 
 @NgModule({
@@ -55,7 +55,7 @@ import { FocusDirective } from './directives/focuseDirective/focus.directive';
     FooterComponent ,
     AddProjectComponent,
     SidebarComponent,
-    FocusDirective,
+  
   
   ],
   imports: [
