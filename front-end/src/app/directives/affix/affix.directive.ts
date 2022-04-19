@@ -77,12 +77,15 @@ export class AffixDirective {
                 let referenceRect = reference.getBoundingClientRect()
                 this.wrapperDiv.style.width = referenceRect.width+'px';
                 this.wrapperDiv.style.overflowX = 'auto'
-                // console.log(this.ataiAffix.scrollX)
+
+                console.log(referenceRect.top, targetRect.height)
+
                 if(this.ataiAffix.scrollX){
                     this.wrapperDiv.scrollLeft = this.scrollX
                 }else{
                     this.wrapperDiv.scrollLeft = 0;
                 }
+
                 if (referenceRect.top < 0 && (referenceRect.bottom - targetRect.height) > 0) {
                     // console.log('in range',);
                     this.wrapperDiv.classList.add('affix-target');

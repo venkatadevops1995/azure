@@ -11,10 +11,11 @@ import { SingletonService } from './services/singleton.service';
 import { UserService } from './services/user.service';
 import * as _ from 'lodash';
 import { AtaiBreakPoints } from './constants/atai-breakpoints';
+import { routerNewAnimation } from './animations/router-new.animation';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'] 
 })
 export class AppComponent {
 

@@ -27,10 +27,7 @@
    p span{
     color: red;
    }
-}
-::ng-deep button.small{
-    width: 130px !important;
-}
+} 
 
 :host ::ng-deep div.middle {
     div.model__content{

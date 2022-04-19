@@ -4,7 +4,7 @@
     <h2 class="fg-1">{{dataMerged?.heading}}</h2>
     <div *ngIf="dataMerged?.showCloseButton">
       <svg class="popup__close use-svg" (click)="dialogRef.close()"
-        symbol="circle-close-red" w="30" ></svg>
+        symbol="circle-close-red" w="35" ></svg>
     </div>
   </div>  
   <div class="popup__body" [class.p-h]="dataMerged.padding_horizontal" [class.p-v]="dataMerged.padding_vertical" [class.overflow]="dataMerged.vertical_scroll">

@@ -60,8 +60,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   @Input() allowSameDateRange: boolean = false;
 
   get empty() {
-    let selection = this._model.selection;
-    return !selection.start && !selection.end;
+    let selection = this._model.selection; 
+    return !(!!selection.start && !!selection.end);
   }
 
   // ID attribute for the field and for attribute for the label
@@ -288,6 +288,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   ngOnInit(): void {
     this._model = this._rangeModel;
+    
     if (this.ngControl) {
       this.ngControl.statusChanges.subscribe((status) => {
         console.log(status);
@@ -297,7 +298,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
     // to set the startAt monthView
     this._model.add(new Date)
-    this._model.add(new Date)
+    // this._model.add(new Date)
   }
 
 
@@ -313,8 +314,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     // console.log(svgFontSize)
   }
 
-  ngDoCheck() {
-    // console.log("from file input")
+  ngDoCheck() { 
     if (this.ngControl) {
       this.updateErrorState();
       // this.stateChanges.next();
