@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
@@ -58,7 +59,12 @@ export class PolicyListComponent implements OnInit {
     console.log('(page-rendered)', e);
     // this.isLoaderVisible = !this.isLoaderVisible
   }
-
+  // Rahul change(adding breakpoint obs api for removing the scrollbar <=320px width devices)**********
+  get is_XS(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
+  }
+  
+  //***********************************************************************************
   getPolicies() {
     this.EMPLOYEE_FILTERED_DATA = []
     this.http.request("GET", "policy/", "", "").subscribe(res => {

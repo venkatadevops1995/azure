@@ -8,6 +8,7 @@ import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 @Component({
   selector: 'app-emp-policy-list',
   templateUrl: './emp-policy-list.component.html',
@@ -33,7 +34,12 @@ export class EmpPolicyListComponent implements OnInit {
     private router: Router,
     private activatedRoute:ActivatedRoute,
     private user:UserService) { }
-
+    // Rahul change(adding breakpoint obs api for removing the scrollbar <=320px width devices)**********
+    get is_XS(){
+      return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
+    }
+    
+    //***********************************************************************************
   ngOnInit(): void {
 
     this.getPolicies();

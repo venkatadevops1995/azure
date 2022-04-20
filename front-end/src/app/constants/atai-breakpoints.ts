@@ -1,5 +1,5 @@
 export const AtaiBreakPoints = {
-    XS: '(min-width:321px) and (max-width:550px)',
+    XS: '(min-width:320px) and (max-width:550px)',
     SM: '(min-width:551px) and (max-width:768px)',
     MD: '(min-width:769px) and (max-width:1024px)',
     XMD: '(min-width:1025px) and (max-width:1200px)',
