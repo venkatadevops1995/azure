@@ -14,7 +14,6 @@
                 </mat-select>
             </mat-form-field> -->
       <div class="flex w-xmd-50 w-sm-70 w-100  end-xmd start-xs bottom-xs fs-14 mb-20 mb-xmd-0">
-
         <mat-form-field class="w-50 mr-10 no-pb">
           <mat-label>Manager name</mat-label>
           <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
@@ -63,8 +62,8 @@
   <!-- ****************************** card-1 for emp-l2 in dashboard component*****************************************************************
 ******************************************************************************************************************************************** -->
   <ng-container *ngFor="let week of weekWiseData;let i = index">
-    <div class="col-xs-12 col-md-6 col-xmd-4  col-lg-3  mb-30" *ngFor="let i of[1,2,3]">
-      <div  class="db-head w-100 p-15 pr-40 pl-40 pb-30 "
+    <div class="col-xs-12 col-md-6 col-xmd-4  col-lg-3  mb-30"  >
+      <div class="db-head w-100 p-15 pr-40 pl-40 pb-30 "
         style="box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);">
 
         <div class="fs-20 tac" style="color: var(--color-primary);">
@@ -99,7 +98,7 @@
               [showSubtitle]="true" subtitle="Entry NC" subtitleFontSize="16" subtitleColor="#555" [animation]="true"
               [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true" [responsive]="true"
               [renderOnClick]=false>
-            </circle-progress> 
+            </circle-progress>
           </div>
           <div class=" flex center-xs middle-xs" style="height:170px;width:170px;">
             <circle-progress #cp2 [percent]="getPercentage(week.approval_comp_cnt,week.emp_cnt)" [radius]="100"
@@ -107,7 +106,7 @@
               [innerStrokeColor]="'#222222'" [unitsFontSize]="'28'" titleColor="#C4C4C4" unitsColor="#C4C4C4"
               [showSubtitle]="true" subtitle=" Approval NC" subtitleFontSize="16" subtitleColor="#555"
               [animation]="true" [animationDuration]="300" [titleFontSize]="'28'" [startFromZero]="true"
-              [responsive]="true" [renderOnClick]=false></circle-progress> 
+              [responsive]="true" [renderOnClick]=false></circle-progress>
           </div>
         </div>
         <div style="display: grid;grid-template-columns: repeat(3,1fr);grid-column-gap: 1px;" class="mt-25 mt-md-55">

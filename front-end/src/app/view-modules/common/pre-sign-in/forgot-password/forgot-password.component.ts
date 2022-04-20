@@ -28,6 +28,11 @@ export class ForgotPasswordComponent implements OnInit {
         return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
     };
 
+    // is less than md resolutions
+    get is_XS() {
+        return this.ss.responsiveState[AtaiBreakPoints.SM_LT];
+    };
+
     constructor(
         private authHttp: HttpClientService,
         private ss: SingletonService
