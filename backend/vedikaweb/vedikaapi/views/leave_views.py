@@ -13,7 +13,7 @@ from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireL
 
 from vedikaweb.vedikaapi.constants import  LeaveDayStatus, LeaveDiscrepancyStatus, LeaveRequestStatus, MaxLeaveDaysForLeaveType, MaxRequestsForLeaveType, StatusCode, DefaultProjects,LeaveMailTypes, LeaveExcelHeadings, TimesheetDiscrpancyStatus
 from vedikaweb.vedikaapi.utils import utils
-from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator, is_manager, query_debugger
+from vedikaweb.vedikaapi.decorators import custom_exceptions, is_admin,jwttokenvalidator, is_manager, query_debugger
 from django.db.models import Q,F,Prefetch,CharField, Case, When, Value as V
 from django.core.exceptions import MultipleObjectsReturned, ValidationError, ObjectDoesNotExist
 from django.db.models import Sum
@@ -74,13 +74,16 @@ class LeaveBalanceView(APIView):
 
         req_data=json.loads(json.dumps(request.data))
         if(request.data['modifiedValue']%.5==0):
+            old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),req_data["emp"],'false')[0]['outstanding_leave_bal']
             
-            req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id})
+            req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id, 'current_leave_balance':old_leave_bal,'modified_leave_balance':req_data["modifiedValue"]})
+            
+            # req_data.update({'year':datetime.now().year,'month':datetime.now().month,'status':1,'acted_by': 'hr','hr_emp_id':emp_id})
 
             serial_leave_bal_data = LeaveBalanceSerializer(data=req_data)
             if(serial_leave_bal_data.is_valid()):
                 if(req_data['leave_credits']!= 0):
-                    old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
+                    # old_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
                     serial_leave_bal_data.save()
                     new_leave_bal = leave_service.get_leave_balance(int(datetime.now().year),serial_leave_bal_data.validated_data["emp"].emp_id,'false')[0]['outstanding_leave_bal']
                     try:
@@ -109,7 +112,8 @@ class LeaveRequestView(APIView):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         qp = request.query_params
-        is_hr = json.loads(qp.get('is_hr','false'))
+        # is_hr = json.loads(qp.get('is_hr','false'))
+        is_hr = auth_details['is_emp_admin']
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
         if errors:
             # print('errors in get leave requests')
@@ -589,6 +593,9 @@ class LeaveConfigOfCategory(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         category = request.query_params['category']
         class Serializer(serializers.Serializer):
             category=serializers.CharField(required=True)
@@ -610,6 +617,9 @@ class LeaveResolveView(APIView):
     @is_manager
     @transaction.atomic
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         req_data=request.data
         class LeaveResolveSerializer(serializers.Serializer):
             id = serializers.IntegerField(required=True)
@@ -784,7 +794,8 @@ class ExportResolvedLeaves(APIView):
                 for key,value in leave_summary_dict.items():
                     sheets2_data.append([key,value['emp_name'],value['leave_count']])
 
-                excel.defineMultipleWorksheets(['Leave History','Leave Summary', 'Hr Modifications'],[excel_data,sheets2_data, hr_data],leaveFlag=True)
+                # excel.defineMultipleWorksheets(['Leave History','Leave Summary', 'Hr Modifications'],[excel_data,sheets2_data, hr_data],leaveFlag=True)
+                excel.defineMultipleWorksheets(['Leave History','Leave Summary'],[excel_data,sheets2_data],leaveFlag=True)
                 # excel.writeExcel(excel_data,row_start=0)
                 # excel.terminateExcelService()
                 del excel
@@ -865,11 +876,18 @@ class LeaveTypeView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self, request, *args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         leave_type = list(LeaveType.objects.filter(status=1).values())
         return Response(utils.StyleRes(True,"Leave Types",leave_type),status=StatusCode.HTTP_OK)
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def post(self, request, *args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         serial_leave_type = LeaveTypeSerializer(data=request.data)
         if(serial_leave_type.is_valid() == True):
             serial_leave_type.save()
@@ -881,13 +899,20 @@ class NewHireMonthTimePeriodsView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         month_time_periods = list(NewHireMonthTimePeriods.objects.filter(status=1).order_by('start_date','end_date').values('id','start_date','end_date'))
         return Response(utils.StyleRes(True,"Month time periods for the new hire first month leave credit round off",month_time_periods),status=StatusCode.HTTP_OK)
 
 class LeaveConfigView(APIView): 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         category_leave_credit = LeaveConfig.objects.filter(leave_type__status=1).select_related('category','leave_type').order_by('category__id','leave_type__id')
         category_leave_credit_serializer = LeaveConfigSerializer(category_leave_credit,many=True )   
         if len(category_leave_credit_serializer.data) > 0:
@@ -897,8 +922,12 @@ class LeaveConfigView(APIView):
         
 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def patch(self,request,*args, **kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # repr(LeaveConfigSerializer())
         serialized_data = UpdateLeaveConfigSerializer(data=request.data, many=True )
         if serialized_data.is_valid():  
@@ -926,6 +955,9 @@ class FillLeaveConfigView(APIView):
     @custom_exceptions
     @transaction.atomic
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # get all the rows from the emp type
         categories = Category.objects.all()
         # get all the rows from the leave type table
@@ -950,6 +982,9 @@ class FillNewHireLeaveConfigView(APIView):
     @custom_exceptions
     @transaction.atomic
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # get all the rows from the emp type
         categories = Category.objects.all()
         # get all the rows from the leave type table
@@ -974,8 +1009,12 @@ class FillNewHireLeaveConfigView(APIView):
 
 class NewHireLeaveConfigView(APIView):
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs): 
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         round_off = list(NewHireLeaveConfig.objects.select_related('category','time_period').order_by('category__id','time_period__id')) 
         round_off_serializer = NewHireLeaveConfigSerializer(round_off, many=True)  
         if len(round_off_serializer.data) > 0:
@@ -984,8 +1023,12 @@ class NewHireLeaveConfigView(APIView):
             return Response(utils.StyleRes(True,"No content available", round_off_serializer.data),status=StatusCode.HTTP_NO_CONTENT)
     
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def patch(self,request,*args, **kwargs):  
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         serialized_data = NewHireLeaveConfigSerializer(data=request.data,many=True, partial=True) 
         # print(serialized_data.errors, request.data)
         if serialized_data.is_valid(): 
@@ -1053,6 +1096,9 @@ class LeaveDiscrepancyView(APIView):
     @jwttokenvalidator
     @custom_exceptions 
     def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         qp = request.query_params
         leave_request_id = qp.get('leave_request_id')
 
@@ -1084,6 +1130,7 @@ class LeaveDiscrepancyView(APIView):
 class ExportEmpLeave(APIView):
     
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def get(self,request,*args,**kwargs):
         auth_details = utils.validateJWTToken(request) 
@@ -1124,6 +1171,7 @@ class ExportEmpLeave(APIView):
     # @query_debugger
 
     @jwttokenvalidator
+    @is_admin
     @custom_exceptions
     def post(self,request,*args, **kwargs):
         auth_details = utils.validateJWTToken(request) 
@@ -1332,7 +1380,13 @@ class LeaveStatusAPI(APIView):
 #BASED ON LEAVE TABLE
 #INDIVIDUAL LEAVE DAYS AE CONSIDERING AND RETURNING AS RESPONSE
 class MonthyCycleLeaveReportView(APIView):
+    @jwttokenvalidator
+    @is_admin
+    @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
@@ -1363,20 +1417,43 @@ class MonthyCycleLeaveReportView(APIView):
 #BASED ON BOTH LEAVE AND LEAVE REQUEST TABLE
 #SPLITTING THE LEAVE REQUEST BASED ON MONTHLY CYCLE DATES AND GROUPING CONSECUTIVE LEAVES UNDER THE SAME CYCLE
 class MonthyCycleLeaveReportRequestBasedView(APIView):
+    @jwttokenvalidator
+    @is_admin
+    @custom_exceptions
     def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         export_flag = self.request.query_params.get('export',False)
         threshold = self.request.query_params.get('previous',1)
         emp_name = self.request.query_params.get('emp_name',None)
         month = self.request.query_params.get('month',None)
         year = self.request.query_params.get('year',None)
+        is_future_leave = self.request.query_params.get('is_future_leave',"false")
         start_date= datetime.strptime(self.request.query_params.get('start_date', date.today()), '%Y-%m-%dT%H:%M:%S')
         end_date= datetime.strptime(self.request.query_params.get('end_date', date.today()), '%Y-%m-%dT%H:%M:%S')
-        print(utils.isNotNone(month,year))
-        if(utils.isNotNone(month,year)):
-            start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
+        leave_type_filters = [LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value]
+
+        # print(utils.isNotNone(month,year))
+
+        # if(utils.isNotNone(month,year)):
+        #     start_and_end_dates = utils.get_start_and_end_dates_based_on_month_year(month,year)
+        # else:
+        #     start_and_end_dates = start_date,end_date
+        
+        
+        if(is_future_leave=="true"):
+            tomorrow = date.today() + timedelta(days=1)
+            year_end_date = date(tomorrow.year, 12, 31)
+            start_date= datetime.strptime(str(tomorrow), '%Y-%m-%d')
+            end_date= datetime.strptime(str(year_end_date), '%Y-%m-%d')
+            # added pending leaves
+            leave_type_filters = [LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value, LeaveRequestStatus.Pending.value]
         else:
             start_and_end_dates = start_date,end_date
-        leaves = Leave.objects.filter(leave_on__gte=start_and_end_dates[0],leave_on__lte=start_and_end_dates[1],leave_request__status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value],leave_request__emp__status=1)
+        start_and_end_dates = start_date,end_date
+        leaves = Leave.objects.filter(Q(leave_on__gte=start_and_end_dates[0]) & Q(leave_on__lte=start_and_end_dates[1]) &Q(leave_request__status__in=leave_type_filters) & Q(leave_request__emp__status=1) & (~Q(leave_request__leavediscrepancy__status = 1)))
+
         if(emp_name is not None and emp_name.strip()!='' and emp_name.strip().upper()!='ALL'):
             leaves = leaves.filter(leave_request__emp__emp_name__iexact=emp_name)
         else:
@@ -1396,7 +1473,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
         keys_list = []
         for key, value in grouped_leaves:
             keys_list.append(key)
-        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1],status__in=[LeaveRequestStatus.Approved.value,LeaveRequestStatus.AutoApprovedEmp.value,LeaveRequestStatus.AutoApprovedMgr.value],emp__status=1).annotate(
+        leave_q_details_obj = LeaveRequest.objects.select_related('emp').filter(id__in=keys_list,leave__leave_on__gte=start_and_end_dates[0],leave__leave_on__lte=start_and_end_dates[1],status__in=leave_type_filters,emp__status=1).annotate(
                 day_count = Sum(Case( When(leave__day_leave_type='FULL', then=1.0),
                     When(leave__day_leave_type='FIRST_HALF', then=0.5),
                     When(leave__day_leave_type='SECOND_HALF', then=0.5),
@@ -1410,6 +1487,7 @@ class MonthyCycleLeaveReportRequestBasedView(APIView):
                 leave_type_name = F("leave_type_id__name"),
                 emp_name = F('emp__emp_name'),
                 emp_staff_no = F('emp__staff_no'),
+                discrepancy_status=F('leavediscrepancy__status')
             )
         leave_req_dict = {}
         for eachleaverequest in leave_q_details_obj:

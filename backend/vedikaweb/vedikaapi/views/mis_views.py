@@ -775,6 +775,12 @@ class DownloadMIS(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        email=auth_details['email']
+        if(email not in settings.ADMINS_TO_ACCESS_REPORTS):
+            return Response(utils.StyleRes(False,"Unauthorized User"), status=StatusCode.HTTP_UNAUTHORIZED)
         disable = request.GET.get('disable', "false")
         e_date = date.today()
         s_date = date(e_date.year, e_date.month, 1)

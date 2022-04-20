@@ -77,6 +77,10 @@ export class UserService {
     return empAdminPriority
 
   }
+  getReportAccess(){
+    let reportAccess = this.getTokenPayload()['report_access'];
+    return reportAccess
+  }
 
   isDemo() {
     return localStorage.getItem("isDemo") == "true";
@@ -116,6 +120,7 @@ export class UserService {
     // loginEndPoint = role === "student" ? "/login" : "/login/";
     // emit to the subscribers of isLoggedIn
     this.ss.loggedIn$.next(false);
+    this.ss.isPreSignIn$.next(true);
     // reset the session
     this.resetSession();
     // this.router.navigate(["/login"])

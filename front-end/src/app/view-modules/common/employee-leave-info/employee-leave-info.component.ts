@@ -36,9 +36,8 @@ export class EmployeeLeaveInfoComponent implements OnInit {
 
   PROJECTS_LIST = {}
 
-  EMP_LEAVE_DATA: EmpLeave[] = []
-
-  displayedColumns = ['staff_no', 'emp_name', 'company', 'currLvBal', 'edit'];
+  EMP_LEAVE_DATA:EmpLeave[] =[]
+  displayedColumns = ['serial_no','staff_no', 'emp_name', 'company', 'currLvBal', 'edit'];
 
   loading_emp_data = true;
 

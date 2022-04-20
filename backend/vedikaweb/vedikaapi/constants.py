@@ -82,6 +82,8 @@ class MailConfigurations(Enum):
     Welcome = "Welcome from Atwork"
     Sub_HolidayCalendar = "Holiday Calendar for the year "
     Sub_EmployeeDisabled = "Employee disabled"
+    Sub_EmployeeDisabledPast = "atwork Notifications - Access Disabled "
+    Sub_EmployeeDisabledFuture = "atwork Notifications - Access to be Disabled "
     Sub_EmployeeTransfer = "Employee Transfer"
     Sub_LeaveBalanceChange = "Leave Balance Change"
     Sub_MIS_Report="Atwork Report MIS"

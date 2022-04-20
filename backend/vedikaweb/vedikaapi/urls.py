@@ -128,5 +128,12 @@ urlpatterns = [
     ])),
     url(r'^projects-active-inactive/$', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='projects-active-inactive'),
     url(r'^save-project/', employees_and_project_views.AllActiveInActiveProjects.as_view(), name='save-project'),
+    path('app/',include([
+            path('image-reg/', common_views.ImageRecognigationData.as_view(), name='image-reg'),
+            path('report-reg-issue/', common_views.ReportRegistartionIssue.as_view(), name='image-reg'),
+            path('report-check-in-out-issue/', common_views.ReportCheckINOutIssue.as_view(), name='image-reg'),
+            
+     ]))
+    
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

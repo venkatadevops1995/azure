@@ -866,3 +866,16 @@ class MisDonloadDisableWithDate(serializers.Serializer):
         if data['startdate'] > data['enddate']:
             raise serializers.ValidationError("finish must occur after start")
         return data
+
+class FaceAppLogsSerializer(serializers.Serializer):
+    # TransID = serializers.IntegerField()
+    StaffNO = serializers.IntegerField()
+    LogDate = serializers.DateTimeField()
+    Direction = serializers.CharField()
+    SerialNo = serializers.CharField()
+    Hrview_TransID = serializers.IntegerField(default=0)
+    Source = serializers.CharField()
+
+    class Meta:
+        model=PunchLogs
+        fields='__all__'

@@ -25,35 +25,40 @@ import { HrAttendanceReportComponent } from '../common/hr-attendance-report/hr-a
 import { HrTimesheetReportComponent } from '../common/hr-timesheet-report/hr-timesheet-report.component';
 import { AddProjectComponent } from '../common/add-project/add-project.component';
 import { DownloadMisComponent } from '../common/download-mis/download-mis.component';
-
+import {AuthGuardSecurityService_HR,
+  AuthGuardSecurityService_Manager,
+  AuthGuardSecurityService_HR_OR_Manager,
+  AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
 
 const routes: Routes = [
-  { path: '', component: EmpL3Component },
+  // { path: '', component: EmpL3Component },
+  {path:"",redirectTo:"history-dashboard",pathMatch:'full'},
   { path: 'history-dashboard', component: L2DashboardComponent }, 
-  { path: 'approve-timesheets', component: ApproveTimesheetsComponent }, 
+  { path: 'approve-timesheets', component: ApproveTimesheetsComponent , canActivate:[AuthGuardSecurityService_Manager] }, 
   { path: 'timesheet', component: TimesheetViewComponent }, 
   { path: 'rejected-timesheet', component: TimesheetViewComponent },
   {path:'attendance', component:AttendenceSheetComponent},
-  {path:"manage-user",component: ManageUserComponent},
-  {path:"add-user",component: AddUserComponent},
-  {path:"edit-user",component: EditUserComponent},
-  {path:"manage-project",component: ManageProjectComponent},
-  {path:"employee-leave-info",component:EmployeeLeaveInfoComponent},
+  {path:"manage-user",component: ManageUserComponent, canActivate:[AuthGuardSecurityService_HR_OR_Manager]},
+  {path:"add-user",component: AddUserComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"edit-user",component: EditUserComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"manage-project",component: ManageProjectComponent, canActivate:[AuthGuardSecurityService_HR_OR_Manager]},
+  {path:"employee-leave-info",component:EmployeeLeaveInfoComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"manage-self-leaves",component: ManageSelfLeavesComponent},
-  {path:"manage-team-leaves",component: ManageTeamLeavesComponent},
-  {path:"leave-policy-config",component:LeavePolicyConfigComponent},
+  {path:"manage-team-leaves",component: ManageTeamLeavesComponent, canActivate:[AuthGuardSecurityService_Manager] },
+  {path:"leave-policy-config",component:LeavePolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"holiday",component:HolidayComponent},
-  {path:"import-export-leave",component:ImportExportLeaveComponent},
+  {path:"import-export-leave",component:ImportExportLeaveComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"report",component:ReportComponent},
-  {path:"leave-history",component:LeaveHistoryComponent},
-  {path:"document-config",component:PolicyConfigComponent},
-  {path:"document-list",component:PolicyListComponent},
+  {path:"leave-history",component:LeaveHistoryComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"document-config",component:PolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"document-list",component:PolicyListComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"emp-document-list",component:EmpPolicyListComponent},
   {path:"dashboard",redirectTo:"history-dashboard",pathMatch:'full'},
-  {path:"hr-attendance-reports",component:HrAttendanceReportComponent},
-  {path:"hr-timesheet-reports",component:HrTimesheetReportComponent},
-  {path:"mis-add-project",component:AddProjectComponent},
-  {path:"mis-download", component:DownloadMisComponent}
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
+  {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
+  {path:"**",redirectTo:"history-dashboard",pathMatch:'full'},
 ];
 
 @NgModule({
