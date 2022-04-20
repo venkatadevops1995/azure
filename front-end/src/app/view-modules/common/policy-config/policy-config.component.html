@@ -424,7 +424,7 @@
       </mat-form-field>
     </div>
     <!-- Rahul change In order to get previous layout remove flex-class and add style->display:flex -->
-<div [ngClass]="Is_match ?'w-90':'w-70'" [ngClass]="Is_SM ?'w-100':'w-70'"class="flex  between-xs" >
+<div  class="flex w-100 w-xmd-70 between-xs" >
     <div class="flex">
       <div class="custom_checkbox mr-10" style="accent-color:var(--col-accent-500)">
         <input
@@ -493,7 +493,7 @@
   </div>
 <!-- ******************************************************
 ********************************************* -->
-  <div  style="max-height:293px;overflow: auto;">
+  <div [ngStyle]="{'max-height': is_XS ? '239px' : '460px'}" style="overflow: auto;">
     <table
       mat-table
       [dataSource]="EMPLOYEE_FILTERED_DATA"

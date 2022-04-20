@@ -133,7 +133,7 @@ export class TimesheetViewComponent implements OnInit {
    keyboardEventsManager:ListKeyManager<any>;
    users = [];
   public key_pressed(event) {
-    this.showProjectList = !this.showProjectList;
+  
     this.list= Array.from(event.target.children).length;
     // this.users = this.keyboardEventsManager.activeItem.item.name;
   console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!',event)
@@ -142,6 +142,8 @@ export class TimesheetViewComponent implements OnInit {
    console.log('enter has been pressed')
     }
     switch(event.keyCode){
+      case 13:  this.showProjectList = !this.showProjectList;
+      break;
       case 38:
         if(this.activeIndex==0){
           this.activeIndex=this.list-1
@@ -149,7 +151,7 @@ export class TimesheetViewComponent implements OnInit {
         else{
           --this.activeIndex;
         }
-        this.rendrer.addClass(this.select.nativeElement,'active')
+        this.rendrer.addClass(this.select.nativeElement,'select')
         console.log('keyup')
         console.log('selected index:::38',this.activeIndex);
         break
@@ -159,7 +161,7 @@ export class TimesheetViewComponent implements OnInit {
         }else{
         ++this.activeIndex;
         }
-      this.rendrer.addClass(this.select.nativeElement,'active')
+      this.rendrer.addClass(this.select.nativeElement,'select')
         console.log('keyDown')
         console.log('selected index:::40',this.activeIndex);
         // return this.nextActiveMatch();

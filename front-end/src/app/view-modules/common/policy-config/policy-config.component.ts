@@ -56,6 +56,9 @@ get Is_SM(){
   return this.ss.responsive.isMatched([AtaiBreakPoints.XS,AtaiBreakPoints.SM,AtaiBreakPoints.MD
      ])
 }
+get is_XS(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
+}
 //  ******************************************************************************
 DisableCheck:boolean=false;
 
