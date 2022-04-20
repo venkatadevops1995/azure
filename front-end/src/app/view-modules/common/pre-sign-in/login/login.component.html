@@ -5,8 +5,9 @@
   </div>
   <!-- <h2 class="heading tac">Login!</h2> -->
   <form #form="ngForm" class="fs-16" [formGroup]="fgLogin" (ngSubmit)="onSubmitLogin()">
-    <div class="  middle-xs flex  fs-12 fs-md-14 fs-lg-16" matPrefix>
-      <svg class="mr-10 use-svg" symbol="user" [w]="is_XS ? 18 : 25" style="color:var(--col-accent-500);"></svg>
+    <div class="  middle-xs flex  fs-12 fs-
+    md-14 fs-lg-16" matPrefix>
+      <svg class="mr-10 use-svg" symbol="user" [w]="is_XS ? 15 : 20" style="color:var(--col-accent-500);"></svg>
       <mat-form-field class="formField lite fs-13" style="flex-grow: 1;" color="primary">
         <mat-label>Email
         </mat-label>
@@ -21,7 +22,7 @@
     </div>
 
     <div class="mt-15 middle-xs flex fs-12 fs-md-14 fs-lg-16" matPrefix>
-      <svg class="mr-10 use-svg" symbol="key" [w]="is_XS ? 18 : 25" style="color:var(--col-accent-500);"></svg>
+      <svg class="mr-10 use-svg" symbol="key" [w]="is_XS ? 12 : 17" style="color:var(--col-accent-500);"></svg>
       <mat-form-field class="formField lite" style="flex-grow: 1;">
         <mat-label>Password
         </mat-label>
@@ -33,8 +34,8 @@
 
         <div class="col-primary-300" style="cursor: pointer;" matSuffix [attr.aria-label]="'Hide password'"
           (click)="hidePassword = !hidePassword">
-          <svg class=" use-svg" title="Show password" *ngIf="hidePassword" matPrefix symbol="show-password" w="25"></svg>
-          <svg class=" use-svg" title="Hide password" *ngIf="!hidePassword" matPrefix symbol="hide-password" w="25"></svg>
+          <svg class=" use-svg" title="Show password" *ngIf="hidePassword" matPrefix symbol="show-password" w="20"></svg>
+          <svg class=" use-svg" title="Hide password" *ngIf="!hidePassword" matPrefix symbol="hide-password" w="20"></svg>
         </div>
       </mat-form-field>
     </div>

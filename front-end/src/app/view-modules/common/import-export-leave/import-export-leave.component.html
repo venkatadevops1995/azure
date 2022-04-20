@@ -9,7 +9,7 @@
     </div>
   </app-button>
 </div>
-<div style="margin-top: 20px; background-color: var(--color-quaternary); padding: 10px;">
+<div style="margin-top: 20px; background-color: var(--color-quaternary); padding: 10px; max-width:1000px;">
 
   <form [formGroup]="fileUpdateForm">
     <mat-form-field class="full-width fg-1 file  atai-file-upload no-pb" style="width: 100%;align-content: center;">
@@ -28,7 +28,7 @@
         Only xlsx format allowed
       </mat-error>
     </mat-form-field>
-    <div class="flex center-xs mt-15">
+    <div class="flex center-xs mt-25">
       <app-button size='small' theme="blue-lite" type="button" (click)="uploadLeaveExcel()"
         [disabled]="fileUpdateForm.invalid">Upload</app-button>
     </div>
