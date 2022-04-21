@@ -63,6 +63,16 @@ export class PolicyListComponent implements OnInit {
   get is_XS(){
     return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
   }
+  get is_SM(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.SM)
+  }
+  
+  get is_MD(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.MD)
+  }
+  get is_LG(){
+    return this.ss.responsive.isMatched(AtaiBreakPoints.LG)
+  }
   
   //***********************************************************************************
   getPolicies() {
@@ -114,13 +124,14 @@ export class PolicyListComponent implements OnInit {
   openPolicyDetails(policy_name, id) {
     this.clicked_policy_name = policy_name
     // this.policyDetailModal.open()
-       //Rahul change(commenting previous popup open() and opening new popup for policydetailspopup)
+       //Rahul change(commenting previous popup open() and opening new popup for policydetailspopup) [w]="'80vw'" [h]="'80vh'"
 
        this.dialog.open(PopUpComponent, {
         data: {
           heading: `${this.clicked_policy_name}`,
           template:this.PolicyDetailsPopUp,
-          maxWidth:'812px',
+          maxWidth:'70vw',
+          minWidth:'300px',
           hideFooterButtons: true,
           showCloseButton: true,
           padding_horizontal:false,
@@ -190,5 +201,17 @@ export class PolicyListComponent implements OnInit {
     parentUrl.splice(-1, 1);
 
     this.router.navigate([parentUrl.join("/") + '/document-config'], { state: { policy_id: pol_id, type: type_id } });
+  }
+
+  setZoomIN(){
+    if(this.is_XS){
+      return 0.5
+    }else if(this.is_MD || this.is_SM){
+      return 0.7
+    }else if(this.is_LG){
+      return 1
+    }else{
+      return 1.5
+    }
   }
 }

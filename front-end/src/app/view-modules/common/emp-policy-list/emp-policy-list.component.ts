@@ -38,6 +38,16 @@ export class EmpPolicyListComponent implements OnInit {
     get is_XS(){
       return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
     }
+    get is_SM(){
+      return this.ss.responsive.isMatched(AtaiBreakPoints.SM)
+    }
+    
+    get is_MD(){
+      return this.ss.responsive.isMatched(AtaiBreakPoints.MD)
+    }
+    get is_LG(){
+      return this.ss.responsive.isMatched(AtaiBreakPoints.LG)
+    }
     
     //***********************************************************************************
   ngOnInit(): void {
@@ -74,7 +84,8 @@ export class EmpPolicyListComponent implements OnInit {
         data: {
           heading: `${this.clicked_policy_name}`,
           template:this.PolicyDetailsPopUp,
-          maxWidth:'812px',
+          maxWidth:'70vw',
+          minWidth:'300px',
           hideFooterButtons: true,
           showCloseButton: true,
           padding_horizontal:false,
@@ -93,6 +104,17 @@ export class EmpPolicyListComponent implements OnInit {
     console.log('!!!!!!!!!!!!!!!!!!!!!!##########################################',this.filepathUrl)
     this.isLoaderVisible = false
 
+  }
+  setZoomIN(){
+    if(this.is_XS){
+      return 0.5
+    }else if(this.is_MD || this.is_SM){
+      return 0.7
+    }else if(this.is_LG){
+      return 1
+    }else{
+      return 1.5
+    }
   }
 
 }

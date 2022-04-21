@@ -91,6 +91,7 @@ body {
 .mat-row {
   height: 52px !important;
   border-bottom-width: 0px;
+  content-visibility: auto;
 
   &:not(tr) {
     background: var(--col-primary-A200);

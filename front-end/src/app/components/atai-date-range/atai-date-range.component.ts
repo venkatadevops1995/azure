@@ -53,7 +53,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
   @Input() showInput: boolean = true;
 
-  // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
+  // whether to disable or not
   @Input() disabled: boolean = false;
 
   // whether to allow same date to be selected as start and end date
