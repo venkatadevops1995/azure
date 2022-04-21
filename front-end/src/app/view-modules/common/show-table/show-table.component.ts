@@ -17,8 +17,10 @@ export class ShowTableComponent implements OnInit {
   @Input() LEAVE_DATA_HISTORY : any;
   @ViewChild(MatSort) sort: MatSort;
   ngAfterViewInit() {
-    this.LEAVE_DATA_HISTORY = new MatTableDataSource(this.LEAVE_DATA_HISTORY);
-    this.LEAVE_DATA_HISTORY.sort = this.sort;
+    setTimeout(()=>{
+      this.LEAVE_DATA_HISTORY = new MatTableDataSource(this.LEAVE_DATA_HISTORY);
+      this.LEAVE_DATA_HISTORY.sort = this.sort;
+    })
   }
   leaveApplicationColumns: string[] = ['serial', 'id', 'emp_name', 'startdate', 'enddate', 'day_count', 'leave_type', 'status'];
   convertDatefmt(date) {

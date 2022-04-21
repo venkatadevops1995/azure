@@ -32,6 +32,7 @@ export enum LeaveApplcnStatus {
   DiscrepancyRejected=7,
   TimesheeDiscrepancy = 8
 }
+
 export enum LeaveDiscrepancyStatus {
   Pending = 0,
   Approved = 1,

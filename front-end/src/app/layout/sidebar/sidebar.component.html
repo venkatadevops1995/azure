@@ -1,70 +1,47 @@
-
-<!-- <ul class="menu">
-    <li *ngFor="let item of menu;">
-        <a [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+item.link">
-            {{item.text}}
-            <ng-container *ngIf="item.showDot">
-            
-                <div *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--color-success);"
-                    class="menu__red-dot"></div>
-                <div *ngIf="pendingApprovalCount > 0" class="menu__red-dot" style="background-color: var(--color-danger);"></div>
-                <div *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="menu__red-dot"
-                    style="background-color: var(--color-warning);"></div>
-            
-        </ng-container>
-            <ng-container *ngIf="item.showRedDot">
-                <div class="menu__red-dot"></div>
-            </ng-container>
-        </a>
-    </li>
-</ul> -->
-
-<div class="page-wrapper chiller-theme toggled">
-    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    </a>
-    <nav id="sidebar" class="sidebar-wrapper" >
-      <div class="sidebar-content">
-        <div class="user p-15">
-          <div class="user__pic">
-          </div>
-          <div class="user__name mt-25">
-              <p>Hi, {{username}}</p>
-          </div>
+<div class="page-wrapper toggled sidebar">
+  <div (click)="onClickMenuToggle()" [class.is-menu-open]="isSidebarOpen" class="sidebar__toggle col-primary-200 flex center-xs middle-xs">
+    <svg class="use-svg" [attr.fill]="'currentColor'" symbol="angle-right" [w]="15"></svg>
+  </div>
+  <div id="sidebar" [class.is-menu-open]="isSidebarOpen" class="sidebar__wrapper">
+    <div class="sidebar-content">
+      <div class="user p-15">
+        <div class="user__pic">
+        </div>
+        <div class="user__name mt-25">
+          <p>Hi, {{username}}</p>
+        </div>
       </div>
-        <div class="sidebar-menu">
-          <ul class="newmenu">
-            <ng-container *ngFor="let item of menu">
-              <li class="header-menu mt-10"  >
-                <span *ngIf=" item.link!='' " style="padding:0px !important;">
+      <nav class="nav">
+        <ul class="menu">
+          <ng-container *ngFor="let item of menu">
+            <li class=" mt-10">
+              <ng-container *ngIf=" item.link!='' ">
                 <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+item.link">
                   {{item.text}}
                 </a>
-              </span>
-                <span *ngIf=" item.link=='' ">{{item.text}}</span>
-              </li>
-              <li class="sidebar-dropdown" *ngFor="let submenu of item.submenu">
-                <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+submenu.link" style="margin-left: 10px;">
-                  <span>{{submenu.text}} </span>
-                      <ng-container *ngIf="submenu.showRedDot && submenu.link == 'approve-timesheets' ">
-
-                          <div *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--color-success);"
-                              class="menu__red-dot"></div>
-                          <div *ngIf="pendingApprovalCount > 0" class="menu__red-dot" style="background-color: var(--color-danger);"></div>
-                          <div *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="menu__red-dot"
-                              style="background-color: var(--color-warning);"></div>
-                      
-                     </ng-container>
-                    <ng-container *ngIf="submenu.showRedDot && submenu.link == 'rejected-timesheet'">
-                        <div class="menu__red-dot" style="background-color: var(--color-danger);"></div>
+              </ng-container>
+              <span *ngIf=" item.link=='' ">{{item.text}}</span>
+              <ul class="submenu" *ngIf="item.submenu && item.submenu.length > 0">
+                <li *ngFor="let submenu of item.submenu">
+                  <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+submenu.link">
+                    <span>{{submenu.text}} </span>
+                    <ng-container *ngIf="submenu.showRedDot && submenu.link == 'approve-timesheets' ">
+                      <div *ngIf="pendingApprovalCount == 0 && rejectedCount == 0"
+                        style="background-color: var(--color-success);" class="menu__red-dot"></div>
+                      <div *ngIf="pendingApprovalCount > 0" class="menu__red-dot"></div>
+                      <div *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="menu__red-dot"></div>
                     </ng-container>
-                </a>
-              </li>
-              <hr class="solid">
-            </ng-container>
-            
-          </ul>
-        </div>
-      </div>
-      
-    </nav>
+                    <ng-container *ngIf="submenu.showRedDot && submenu.link == 'rejected-timesheet'">
+                      <div class="menu__red-dot"></div>
+                    </ng-container>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ul>
+      </nav>
     </div>
+
+  </div>
+</div>

@@ -1,76 +1,60 @@
-<!-- <a class="change-password flex middle-xs  mr-20 fs-18" href="javascript:;">
-    <div class="mr-5" style="color:var(--color-tertiary)" svg-fill="currentColor"></div>
-    Change Password
-</a> -->
-<!-- (click)="onClickChnagePassword()" -->
-
-<app-header-search *ngIf="leaveFlag == true"></app-header-search>
-<div class="common-grid" [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
-    <div *ngIf="leaveFlag == true">
-
-        <div style="display: inline-block;padding:0 10px;text-align: center;" *ngFor="let com of compliances">
-            <span *ngIf="com.cnt==0 && com.valid" style="height: 15px;width: 15px;border-radius: 50%;display: inline-block;background-color: green;"></span>
-            <span *ngIf="com.cnt==1 && com.valid" style="height: 15px;width: 15px;border-radius: 50%;display: inline-block;background-color: red;"></span>
-            <span *ngIf="com.valid" style="display: block;color: black;font-size: 13px;">WK{{com.week}}</span>
-        </div>
-
-    </div>
-    <div style="display: flex;padding: 10px;" *ngIf="showEmailToggle && leaveFlag == true">
-        <mat-slide-toggle (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled"><span>Emails</span></mat-slide-toggle>
-    </div>
-
-    <div style="display: flex;padding: 10px;" *ngIf="isHr && leaveFlag == true">
-        <!-- <div class="flex p-5 center-xs fs-18 download-bn" style="color: #067bca;cursor:pointer;" [dbdFileDownload]="{endPoint:'downloadmis/?',responseType:'blob'}">MIS <span [svgIcon]="{url:'./assets/icons-sprite.svg#download-new',w:15}" style="color:var(--color-tertiary);" svg-fill="currentColor" class="ml-5 mt-3"></span></div> -->
-    </div>
-    <a (click)="logout()" class="logout flex middle-xs  mr-20" href="javascript:;">
-        <div class="mr-5" [svgIcon]="{url:'./assets/icons-sprite.svg#logout',w:25}" style="color:var(--color-tertiary)" svg-fill="currentColor"></div>
-        Logout
-    </a>
+<div class="flex  fg-1 " *ngIf="leaveFlag == true && !is_MD_LT">
+  <div style="flex-grow:0.7;"></div>
+  <app-header-search></app-header-search>
+  <div style="flex-grow:0.3;"></div>
 </div>
+<div #refHeaderSearchMobile class="user-search-mobile flex center-xs"
+  *ngIf="(leaveFlag && is_MD_LT && isUserSearchMobileOpen)">
+  <app-header-search (userSelected)="isUserSearchMobileOpen = false;" [stopOptionClickPropagation]="true"
+    (click)="onClickUserSearchMobile($event)" class="mt-10"></app-header-search>
+  <svg class="use-svg col-primary-200 user-search-mobile__close" (click)="isUserSearchMobileOpen = false;"
+    symbol="circle-close-red" w="25"></svg>
+</div>
+<div class="common-grid"
+  [ngClass]="{'l0-grid': (role_id == 1 || role_id == 2) && leaveFlag, 'l2-l3-grid' : (role_id == 3 || (role_id == 4 && !this.is_admin)) && leaveFlag, 'hr-grid': this.is_admin && leaveFlag }">
 
-
-
-<app-modal-popup #refModalChangePassword [w]="600" [h]="430">
-    <div head>
-        Change Password
+  <div #refOpenUserSearchMobile class="user-search-open" (click)="isUserSearchMobileOpen = true;">
+    <svg symbol="user-search" w="22" class="use-svg  col-primary-200"></svg>
+  </div>
+  <div class="compliances " *ngIf="leaveFlag == true">
+    <div class="compliances__item " [ngClass]="{'mr-1':i != 4,'mr-sm-5':i != 4, 'mr-md-10': i !!= 4, 'mr-xmd-15':i != 4}"
+      *ngFor="let com of compliances; let i=index;">
+      <svg [attr.width]="is_MD_LT ? 22 : 26" [attr.height]="is_MD_LT ? 22 : 26">
+        <defs>
+          <linearGradient id="red-compliance" gradientTransform="rotate(45)">
+            <stop offset="0%" [attr.stop-color]="'var(--col-warn-500)'" />
+            <stop offset="100%" [attr.stop-color]="'var(--col-warn-A400)'" />
+          </linearGradient>
+          <linearGradient id="green-compliance" gradientTransform="rotate(45)">
+            <stop offset="0%" [attr.stop-color]="'var(--col-accent-400)'" />
+            <stop offset="100%" [attr.stop-color]="'var(--col-accent-A400)'" />
+          </linearGradient>
+        </defs>
+        <circle *ngIf="com.cnt==0 && com.valid" [attr.r]="is_MD_LT ? 9 : 11" [attr.cx]="is_MD_LT ? 11 : 13"
+          [attr.cy]="is_MD_LT ? 11 : 13" fill="none" stroke="url('#green-compliance')"
+          [attr.stroke-width]="is_MD_LT ? 2 : 3">
+        </circle>
+        <circle *ngIf="com.cnt==1 && com.valid" [attr.r]="is_MD_LT ? 9 : 11" [attr.cx]="is_MD_LT ? 11 : 13"
+          [attr.cy]="is_MD_LT ? 11 : 13" fill="none" stroke="url('#red-compliance')"
+          [attr.stroke-width]="is_MD_LT ? 2 : 3"></circle>
+      </svg>
+      <span *ngIf="com.valid">{{com.week}}</span>
     </div>
-    <form #changePasswordForm="ngForm" [formGroup]="fgChangePassword" (ngSubmit)="onModalChangePasswordSubmit(fgChangePassword.value)">
-        <mat-form-field class="formField lite">
-            <mat-label>Current Password <sup>*</sup></mat-label>
-            <input (change)="onChangeInput()" matInput [attr.type]="hide.currentpassword ? 'password' : 'text'" placeholder="Password" formControlName="currentpassword">
-            <mat-error *ngIf="fgChangePassword.controls.currentpassword.hasError('required')">
-                Enter password
-            </mat-error>
-            <div style="cursor: pointer;" mat-icon-button matSuffix (click)="hide.currentpassword = !hide.currentpassword" [attr.aria-label]="'Hide password'">
-                <div title="Show password" *ngIf="hide.currentpassword; " matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye',w:30}" svg-fill="#333"></div>
-                <div title="Hide password" *ngIf="!hide.currentpassword" matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye-slash',w:30}" svg-fill="#333"></div>
-            </div>
-        </mat-form-field>
-        <mat-form-field class="formField lite">
-            <mat-label>New Password <sup>*</sup></mat-label>
-            <input (change)="onChangeInput()" matInput [attr.type]="hide.newPassword ? 'password' : 'text'" placeholder="New Password" formControlName="newPassword">
-            <mat-error *ngIf="fgChangePassword.controls.newPassword.hasError('required')">
-                Enter New Password
-            </mat-error>
-            <div style="cursor: pointer;" mat-icon-button matSuffix (click)="hide.password = !hide.password" [attr.aria-label]="'Hide password'">
-                <div title="Show password" *ngIf="hide.password; " matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye',w:30}" svg-fill="#333"></div>
-                <div title="Hide password" *ngIf="!hide.password" matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye-slash',w:30}" svg-fill="#333"></div>
-            </div>
-        </mat-form-field>
-        <mat-form-field class="formField lite">
-            <mat-label>Re Enter New Password <sup>*</sup></mat-label>
-            <input (change)="onChangeInput()" matInput [attr.type]="hide.retypeNewPassword ? 'password' : 'text'" placeholder="Re enter password" formControlName="retypeNewPassword">
-            <mat-error *ngIf="fgChangePassword.controls.retypeNewPassword.hasError('required')">
-                Re Enter New Password
-            </mat-error>
-            <mat-error *ngIf="fgChangePassword.controls.newPassword.hasError('notMatching') || fgChangePassword.controls.retypeNewPassword.hasError('notMatching')">
-                Password is not matching with the above password
-            </mat-error>
-            <div style="cursor: pointer;" matSuffix [attr.aria-label]="'Hide password'" (click)="hide.retypeNewPassword = !hide.retypeNewPassword">
-                <div title="Show password" *ngIf="hide.retypePassword" matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye',w:30}" svg-fill="#333"></div>
-                <div title="Hide password" *ngIf="!hide.retypePassword" matPrefix fill="inherit" [svgIcon]="{url:'./assets/icons-sprite.svg#eye-slash',w:30}" svg-fill="#333"></div>
-            </div>
-        </mat-form-field>
-        <app-button>Submit</app-button>
-    </form>
-</app-modal-popup>
+  </div>
+
+  <div *ngIf="showEmailToggle && leaveFlag == true"
+    class="flex col p-5 center-xs middle-xs ml-sm-15 mr-sm-15">
+    <span class="fs-12 fs-md-13">Emails</span>
+    <mat-slide-toggle [class.small]="is_MD_LT" (change)="onEmailToggle($event)" [(ngModel)]="isEmailEnabled">
+    </mat-slide-toggle>
+  </div>
+
+  <app-button style="max-width: 120px;justify-self: end;" class="logout" theme="red" (click)="logout()">
+    Logout
+  </app-button>
+
+  <div class="logout-icon" (click)="logout()">
+    <svg class="use-svg col-warn-500" symbol="logout" w="22"> </svg>
+  </div>
+
+</div>

@@ -1,14 +1,13 @@
-<div class="presignin">
+<div class="presignin {{currentRoute}}" >
 
-    <div class="presignin__bg">
-        <!-- <img src="" alt=""> -->
-    </div>
-    <div class="presignin__logo flex middle-xs center-xs">
-        <a [routerLink]="''"> </a>
-        <img src="assets/images/atwork Logo_V14.png" alt="" width="70%">
+    <!-- <div class="presignin__bg"> 
+    </div> -->
+    <div class="presignin__logo flex middle-xs center-xs pos-r"> 
+        <img src="assets/images/atwork-watermark.png" alt="" >
+        <img  src="assets/images/atwork-text.svg" alt=""  >
     </div>
     <div class="presignin__form">
-        <div>
+        <div class="pos-r p-lg-50 pl-15 pr-15 pt-30 pt-md-50 pb-md-50 pb-30 pl-sm-30 pr-sm-30">
             <ng-content></ng-content>
         </div>
     </div>

@@ -1,11 +1,11 @@
 :host{
     th{
         &.show-on-hover{
-            .mat-icon{
+            .sort-icon{
                 opacity: 0;
             }
             &:hover{
-                .mat-icon{
+                .sort-icon{
                     opacity: 1;
                 }
             }

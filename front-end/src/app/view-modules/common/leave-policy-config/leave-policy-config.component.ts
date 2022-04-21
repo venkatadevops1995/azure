@@ -6,6 +6,8 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { cloneDeep, differenceBy, flatten, groupBy, toArray } from 'lodash';
 import * as _ from 'lodash'
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { fromEvent, Subject, takeUntil } from 'rxjs';
 
 interface LeaveCredit {
     category_id?: number;
@@ -26,27 +28,24 @@ interface LeaveCreditFromHttp {
 })
 export class LeavePolicyConfigComponent implements OnInit {
 
-    // the array to hold the employee types
-    employeeTypes: Array<any> = [
+    // subject to emit for clearing the subscriptions
+    destroy$: Subject<any> = new Subject();
 
-    ];
+    // the array to hold the employee types
+    employeeTypes: Array<any> = [];
 
     // length of active employee types 
     employeeTypesAll;
 
     // the array to hold the leave types and other configurations
-    leaveTypes: Array<any> = [
-
-    ]
+    leaveTypes: Array<any> = []
 
     // data related to leave credits emptype and leave type
     // leave credits for different emp types and leave type 
     leaveCredits: { response?: Array<LeaveCreditFromHttp>, data?: Array<LeaveCredit>, inEdit?: Array<LeaveCredit>, inEditCopy?: Array<LeaveCredit>, endPointSave: string } = { data: [], inEdit: [], inEditCopy: [], endPointSave: 'leave-config' }
 
-
     // leave credits for different emp types for first month of a new hire
     leaveCreditsNewHire: { response?: any, data?: Array<LeaveCredit>, inEdit?: Array<LeaveCredit>, inEditCopy?: Array<LeaveCredit>, endPointSave: string } = { data: [], inEdit: [], inEditCopy: [], endPointSave: 'new-hire-leave-config' }
-
 
     // new hire time periods
     newHireTimePeriods: Array<any> = []
@@ -57,11 +56,34 @@ export class LeavePolicyConfigComponent implements OnInit {
     // element ref for the grid for the emp type based leave credit leave policy config
     @ViewChild('refPolicyLeaveCreditNewHire') elNewHireLeaveCreditConfig: ElementRef;
 
+    // element ref for the grid for the emp type based leave credit leave policy config
+    @ViewChild('refLeaveCreditContainer') elLeaveCreditContainer: ElementRef;
+
+    // element ref for the grid for the emp type based leave credit leave policy config
+    @ViewChild('refNewHireContainer') elNewHireContainer: ElementRef;
+
+    // 
+    translateLeaveCredit: { value: number } = { value: 0 };
+
+    translateNewHire: { value: number } = { value: 0 };
+
+
+    // is less than the XLG (1350)
+    get is_LG_LT() {
+        return this.ss.responsiveState[AtaiBreakPoints.LG_LT]
+    };
+
+    get leaveCreditContainer() {
+        return this.elLeaveCreditContainer.nativeElement || null
+    }
+    get newHireContainer() {
+        return this.elNewHireContainer.nativeElement || null
+    }
+
     constructor(
         private http: HttpClientService,
-        private ss: SingletonService
+        private ss: SingletonService,
     ) {
-
     }
 
     ngOnInit() {
@@ -70,8 +92,44 @@ export class LeavePolicyConfigComponent implements OnInit {
             this.getLeaveConfig();
             this.getLeaveConfig('leave-credit-new-hire')
         }, 1000)
+
+        this.ss.responsive.observe([AtaiBreakPoints.LG_LT]).pipe(takeUntil(this.destroy$)).subscribe(val => {
+            if (val.matches) {
+                this.addHorizontalScrollAffix();
+            }
+        })
     }
 
+    ngAfterViewInit() {
+        this.addHorizontalScrollAffix();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(null);
+        this.destroy$.complete()
+    }
+
+    // on horizontal scroll affix the employee type
+    addHorizontalScrollAffix() {
+        if (this.elLeaveCreditContainer) {
+            fromEvent(this.elLeaveCreditContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+                if (window.innerWidth > 1024) {
+                    this.translateLeaveCredit.value = 0
+                } else {
+                    let target: HTMLElement = e['target'];
+                    this.translateLeaveCredit.value = target.scrollLeft
+                }
+            })
+            fromEvent(this.elNewHireContainer.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+                if (window.innerWidth > 1024) {
+                    this.translateLeaveCredit.value = 0
+                } else {
+                    let target: HTMLElement = e['target'];
+                    this.translateNewHire.value = target.scrollLeft
+                }
+            })
+        }
+    }
     // method to get the leave types
     getLeaveTypes() {
         this.http.request('get', 'leave/types/').subscribe(res => {
@@ -248,7 +306,7 @@ export class LeavePolicyConfigComponent implements OnInit {
                 }
             })
         } else {
-            this.ss.statusMessage.showStatusMessage(true, 'No changes to update')
+            this.ss.statusMessage.showStatusMessage(false, 'No changes to update')
         }
     }
 

@@ -10,6 +10,8 @@ import { ModalPopupModule } from '../modal-popup/modal-popup.module';
 import { MatIconModule } from '@angular/material/icon';
 import { EmployeeProfileDetailsModule } from '../employee-profile-details/employee-profile-details.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogModule } from '@angular/material/dialog'; 
+import { UseSvgModule } from '../use-svg/use-svg.module';
 
 
 
@@ -22,10 +24,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatInputModule,
     ReactiveFormsModule,
     ButtonModule,
-    ModalPopupModule,
+    // ModalPopupModule,
     EmployeeProfileDetailsModule,
     MatIconModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule,
+    UseSvgModule
   ],
   exports: [HeaderSearchComponent]
 })

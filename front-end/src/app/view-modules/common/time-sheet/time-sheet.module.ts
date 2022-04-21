@@ -7,7 +7,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TimeSheetComponent } from './time-sheet.component';
 import { ButtonModule } from './../../../components/button/button.module'; 
-
+import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import {LayoutModule} from '@angular/cdk/layout';
+import { AffixModule } from 'src/app/directives/affix/affix.module';
 
 
 @NgModule({
@@ -15,9 +20,14 @@ import { ButtonModule } from './../../../components/button/button.module';
   imports: [
     CommonModule,
     ButtonModule, 
-    SvgIconModule,
+    UseSvgModule,
     ReactiveFormsModule,
-    ModalPopupModule
+    ModalPopupModule,
+    MatIconModule,
+    ConfirmDialogModule,
+    MatDialogModule,
+    AffixModule
+    // LayoutModule
   ],
   exports:[TimeSheetComponent],
   providers:[TimeSheetService]

@@ -11,6 +11,7 @@ import { environment } from '../../../src/environments/environment';
 import { take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 @Injectable({
   providedIn: 'root'
 })
@@ -47,6 +48,12 @@ export class SingletonService {
   // constant to hold the latest state emitted of the loggedIn$
   loggedIn: boolean = false;
 
+  // subject to emit boolean sidebar is opened / closed
+  sideBarToggle$: Subject<boolean> = new Subject();
+
+  // constant to hold sidebar is opened / closed
+  sideBarToggle: boolean = false;
+
   // baseUrl = "http://10.60.62.54:8000/api/";
   baseUrl = environment.apiUrl + 'api/';
 
@@ -66,6 +73,14 @@ export class SingletonService {
   attendanceFlag:boolean = false
 
   leaveFlag:boolean = false;
+
+  isSidebarOpen:boolean = false;
+
+  // reference to the breakpoint observer (like a global one)
+  responsive:BreakpointObserver;
+
+  // responsive state to find out the current state of each break points
+  responsiveState: any;
 
   constructor(
     private dialog: MatDialog

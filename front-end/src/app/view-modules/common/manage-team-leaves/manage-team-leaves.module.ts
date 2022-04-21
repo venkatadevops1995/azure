@@ -9,7 +9,7 @@ import { ManageTeamLeavesComponent } from './manage-team-leaves.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogModule } from 'src/app/components/confirm-dialog/confirm-dialog.module';
 import { ButtonModule } from 'src/app/components/button/button.module';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+// import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { ModalPopupModule } from 'src/app/components/modal-popup/modal-popup.module';
 import { StripTableModule } from 'src/app/components/strip-table/strip-table.module';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -21,6 +21,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FileDownloadModule } from 'src/app/directives/file-download/file-download.module';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
+import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 @NgModule({
   declarations: [ManageTeamLeavesComponent, ConfirmRejectLeaveComponent],
@@ -35,7 +37,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatIconModule,
     ConfirmDialogModule,
     ButtonModule,
-    NgxDaterangepickerMd.forRoot(),
+    // NgxDaterangepickerMd.forRoot(),
     ModalPopupModule,
     StripTableModule,
     MatExpansionModule,
@@ -45,7 +47,8 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
     MatAutocompleteModule,
     MatCheckboxModule,
     FileDownloadModule,
-    SvgIconModule
+    UseSvgModule,
+    AtaiDateRangeModule
   ],
   exports: [ManageTeamLeavesComponent]
 })

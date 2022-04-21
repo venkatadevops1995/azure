@@ -18,7 +18,7 @@ export class LeaveDetailsComponent {
     leaveDayColumns: string[] = ['serial', 'date', 'session'];
 
     // the current image in zoom when the leave type is a marriage leave
-    currentImageInZoom:string = ""
+    currentImageInZoom: string = ""
 
     // the leave detail data
     @Input() data: any = {}
@@ -27,7 +27,7 @@ export class LeaveDetailsComponent {
     @Input() type: 'self' | 'team' = 'self'
 
     // request id passed as input
-    @Input() requestId: { request_id: number, get_discrepancy?:boolean, get_history?:boolean };
+    @Input() requestId: { request_id: number, get_discrepancy?: boolean, get_history?: boolean };
 
     // no of leaves in last n days
     leavesInLastNDays = {
@@ -48,7 +48,7 @@ export class LeaveDetailsComponent {
 
     // view the child modal pop up component
     @ViewChild('refModal') modal: ModalPopupComponent
-    historyFlag: boolean=true;
+    historyFlag: boolean = true;
 
     constructor(public datepipe: DatePipe,
         private cdRef: ChangeDetectorRef,
@@ -57,7 +57,7 @@ export class LeaveDetailsComponent {
     ) { }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('CHANGES',changes)
+        console.log('CHANGES', changes)
         this.leavesInLastNDays.leaveCount = 'NA'
         this.leaveBalance = null;
         this.lastNDaysValue = 60;
@@ -78,14 +78,14 @@ export class LeaveDetailsComponent {
 
     // to open the modal
     open() {
-        this.modal.open() 
+        this.modal.open()
     }
 
     onCloseModal(e) {
-        setTimeout(()=>{
+        setTimeout(() => {
             this.requestId = null
             this.data = {}
-        },300) 
+        }, 300)
 
     }
 
@@ -116,99 +116,96 @@ export class LeaveDetailsComponent {
                 leavePeriod = ""
             }
 
-            data['requestDetails'] = [
-                { left: 'Leave Period', right: leavePeriod },
-                { left: 'Employee Name', right: data.emp_name },
-                // { left: 'Requested By', right: data.requested_by == 'emp' ? 'Employee' : 'HR' },
-                { left: 'Applied on', 'right': this.datepipe.transform(data.created, 'yyyy-MM-dd')},
-                { left: 'Leave Type', right: data.leave_type_name == 'Paid' ? ' General' : data.leave_type_name },
-                { left: 'Total Days', right: data.day_count },
-                { left: 'Status', right: data.discrepancy_raised && !(data.status == 6 && data.status == 7 ) ? 'Correction Raised' : data.req_status },
-                // { left: 'Leave Reason', right: data.leave_reason },
-                { left: 'Leave Description', right: data.emp_comments },
-                // { left: 'Leaves in last 60 days', right: data.no_of_leaves_in_last_n_days },
-            ]
-            this.leaveBalance = data.leave_balance
-            this.leavesInLastNDays.leaveCount = data.no_of_leaves_in_last_n_days
-            // console.log(data.req_status, this.data['requestDetails']);
-
-            // only for paid leaves show the leave reason
-            if (data.leave_type_name == 'Paid') {
-                data['requestDetails'].push({ left: 'Leave Reason', right: data.leave_reason })
-            }
-            // for pending leaves do not show manager comments
-            if (data.req_status == 'Rejected') {
-                data['requestDetails'].push({ left: 'Manager Comments', right: data.manager_comments })
-            }
-
-            if(this.requestId.get_discrepancy){
-                let ldd = data.leave_discrepancy_details 
-                data['discrepancyDetails'] = [
-                    {left:'Status',right:this.leaveDiscrepancyStatus[ldd.status]},
-                    {left:'Raised on',right: this.datepipe.transform( ldd.created,'yyyy-MM-dd')},
-                    {left:'Employee Comments',right:ldd.emp_comments},
-                ]
-            }
-            if(this.requestId.get_history){
-                this.historyFlag=false;
-            }
-            else{
-                this.historyFlag = true;
-            }
-            if (data.leaves_previous && data.leaves_previous.length > 0) {
-                data.leaves_previous.forEach(leave => {
-                    this.processInputData(leave)
-                });
-            }
-        } else {
-            data = {}
+            data['requestDetails'] = { 'LeavePeriod': leavePeriod ,
+                 'EmployeeName': data.emp_name , 
+                 'AppliedOn': this.datepipe.transform(data.created, 'yyyy-MM-dd') ,
+                 'LeaveType': data.leave_type_name == 'Paid' ? ' General' : data.leave_type_name ,
+                 'TotalDays': data.day_count ,
+                 'Status': data.discrepancy_raised && !(data.status == 6 && data.status == 7) ? 'Correction Raised' : data.req_status ,
+                //   'Leave Reason': data.leave_reason ,
+                 'LeaveDescription': data.emp_comments ,
+                //   'Leaves in last 60 days': data.no_of_leaves_in_last_n_days },
         }
+        this.leaveBalance = data.leave_balance
+        this.leavesInLastNDays.leaveCount = data.no_of_leaves_in_last_n_days
+
+        // only for paid leaves show the leave reason
+        if (data.leave_type_name == 'Paid') {
+            data['requestDetails']['LeaveReason']= data.leave_reason != 'null' ? data.leave_reason : 'Not Specified'
+        }
+        // for pending leaves do not show manager comments
+        if (data.req_status == 'Rejected') {
+            data['requestDetails']['ManagerComments']= data.manager_comments 
+        }
+
+        if (this.requestId.get_discrepancy && data.leave_discrepancy_details) {
+            let ldd = data.leave_discrepancy_details
+            data['discrepancyDetails'] = {
+                  'Status':this.leaveDiscrepancyStatus[ldd.status] ,
+                  'RaisedOn':this.datepipe.transform(ldd.created, 'yyyy-MM-dd') ,
+                  'EmployeeComments':ldd.emp_comments ,
+            }
+        }
+        if (this.requestId.get_history) {
+            this.historyFlag = false;
+        }
+        else {
+            this.historyFlag = true;
+        }
+        if (data.leaves_previous && data.leaves_previous.length > 0) {
+            data.leaves_previous.forEach(leave => {
+                this.processInputData(leave)
+            });
+        }
+    } else {
+    data = {}
+}
     }
 
-    // get leave details of a single leave application
-    getLeaveRequestDetails(request_id) {
-        this.fcLastNDays.setValue(this.leavesInLastNDays.days);
-        if (request_id) {
-            this.data = {}
-            let params = new HttpParams()
-            params = params.append('is_manager', (this.type == 'team') + '')
-            params = params.append('leaves_in_last_n_days', this.leavesInLastNDays.days + '')
-            if(this.requestId.get_discrepancy){
-                params = params.append('get_discrepancy', true + '')
-            }
-            this.http.request('get', 'leave/request/' + request_id.request_id + '/', params).subscribe(res => {
-                if (res.status == 200) {
-                    this.data = res.body['results']
-                    this.processInputData(this.data)
-                    this.cdRef.detectChanges()
-                } else if (res.status == 404) {
-                    this.ss.statusMessage.showStatusMessage(false, "Leave request not found")
-                } else {
-                    this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
-                }
-            })
+// get leave details of a single leave application
+getLeaveRequestDetails(request_id) {
+    this.fcLastNDays.setValue(this.leavesInLastNDays.days);
+    if (request_id) {
+        this.data = {}
+        let params = new HttpParams()
+        params = params.append('is_manager', (this.type == 'team') + '')
+        params = params.append('leaves_in_last_n_days', this.leavesInLastNDays.days + '')
+        if (this.requestId.get_discrepancy) {
+            params = params.append('get_discrepancy', true + '')
         }
-    }
-
-    // get the number of leaves in the last n days
-    onClickGetLeavesInLastNDays() {
-        // 
-        this.lastNDaysValue = this.fcLastNDays.value
-        let params = new HttpParams({
-            fromObject: {
-                emp_id: this.data.emp || this.data.emp_id,
-                no_of_days: this.lastNDaysValue + ''
-            }
-        })
-        this.http.request('get', 'leave/get-leaves-in-last-n-days/', params).subscribe((res) => {
+        this.http.request('get', 'leave/request/' + request_id.request_id + '/', params).subscribe(res => {
             if (res.status == 200) {
-                this.leavesInLastNDays.leaveCount = res.body['results']
+                this.data = res.body['results']
+                this.processInputData(this.data)
+                this.cdRef.detectChanges()
+            } else if (res.status == 404) {
+                this.ss.statusMessage.showStatusMessage(false, "Leave request not found")
             } else {
-                this.leavesInLastNDays.leaveCount = "NA"
-                if (res.error.results.no_of_days) {
-                    this.ss.statusMessage.showStatusMessage(false, res.error.results.no_of_days[0])
-                }
+                this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
             }
         })
     }
+}
+
+// get the number of leaves in the last n days
+onClickGetLeavesInLastNDays() {
+    // 
+    this.lastNDaysValue = this.fcLastNDays.value
+    let params = new HttpParams({
+        fromObject: {
+            emp_id: this.data.emp || this.data.emp_id,
+            no_of_days: this.lastNDaysValue + ''
+        }
+    })
+    this.http.request('get', 'leave/get-leaves-in-last-n-days/', params).subscribe((res) => {
+        if (res.status == 200) {
+            this.leavesInLastNDays.leaveCount = res.body['results']
+        } else {
+            this.leavesInLastNDays.leaveCount = "NA"
+            if (res.error.results.no_of_days) {
+                this.ss.statusMessage.showStatusMessage(false, res.error.results.no_of_days[0])
+            }
+        }
+    })
+}
 }

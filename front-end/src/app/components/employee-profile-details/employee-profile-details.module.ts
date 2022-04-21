@@ -8,6 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '../button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import { MatDialogModule } from '@angular/material/dialog'; 
+import { UseSvgModule } from '../use-svg/use-svg.module';
 
 
 @NgModule({
@@ -18,9 +20,10 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     MatTableModule,
     MatInputModule,
     ReactiveFormsModule,
-    ButtonModule,
-    MatIconModule,
-    ClipboardModule
+    ButtonModule, 
+    ClipboardModule,
+    MatDialogModule,
+    UseSvgModule
   ],
   exports: [EmployeeProfileDetailsComponent]
 })

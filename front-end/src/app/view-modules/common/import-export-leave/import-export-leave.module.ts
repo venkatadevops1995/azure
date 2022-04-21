@@ -7,6 +7,7 @@ import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { ButtonModule } from 'src/app/components/button/button.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 
 
 
@@ -14,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   declarations: [ImportExportLeaveComponent],
   imports: [
     CommonModule,
-    SvgIconModule,
+    UseSvgModule,
     FileDownloadModule,
     FileUploadModule,
     ButtonModule,

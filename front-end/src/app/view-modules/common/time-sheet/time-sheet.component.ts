@@ -1,12 +1,16 @@
 import { TimeSheetService } from './time-sheet.service';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
-import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, HostBinding } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 interface TimeSheet {
 	week?: number;
@@ -22,16 +26,36 @@ export class TimeSheetComponent implements OnInit {
 	// subject to emit for clearing the subscriptions
 	destroy$: Subject<any> = new Subject();
 
-	// should we consider IST ?
-	// should i only make the dates and times in front end for the time sheet
-	// will we have same endpoint for all the data for a week timesheet ? projects, start date , week number etc
-	@Input() config: any;
+	// the data passed (from backend)
+	@Input() data: any;
+
+	// the mode by default it is the timesheet entry mode
+	@Input() mode: 'default' | 'resolve-timesheet' = 'default';
+
+	// show / hide header ( in resolve timesheet we do not need header always)
+	@Input() showHeader: boolean = true;
 
 	// input property used to disable the whole time sheet
 	@Input() disable: boolean;
 
-	// input property used to disable the whole time sheet
+	// disable approve and reject resolution in resolve-timesheet
+	@Input() disableResolution: boolean = true
+
+	// the data passed (from backend)
+	@Input() translateTitle: number = 0;
+
+	@HostBinding('style.--translate-title') get translateTitleGet(){
+		return this.translateTitle+'px';
+	}
+
+	// out put event
 	@Output("evChange") onChange: EventEmitter<any> = new EventEmitter();
+
+	// out put event
+	@Output("projectChange") onProjectSelection: EventEmitter<any> = new EventEmitter();
+
+	// out put event
+	@Output("event") onClickEvent: EventEmitter<any> = new EventEmitter();
 
 	// reference to the active mins element
 	@ViewChild('selProject') elSelProject: ElementRef;
@@ -51,7 +75,10 @@ export class TimeSheetComponent implements OnInit {
 	// boolean view token to show hide the select project list
 	showProjectList: boolean = false;
 
-	// boolean view token to show hide the whole timesheet based on input config 
+	// initally before showing timesheet or error message
+	isTimeSheetResolved: boolean = false;
+
+	// boolean view token to show hide the whole timesheet based on input data 
 	showTimeSheet: boolean = false;
 
 	// boolean token to decide whether the timesheet data is valid for final submission
@@ -64,7 +91,7 @@ export class TimeSheetComponent implements OnInit {
 	hiddenActiveProjects: Array<any> = [];
 
 	// array of keys to hold the boolean values which indicate which days of the week are currently enabled.
-	holderInitialConfig: any = [];
+	holderInitialdata: any = [];
 
 	// property which indicates whether the remove project was clicked atleast once
 	removedAProject: boolean = false;
@@ -76,7 +103,7 @@ export class TimeSheetComponent implements OnInit {
 	grandTotal: any;
 
 	// timesheet form group value holder
-	timesheetFgValueHolder:any=undefined;
+	timesheetFgValueHolder: any = undefined;
 
 	// form controls count in  active projects
 	formControlsCount: number = 0;
@@ -85,7 +112,9 @@ export class TimeSheetComponent implements OnInit {
 		private ss: SingletonService,
 		private cd: ChangeDetectorRef,
 		private el: ElementRef,
-		private tsService:TimeSheetService
+		private tsService: TimeSheetService,
+		private dialog: MatDialog,
+		private responsive: BreakpointObserver
 	) {
 		this.fgTimeFields = this.ss.fb.group({
 			active_projects: this.ss.fb.array([]),
@@ -107,8 +136,8 @@ export class TimeSheetComponent implements OnInit {
 		// on value changes the total hours should be calculated
 		this.fgTimeFields.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(val => {
 
-			console.log("value changes") 
-			
+			console.log("value changes")
+
 			let totalAcc = [];
 
 			this.totalDayTimeMeta = [];
@@ -143,75 +172,75 @@ export class TimeSheetComponent implements OnInit {
 					}
 				}
 			}
-		   
+
 			//update totals in project
-			let updateTotalInProject = (proj,val,updated_hours)=>{
+			let updateTotalInProject = (proj, val, updated_hours) => {
 				if (val) {
-					console.log(proj);
-					console.log('updated_hours'+updated_hours);
-					
-					if(proj == 'HOLIDAY' || proj == 'MISCELLANEOUS' || proj == 'VACATION'){
+					// console.log(proj);
+					// console.log('updated_hours' + updated_hours);
+
+					if (proj == 'HOLIDAY' || proj == 'MISCELLANEOUS' || proj == 'VACATION') {
 						let hours = 0;
 						hours = updated_hours.map(item => item.h).reduce((prev, next) => prev + next);
-						console.log(hours);
-						
-						this.config[proj].work_hours.forEach(element => {
-							if(element.date == 'Total'){
+						// console.log(hours);
+
+						this.data[proj].work_hours.forEach(element => {
+							if (element.date == 'Total') {
 								element.h = hours;
-						}
+							}
 						});
-					
+
 						let mins = 0;
 						mins = updated_hours.map(item => item.m).reduce((prev, next) => prev + next);
-						this.config[proj].work_hours.forEach(element => {
-							if(element.date == 'Total'){
+						this.data[proj].work_hours.forEach(element => {
+							if (element.date == 'Total') {
 								element.m = 0;
 								element.m = mins;
-								console.log(element.h);
-								
-								if(element.m >= 60){
-									element.h = hours + Math.floor(element.m/60);
-									element.m = element.m % 60;
-								} 
-						    }
-						});
-					// }
-				}
-				else{
-					this.config['active_projects'].forEach(elementproj => {
-						
-					if(elementproj.project_name == proj){
-						let hours = 0;
-						hours = updated_hours.map(item => item.h).reduce((prev, next) => prev + next);
-					// if (val.h) {
-						elementproj.work_hours.forEach(element => {
-							if(element.date == 'Total'){
-								element.h = hours;
-						}
-						});
-					// }
-					// if (val.m) {
-						// let valM = (val.m == "00" ? 0 : parseInt(val.m, 10))
-						let mins = 0;
-						mins = updated_hours.map(item => item.m).reduce((prev, next) => prev + next);
-						elementproj.work_hours.forEach(element => {
-							if(element.date == 'Total'){
-								element.m = mins;
-								if(element.m >= 60){
-									element.h = hours + Math.floor(element.m/60);
+								// console.log(element.h);
+
+								if (element.m >= 60) {
+									element.h = hours + Math.floor(element.m / 60);
 									element.m = element.m % 60;
 								}
-						}
+							}
 						});
-					// }
-				}
-				});
-				}
+						// }
+					}
+					else {
+						this.data['active_projects'].forEach(elementproj => {
+
+							if (elementproj.project_name == proj) {
+								let hours = 0;
+								hours = updated_hours.map(item => item.h).reduce((prev, next) => prev + next);
+								// if (val.h) {
+								elementproj.work_hours.forEach(element => {
+									if (element.date == 'Total') {
+										element.h = hours;
+									}
+								});
+								// }
+								// if (val.m) {
+								// let valM = (val.m == "00" ? 0 : parseInt(val.m, 10))
+								let mins = 0;
+								mins = updated_hours.map(item => item.m).reduce((prev, next) => prev + next);
+								elementproj.work_hours.forEach(element => {
+									if (element.date == 'Total') {
+										element.m = mins;
+										if (element.m >= 60) {
+											element.h = hours + Math.floor(element.m / 60);
+											element.m = element.m % 60;
+										}
+									}
+								});
+								// }
+							}
+						});
+					}
 				}
 			}
 
 			val.active_projects.forEach((project, index) => {
-				let initialValues = this.holderInitialConfig.visibleActiveProjects[index];
+				let initialValues = this.holderInitialdata.visibleActiveProjects[index];
 				console.log(initialValues)
 				let foundNonZero = false;
 				project.forEach((valInner, indexInner) => {
@@ -219,24 +248,24 @@ export class TimeSheetComponent implements OnInit {
 						foundNonZero = true;
 					}
 					processValue(valInner, indexInner, true)
-					updateTotalInProject(initialValues['project_name'],valInner,project)
+					updateTotalInProject(initialValues['project_name'], valInner, project)
 					let valInitial = initialValues.work_hours[indexInner];
 					if (valInner.h !== valInitial.h || valInner.m !== valInitial.m) {
 						console.log(valInner, valInitial)
-						
+
 						hasValueChanged = true;
 						console.log(project);
-						
-						
+
+
 					}
 				});
-				if(!foundNonZero){
+				if (!foundNonZero) {
 					hasAllZerosInProject = true;
 				}
 			});
 
 			this.hiddenActiveProjects.forEach((project, index) => {
-				let initialValues = this.holderInitialConfig.hiddenActiveProjects[index];
+				let initialValues = this.holderInitialdata.hiddenActiveProjects[index];
 				project.work_hours.forEach((valInner, indexInner) => {
 					let valInitial = initialValues.work_hours[indexInner];
 					if (valInner.h !== valInitial.h || valInner.m !== valInitial.m) {
@@ -248,8 +277,8 @@ export class TimeSheetComponent implements OnInit {
 
 			val['VACATION'].forEach((day, index) => {
 				processValue(day, index, true)
-				updateTotalInProject('VACATION',day,val['VACATION'])
-				let valInitial = this.holderInitialConfig['VACATION'].work_hours[index];
+				updateTotalInProject('VACATION', day, val['VACATION'])
+				let valInitial = this.holderInitialdata['VACATION'].work_hours[index];
 				if (day.h !== valInitial.h || day.m !== valInitial.m) {
 					hasValueChanged = true;
 				}
@@ -258,8 +287,8 @@ export class TimeSheetComponent implements OnInit {
 
 			val['HOLIDAY'].forEach((day, index) => {
 				processValue(day, index, true)
-				updateTotalInProject('HOLIDAY',day,val['HOLIDAY'])
-				let valInitial = this.holderInitialConfig['HOLIDAY'].work_hours[index];
+				updateTotalInProject('HOLIDAY', day, val['HOLIDAY'])
+				let valInitial = this.holderInitialdata['HOLIDAY'].work_hours[index];
 				if (day.h !== valInitial.h || day.m !== valInitial.m) {
 					hasValueChanged = true;
 					console.log(day);
@@ -268,12 +297,12 @@ export class TimeSheetComponent implements OnInit {
 				this.tsService.holidayArray[index] = day.h;
 			})
 			console.log(val['HOLIDAY']);
-			
+
 
 			val['MISCELLANEOUS'].forEach((day, index) => {
 				processValue(day, index, true)
-				updateTotalInProject('MISCELLANEOUS',day,val['MISCELLANEOUS'])
-				let valInitial = this.holderInitialConfig['MISCELLANEOUS'].work_hours[index];
+				updateTotalInProject('MISCELLANEOUS', day, val['MISCELLANEOUS'])
+				let valInitial = this.holderInitialdata['MISCELLANEOUS'].work_hours[index];
 				if (day.h !== valInitial.h || day.m !== valInitial.m) {
 					hasValueChanged = true;
 				}
@@ -291,12 +320,12 @@ export class TimeSheetComponent implements OnInit {
 
 			let totalHours = this.totalDayTimeMeta.map(item => item.h).reduce((prev, next) => prev + next);
 			let totalMins = this.totalDayTimeMeta.map(item => item.m).reduce((prev, next) => prev + next);
-			if(totalMins >= 60){
-				totalHours = totalHours + Math.floor(totalMins/60);
+			if (totalMins >= 60) {
+				totalHours = totalHours + Math.floor(totalMins / 60);
 				totalMins = totalMins % 60;
-				}
-			
-            this.grandTotal = ("00" + totalHours).slice(-JSON.stringify(totalHours).length)+ ' : ' + ("00" + totalMins).slice(-2)
+			}
+
+			this.grandTotal = ("00" + totalHours).slice(-JSON.stringify(totalHours).length) + ' : ' + ("00" + totalMins).slice(-2)
 			let enableFinalSubmitArray = [];
 
 			totalAccForFinalSubmit.forEach((day, index) => {
@@ -306,9 +335,9 @@ export class TimeSheetComponent implements OnInit {
 					let dayM = (day.m % 60);
 					day.m = dayM;
 				}
-				if(index == 0 || index == 1){
+				if (index == 0 || index == 1) {
 					enableFinalSubmitArray[index] = true;
-				}else{
+				} else {
 					enableFinalSubmitArray[index] = (day.m >= 15 || day.h > 0);
 				}
 			})
@@ -339,38 +368,38 @@ export class TimeSheetComponent implements OnInit {
 			// check if all weekdays are filled with valid amount of hours > 15 mins
 			this.canFinalSubmit = (enableFinalSubmitArray.indexOf(false) == -1) && checkTotalForValidEntries();
 			this.fgTotalTimeFields.get('total').setValue(totalAcc)
-			this.tsService.totalArray=totalAcc;
+			this.tsService.totalArray = totalAcc;
 			console.log(this.totalDayTimeMeta)
-			this.cd.detectChanges(); 
+			this.cd.detectChanges();
 			// emit the change event with the data
 			this.onChange.emit({
 				canFinalSubmit: this.canFinalSubmit,
 				hasValueChanged: hasValueChanged,
-				hasAllZerosInProject:hasAllZerosInProject
+				hasAllZerosInProject: hasAllZerosInProject
 			})
 			// console.log(this.fgTotalTimeFields.value) 
 		})
-
+ 
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
-		let config = changes.config;
-		if (config && config.currentValue != config.previousValue) {
-			let configValue = config.currentValue;
-			if (configValue) {
+		let data = changes.data;
+		if (data && data.currentValue != data.previousValue) {
+			let dataValue = data.currentValue;
+			if (dataValue) {
 				// get the active projects list which are going to be visible by adding first project into the visible list
-				this.holderInitialConfig = { ...configValue };
+				this.holderInitialdata = { ...dataValue };
 				this.visibleActiveProjects = [];
-				this.holderInitialConfig.visibleActiveProjects = [];
+				this.holderInitialdata.visibleActiveProjects = [];
 				this.hiddenActiveProjects = [];
-				this.holderInitialConfig.hiddenActiveProjects = []
-				if (configValue.active_projects && configValue.active_projects.length > 0) {
+				this.holderInitialdata.hiddenActiveProjects = []
+				if (dataValue.active_projects && dataValue.active_projects.length > 0) {
 					emptyFormArray((<FormArray>this.fgTimeFields.get('active_projects')));
-					configValue.active_projects.forEach((project, index) => {
+					dataValue.active_projects.forEach((project, index) => {
 						if (project.visibilityFlag) {
 							this.visibleActiveProjects.push(project);
-							// the holder initial config should have visible hidden active projects in sync
-							this.holderInitialConfig.visibleActiveProjects.push(this.holderInitialConfig.active_projects[index]);
+							// the holder initial data should have visible hidden active projects in sync
+							this.holderInitialdata.visibleActiveProjects.push(this.holderInitialdata.active_projects[index]);
 							project.addedIntoForm = true;
 							let fa = this.ss.fb.array([]);
 							for (let i = 0; i < 7; i++) {
@@ -379,7 +408,7 @@ export class TimeSheetComponent implements OnInit {
 							(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
 						} else {
 							this.hiddenActiveProjects.push(project);
-							this.holderInitialConfig.hiddenActiveProjects.push(this.holderInitialConfig.active_projects[index]);
+							this.holderInitialdata.hiddenActiveProjects.push(this.holderInitialdata.active_projects[index]);
 						}
 					})
 				}
@@ -392,21 +421,22 @@ export class TimeSheetComponent implements OnInit {
 				let faHoliday = (<FormArray>this.fgTimeFields.get("HOLIDAY"))
 				// reset enable criteria 
 				for (let i = 0; i < 7; i++) {
-					if (configValue['VACATION']) {
-						faVacation.push(new FormControl(configValue["VACATION"].work_hours[i], []))
+					if (dataValue['VACATION']) {
+						faVacation.push(new FormControl(dataValue["VACATION"].work_hours[i], []))
 					}
-					if (configValue['MISCELLANEOUS']) {
-						faMiscellaneous.push(new FormControl(configValue["MISCELLANEOUS"].work_hours[i], []))
+					if (dataValue['MISCELLANEOUS']) {
+						faMiscellaneous.push(new FormControl(dataValue["MISCELLANEOUS"].work_hours[i], []))
 					}
-					if (configValue['HOLIDAY']) {
-						faHoliday.push(new FormControl(configValue["HOLIDAY"].work_hours[i], []))
+					if (dataValue['HOLIDAY']) {
+						faHoliday.push(new FormControl(dataValue["HOLIDAY"].work_hours[i], []))
 					}
 				}
 				this.showTimeSheet = true;
 			} else {
 				this.showTimeSheet = false;
-				this.holderInitialConfig = {};
+				this.holderInitialdata = {};
 			}
+			this.isTimeSheetResolved = true
 		}
 	}
 
@@ -415,30 +445,43 @@ export class TimeSheetComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
-		this.destroy$.next();
+		this.destroy$.next(null);
+	}
+
+	//on clicking view wsr show wsr of emp
+	onClickResolveBtns(ev: 'view' | 'approve' | 'reject', data?: any) {
+		this.onClickEvent.emit({ event: ev, data: data })
 	}
 
 	// event listener on document to check if active mins is clicked
 	@HostListener("document:click", ['$event'])
 	onClickDocument(e) {
 		let target: any = e.target;
-		if (this.elSelProject && target == this.elSelProject.nativeElement) {
-			this.showProjectList = !this.showProjectList;
-		} else if (this.elSelProject && isDescendant(this.elSelProject.nativeElement, target) && target.classList.contains('sel-project__project')) {
-			let index = Number(target.getAttribute("index"));
-			let projectToBeAdded = this.hiddenActiveProjects[index];
-			this.visibleActiveProjects.push(projectToBeAdded);
-			this.holderInitialConfig.visibleActiveProjects.push(this.holderInitialConfig.hiddenActiveProjects[index]);
-			projectToBeAdded.addedIntoForm = true;
-			this.hiddenActiveProjects.splice(index, 1);
-			this.holderInitialConfig.hiddenActiveProjects.splice(index, 1);
-			let fa = this.ss.fb.array([]);
-			for (let i = 0; i < 7; i++) {
-				fa.push(new FormControl({ h: 0, m: 0 }, []))
+		if (this.elSelProject && isDescendant(this.elSelProject.nativeElement, target)) {
+			let selBtn = this.elSelProject.nativeElement.querySelector('.sel-project__btn');
+			let projectList = this.elSelProject.nativeElement.querySelector('.sel-project__project-list')
+			if (target == selBtn || isDescendant(selBtn, target)) {
+				this.showProjectList = !this.showProjectList;
+			} else if (isDescendant(projectList, target) && target.classList.contains('sel-project__project')) {
+				let index = Number(target.getAttribute("index"));
+				let projectToBeAdded = this.hiddenActiveProjects[index];
+				this.visibleActiveProjects.push(projectToBeAdded);
+				this.holderInitialdata.visibleActiveProjects.push(this.holderInitialdata.hiddenActiveProjects[index]);
+				projectToBeAdded.addedIntoForm = true;
+				this.hiddenActiveProjects.splice(index, 1);
+				this.holderInitialdata.hiddenActiveProjects.splice(index, 1);
+				let fa = this.ss.fb.array([]);
+				for (let i = 0; i < 7; i++) {
+					fa.push(new FormControl({ h: 0, m: 0 }, []))
+				}
+				(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
+				projectToBeAdded.work_hours.push({ date: 'Total', enable: true, h: 0, m: 0 })
+				this.showProjectList = false;
+				this.onProjectSelection.emit({ type: 'add', project: projectToBeAdded });
 			}
-			(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
-			projectToBeAdded.work_hours.push({date:'Total',enable: true,h:0,m:0})
-			this.showProjectList = false;
+			// else if (this.elSelProject && isDescendant(this.elSelProject.nativeElement, target) && target.classList.contains('sel-project__project')) {
+
+			// }
 		} else {
 			this.showProjectList = false;
 		}
@@ -454,16 +497,20 @@ export class TimeSheetComponent implements OnInit {
 			// found remove row 
 			if (tempTarget.classList.contains('timesheet__row-remove')) {
 				this.projectIndexToRemove = parseInt(tempTarget.getAttribute('data-index'), 10);
-				this.modalConfirmProjectRemoval.open()
-				break;
-			} else if (tempTarget.classList.contains('remove-project-cancel')) {
-				// close the confirm project removal pop up        
-				this.modalConfirmProjectRemoval.close()
-				break;
-			} else if (tempTarget.classList.contains('remove-project-proceed')) {
-				// close the confirm project removal pop up        
-				this.removeProjectFromTimeSheet();
-				this.modalConfirmProjectRemoval.close()
+				// this.modalConfirmProjectRemoval.open()
+				let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+					panelClass: 'confirm-remove-project',
+					backdropClass: 'cdk-overlay-darker-backdrop',
+					data: {
+						confirmMessage: 'Are you sure you want to remove the project ? All entries will be lost.'
+					}
+				})
+				dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+					// console.log(data)
+					if (data) {
+						this.removeProjectFromTimeSheet();
+					}
+				})
 				break;
 			}
 			tempTarget = tempTarget.parentNode;
@@ -476,37 +523,39 @@ export class TimeSheetComponent implements OnInit {
 		// remove the row from the list 
 		this.removedAProject = true;
 		this.visibleActiveProjects[this.projectIndexToRemove]['work_hours'].pop();
-		this.hiddenActiveProjects.push(this.visibleActiveProjects.splice(this.projectIndexToRemove, 1)[0]);
-		this.holderInitialConfig.hiddenActiveProjects.push(this.holderInitialConfig.visibleActiveProjects.splice(this.projectIndexToRemove, 1)[0]);
+		let projectToBeRemoved = this.visibleActiveProjects.splice(this.projectIndexToRemove, 1)[0]
+		this.hiddenActiveProjects.push(projectToBeRemoved);
+		this.holderInitialdata.hiddenActiveProjects.push(this.holderInitialdata.visibleActiveProjects.splice(this.projectIndexToRemove, 1)[0]);
 		(<FormArray>this.fgTimeFields.get('active_projects')).removeAt(this.projectIndexToRemove);
-		this.modalConfirmProjectRemoval.close();
+		this.onProjectSelection.emit({ type: 'remove', project: projectToBeRemoved });
+		// this.modalConfirmProjectRemoval.close();
 		this.cd.detectChanges();
 	}
 
 	// method used to get the current timesheet data which can be used in host component of this timesheet
 	getTimeSheetData() {
-		let config = { ...this.config }
-		config['VACATION']['work_hours'] = this.fgTimeFields.get('VACATION').value.map((val, index) => {
-			// console.log(config['VACATION']['work_hours'][index], this.fgTimeFields.get('VACATION').value)
-			config['VACATION']['work_hours'][index].h = val.h;
-			config['VACATION']['work_hours'][index].m = val.m;
-			return config['VACATION']['work_hours'][index];
+		let data = { ...this.data }
+		data['VACATION']['work_hours'] = this.fgTimeFields.get('VACATION').value.map((val, index) => {
+			// console.log(data['VACATION']['work_hours'][index], this.fgTimeFields.get('VACATION').value)
+			data['VACATION']['work_hours'][index].h = val.h;
+			data['VACATION']['work_hours'][index].m = val.m;
+			return data['VACATION']['work_hours'][index];
 		})
-		// delete config['VACATION']['work_hours'][7];
-		config['MISCELLANEOUS']['work_hours'] = this.fgTimeFields.get('MISCELLANEOUS').value.map((val, index) => {
-			config['MISCELLANEOUS']['work_hours'][index].h = val.h;
-			config['MISCELLANEOUS']['work_hours'][index].m = val.m;
-			return config['MISCELLANEOUS']['work_hours'][index];
+		// delete data['VACATION']['work_hours'][7];
+		data['MISCELLANEOUS']['work_hours'] = this.fgTimeFields.get('MISCELLANEOUS').value.map((val, index) => {
+			data['MISCELLANEOUS']['work_hours'][index].h = val.h;
+			data['MISCELLANEOUS']['work_hours'][index].m = val.m;
+			return data['MISCELLANEOUS']['work_hours'][index];
 		})
-		// delete config['MISCELLANEOUS']['work_hours'][7];
-		config['HOLIDAY']['work_hours'] = this.fgTimeFields.get('HOLIDAY').value.map((val, index) => {
-			config['HOLIDAY']['work_hours'][index].h = val.h;
-			config['HOLIDAY']['work_hours'][index].m = val.m;
-			return config['HOLIDAY']['work_hours'][index];
+		// delete data['MISCELLANEOUS']['work_hours'][7];
+		data['HOLIDAY']['work_hours'] = this.fgTimeFields.get('HOLIDAY').value.map((val, index) => {
+			data['HOLIDAY']['work_hours'][index].h = val.h;
+			data['HOLIDAY']['work_hours'][index].m = val.m;
+			return data['HOLIDAY']['work_hours'][index];
 		})
-		// delete config['HOLIDAY']['work_hours'][7];
+		// delete data['HOLIDAY']['work_hours'][7];
 		let tempActiveProjects = this.fgTimeFields.get('active_projects').value.map((item, index) => {
-			let temp = {...this.visibleActiveProjects[index]};
+			let temp = { ...this.visibleActiveProjects[index] };
 			// delete temp['work_hours'][7];
 			temp['work_hours'] = item.map((val, indexInner) => {
 				temp['work_hours'][indexInner].h = val.h;
@@ -515,8 +564,8 @@ export class TimeSheetComponent implements OnInit {
 			})
 			return temp;
 		})
-		config['active_projects'] = tempActiveProjects;
-		// config['active_projects'].forEach(element => {
+		data['active_projects'] = tempActiveProjects;
+		// data['active_projects'].forEach(element => {
 		// 	element['work_hours'].pop();
 		// });
 		// this.hiddenActiveProjects.forEach(element => {
@@ -524,40 +573,41 @@ export class TimeSheetComponent implements OnInit {
 		// });
 		// add the project which are added into the timesheet but are currently removed and set their h and m to 0
 		this.hiddenActiveProjects.forEach((item, index) => {
-			
+
 			if (item.addedIntoForm) {
 				item.work_hours.forEach(val => {
 					val.h = 0;
 					val.m = 0;
 				})
-				config['active_projects'].push(item);
+				data['active_projects'].push(item);
 			} else {
-				config['active_projects'].push(item);
+				data['active_projects'].push(item);
 			}
 		})
-		return config
+		return data
 	}
-    //adding total hours and minutes of weekly wise
-	projectWeekTotal(hours){
-	  let TotHours = 0;
-	  let TotMins = 0;
-	//   console.log(hours);
-	  
-	  hours.forEach(element => {
-		if(element.h >=0){
-		TotHours =+ TotHours + element.h;
-	}
-	if(element.h >=0){
-		TotMins =+ TotMins + element.m;
-	}
-	  });
-	  if(TotMins >= 60){
-		TotHours = TotHours + Math.floor(TotMins/60);
-		TotMins = TotMins % 60;
-	  }
-	  // console.log(active);
-	  return   ("00" + TotHours).slice(-2)+ ' : ' + ("00" + TotMins).slice(-2)
-     
+
+	//adding total hours and minutes of weekly wise
+	projectWeekTotal(hours) {
+		let TotHours = 0;
+		let TotMins = 0;
+		//   console.log(hours);
+
+		hours.forEach(element => {
+			if (element.h >= 0) {
+				TotHours = + TotHours + element.h;
+			}
+			if (element.h >= 0) {
+				TotMins = + TotMins + element.m;
+			}
+		});
+		if (TotMins >= 60) {
+			TotHours = TotHours + Math.floor(TotMins / 60);
+			TotMins = TotMins % 60;
+		}
+		// console.log(active);
+		return ("00" + TotHours).slice(-2) + ' : ' + ("00" + TotMins).slice(-2)
+
 	}
 
 }

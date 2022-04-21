@@ -1,36 +1,81 @@
-.layout:not(.is-pre-signin){
-    display: grid;
-    grid-template-areas:"sidebar header" 
-                        "sidebar main" 
-                        "sidebar footer";
-    width:100%;
-    min-height:100vh;
-    grid-template-columns: 200px 1fr;
-    grid-template-rows:65px 1fr 30px;
-    main{
-        grid-area:main;
-        padding:10px;
-        > div{
-            background: var(--color-bg);
-            height:100%;
-            border-radius:5px;
-            padding:15px;
-        }
-    }
-    
-    app-header{
-        grid-area:header;
-    }
-    app-sidebar{
-        grid-area:sidebar;
-    }
-    app-footer{
-        grid-area:footer; 
-    }
-}
-.presignin-layout{
+.layout {
+  // display: grid;
+  // grid-template-areas: "sidebar header"
+  //   "sidebar main"
+  //   "sidebar footer";
+  width: 100%;
+  min-height: 100vh;
+  --sidebar:230px;
+  padding-left:var(--sidebar);
+  display: flex;
+  flex-direction: column;
+  // grid-template-columns: 230px 1fr;
+  // grid-template-rows: 95px 1fr 30px;
+  transition:padding-left 0.3s ease-in-out;
 
-    main{
-        width:100%;
+  main {
+    grid-area: main;
+    padding: 10px var(--padding-sides);
+
+    > div {
+      background: var(--color-bg);
+      height: 100%;
+      border-radius: 5px;
+      padding: 15px 0;
     }
+  }
+
+  .main-wrap {
+    background: var(--col-primary-A100);
+    flex-grow: 1;
+  }
+
+  app-header {
+    grid-area: header;
+    height: 95px;
+  }
+
+  app-sidebar {
+    grid-area: sidebar;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: calc(100vh - 40px);
+    width:var(--sidebar);
+    z-index: 111;
+
+  }
+
+  app-footer {
+    grid-area: footer;
+    height: 30px;
+  }
+
+  &.is-menu-open { 
+    padding-left: 0;
+    app-sidebar {
+      left:0;
+    }
+  }
+
+}
+
+.presignin-layout {
+  main {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width:1350px){
+  .layout{
+    padding-left: 0px;
+    app-sidebar {
+      left:calc(-1 * var(--sidebar));
+    }
+    &.is-menu-open{
+      app-sidebar{
+        left: 0;
+      }
+    }
+  }
 }

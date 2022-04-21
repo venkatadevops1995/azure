@@ -5,7 +5,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/f
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { isDescendant } from '../../functions/isDescendent.fn';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ErrorStateMatcher, CanUpdateErrorState, CanUpdateErrorStateCtor, mixinErrorState } from '@angular/material/core';
+import { ErrorStateMatcher, CanUpdateErrorState,  mixinErrorState } from '@angular/material/core';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { takeUntil } from 'rxjs/operators';
 import { fileExtensions } from './file-extensions'
@@ -19,7 +19,7 @@ class MatFileCompBase {
         /** @docs-private */
         public ngControl: NgControl) { }
 }
-const _MatFileMixinBase: CanUpdateErrorStateCtor & typeof MatFileCompBase = mixinErrorState(MatFileCompBase);
+const _MatFileMixinBase = mixinErrorState(MatFileCompBase);
 
 @Component({
     selector: 'app-file',
@@ -41,10 +41,10 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // used to unsubscribe subscriptions
     destroy$: Subject<any> = new Subject();
 
-    @Input() errorStateMatcher: ErrorStateMatcher;
+    @Input() override errorStateMatcher: ErrorStateMatcher;
 
     // for compatibility for angular material
-    stateChanges = new Subject<void>();
+    override stateChanges = new Subject<void>();
 
     // ID attribute for the field and for attribute for the label
     @Input() idd = "fileupload-" + Math.floor((Math.random() * 100) + 1);
@@ -66,6 +66,10 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // placeholder input
     @Input() pH: string;
 
+    @Input() bgColor: any;
+
+    @Input() borderColor: any;
+
     // placeholder input
     @Input() optional: boolean;
 
@@ -73,7 +77,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
     // for mat
     get placeholder() {
-        return this.pH;
+        return "";
     }
     set placeholder(plh) {
         this.pH = plh;
@@ -144,6 +148,8 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // https://www.iana.org/assignments/media-types/media-types.xhtml#image
     @Input() accept: any = { browser: '*', drop: false };
 
+    @Input() acceptString: string = ""
+
     //current form control. helpful in validating and accessing form control
     control: AbstractControl | any;
 
@@ -160,10 +166,10 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
     constructor(
         private el: ElementRef,
-        public _defaultErrorStateMatcher: ErrorStateMatcher,
-        public _parentForm: NgForm,
-        public _parentFormGroup: FormGroupDirective,
-        @Optional() @Self() public ngControl: NgControl,
+        public override _defaultErrorStateMatcher: ErrorStateMatcher,
+        public override _parentForm: NgForm,
+        public override _parentFormGroup: FormGroupDirective,
+        @Optional() @Self() public override ngControl: NgControl,
         private fm: FocusMonitor
     ) {
         super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
@@ -783,7 +789,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     }
     ngOnDestroy() {
         this.stateChanges.complete();
-        this.destroy$.next();
+        this.destroy$.next(null);
         this.fm.stopMonitoring(this.el.nativeElement);
     }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
 import { ThemePalette } from '@angular/material/core';
@@ -8,6 +8,12 @@ import { SingletonService } from 'src/app/services/singleton.service';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabGroup } from '@angular/material/tabs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { take } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export interface Task {
   id?: Number,
@@ -23,8 +29,12 @@ export interface Task {
   animations: [slideAnimationTrigger]
 })
 export class PolicyConfigComponent implements OnInit {
+  //  Rahul change************
+  @ViewChild('selectEmp') selectEmp: TemplateRef<any>;
+  @ViewChild('selectedEmpPopup') selectedEmpPopup: TemplateRef<any>;
 
-  @ViewChild('selectEmployeePopup') selectEmpModal: ModalPopupComponent;
+  //**********************
+  // @ViewChild('selectEmployeePopup') selectEmpModal: ModalPopupComponent;
   @ViewChild('selectedEmployeePopup') selectedEmpModal: ModalPopupComponent;
 
   @ViewChild('publishPolicyRef') publishPolicyModal: ModalPopupComponent;
@@ -34,6 +44,23 @@ export class PolicyConfigComponent implements OnInit {
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
   tabList = []
   // tabList = ["View Only", "Digitally Acknowledged", "Download and Upload"]
+
+
+//  Rahul change(setting a boolean var to find out range is matches to meadiaquery)*****
+// Is_match:boolean;
+get Is_match(){
+  return this.ss.responsive.isMatched([AtaiBreakPoints.XMD_LT,
+     ])
+}
+get Is_SM(){
+  return this.ss.responsive.isMatched([AtaiBreakPoints.XS,AtaiBreakPoints.SM,AtaiBreakPoints.MD
+     ])
+}
+get is_XS(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
+}
+//  ******************************************************************************
+DisableCheck:boolean=false;
 
   employeePopupColumns = ["select", "staff_no", "emp_name", "company"]
   selectedEmployeePopupColumns = ["serial_no", "staff_no", "emp_name", "company"]
@@ -56,7 +83,7 @@ export class PolicyConfigComponent implements OnInit {
   //   "expire_on":['']
   // })
   employeeSearchControl = this.fb.control('')
-  policyUploadControl = this.fb.control('')
+  policyUploadControl = this.fb.control('', [Validators.required])
   edit_policy = false
   policy_id = ''
   emp_count = 0;
@@ -64,13 +91,21 @@ export class PolicyConfigComponent implements OnInit {
   enable_for_options = [{ option: 'ALL', value: 'All employees' },
   { option: 'FEW', value: 'Selected employees' }]
   showUploadBlock: boolean;
+
+  // to avoid the start slide animation of tab group
+  showView: boolean = false;
+
   constructor(private fb: FormBuilder,
     private http: HttpClientService,
     private ss: SingletonService,
     public datepipe: DatePipe,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef) {
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<any>,
+    private changeDetectorRef: ChangeDetectorRef,
+    private responsive: BreakpointObserver
+  ) {
     this.getCompanies()
 
 
@@ -102,8 +137,32 @@ export class PolicyConfigComponent implements OnInit {
       this.showUploadBlock = true;
       this.getPolicyType()
     }
+    // // Rahul change(Using breakpoint observer Api)************
+    // this.responsive.observe([AtaiBreakPoints.XS,
+    //   AtaiBreakPoints.SM,AtaiBreakPoints.MD
+    //  ]
+    //   ).subscribe(res=>{
+    //   // console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches)
+    //   this.Is_match=res.matches;
+    //   if(res.matches)
+    //   {
+    //     console.log('hello the breakpoints has been matches');
+    //   }
+    //    console.log('!!!!!!!!!!@@@@@@@@@@@##########',this.Is_match);
+    //   console.log('@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!',res.matches);
+    // })
+   
+    // ***********************************************************
+    // *****************************************************
   }
+
   subs: any;
+
+  @HostBinding('style.visibility') get visibility() {
+    return this.showView ? 'visible' : 'hidden';
+  }
+
+
   ngOnInit(): void {
 
     console.log("-------------------", this.edit_policy);
@@ -117,6 +176,13 @@ export class PolicyConfigComponent implements OnInit {
 
     })
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.showView = true
+    }, 200)
+  }
+
   setTab(v) {
     console.log("--------------SET TAB----", v, this.tabIndexControl.value);
 
@@ -150,20 +216,66 @@ export class PolicyConfigComponent implements OnInit {
 
     const allComplete = this.companyList.subtasks != null && this.companyList.subtasks.every(t => t.completed);
     this.companyList.completed = allComplete
+
+    console.log('###@@@@@@@@@@@@@@@333########', this.companyList)
+    // if(this.companyList.completed==false && this.companyList.subtasks.length==3){
+    //   this.DisableCheck=true;
+    //   console.log('DisableCheck1',this.DisableCheck)
+    // }else{
+    //   this.DisableCheck=false;
+    //   console.log('DisableCheck2',this.DisableCheck)
+    // }
+
+    if (this.companyList.completed == false) {
+      let cnt = 0
+      this.companyList.subtasks.map((sub_task) => {
+        console.log("syb tasks,", sub_task)
+        if (sub_task.completed == false) {
+          cnt += 1;
+        }
+        console.log("!!!!!!!!!!!!!!!!->count1", cnt)
+        if (cnt == 3) {
+          this.DisableCheck = true;
+        } else {
+          this.DisableCheck = false;
+        }
+        console.log("###############->count2", cnt)
+      })
+      cnt = 0;
+    } else {
+      this.DisableCheck = false;
+    }
+
     this.updateFilterData()
 
   }
 
 
+  // ********************************************************
+  // *******************************************************
+  // ********************************************************
+  // *****************************************************
+  // *****************************************************
   setAll(e) {
     console.log("------------------------------------------------------", e);
 
     var completed = e.target.checked
     this.companyList.completed = completed
+
     if (this.companyList.subtasks == null) {
       return;
     }
     this.companyList.subtasks.forEach(t => t.completed = completed);
+
+    if (this.companyList.completed == false) {
+      this.DisableCheck = true;
+    } else {
+      this.DisableCheck = false;
+    }
+
+    console.log('%%%%%%%%%%%%%%%%%%', this.companyList)
+
+
     this.updateFilterData()
 
   }
@@ -191,7 +303,28 @@ export class PolicyConfigComponent implements OnInit {
     if (val == "ALL") {
       // this.policyForm.controls.emp_list.reset()
       if (this.emp_count > 0) {
-        this.discardSelectModal.open()
+        // this.discardSelectModal.open()
+
+        //Rahul change Open dialogBox dynamically(rahul changes) ************************
+        // this.publishPolicyModal.open();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          panelClass: 'confirm-remove-project',
+          backdropClass: 'cdk-overlay-darker-backdrop',
+          data: {
+            confirmMessage: `Are you sure to discard${this.emp_count}selected employee(s) ?`
+          }
+        })
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+          console.log('######################', data)
+          if (data == true) {
+            this.discardSelection()
+          } else {
+            this.closeDiscardSelectModal()
+          }
+        })
+
+        // **************************************************************** 
+
       } else {
         this.policyForm.removeControl('emp_list');
       }
@@ -204,11 +337,11 @@ export class PolicyConfigComponent implements OnInit {
     this.emp_count = 0
     this.SELECTED_EMPLOYEE_DATA = []
     this.policyForm.removeControl('emp_list');
-    this.discardSelectModal.close()
+    // this.discardSelectModal.close()
   }
   closeDiscardSelectModal() {
     this.policyForm.controls.enable_for.setValue('FEW')
-    this.discardSelectModal.close()
+    // this.discardSelectModal.close()
   }
 
 
@@ -218,14 +351,31 @@ export class PolicyConfigComponent implements OnInit {
       this.isFetched = true
       // this.emp_count = 0
       await this.getAllUser()
+
     }
     console.log("====================", this.EMPLOYEE_DATA);
 
-
     this.updateFilterData()
     this.employeeSearchControl.reset('')
-    this.selectEmpModal.open();
 
+    // Rahul change (opening selected)********************************
+    // this.selectEmpModal.open();
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Select Employees',
+        template: this.selectEmp,
+        maxWidth: '850px',
+        // minWidth:'false? 80vw :420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+        padding_horizontal: false,
+        padding_vertical: false,
+        // vertical_scroll:false,
+        mb_30: false
+      },
+      autoFocus: false,
+    })
+    //*************************************
     let selectedComps = []
     this.companyList.subtasks.forEach(c => {
       if (c.completed == true) {
@@ -244,20 +394,40 @@ export class PolicyConfigComponent implements OnInit {
       })
 
       this.searchKey = val.trim().toLowerCase()
-      
+
       if (val.trim() == '') {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => { return (selectedCompanies.indexOf(emp.company) != -1) });
+
       } else {
         this.EMPLOYEE_FILTERED_DATA = this.EMPLOYEE_DATA.filter(emp => {
-           return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(this.searchKey) })
+
+          return (selectedCompanies.indexOf(emp.company) != -1) && emp.emp_name.toLowerCase().includes(this.searchKey)
+        })
       }
       this.updateEmpSelection()
       console.log(this.EMPLOYEE_FILTERED_DATA)
+
     })
   }
 
   openSelectedEmp() {
-    this.selectedEmpModal.open()
+    // Rahul change (opening modified popup for selected employee)****************
+    // this.selectedEmpModal.open()
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Selected Employees',
+        template: this.selectedEmpPopup,
+        maxWidth: '850px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+        padding_horizontal: false,
+        padding_vertical: false,
+        vertical_scroll: false,
+        mb_30: false
+      },
+      autoFocus: false,
+    })
+    // **************************************************************
   }
 
   closeSelectEmp(isCancelled = false) {
@@ -299,7 +469,10 @@ export class PolicyConfigComponent implements OnInit {
     this.policyForm.controls.emp_list.markAsTouched()
     this.policyForm.updateValueAndValidity()
     this.closeSelectEmp();
-    this.selectEmpModal.close();
+    // Rahul change (closing)
+    // this.selectEmpModal.close();
+    this.dialogRef.close();
+    //*************************************
   }
 
   uploadFile() {
@@ -308,23 +481,23 @@ export class PolicyConfigComponent implements OnInit {
       console.log("file upload", this.policyUploadControl.value);
       const formData = new FormData();
       let file__type = this.policyUploadControl.value.type
-      if(file__type === 'application/pdf'){
+      if (file__type === 'application/pdf') {
         formData.append('file', this.policyUploadControl.value)
-      this.http.request('POST', 'policy/upload/', '', formData).subscribe(res => {
-        if (res.status == 200) {
-          this.ss.statusMessage.showStatusMessage(true, "File has been uploaded successfully");
-          this.policyForm.controls.file_name.setValue(res.body['results']['filename'])
-          this.policyForm.controls.display_name.setValue(res.body['results']['displayname'])
+        this.http.request('POST', 'policy/upload/', '', formData).subscribe(res => {
+          if (res.status == 200) {
+            this.ss.statusMessage.showStatusMessage(true, "File has been uploaded successfully");
+            this.policyForm.controls.file_name.setValue(res.body['results']['filename'])
+            this.policyForm.controls.display_name.setValue(res.body['results']['displayname'])
 
 
-        } else {
-          this.ss.statusMessage.showStatusMessage(false, "Issue while uploading file");
-          this.policyForm.controls.file_name.reset()
-          this.policyForm.controls.display_name.reset()
-          this.policyUploadControl.reset()
-        }
-      })
-      }else{
+          } else {
+            this.ss.statusMessage.showStatusMessage(false, "Issue while uploading file");
+            this.policyForm.controls.file_name.reset()
+            this.policyForm.controls.display_name.reset()
+            this.policyUploadControl.reset()
+          }
+        })
+      } else {
         this.ss.statusMessage.showStatusMessage(false, "Only pdf files allowed");
         this.policyForm.controls.file_name.reset()
         this.policyForm.controls.display_name.reset()
@@ -363,7 +536,9 @@ export class PolicyConfigComponent implements OnInit {
           var policy_type = this.policyForm.controls.policy_type.value
           this.policyForm.reset({ 'policy_type': policy_type, 'enable_for': 'ALL' })
           this.policyUploadControl.reset()
-          this.publishPolicyModal.close()
+          // Rahul change (closing publish policy popup confermation)*******************
+          // this.publishPolicyModal.close()
+          // ************************************************************************
           this.SELECTED_EMPLOYEE_DATA = [];
           this.emp_count = 0;
           this.companyList.completed = true;
@@ -407,6 +582,8 @@ export class PolicyConfigComponent implements OnInit {
       res.body['results'].forEach(e => {
         var emp = e;
 
+        // console.log('!!!!!!!!!!!!!',typeof(e))
+
         if (this.EDITED_EMP_IDS.indexOf(e.emp_id) == -1) {
           emp["selected"] = false;
         } else {
@@ -416,6 +593,8 @@ export class PolicyConfigComponent implements OnInit {
           this.SELECTED_EMPLOYEE_DATA.push(e)
         }
         this.EMPLOYEE_DATA.push(emp)
+        console.log('#######################', emp)
+
       })
     } else {
       this.ss.statusMessage.showStatusMessage(false, "Issue while getting users");
@@ -499,6 +678,7 @@ export class PolicyConfigComponent implements OnInit {
       var comp_list = []
       res.body["results"][0]["company_list"].forEach(element => {
         comp_list.push(element.cmpny_id)
+
       });
 
       this.companyList.subtasks.forEach(t => {
@@ -515,6 +695,7 @@ export class PolicyConfigComponent implements OnInit {
 
     }
   }
+
   openConfirmation() {
     // if(this.policyForm.errors){
     if (this.policyForm.controls.display_name.errors) {
@@ -534,10 +715,42 @@ export class PolicyConfigComponent implements OnInit {
 
     // }
     if (this.policyForm.valid) {
-      this.publishPolicyModal.open();
+
+      //Rahul change Open dialogBox dynamically(rahul changes) ************************
+      // this.publishPolicyModal.open();
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        panelClass: 'confirm-remove-project',
+        backdropClass: 'cdk-overlay-darker-backdrop',
+        data: {
+          confirmMessage: 'Are you sure to publish Policy with the selected groups?'
+        }
+      })
+      dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+        console.log('######################', data)
+        if (data == true) {
+          this.publishPolicy()
+        } else {
+          this.dialog.closeAll()
+        }
+      })
+
+      // **************************************************************** 
     }
   }
   closeConfirmation() {
-    this.publishPolicyModal.close()
+
+    // this.publishPolicyModal.close()
   }
+
+
 }
+
+
+
+
+
+
+
+
+
+

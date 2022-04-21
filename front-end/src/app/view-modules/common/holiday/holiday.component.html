@@ -1,303 +1,197 @@
 <div style="display: flex;justify-content: space-between;">
-    <h2 class="heading">Holiday List {{this.selectedYear}}</h2>
+  <h2 class="heading mb-20">Holiday List {{this.selectedYear}}</h2>
 
-    <!-- <form [formGroup]="holidayForm" >
-    <h3>Aliases</h3> <button (click)="addAlias()">Add Alias</button>
-  
-    <div formArrayName="holidays" *ngFor="let alias of holidayForm.get('holidays')['controls']; let i=index">
-      {{i}} 
-      <div [formGroup]="alias">
-        <button type="submit" (click)="deleteHoliday(i)">Delete</button>
-          <div>
-            <label>
-                Alias: {{i}}
-                <input type="text" formControlName="date">
-            </label>
-         </div>
-         <div>
-            <label>
-                Alias: {{i}}
-                <input type="text" formControlName="des">
-            </label>
-         </div>
-         <div>
-            <label>
-                Alias: {{i}}
-                <input type="text" formControlName="locations">
-            </label>
-         </div>
-
-        </div>
-    </div>
-    <button type="submit" (click)="submitHoloday()">Submit</button>
-    
-    
-</form> -->
-    <div *ngIf="is_emp_admin && isConfirmed==false && editMode==false" style="display:flex">
-        <app-button theme="blue-lite" size="small" type="submit" (click)="confirmHoliday()">Notify Employees</app-button>
-    </div>
+  <div *ngIf="isAdmin && notifiedEmployees==false && editMode==false" style="display:flex">
+    <app-button theme="blue-lite" size="small" type="submit" (click)="confirmHoliday()">Notify Employees</app-button>
+  </div>
 </div>
-<div *ngIf="(is_emp_admin==false)" style="display: flex;justify-content:flex-end">
-    <div *ngIf="IsNextYearVisible && currentDate.getFullYear()==selectedYear">
-        <app-button theme="blue-lite" size="small" type="submit" (click)="getNextYearHoliday()">Next Year Holidays</app-button>
-    </div>
-    <div *ngIf="(currentDate.getFullYear()!=selectedYear)" style="display: flex;justify-content:flex-end">
-        <app-button theme="blue-lite" size="small" type="submit" (click)="getCurrentYearHoliday()">Current Year Holidays</app-button>
-    </div>
+<div *ngIf="(isAdmin==false)" style="display: flex;justify-content:flex-end" class="mb-15">
+  <div *ngIf="showNextYear && currentDate && currentDate.getFullYear()==selectedYear">
+    <app-button type="submit" (click)="getNextYearHoliday()">Next Year Holidays</app-button>
+  </div>
+  <div *ngIf="(currentDate && currentDate.getFullYear()!=selectedYear)" style="display: flex;justify-content:flex-end">
+    <app-button type="submit" (click)="getCurrentYearHoliday()">Current Year Holidays</app-button>
+  </div>
 </div>
 <div>
-    <div *ngIf="is_emp_admin" style="display: flex;justify-content:space-between;">
-        <div style="display: flex;">
-            <mat-form-field style=" max-width: 350px;">
-                <mat-label>Select Year</mat-label>
-                <mat-select (selectionChange)="changeYear($event)" [(ngModel)]="selectedYear">
-                    <mat-option *ngFor="let year of displayedYear" [value]="year">
-                        {{year}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div *ngIf="holidayArrayData.length == 0 && yearEditable==true" style="margin:'10px 10px'">
-                <app-button theme="blue-lite" size="small" type="submit" (click)="openHolidayPopup()">Add</app-button>
-            </div>
-        </div>
+  <div class="flex between-xs mb-20" *ngIf="isAdmin">
 
-        <div *ngIf="is_emp_admin">
-            <app-button *ngIf="(editMode==false) &&(holidayArrayData.length != 0 &&(yearEditable))" theme="blue-lite" size="small" type="submit" (click)="edit(true)">Edit</app-button>
-            <app-button *ngIf="editMode" theme="danger" size="small" type="submit" (click)="edit(false)">Cancel</app-button>
-        </div>
-
-
-        <!-- <div  style="display:inline-block;margin:'10px 10px'">
-            <app-button theme="blue-lite" size="small" type="submit" (click)="openHolidayPopup()">Add </app-button>
-        </div> -->
-        <!-- <div style="margin:'0px 10px'">
-    <app-button theme="blue-lite" size="small" type="submit" (click)="getFromTemplate()">Add from template</app-button>
-    </div> -->
-
-    </div>
-    <!-- <div  *ngIf="is_emp_admin" style="align-self:  flex-end;">
-        <app-button *ngIf="(editMode==false) &&(holidayArrayData.length != 0)" theme="blue-lite" size="small" type="submit" (click)="edit(true)">Edit</app-button>
-        <app-button *ngIf="editMode" theme="danger" size="small" type="submit" (click)="edit(false)">Cancel</app-button>
-    </div> -->
-
-
-
-    <div *ngIf="(holidayArrayData.length != 0)||(editMode==true)" style="margin-top: '20px';">
-        <!-- <h3>Holidays for {{this.selectedYear}}</h3> -->
-        <span></span>
-        <div class="timesheet">
-            <div class="timesheet__head" [ngStyle]="{'grid-template-columns':  '80px  minmax(200px, 2fr) minmax(80px, 1fr) minmax(150px, 2fr) minmax(150px, 2fr) repeat('+  ((editMode==true) ? headerLocation.length : showLocation.length)+', minmax(80px,1fr))'}">
-                <div class="week">Serial No</div>
-                <div *ngFor="let item of headerItems">
-                    <ng-container>
-                        {{item}}
-                    </ng-container>
-
-                    <!-- <div *ngIf="day == 'Total'">{{day}}</div> -->
-                </div>
-
-                <ng-template [ngIf]="!editMode">
-                    <div class="location" [attr.value]="loc['id']" *ngFor="let loc of showLocation;let loc_index = index">
-                        <ng-container>
-                            {{loc['name']}}
-                        </ng-container>
-                    </div>
-                </ng-template>
-                <ng-template [ngIf]="editMode">
-                    <div class="location" [attr.value]="loc['id']" *ngFor="let loc of headerLocation;let loc_index = index">
-                        <ng-container>
-                            {{loc['name']}}
-                        </ng-container>
-                    </div>
-                </ng-template>
-
-                <!-- <div>Total</div> -->
-            </div>
-
-            <form *ngIf="editMode" [formGroup]="holidayForm">
-                <div class="timesheet__body">
-                    <!-- <div class="timesheet__row" *ngFor="let holiday of HOLIDAYLIST_TESTDATA;let i=index;"> -->
-                    <div formArrayName="holidays" *ngFor="let alias of holidayForm.get('holidays')['controls']; let i=index">
-                        <div class="timesheet__row" [formGroup]="alias" [ngStyle]="{'grid-template-columns':  '80px minmax(200px, 2fr) minmax(80px, 1fr) minmax(150px, 2fr) minmax(150px, 2fr) repeat('+((editMode==true) ? headerLocation.length : showLocation.length) +', minmax(80px,1fr))'}">
-                            <div class="project">
-                                {{i+1}}
-                                <div *ngIf="alias.controls.editable.value==true" [attr.data-index]='i' [svgIcon]="{url:'./assets/icons-sprite.svg#close-circle',w:25}" svg-fill="#666" class="timesheet__row-remove"></div>
-                            </div>
-                            <!-- <div >{{holiday.date}}</div> -->
-                            <div *ngIf="alias.controls.editable.value==true">
-                                <!-- <input  formControlName="date" type="text" > -->
-                                <!-- <mat-form-field appearance="fill"> -->
-                                <!-- [singleDatePicker]="true" -->
-                                <div *ngIf="alias.controls.date.touched && ( alias.controls.date.hasError('invalidYear') || alias.controls.date.hasError('notUniqueDates') || alias.controls.date.hasError('notWeekend')  )" class="error_msg">
-                                    <span *ngIf="alias.controls.date.hasError('notUniqueDates')">Selected date should be unique</span>
-                                    <span *ngIf="alias.controls.date.hasError('invalidYear')">Selected date year should be {{this.selectedYear}}</span>
-                                    <span *ngIf="alias.controls.date.hasError('notWeekend')">Selected date should not be weekend</span>
-                                </div>
-                                <input style="width:'160px';" matInput type="text" formControlName="date" ngxDaterangepickerMd #ref (datesUpdated)="getDay(i)" [minDate]="minSelectDate" [maxDate]="maxSelectDate" [locale]="{applyLabel: 'Select', format: 'DD-MM-YYYY'}" />
-                                <!-- <div class="date_range_after" ></div>  -->
-                                <mat-icon role="img" (click)="elClick(ref)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
-                                <!-- <input   [matDatepicker]="picker" >
-                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker> -->
-                                <!-- </mat-form-field> -->
-                                <!-- <input  formControlName="date" type="text" value="{{holiday.date}}"> -->
-                            </div>
-                            <div style="font-size: 12px;" *ngIf="alias.controls.editable.value==false">
-                                <!-- <br> -->
-                                <!-- <div *ngIf="alias.controls.count.value>1">{{alias.controls.date.value['startDate']| date: 'dd-MM-yyyy'}} - {{alias.controls.date.value['startDate'] | date: 'dd-MM-yyyy'}}</div> -->
-                                <div *ngIf="alias.controls.count.value">{{alias.controls.date.value['startDate']| date: 'dd-MM-yyyy'}}
-
-                                </div>
-
-                            </div>
-                            <div> {{alias.controls.count.value}}</div>
-                            <!-- <div  *ngIf="alias.controls.editable.value==true">
-                            <input size="3" formControlName="count" type="number" min="1" step="1" (change)="onCountChange(i)" [(ngModel)]="alias.controls.count.value">
-                        </div>
-                        <div  *ngIf="alias.controls.editable.value==false">
-                            {{alias.controls.count.value}}
-                        </div> -->
-                            <div>{{alias.controls.day.value}}</div>
-
-                            <div *ngIf="alias.controls.editable.value==true">
-                                <!-- <input  style="width:'120px'" formControlName="des" type="text" > -->
-                                <!-- <input   type="text" value="{{holiday.des}}"> -->
-
-                                <!-- <select formControlName="des"  >
-                                <option [ngValue]="hol.id" *ngFor="let hol of defaultHoliday">{{hol.holiday_name}}</option>
-                            </select> -->
-                                <!-- <div *ngIf=" alias.controls.des.hasError('notUnique')" class="error_msg">It should be unique</div>  -->
-                                <div *ngIf=" alias.controls.des.hasError('uniqueBy')" class="error_msg">Name should be unique</div>
-                                <input type="text" formControlName="des" (focus)="getHolidayOptions(i)" (focusout)="destroyHolidayOptions(i)">
-                                <!-- <div *ngIf="options.length >0"  class="'searchOptions-'+(i)'" id="dynmicUserIds" [attr.data-index]='i' [ngClass]="{'searchOptions' : showOptionIndex == i,'hideSearchOptions':showOptionIndex != i}">
-                                <option  class="holiday_option" [class]="'holiday_option-'+(item.id)" *ngFor="let item of options" [value]="item.id"><div class="options">{{item.holiday_name}}</div></option>
-                            </div> -->
-                                <!-- <ul *ngIf="options.length >0" [ngClass]="{'searchOptions' : showOptionIndex == i,'hideSearchOptions':showOptionIndex != i}">
-                                <li [class.active]="inFocusMinIndex == i"  [class]="'holiday_option-'+(item.id)" class="option" *ngFor="let let item of options;let i =index;" [attr.val]="item">{{item}}</li> 
-                            </ul> -->
-                                <ul *ngIf="options.length >0" [attr.data-index]='i' [ngClass]="{'searchOptions' : showOptionIndex == i,'hideSearchOptions':showOptionIndex != i}">
-                                    <li class="holiday_option" *ngFor="let item of options;let j =index;" [attr.value]="item.name">{{item.name}}</li>
-                                </ul>
-                            </div>
-                            <div *ngIf="alias.controls.editable.value==false">
-                                {{alias.controls.des.value}}
-                            </div>
-
-                            <!-- <div >{{holiday.des}}</div> -->
-
-                            <div *ngFor="let loc of headerLocation">
-                                <input type="checkbox" (change)="addRemoveLocation(i,loc['id'])" [checked]="ifChecked(i,loc['id'])" [disabled]="alias.controls.editable.value==false">
-
-                            </div>
-
-
-                            <!-- <div [ngClass]="{ 'applicable': holiday.hyd }">{{holiday.hyd}}</div>
-                        <div [ngClass]="{ 'applicable': holiday.blr }">{{holiday.blr}}</div>
-                        <div [ngClass]="{ 'applicable': holiday.delhi }">{{holiday.delhi}}</div> -->
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="editMode" class="timesheet__row timesheet--sel-project">
-                    <div #selProject class="sel-project">
-                        <div style="pointer-events: none;" class="flex middle-xs center-xs">
-                            <div class="mr-5" [svgIcon]="{url:'./assets/icons-sprite.svg#plus-circle',w:25}" svg-fill="currentColor"></div>Add
-                        </div>
-                        <!-- <div class="sel-project__project-list" >
-                        <div class="sel-project__project" [attr.data-project]="project?.project_id" [attr.index]="i" *ngFor="let project of hiddenActiveProjects;let i = index;">
-                            {{project?.project_name}}
-                        </div> 
-                    </div>   -->
-                    </div>
-                </div>
-                <br>
-                <div *ngIf="editMode" style="float: right;">
-                    <app-button theme="blue-lite" size="small" type="submit" (click)="submitHoliday()" [disabled]="!holidayForm.valid">Save</app-button>
-                </div>
-            </form>
-            <div *ngIf="!editMode" class="timesheet__body">
-                <!-- <div class="timesheet__row" *ngFor="let holiday of HOLIDAYLIST_TESTDATA;let i=index;"> -->
-                <div *ngFor="let hol_data of holidayArrayData; let i=index">
-
-                    <div class="timesheet__row" [ngStyle]="{'grid-template-columns':  '80px minmax(200px, 2fr) minmax(80px, 1fr) minmax(150px, 2fr) minmax(150px, 2fr) repeat('+  ((editMode==true) ? headerLocation.length : showLocation.length) +', minmax(80px,1fr))'}">
-                        <div class="project">
-                            {{i+1}}
-                            <div *ngIf="editMode" [attr.data-index]='i' [svgIcon]="{url:'./assets/icons-sprite.svg#close-circle',w:25}" svg-fill="#666" class="timesheet__row-remove"></div>
-                        </div>
-                        <!-- <div >{{holiday.date}}</div> -->
-
-                        <!-- <div  >{{hol_data.holiday_date| date: 'dd-MM-yyyy'}} -{{hol_data.holiday_date | date: 'dd-MM-yyyy'}}</div> -->
-                        <div *ngIf="hol_data.holiday_count>1">{{hol_data.start_date| date: 'dd-MM-yyyy'}} - {{hol_data.end_date | date: 'dd-MM-yyyy'}}</div>
-                        <div *ngIf="hol_data.holiday_count<=1">{{hol_data.start_date| date: 'dd-MM-yyyy'}}</div>
-                        <!-- <div>{{hol_data.work_day_count}}</div> -->
-                        <div>{{hol_data.holiday_count}}</div>
-                        <div>{{(hol_data.week_day)}}</div>
-
-                        <div>
-                            {{hol_data.holiday.holiday_name}}
-                        </div>
-                        <!-- <div >{{holiday.des}}</div> -->
-
-                        <!-- <div *ngFor="let loc of headerLocation">            
-                        
-                        <div >
-                            <div *ngIf="ifChecked(hol_data.locations,loc['id'])" class="checkbox">
-                                <div class="check"></div>
-                            </div>
-                        </div>
-                    </div> -->
-
-                        <div *ngFor="let c of hol_data.loc_checks">
-                            <div>
-                                <div *ngIf="c" class="checkbox">
-                                    <div class="check"></div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- <div [ngClass]="{ 'applicable': holiday.hyd }">{{holiday.hyd}}</div>
-                    <div [ngClass]="{ 'applicable': holiday.blr }">{{holiday.blr}}</div>
-                    <div [ngClass]="{ 'applicable': holiday.delhi }">{{holiday.delhi}}</div> -->
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
+    <div style="display: flex;">
+      <mat-form-field style=" max-width: 150px;" class="no-pb">
+        <mat-label>Select Year</mat-label>
+        <mat-select (selectionChange)="changeYear($event)" [(ngModel)]="selectedYear">
+          <mat-option *ngFor="let year of displayedYear" [value]="year">
+            {{year}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="holidayList.length == 0 && isSelectedYearEditable==true" class="ml-30 mt-10">
+        <app-button theme="blue-lite" size="small" type="submit" (click)="openHolidayPopup()">Add</app-button>
+      </div>
     </div>
 
-    <!-- <input type="daterange" ngxDaterangepickerMd startKey="startDate" endKey="endDate" [alwaysShowCalendars]="true" [showRangeLabelOnInput]="true" [locale]="{separator: ' To ',format: 'DD-MM-YYYY'}" [ranges]="ranges" #picker [keepCalendarOpeningWithRange]="true"
-                    [maxDate]='maxDate' class="ngx-daterangepicker-action" (datesUpdated)="updateRange($event)" style="border: none;background: none;color: #3a7bca;">
-                <button type="submit" class="ngx-daterangepicker-action" (click)="open($event)" style="background: none; border: none;cursor: pointer;">
-            <mat-icon role="img"  class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon> -->
+    <div *ngIf="isAdmin">
+      <app-button *ngIf="!editMode && holidayList.length != 0 && isSelectedYearEditable" type="submit"
+        (click)="onClickEdit()" [size]="is_MD_LT ? 'small' :'default'">Edit
+      </app-button>
+      <app-button *ngIf="editMode" theme="red" type="submit" (click)="onClickCancel()">Cancel</app-button>
+    </div>
+  </div>
 
-    <app-modal-popup #addHolidayDialog [w]="'30%'" [h]="'40%'">
-        <div head>
-            Add Holiday Option
+  <div class="holidays__wrap w-100 of-auto" #refHolidaysWrap> 
+    <div class="holidays"
+      [ngStyle]="{minWidth: (760 + ((editMode ? locations.length : locationsInSelectedYear.length)*80))+'px'}"
+      *ngIf="(holidayList.length != 0) || (editMode==true)">
+      <div class="holidays__head header-gradient" [ataiAffix]="{referenceHierarchy:'p.p'}"
+        [scrollX]="scrollXHolidayAffix"
+        [ngStyle]="{'grid-template-columns':'  minmax(120px, 2fr) minmax(130px, 1.3fr) minmax(80px, 1fr) 80px repeat('+(editMode ? locations.length : locationsInSelectedYear.length )+',minmax(80px,100px))'}">
+        <div class="holidays__col " *ngFor="let column of tableHeadColumns;let i = index;"
+          [class.holidays__col--left]="i < 4">
+          {{column}}
         </div>
-
-        <ng-container>
-            <form [formGroup]="addHolidayForm">
-                <!-- <mat-form-field>
-                <mat-label>Select year</mat-label>
-                <mat-select formControlName="year" >
-                    <mat-option *ngFor="let year of displayedYear" [value]="year">
-                        {{year}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
-                <p>Adding Holiday for {{this.selectedYear}}</p>
-                <mat-form-field>
-                    <mat-label>Add option</mat-label>
-                    <mat-select formControlName="option">
-                        <mat-option *ngFor="let opt of ['Import from template','Add manually']" [value]="opt">
-                            {{opt}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div style="float: right;">
-                    <app-button theme="blue-lite" size="small" type="submit" (click)="selectAddHolidayOption()">Proceed</app-button>
-                </div>
-            </form>
+        <ng-container *ngFor="let location of (editMode ? locations :locationsInSelectedYear)">
+          <div class="holidays__col holidays__col--location ">
+            {{location?.name}}
+          </div>
         </ng-container>
-    </app-modal-popup>
+      </div>
+      <div class="holidays__body mt-10 " style="background:var(--col-primary-A200);">
+        <ng-container *ngFor="let holiday of holidayList;let i = index;">
+          <div class="holidays__row" *ngIf="!holiday?.delete" [ngStyle]="{'grid-template-columns':'  minmax(120px, 2fr) minmax(130px, 1.3fr) minmax(80px, 1fr) 80px repeat('+(editMode ? locations.length : locationsInSelectedYear.length )+',minmax(80px,100px))'}">
+            <div class="holidays__cell holidays__cell--date holidays__cell--left pos-r">
+              <ng-container *ngIf="editMode && holiday.editable">
+                <svg [attr.data-index]="i" class="holidays__remove col-warn-400 use-svg" symbol="remove" w="15">
+                </svg>
+              </ng-container>
+              <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
+                <ng-container *ngIf="holiday.start_date == holiday.end_date">
+                  {{holiday.start_date | date:'dd-MM-yyyy' }}
+                </ng-container>
+                <ng-container *ngIf="holiday.start_date != holiday.end_date">
+                  {{holiday.start_date | date:'dd-MM-yyyy' }} - {{holiday.end_date | date:'dd-MM-yyyy' }}
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="editMode && holiday.editable">
+                <div class="holidays__input-date" [attr.data-index]="i">
+                  <ng-container
+                    *ngIf="faHolidayList.controls[i].value.date.start_date == faHolidayList.controls[i].value.date.end_date">
+                    {{faHolidayList.controls[i].value.date.start_date | date:'dd-MM-yyyy' }}
+                  </ng-container>
+                  <ng-container
+                    *ngIf="faHolidayList.controls[i].value.date.start_date != faHolidayList.controls[i].value.date.end_date">
+                    {{faHolidayList.controls[i].value.date.start_date | date:'dd-MM-yyyy' }} -
+                    {{faHolidayList.controls[i].value.date.end_date | date:'dd-MM-yyyy' }}
+                  </ng-container>
+                </div>
+
+                <svg [attr.data-index]="i" class="holidays__calendar-icon  use-svg" symbol="calendar" w="20">
+                </svg>
+                <div
+                  *ngIf="(faHolidayList.controls[i].get('date').touched && (faHolidayList.controls[i].get('date').hasError('invalidYear') || faHolidayList.controls[i].get('date').hasError('notUniqueDates') || faHolidayList.controls[i].get('date').hasError('notWeekend'))  )"
+                  class="holidays__error">
+                  <span *ngIf="faHolidayList.controls[i].get('date').hasError('notUniqueDates')">Selected date should be
+                    unique</span>
+                  <span *ngIf="faHolidayList.controls[i].get('date').hasError('invalidYear')">Selected date year should
+                    be
+                    {{this.selectedYear}}</span>
+                  <span *ngIf="faHolidayList.controls[i].get('date').hasError('notWeekend')">Selected date should not be
+                    weekend</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="holidays__cell holidays__cell--name holidays__cell--left pos-r bold">
+              <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
+                {{holiday?.holiday?.holiday_name}}
+              </ng-container>
+              <ng-container *ngIf="editMode && holiday.editable">
+                <input type="text" [attr.data-index]="i" [matAutocomplete]="occasionAuto"
+                  class="holidays__description holidays__input" [attr.value]="holiday.holiday.holiday_name" />
+                <div
+                  *ngIf="faHolidayList.controls[i].get('description').touched && faHolidayList.controls[i].get('description').hasError('uniqueName')"
+                  class="holidays__error">
+                  <span>Name should be unique</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="holidays__cell holidays__cell--left">
+              <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
+                <ng-container *ngIf="holiday.start_date == holiday.end_date">
+                  {{holiday?.startDay}}
+                </ng-container>
+                <ng-container *ngIf="holiday.start_date != holiday.end_date">
+                  {{holiday.startDay}} - {{holiday.endDay}}
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="editMode && holiday.editable">
+                <ng-container
+                  *ngIf="faHolidayList.controls[i].value.date.start_date == faHolidayList.controls[i].value.date.end_date">
+                  {{faHolidayList.controls[i].value.date.start_date | date:'EEEE'}}
+                </ng-container>
+                <ng-container
+                  *ngIf="faHolidayList.controls[i].value.date.start_date != faHolidayList.controls[i].value.date.end_date">
+                  {{faHolidayList.controls[i].value.date.start_date | date:'EEEE'}} -
+                  {{faHolidayList.controls[i].value.date.end_date | date:'EEEE'}}
+                </ng-container>
+              </ng-container>
+            </div>
+            <div class="holidays__cell ">
+              <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
+                {{holiday?.holiday_count}}
+              </ng-container>
+              <ng-container *ngIf="editMode && holiday.editable">
+                {{faHolidayList.controls[i].value.count}}
+              </ng-container>
+            </div>
+            <div class="holidays__cell holidays__cell--locations pos-r"
+              *ngFor="let location of (editMode ? locations :locationsInSelectedYear);let j = index;"
+              [attr.data-index]="i">
+              <div [attr.data-index]="i" [attr.data-location_id]="location.id" class="holidays__checkbox "
+                [class.edit-mode]="editMode"
+                [class.checked]="(!editMode && holiday.locations.indexOf(location.id) != -1) || (editMode && faHolidayList.controls[i].value.locations.indexOf(location.id) != -1)"
+                [class.disabled]="!holiday?.editable && editMode"></div> 
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dis-ib mt-15 " *ngIf="editMode">
+    <div (click)="addHolidayItem()" class="flex middle-xs center-xs btn-outline ml-10">
+      <svg class=" mr-5 use-svg" symbol="add-circle" w="14" svg-fill="currentColor">
+      </svg>
+      Add Holiday
+    </div>
+  </div>
+
+  <div class="flex end-xs mt-20" *ngIf="editMode">
+    <app-button (click)="onClickSave()" [disabled]="!faHolidayList.valid">
+      Save
+    </app-button>
+  </div>
+
+  <app-atai-date-range [minDate]="minDate" [maxDate]="maxDate" [allowSameDateRange]="true" [showInput]="false"
+    [showPresets]="false" (dateSelected)="onDateSelection($event)" (cancel)="onCancelDatePicker()">
+  </app-atai-date-range>
+
+  <ng-template #templateRefHolidayForm>
+    <mat-form-field class="w-100" style=" max-width: 350px;">
+      <mat-label>Add Option</mat-label>
+      <mat-select [(ngModel)]="selectedHolidayOption">
+        <mat-option *ngFor="let opt of ['Import from template','Add manually']" [value]="opt">
+          {{opt}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-template>
+
+
+  <!-- the mat auto complete selection drop down for occassion name -->
+  <mat-autocomplete panelWidth="250" autoActiveFirstOption #occasionAuto="matAutocomplete"
+    (optionSelected)="onSelectAutoComplete($event)">
+    <mat-option *ngFor="let option of filteredDefaultHolidayList" [value]="option.name">
+      {{option.name}}
+    </mat-option>
+  </mat-autocomplete>

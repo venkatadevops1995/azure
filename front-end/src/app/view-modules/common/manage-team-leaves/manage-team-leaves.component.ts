@@ -1,23 +1,23 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { SingletonService } from 'src/app/services/singleton.service';
-import * as moment from 'moment';
-import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
+import { SingletonService } from 'src/app/services/singleton.service'; 
+// import { DaterangepickerComponent, DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 
 import { LeaveApplcnStatus } from 'src/app/constants'
 import { Observable, Subject } from 'rxjs';
-import { ConfirmRejectLeaveComponent } from './confirm-reject-leave/confirm-reject-leave.component';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
-import { stringify } from 'querystring';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 
 @Component({
     selector: 'app-manage-team-leaves',
@@ -25,6 +25,8 @@ import { stringify } from 'querystring';
     styleUrls: ['./manage-team-leaves.component.scss']
 })
 export class ManageTeamLeavesComponent implements OnInit {
+
+    @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
 
     // the leave application status in the db column
     leaveApplicationStatuses: Array<any> = ['Approved', 'Rejected', 'Cancelled']
@@ -58,7 +60,7 @@ export class ManageTeamLeavesComponent implements OnInit {
     LEAVE_REQUEST_SINGLE_DATA: any = [];
 
     // store the leave request detail pop up request id
-    leaveDetailsRequestId: { request_id: number, get_discrepancy?: boolean , get_history?:boolean};
+    leaveDetailsRequestId: { request_id: number, get_discrepancy?: boolean, get_history?: boolean };
 
     TIMESHEET_DISCREPANCY = [];
 
@@ -74,30 +76,26 @@ export class ManageTeamLeavesComponent implements OnInit {
 
     sortDirection: 'asc' | 'desc' | null = 'desc'
 
-    ranges: any = {
-        // 'Today': [moment(), moment()],
-        // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month': [moment().startOf('month'), moment().endOf('month')],
-        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-        // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-    }
     fromdate: any;
     todate: any;
-    maxDate = moment().add(0, 'days')
+    maxDate = new Date();
 
     selectedHistoryRange: any = {};
     selectedAppliedRange: any = {};
-    picker: DaterangepickerComponent;
-    @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+    // picker: DaterangepickerComponent;
+    // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
 
-    @ViewChild('showAppliedLeaveDialog') showAppliedLeavePopup: ModalPopupComponent;
+    @ViewChild('showAppliedLeaveDialog') templateLeaveDetails: TemplateRef<any>;
 
     @ViewChild('refTableWrap') elTableWrap: ElementRef;
 
-    @ViewChild('timesheetDiscrepancyDialog') timesheetDiscrepancyPopup: ModalPopupComponent;
+    @ViewChild('timesheetDiscrepancyDialog') templateTimesheetDiscrepancy: TemplateRef<any>;
+
+    // dialog reference time sheet discrepancy 
+    dialogRefTimesheetDiscrepancy: MatDialogRef<any>;
+
+    // dialog reference time sheet discrepancy 
+    dialogRefLeaveDetails: MatDialogRef<any>;
 
     // employees options
     employeesOptions: Array<any> = []
@@ -174,27 +172,33 @@ export class ManageTeamLeavesComponent implements OnInit {
         return this.employeesOptions.filter(value =>
             value.emp_name.toLowerCase().indexOf(search.toLowerCase()) === 0);
     }
-    
+
+    onDateSelect(date) {
+        this.selectedHistoryRange["startDate"] = date.start;
+        this.selectedHistoryRange["endDate"] = date.last;
+        this.fromdate = date.start
+        this.todate = date.start
+    }
+
 
     ngAfterViewInit() {
         setTimeout(() => {
             // this.pickerDirective.clear()
+            this.setPickerToLast30Days()
             this.getLeaveApplications()
             this.getLeaveDiscrepancies()
-            this.setPickerToLast30Days()
             this.getTimesheetDiscrepancies()
         }, 100)
     }
 
     ngOnDestroy() {
-        this.destroy$.next()
+        this.destroy$.next(null)
         this.destroy$.complete()
     }
 
     setPickerToLast30Days() {
-        this.selectedHistoryRange["startDate"] = this.ranges['Last 30 Days'][0];
-        this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
-        this.pickerDirective.writeValue(this.selectedHistoryRange)
+        this.dateRangePicker.setPresetValue('Last 30 Days');
+        // this.pickerDirective.writeValue(this.selectedHistoryRange)
     }
 
     // display function for auto complete to filter options
@@ -210,9 +214,9 @@ export class ManageTeamLeavesComponent implements OnInit {
     // on submitting the resolved leaves filter form
     onSubmitResolvedLeaveFilter(e) {
         let fgValue: any = this.managerCtrl.value
-        console.log(fgValue,e);
-        
-        let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
+        console.log(fgValue, e);
+
+        // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
         if (fgValue == 'ALL' || fgValue) {
             this.getLeaveApplications(true, fgValue)
             this.showMessage = true
@@ -220,7 +224,7 @@ export class ManageTeamLeavesComponent implements OnInit {
         } else {
             this.LEAVE_DATA_HISTORY = []
         }
-        
+
     }
 
     // get employees based on the string entered in auto complete
@@ -274,6 +278,18 @@ export class ManageTeamLeavesComponent implements OnInit {
         return this.datepipe.transform(date, 'yyyy-MM-dd');
     }
 
+    openLeaveDetailsDialog() {
+        this.dialogRefLeaveDetails = this.dialog.open(PopUpComponent, {
+            data: {
+                template: this.templateLeaveDetails,
+                hideFooterButtons: true,
+                showCloseButtons: true,
+                heading: 'Leave Request Details',
+                maxWidth: '800px'
+            }
+        })
+    }
+
     // click event handler on the whole table. event delegation.
     @HostListener('click', ['$event'])
     onClickHost(e: MouseEvent) {
@@ -305,16 +321,16 @@ export class ManageTeamLeavesComponent implements OnInit {
                 })
             } else if (classList.contains('view-leave-details')) {
                 let id = tempTarget.getAttribute("data-id")
-                this.leaveDetailsRequestId = { request_id: Number(id)}
-                this.showAppliedLeavePopup.open()
-            } else if(classList.contains('view-leave-details-history')) {
+                this.leaveDetailsRequestId = { request_id: Number(id) }
+                this.openLeaveDetailsDialog()
+            } else if (classList.contains('view-leave-details-history')) {
                 let id = tempTarget.getAttribute("data-id")
-                this.leaveDetailsRequestId = { request_id: Number(id) , get_history: true}
-                this.showAppliedLeavePopup.open()
+                this.leaveDetailsRequestId = { request_id: Number(id), get_history: true }
+                this.openLeaveDetailsDialog()
             } else if (classList.contains('view-leave-discrepancy-details')) {
                 let id = tempTarget.getAttribute("data-id")
                 this.leaveDetailsRequestId = { request_id: Number(id), get_discrepancy: true, get_history: true }
-                this.showAppliedLeavePopup.open()
+                this.openLeaveDetailsDialog()
             }
             tempTarget = tempTarget.parentNode
         }
@@ -322,9 +338,9 @@ export class ManageTeamLeavesComponent implements OnInit {
 
     // get all leave application with pagination
     getLeaveApplications(isHistory: boolean = false, emp_name?) {
-        let empName:any;
+        let empName: any;
         if (emp_name) {
-                 empName = emp_name
+            empName = emp_name
         }
         else {
             empName = 'emp_name'
@@ -335,7 +351,8 @@ export class ManageTeamLeavesComponent implements OnInit {
             endDate: 'enddate'
         }
         let data;
-        let dp: any = this.pickerDirective.value
+        // let dp: any = this.pickerDirective.value
+        let dp = this.dateRangePicker.value
         if (isHistory) {
             data = this.LEAVE_DATA_HISTORY = []
         } else {
@@ -344,29 +361,29 @@ export class ManageTeamLeavesComponent implements OnInit {
 
         // get the sorting
         let params = new HttpParams()
-        
+
         params = params.append('is_manager', 'true')
-        
+
         params = params.append('filter', (!isHistory) ? 'pending' : 'history')
 
         if (isHistory) {
             console.log(emp_name);
-            
+
             // this.historyLeavesFiltersApplied =  true
-            
-            if(emp_name == "ALL"){       
-                 empName = ''
+
+            if (emp_name == "ALL") {
+                empName = ''
             }
-            else{
+            else {
                 empName = emp_name || ""
             }
             params = params.append('emp_name', empName)
             params = params.append('sort_key', mapping[this.sortHistoricKey] || '')
             params = params.append('sort_dir', this.sortDirection || '')
         }
-        if (dp && dp['startDate'] && dp['endDate']) {
-            let st_dt = new Date(dp["startDate"]._d);
-            let ed_dt = new Date(dp["endDate"]._d + 1);
+        if (dp && dp.start && dp.end) {
+            let st_dt = dp.start;
+            let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
             params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
             params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
         }
@@ -440,7 +457,8 @@ export class ManageTeamLeavesComponent implements OnInit {
             startDate: 'startdate',
             endDate: 'enddate'
         }
-        let dp: any = this.pickerDirective.value
+        // let dp: any = this.pickerDirective.value
+        let dp = this.dateRangePicker.value
         // get the sorting
         let params = new HttpParams({
             fromObject: {
@@ -454,10 +472,10 @@ export class ManageTeamLeavesComponent implements OnInit {
             }
         })
 
-        // this.historyLeavesFiltersApplied =  true
-        if (dp && dp['startDate'] && dp['endDate']) {
-            let st_dt = new Date(dp["startDate"]._d);
-            let ed_dt = new Date(dp["endDate"]._d + 1);
+        // this.historyLeavesFiltersApplied =  true 
+        if (dp && dp.start && dp.end) {
+            let st_dt = dp.start;
+            let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
             params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
             params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
         }
@@ -499,7 +517,16 @@ export class ManageTeamLeavesComponent implements OnInit {
             if (res.status == 200) {
                 console.log(res.body)
                 this.LEAVE_REQ_TIMESHEET_DISCREPANCY = res.body['results']
-                this.timesheetDiscrepancyPopup.open()
+                // this.timesheetDiscrepancyPopup.open()
+                this.dialogRefTimesheetDiscrepancy = this.dialog.open(PopUpComponent, {
+                    data: {
+                        template: this.templateTimesheetDiscrepancy,
+                        hideFooterButtons: true,
+                        showCloseButton: true,
+                        maxWidth: '700px',
+                        heading:'Timesheet Correction'
+                    }
+                })
             } else if (res.status == 204) {
                 this.LEAVE_REQ_TIMESHEET_DISCREPANCY = []
             } else {
@@ -513,8 +540,10 @@ export class ManageTeamLeavesComponent implements OnInit {
         this.http.request('put', 'timesheet-discrepancy/' + id + "/").subscribe((res) => {
             if (res.status == 201) {
                 console.log(res.body)
+                this.ss.statusMessage.showStatusMessage(true, "Successfully approved timesheet discrepancy")
                 this.timesheetDiscrepancyId = ""
-                this.timesheetDiscrepancyPopup.close()
+                // this.timesheetDiscrepancyPopup.close()
+                this.dialogRefTimesheetDiscrepancy.close()
                 this.LEAVE_REQ_TIMESHEET_DISCREPANCY = []
                 this.getTimesheetDiscrepancies()
             } else {

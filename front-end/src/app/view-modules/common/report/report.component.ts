@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms'; 
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AtaiDateRangeComponent, SelectionPresetTypes } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -15,84 +15,91 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ReportComponent implements OnInit {
 
+  @ViewChild(AtaiDateRangeComponent) dateRange: AtaiDateRangeComponent;
+
   fromdate: any;
   downloadable = false;
   date4;
   EMPS: any[];
   option = new FormControl('');
   filteredManagers: Observable<any>;;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
-  ranges: any = {
-    // 'Today': [moment(), moment()],
-    // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    // 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-    // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-  }
-  maxDate: any = moment();
+  maxDate: Date = new Date();
+  
+  datePickerPresets: SelectionPresetTypes = ['Last 30 Days', 'Last Month', 'This Month']
   selected: any = {};
   message: any;
   availableDate: any;
   selectedEmpId: any;
   value: any;
-  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService) {
-    this.filteredManagers = this.option.valueChanges
-    .pipe(
-      startWith(''),
-      map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
-    );
-    
 
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private cdRef: ChangeDetectorRef) {
+    this.filteredManagers = this.option.valueChanges
+      .pipe(
+        startWith(''),
+        map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
+      );
   }
+
   private filterManagerList(value) {
     const filterValue = value.toLowerCase();
     return this.EMPS.filter(option => option.emp_name.toLowerCase().includes(filterValue))
   }
 
-  open(e) {
-    this.pickerDirective.open(e);
-  }
   ngOnInit(): void {
 
-    this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
-    this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
-    this.selected["startDate"] = this.ranges['Last 30 Days'][0];
-    this.selected["endDate"] = this.ranges['Last 30 Days'][1];
-    
+    // this.fromdate = this.convertDatefmt(this.ranges['Last 30 Days'][0])
+    // this.todate = this.convertDatefmt(this.ranges['Last 30 Days'][1])
+    // this.selected["startDate"] = this.ranges['Last 30 Days'][0];
+    // this.selected["endDate"] = this.ranges['Last 30 Days'][1];
+
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
     this.getStatus();
 
   }
 
-//  getAttendenceData(fromdate, todate, emp_id) {
-//   if (emp_id === 'all') {
-//      this.http.request("get", 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&all_emp=true').subscribe(res => {
-//        if (res.status == 200) {
-//          this.downloadable = res.body['results']['downloadable'];
-//        }
-//      })
-//    } else {
-//      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
-//        if (res.status == 200) {
-//          console.log(res.body['results'])
-//          this.downloadable = false;
-//        }
-//      })
-//    }
-// }
-  getStatus(){
+  ngAfterViewInit() {
+
+  }
+
+  // when a date is selected in the date range
+  onDateSelection(data) {
+    this.fromdate = this.convertDatefmt(data.start)
+    this.todate = this.convertDatefmt(data.end)
+    this.cdRef.detectChanges()
+  }
+
+  //  getAttendenceData(fromdate, todate, emp_id) {
+  //   if (emp_id === 'all') {
+  //      this.http.request("get", 'attendance/?from=' + this.fromdate + '&to=' + this.todate + '&all_emp=true').subscribe(res => {
+  //        if (res.status == 200) {
+  //          this.downloadable = res.body['results']['downloadable'];
+  //        }
+  //      })
+  //    } else {
+  //      this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
+  //        if (res.status == 200) {
+  //          console.log(res.body['results'])
+  //          this.downloadable = false;
+  //        }
+  //      })
+  //    }
+  // }
+
+  getStatus() {
     this.http.request("get", 'reportdatesavailability',).subscribe(res => {
       if (res.status == 200) {
-        this.message = res.body.msg.msg;
-        let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd'));
-        console.log(days);
 
-        this.maxDate = moment().subtract(days, 'days');
+        this.message = res.body.msg.msg;
+        let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd')); 
+        
+        // set the max date
+        this.maxDate = new Date(this.maxDate.getTime() - (days * MILLISECONDS_DAY));
+        this.maxDate.setHours(0,0,0,0)
+        this.dateRange.maxDate = this.maxDate;
+        this.dateRange.setPresetValue('Last 30 Days');
+
       }
     })
   }
@@ -100,9 +107,6 @@ export class ReportComponent implements OnInit {
   calculateDiff(sentDate) {
     var date1: any = new Date(sentDate);
     var date2: any = new Date();
-    console.log(date1);
-
-    console.log(date2);
 
     var diffDays: any = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -134,8 +138,8 @@ export class ReportComponent implements OnInit {
     }
   }
   selectEmp(value) {
-    this.selectedEmpId = this.EMPS.filter(x=>{
-      if(x.emp_name == value){
+    this.selectedEmpId = this.EMPS.filter(x => {
+      if (x.emp_name == value) {
         return x['emp_id'];
       }
     });
@@ -143,10 +147,10 @@ export class ReportComponent implements OnInit {
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
   }
 
-  clear(){
+  clear() {
     this.option.reset();
     this.option.setValue('');
-   }
+  }
   getReporters() {
     if (this.user.getRoleId() > 1) {
       this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
@@ -165,18 +169,18 @@ export class ReportComponent implements OnInit {
             this.EMPS.push(each);
           }
         })
-    
+
         this.EMPS.forEach(element => {
-          if(element.emp_id == this.user.getEmpId()){
+          if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
             console.log(emp_name);
-            
+
             this.option.setValue(emp_name);
             this.selectEmp(emp_name)
-         }
+          }
         });
       }
     })
-   
+
   }
 }

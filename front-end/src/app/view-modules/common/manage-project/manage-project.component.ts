@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentRef, Directive, ElementRef, HostListener, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
@@ -8,6 +8,11 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { TooltipDirective } from 'src/app/directives/tooltip/tooltip.directive';
 import { HttpParams } from '@angular/common/http';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
+
+import { ComponentPortal } from '@angular/cdk/portal';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 export interface Project {
   id: number,
@@ -31,11 +36,16 @@ export interface ProjectData {
 })
 export class ManageProjectComponent implements OnInit {
 
+
+  //  Rahul change(using Viewchild for EditProjectDialog)**************************
+  @ViewChild("EditProjectDialog") EditProjectDialog: TemplateRef<any>;
+
+  //  ***********************************************************************
   @ViewChild('editProjectDialog') editProjectPopup: ModalPopupComponent;
   PROJECTS = [] //["ab","bc","ca","ad"]
   PROJECTS_LIST = {}
   EMP_PROJECTS_DATA: ProjectData[] = [];
-  displayedColumns = ['serial_no','staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
+  displayedColumns = ['serial_no', 'staff_no', 'emp_name', 'company', 'proj1', 'proj2', 'proj3', 'edit'];
   loading_emp_data = true;
   EMP_PROJECTS_FILTERED_DATA: ProjectData[] = [];
   filteredOptions: Observable<any[]>;
@@ -48,11 +58,21 @@ export class ManageProjectComponent implements OnInit {
   filtervalue = new FormControl();
   employeeList: any[] = [];
   showMessage = false
-
+//Rahul change(adding variable for use breakpoint observer api using singlton service)************
+get is_XMD_LT(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+}
+//*******************************************************************************************
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
-    private fb: FormBuilder) {
+    // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
+    public dialogRef: MatDialogRef<any>,
+    //*****************************************************************************************
+
+    // ***********************************************************************************************
+    private fb: FormBuilder,
+    private el: ElementRef) {
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
     }),
@@ -61,7 +81,7 @@ export class ManageProjectComponent implements OnInit {
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeList)
         );
-
+ 
 
   }
 
@@ -88,7 +108,11 @@ export class ManageProjectComponent implements OnInit {
 
   managerCtrl = new FormControl();
 
-  filteredManagers: Observable<any>;
+  filteredManagers: Observable<any>; 
+  
+  get is_MD_LT() {
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
+  }
 
   getControls() {
     return (this.editProjectForm.get('projects') as FormArray).controls;
@@ -101,6 +125,33 @@ export class ManageProjectComponent implements OnInit {
 
 
   }
+  //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
+  @HostListener('click', ['$event'])
+  onClickHost(e) {
+    let target: any = e.target;
+    let tempTarget = target;
+    console.log("--------------click");
+    // if(e.target.classList.contains('edit')){
+    //   let index=e.target.getAttribute("index");
+    //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+    //   this.editUser(index);
+    // }
+
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('edit')) {
+        console.log('::::::::::::::clicked on the edit icon');
+        let index = tempTarget.getAttribute("index");
+        this.openEditDialog(index);
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
+    }
+
+  }
+
+  //**************************************************************************** 
+
+
   filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
 
@@ -209,8 +260,21 @@ export class ManageProjectComponent implements OnInit {
     this.editProjectForm.controls.proj2.setValue(this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj2"]["id"] !== "" ? this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj2"]["id"] == 0 ? "" : this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj2"] : this.EMP_PROJECTS_FILTERED_DATA[index]["proj2"]);
 
     this.editProjectForm.controls.proj3.setValue(this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"]["id"] !== "" ? this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"]["id"] == 0 ? "" : this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj3"] : this.EMP_PROJECTS_FILTERED_DATA[index]["proj3"]);
+    // this.editProjectPopup.open();
+    //  Rahulchange(opening EditProjectDialog) ***********************************
+    //  ********************************************
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Edit Project',
+        template: this.EditProjectDialog,
+        maxWidth: '420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
 
-    this.editProjectPopup.open();
+      },
+      autoFocus: false,
+    })
+
 
   }
 
@@ -238,7 +302,10 @@ export class ManageProjectComponent implements OnInit {
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, "Projects have been added successfully");
         this.editProjectForm.reset();
-        this.editProjectPopup.close();
+        // this.editProjectPopup.close();
+        //Rahul change (closing the EditProjectDialog)*******************************
+        this.dialogRef.close();
+        //********************************************** */
         this.getEmpProjects();
         this.showMessage = true
       } else {
@@ -310,7 +377,8 @@ export class ManageProjectComponent implements OnInit {
         res.body["results"].forEach(element => {
 
           emp_projects.push({
-            emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],staging_status:element['staging_status'],staging_relieved:element['staging_relieved'],
+            emp_id: element["emp_id"], staff_no: element["staff_no"], emp_name: element["emp_name"],
+            staging_status: element['staging_status'], staging_relieved: element['staging_relieved'],
             company: element["company"], proj1: this.getProjectById(element["p1"]), proj2: this.getProjectById(element["p2"]), proj3: this.getProjectById(element["p3"]), staged_proj1: this.getProjectById(element["staged"]["p1"]), staged_proj2: this.getProjectById(element["staged"]["p2"]), staged_proj3: this.getProjectById(element["staged"]["p3"])
           });
 
@@ -324,4 +392,11 @@ export class ManageProjectComponent implements OnInit {
   }
 
 
+  // Rahul change(adding function for closing EditProjectDialog when user clicks on EditProjectDialog close button)*******
+  // closeEditDialog(){
+  //   this.dialogRef.close();
+  // }
+  // ****************************************************************************************
+
 }
+

@@ -1,21 +1,21 @@
-<table mat-table [dataSource]="LEAVE_DATA_HISTORY"  matSort class="mat-elevation-z8" matSort>
+<table mat-table [dataSource]="LEAVE_DATA_HISTORY"  matSort class="mat-elevation-z8 w-100" matSort>
     <ng-container matColumnDef="serial">
-        <th mat-header-cell *matHeaderCellDef  mat-sort-header> S.No. </th>
+        <th mat-header-cell *matHeaderCellDef  > S.No. </th>
         <td mat-cell *matCellDef="let element;let i=index;">{{i+1}}</td>
     </ng-container>
 
     <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="p-table-5">
             Staff No.
         </th>
-        <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_staff_no}}</td>
+        <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_staff_no}}</td>
     </ng-container>
 
     <ng-container matColumnDef="emp_name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="p-table-5">
             Name
         </th>
-        <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_name}}</td>
+        <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_name}}</td>
     </ng-container>
 
     <ng-container matColumnDef="day_count">
@@ -26,13 +26,13 @@
     <ng-container matColumnDef="startdate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date
         </th>
-        <td mat-cell *matCellDef="let element" [ngStyle]="{'color':(element?.colordate === 'startdate' || element?.colordate === 'both') ? 'green' : '' }"> {{convertDatefmt(element?.startdate)}}</td>
+        <td mat-cell *matCellDef="let element" [ngStyle]="{'color':(element?.colordate === 'startdate' || element?.colordate === 'both') ? 'var(--col-accent-500)' : '' }"> {{convertDatefmt(element?.startdate)}}</td>
     </ng-container>
 
     <ng-container matColumnDef="enddate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date
         </th>
-        <td mat-cell *matCellDef="let element" [ngStyle]="{'color':(element?.colordate === 'enddate' || element?.colordate === 'both') ? 'green' : '' }"> {{convertDatefmt(element?.enddate)}} </td>
+        <td mat-cell *matCellDef="let element" [ngStyle]="{'color':(element?.colordate === 'enddate' || element?.colordate === 'both') ? 'var(--col-accent-500)' : '' }"> {{convertDatefmt(element?.enddate)}} </td>
     </ng-container>
 
     <ng-container matColumnDef="leave_type">

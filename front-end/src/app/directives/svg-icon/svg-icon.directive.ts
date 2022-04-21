@@ -15,6 +15,8 @@ export class SvgIconDirective {
 
   @Input() svgIcon: { url?: string, w?: number | string, h?: number | string };
 
+  defaultUrls = ['./assets/images/icons-sprite-new.svg', './assets/images/icons-sprite.svg'];
+
   constructor(
     private element: ElementRef,
     private http: HttpClient,
@@ -23,6 +25,19 @@ export class SvgIconDirective {
   ) { }
 
   @HostBinding("style.lineHeight") lH = "0";
+
+  getDefaultIcons() {
+    this.defaultUrls.forEach((url) => {
+      this.http.get(url, { responseType: "text" }).subscribe(res => {
+        let svg = res;
+        this.ss.svg.push(url);
+        this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
+          "beforeEnd",
+          svg
+        );
+      });
+    })
+  }
 
   ngOnChanges(values) {
     var input = values.svgIcon.currentValue;
@@ -42,7 +57,9 @@ export class SvgIconDirective {
     if (input.disIb !== undefined || input.disIb === false) {
     } else {
       this.element.nativeElement.classList.add("dis-ib");
+      this.element.nativeElement.classList.add("pointer");
     }
+
     // get the svg symbol id from the url property in input
     let SvgUrl = current.split(".svg#")[0] + ".svg";
     var symbol = current.split(".svg#")[1];
@@ -50,15 +67,15 @@ export class SvgIconDirective {
 
     if (this.ss.svg.indexOf(SvgUrl) === -1) {
       this.ss.svg.push(SvgUrl);
-      this.http.get(SvgUrl, { responseType: "text" }).subscribe(res => {
-        let svg = res;
-        index = this.ss.svg.indexOf(SvgUrl);
-        this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
-          "beforeEnd",
-          svg
-        );
-        this.appendSVG(input, symbol);
-      });
+      // this.http.get(SvgUrl, { responseType: "text" }).subscribe(res => {
+      //   let svg = res;
+      //   index = this.ss.svg.indexOf(SvgUrl);
+      //   this.ss.svgComponent.el.nativeElement.insertAdjacentHTML(
+      //     "beforeEnd",
+      //     svg
+      //   );
+      //   this.appendSVG(input, symbol);
+      // });
     } else {
       var that_this = this;
       setTimeout(function () {
@@ -67,6 +84,7 @@ export class SvgIconDirective {
         }
       }, 500);
     }
+
   }
 
   appendSVG(input, symbol) {
@@ -85,7 +103,7 @@ export class SvgIconDirective {
       ? svgNS.setAttribute("viewBox", vB)
       : svgNS.setAttribute("viewBox", "0 0 10 10");
 
-    // if the element to which the direct has properties assigned to it with prefix svg assign them to svg element
+    // if the element to which the direct has properties assigned to it with prefix svg assign them to svg element 
     Array.prototype.slice
       .call(this.element.nativeElement.attributes)
       .forEach(function (item) {

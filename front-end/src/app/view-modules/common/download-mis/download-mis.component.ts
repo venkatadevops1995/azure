@@ -1,8 +1,10 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
-import { DatePipe, formatDate } from '@angular/common';
-import { Moment } from 'moment';
-import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatePipe, formatDate } from '@angular/common'; 
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { SingletonService } from 'src/app/services/singleton.service';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 
 
 @Component({
@@ -12,72 +14,67 @@ import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 })
 export class DownloadMisComponent implements OnInit {
 
+  today = new Date()
   Ischecked: boolean = true;
   fromdate: any;
   downloadable = false;
   showMessage = false;
   date4;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   todate: any;
-  ranges: any = {
-    'Today': [moment(), moment()],
-    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-    // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-  }
-  // maxDate = moment().subtract(0, 'days');
-  minDate = moment().subtract(2, 'year');
-  selected :any = {} ;
+  // Is_match:boolean;
+  minDate = new Date(this.today.getTime() - (365 * 2 * 86400000))
+  selected: any = {};
   selectedEmpId: any;
-  value:any;
- 
-  constructor(public datepipe: DatePipe) { }
-  
-  open(e) {
-    this.pickerDirective.open(e);
+  value: any;
+  get Is_match(){
+    return this.ss.responsive.isMatched([AtaiBreakPoints.XS,AtaiBreakPoints.SM])
   }
+
+  @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
+  constructor(public datepipe: DatePipe,private ss:SingletonService) {
+    // this.bp.observe([AtaiBreakPoints.XS,AtaiBreakPoints.SM]).subscribe(res=> {
+    //     this.Is_match=res.matches;
+    //     console.log('#########$@@@@@@@@@@ console for Is_match variable',this.Is_match);
+    // })
+
+   }
+
   ngOnInit(): void {
-    console.log("Is Checked ::::", this.Ischecked);
-    this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
-    this.todate = this.convertDatefmt(this.ranges['This Month'][1])
-    this.selected["startDate"] = this.ranges['This Month'][0];
-    this.selected["endDate"] = this.ranges['This Month'][1];
   }
 
-  onIsDisableClick(event){
-    console.log("Ischecked is ::::",event.checked);
-    this.Ischecked = event.checked;
-    if(event.checked){
-      this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
-      this.todate = this.convertDatefmt(this.ranges['This Month'][1])
-      this.selected["startDate"] = this.ranges['This Month'][0];
-      this.selected["endDate"] = this.ranges['This Month'][1];
-    }else{
-      this.fromdate = this.convertDatefmt('');
-      this.todate = this.convertDatefmt('');
-      this.selected["startDate"] = '';
-      this.selected["endDate"] = '';
-      console.log("$$$$",this.selected);
+  ngAfterViewInit() {
+    console.log('This month')
+    setTimeout(() => {
+      this.setThisMonth()
+    })
+  }
+
+  setThisMonth() {
+    if (this.dateRangePicker) {
+      this.dateRangePicker.setPresetValue('This Month')
     }
-
   }
-  convertDatefmt(date){
+
+  onDateSelect(date) {
+    this.fromdate = this.convertDatefmt(date.start)
+    this.todate = this.convertDatefmt(date.end)
+    this.selected["startDate"] = date.start;
+    this.selected["endDate"] = date.end;
+  }
+
+  onIsDisableClick(event) {
+    console.log("Ischecked is ::::", event.checked);
+    this.Ischecked = event.checked;
+    if (event.checked) {
+      // this.dateRangePicker.resetRange()
+    } else {
+      // this.setThisMonth()
+    }
+  }
+
+  convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
-  updateRange(event){
-    if(event.startDate){
-      this.fromdate = this.convertDatefmt(event.startDate._d);
-    }
-    if(event.endDate){
-      this.todate = this.convertDatefmt(event.endDate._d);
-    }
-      console.log(this.fromdate,this.todate)
 
-  }
-  
 
 }

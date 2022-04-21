@@ -1,55 +1,72 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { DatePipe, WeekDay } from '@angular/common';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import * as moment from 'moment';
-import { Moment } from 'moment';
-import { Observable, Subscription } from 'rxjs';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DateRange } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
+import { from, fromEvent, Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
+import * as _ from 'lodash'
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
-export function YearVd(year:String): ValidatorFn {
+export function YearVd(year: String): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     var res = false;
-    if((control.value['startDate'] != null) && (control.value['startDate'] != undefined)){
-    var start_yr = control.value['startDate'].format('YYYY');
-    var end_yr = control.value['endDate'].format('YYYY');
-    console.log("validation inside",control.value['startDate'].format('YYYY'),year)
-     res = ((start_yr == year) && end_yr == year)
+    console.log(control.value)
+    if ((control.value['start_date'] != null) && (control.value['start_date'] != undefined) && (control.value['end_date'] != null) && (control.value['end_date'] != undefined)) {
+      var start_yr = control.value['start_date'].split("-").reverse().join("-").split('-')[2];
+      var end_yr = control.value['end_date'].split("-").reverse().join("-").split('-')[2];
+      res = ((start_yr == year) && end_yr == year)
     }
-    return res ? null : { invalidYear: true } 
+    return res ? null : { invalidYear: true }
+  }
+}
+
+export function atleastOne(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    var res = false;
+    if (control.value.length > 0) {
+      res = true;
+    }
+    return res ? null : { atleastOne: true }
+
   }
 }
 export function notWeekend(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    
-
-  var error = null;
-  var all_dates = []
-  console.log("-------notWeekend-------")
-  if(control.value['startDate']!=null){
-    console.log("-------------day------ ",control.value['startDate'].format("EEEE"))
-    if(control.value['startDate'].day()==6 || control.value['startDate'].day()== 0){
-      
-      error = true
+    var error = null;
+    if (control.value['start_date'] != null) {
+      let dateStartDate = new Date(control.value['start_date']);
+      if (dateStartDate.getDay() == 6 || dateStartDate.getDay() == 0) {
+        error = true
+      }
     }
+    if (control.value['end_date'] != null) {
+      let dateEndDate = new Date(control.value['end_date']);
+      if (dateEndDate.getDay() == 6 || dateEndDate.getDay() == 0) {
+        error = true
+      }
+    }
+    return error ? { 'notWeekend': true } : null;
   }
+}
 
-  return error ? { 'notWeekend': true } : null;
-}}
-
-export function UniqueText(fa:FormArray,selected_index:number): ValidatorFn {
+export function UniqueText(fa: FormArray, selected_index: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     var res = false;
-    for(let i=0;i<fa['controls'].length;i++){
-      if(i!=selected_index){
-        console.log("-------------showOptionIndex ",selected_index)
-        console.log("--------",i,selected_index,fa['controls'][i]['controls'].des.value)
+    for (let i = 0; i < fa['controls'].length; i++) {
+      if (i != selected_index) {
+        console.log("-------------showOptionIndex ", selected_index)
+        console.log("--------", i, selected_index, fa['controls'][i]['controls'].des.value)
       }
     };
-    return res ? null : { uniqueTextError: true } 
+    return res ? null : { uniqueTextError: true }
   }
 }
 
@@ -59,1062 +76,656 @@ export function UniqueText(fa:FormArray,selected_index:number): ValidatorFn {
   styleUrls: ['./holiday.component.scss']
 })
 export class HolidayComponent implements OnInit {
-  selected: {start: Moment, end: Moment};
-  headerItems = ["Date","No of Days", "Day", "Occasion"]
-  headerLocation=[]
-  showLocation=[];
-  displayLocation = []
-  showLocationCount=0;
-  HOLIDAYLIST_TESTDATA = [
-  {date:'2021-01-01',day:'Friday',des:"New Year",hyd:true, blr:true,delhi:true},
-  {date:'2021-01-14',day:'Thursday',des:"Sankranti",hyd:true, blr:true,delhi:false},
-  {date:'2021-04-13',day:'Tuesday',des:"Ugadi",hyd:true, blr:false,delhi:false},
-  {date:'2021-05-01',day:'Saturday',des:"May day",hyd:true, blr:true,delhi:true},
-  {date:'2021-12-25',day:'Saturday',des:"Christmas",hyd:true, blr:true,delhi:true}
-]
-HOLIDAYCONFIG_TESTDATA = [
-  {date:'2021-01-01',day:'Friday',des:"New Year",locations:"Hyderabad,Bangalore,Delhi"},
-  {date:'2021-01-14',day:'Thursday',des:"Sankranti",locations:"Hyderabad,Bangalore,Delhi"},
-  {date:'2021-04-13',day:'Tuesday',des:"Ugadi",locations:"Hyderabad"},
-  {date:'2021-05-01',day:'Saturday',des:"May day",locations:"Hyderabad,Bangalore,Delhi"},
-  {date:'2021-12-25',day:'Saturday',des:"Christmas",locations:"Hyderabad,Bangalore,Delhi"}
-]
-  DISPLAYED_YEAR_TESTDATA = [2020,2021,2022]
-  displayedYear: string[];
-  selectedYear;
-  editMode :boolean = false;
-  is_emp_admin :boolean = false;
-  defaultHoliday;
-  minSelectDate : Moment;
-  maxSelectDate : Moment;
-  holidayArrayData = []
-  currentDate;
-  yearEditable = false;
-  IsNextYearVisible = false
-  isConfirmed = false
-  @ViewChild("addHolidayDialog") addHolidayPopup:ModalPopupComponent;
 
-  constructor(	
+  @ViewChildren('inputDate') dateIpElRefs: QueryList<ElementRef>;
+
+  @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
+
+  @ViewChild('refHolidaysWrap') elHolidaysWrap: ElementRef;
+
+  // the min date for the calendar when opening for date selection for a holiday row in edit mode
+  minDate = new Date()
+
+  // the maxdate for the calendar when opening for date selection for a holiday row in edit mode
+  maxDate = new Date(this.minDate.getFullYear(), 11, 31)
+
+  // the date selected in the calendar on selecting date for a holiday row in edit mode
+  selected: { start: Date, end: Date };
+
+  // the table columns for the holiday list
+  tableHeadColumns = ["Date", "Occasion", "Day", "No of Days"]
+
+  // 
+  displayedYear: string[];
+
+  // the year selected in the select drop down
+  selectedYear;
+
+  // whether the user logged in is an admin user
+  isAdmin: boolean = false;
+
+  // array containing the default holiday list maintained in the DB
+  defaultHolidayList = [];
+
+  // filtered default Holiday list
+  filteredDefaultHolidayList: Array<any> = []
+
+  // the current date in the backend server
+  currentDate;
+
+  // boolean indicating whether the year selected is editable or not
+  isSelectedYearEditable = false;
+
+  // boolean to indicate whether the user can view the next year holiday list when existing
+  showNextYear = false
+
+  /* is the page in edit mode when applicable */
+  editMode: boolean = false;
+
+  /* Array to hold the holiday list */
+  holidayList: Array<any> = []
+
+  /* boolean indicating whether the employees notification about the holidays is done or not */
+  notifiedEmployees: boolean = false;
+
+  // array holding the locations availble in the backend
+  locations: Array<{ id?: any, name?: any, status?: any }> = []
+
+  // locations that are having atleast one holiday checked in the selected year holidays
+  locationsInSelectedYear: Array<any> = []
+
+  // form controls array for the holiday list holiday date & holiday name
+  faHolidayList: FormArray = new FormArray([]);
+
+  // the holiday option selected in the pop up
+  selectedHolidayOption: any = null
+
+  // boolean to hold if it is a new holiday list which is to be added / cancelled if a new year holiday list is to be added from template or manually
+  isNewHolidayList: boolean = false;
+
+  // newly added indexes in holiday list to help on clicking cancel button to revert the holidaylist
+  appendedHolidays = []
+
+  // subject to emit for clearing the subscriptions
+  destroy$: Subject<any> = new Subject();
+
+  scrollXHolidayAffix:number = 0;
+
+  // holiday template reference 
+  @ViewChild('templateRefHolidayForm') templateHolidayForm: TemplateRef<any>;
+
+
+  get is_MD_LT(){
+    return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
+  }
+
+  constructor(
     private cd: ChangeDetectorRef,
     private el: ElementRef,
-    private fb:FormBuilder,
-    private datePipe:DatePipe,
-    private http:HttpClientService,
+    private fb: FormBuilder,
+    private datePipe: DatePipe,
+    private http: HttpClientService,
     private user: UserService,
-    private ss: SingletonService) { }
-    
-
-    ngOnInit(): void {
-      // this.getFromTemplate();
-      this.getCurrentDate();
-      this.getHolidayList();
-      this.yearEditable = true;
-      // this.selectedYear = (new Date()).getFullYear()
-      this.is_emp_admin = this.user.getIsEmpAdmin();
-    }
-
-    uniqueBy = (field: string, caseSensitive = true): ValidatorFn => {
-      return (formArray: FormArray): { [key: string]: boolean } => {
-        const controls = formArray.controls.filter(formGroup => {
-          
-          return (formGroup.get(field).value!=null)||(formGroup.get(field).value!='');
-        });
-        const uniqueObj = { uniqueBy: true };
-        let found = false;
-    
-        // if (controls.length > 1) {
-        //   for (let i = 0; i < controls.length; i++) {
-        //     const formGroup = controls[i];
-        //     const mainControl = formGroup.get(field);
-        //     const val = mainControl.value;    
-        //     const mainValue = caseSensitive ? val.toLowerCase() :  val;
-        //   };
-        // }
-        
-        controls.map(formGroup => formGroup.get(field)).forEach(x => x.errors && delete x.errors['uniqueBy']);
-
-        for (let i: number = 0; i < controls.length; i++) {
-            const formGroup: FormGroup = controls[i] as FormGroup;
-            const mainControl: AbstractControl = formGroup.get(field);
-            const val: string = mainControl.value;
-            console.log("=====================uniqueby iter=======================",val)
-            const mainValue: string = caseSensitive ? val.toLowerCase() :  val;
-            controls.forEach((group: FormGroup, index: number) => {
-                if (i === index) {
-                    return;
-                }
-    
-            const currControl: any = group.get(field);
-            const tempValue: string = currControl.value;
-            const currValue: string = caseSensitive ? tempValue.toLowerCase() : tempValue;
-            let newErrors: any;
-    
-            if ( mainValue === currValue) {
-                if (currControl.errors==null) {
-                    newErrors = uniqueObj;
-                } else {
-                    newErrors = Object.assign(currControl.errors, uniqueObj);
-                }
-                currControl.setErrors(newErrors);
-                found = true;
-            }
-        });
-        }
-        if (found) {
-          // Set errors to whole formArray
-          console.log("-------uniqueObj--------",uniqueObj)
-          return uniqueObj;
-        }
-    
-      // Clean errors
-      return null;
-    
-      }
-    }
-
-    uniqueDates = (field: string, caseSensitive = false): ValidatorFn => {
-      return (formArray: FormArray): { [key: string]: boolean } => {
-        const controls = formArray.controls.filter(formGroup => {
-          
-          return (formGroup.get(field).value==""||formGroup.get(field).value['startDate']!=null)||(formGroup.get(field).value['startDate']!=''||(formGroup.get(field).value['startDate']!=undefined));
-        });
-        console.log("-----------uniqueDates validator----",controls)
-        const uniqueObj = { notUniqueDates: true };
-        let found = false;
-    
-        // if (controls.length > 1) {
-        //   for (let i = 0; i < controls.length; i++) {
-        //     const formGroup = controls[i];
-        //     const mainControl = formGroup.get(field);
-        //     const val = mainControl.value;    
-        //     const mainValue = caseSensitive ? val.toLowerCase() :  val;
-        //   };
-        // }
-        
-        controls.map(formGroup => formGroup.get(field)).forEach(x => x.errors && delete x.errors['notUniqueDates']);
-
-        for (let i: number = 0; i < controls.length; i++) {
-            const formGroup: FormGroup = controls[i] as FormGroup;
-            const mainControl: AbstractControl = formGroup.get(field);
-            const mainControlCount: AbstractControl = formGroup.get('count')
-            if(mainControl.value['startDate']==null){
-              continue
-            }
-            const val: string = mainControl.value['startDate'].format("YYYY-MM-DD");
-            var main_list = []
-            // var new_date = moment(val, "YYYY-MM-DD").add(1, 'days');
-
-            var main_dt = new Date(val) 
-            main_list.push(this.datePipe.transform(main_dt,'yyyy-MM-dd'))
-
-              for(let cnt=1;cnt<mainControlCount.value;cnt++){
-                main_dt.setDate( main_dt.getDate() + 1 )
-                        if(main_dt.getDay()==6){
-                          main_dt.setDate( main_dt.getDate() + 2 );
-                        }
-                        if(main_dt.getDay()==0){
-                          main_dt.setDate( main_dt.getDate() + 1 );
-                        }
-                        main_list.push(this.datePipe.transform(main_dt,'yyyy-MM-dd'))
-                }
-
-                console.log("=================current list=======================",main_list)
-
-            console.log("=====================notUniqueDates iter=======================",val)
-            const mainValue: string =  val;
-            controls.forEach((group: FormGroup, index: number) => {
-                if (i === index) {
-                    return;
-                }
-    
-            const currControl: any = group.get(field);
-
-            const currentControlCount: AbstractControl = group.get('count')
-           
-            if(currControl.value['startDate']==null){
-              return
-            }
-
-            var crnt_dt = new Date(currControl.value['startDate'].format("YYYY-MM-DD")) 
-
-            for(let cnt=1;cnt<currentControlCount.value;cnt++){
-              crnt_dt.setDate( crnt_dt.getDate() + 1 )
-                      if(crnt_dt.getDay()==6){
-                        crnt_dt.setDate( crnt_dt.getDate() + 2 );
-                      }
-                      if(crnt_dt.getDay()==0){
-                        crnt_dt.setDate( crnt_dt.getDate() + 1 );
-                      }
-                      
-
-            let newErrors: any;
+    private cdRef: ChangeDetectorRef,
+    private ss: SingletonService, public datepipe: DatePipe,
+    private dialog: MatDialog) { }
 
 
-
-            console.log("===========list compare=============",main_list,crnt_dt)
-            if ( main_list.indexOf( this.datePipe.transform(crnt_dt,'yyyy-MM-dd'))!=-1) {
-                if (currControl.errors==null) {
-                    newErrors = uniqueObj;
-                } else {
-                    newErrors = Object.assign(currControl.errors, uniqueObj);
-                }
-                currControl.setErrors(newErrors);
-                found = true;
-            }
-
-          }
-
-        });
-        }
-        if (found) {
-          // Set errors to whole formArray
-          console.log("-------uniqueObj--------",uniqueObj)
-          return uniqueObj;
-        }
-    
-      // Clean errors
-
-      console.log("-------returning null --------")
-      return null;
-    
-      }
-    }
-
-
-  
-  holidayForm = this.fb.group({
-    holidays: this.fb.array([])//,[this.uniqueBy('des')])//,this.uniqueDates('date')
-  });
-
-  addHolidayForm = this.fb.group({
-    year:['',Validators.required],
-    option : ['Import from template',Validators.required]
-  })
-
-  get aliases() {
-    // console.log("----------------000",this.holidayForm.get('holidays'))
-    return this.holidayForm.get('holidays') as FormArray ;
-    // return this.holidayForm.get('aliases') as FormArray;
-  }
-  addAlias() {
-    const grp = this.fb.group({
-      date: ['', [Validators.required,YearVd(this.selectedYear),notWeekend()]], //,this.uniqueDate.bind(this)
-      count:[1],
-      day: ['',Validators.required],
-      des: ['',[Validators.required]], //this.uniqueText.bind(this)
-      locations : [[]],
-      editable : [true]
-      });
-
-    this.aliases.push(grp);
-
+  ngOnInit(): void {
+    this.getCurrentDate();
+    this.getHolidayList();
+    this.getDefaultHolidayList();
+    this.isSelectedYearEditable = true;
+    this.isAdmin = this.user.getIsEmpAdmin();
   }
 
-  deleteHoliday(index: number) {
-    if (this.aliases.length >0) {
-      this.aliases.removeAt(index);
-    }
-    console.log(this.aliases.length);
+
+  ngAfterViewInit() {
+    fromEvent(this.elHolidaysWrap.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe(val => {
+      this.scrollXHolidayAffix = this.elHolidaysWrap.nativeElement.scrollLeft
+    })
   }
 
 
 
+  ngOnDestroy() {
+    this.destroy$.next(null);
+    this.destroy$.complete()
+  }
 
- 
-@ViewChild('selProject') elSelProject: ElementRef;
-  holidayList :any[]= this.HOLIDAYLIST_TESTDATA;
-  holidayIndexToRemove = 0
+  @ViewChild('addHoliday') elAddHoliday: ElementRef;
 
-
+  // on focus of holiday name input in edit mode set index to help with autocomplete selection
+  holidayNameIndexInFocus = null;
 
   @HostListener("document:click", ['$event'])
-	onClickDocument(e) {
-		let target: any = e.target;
-		if (this.elSelProject && target == this.elSelProject.nativeElement) {
-      
+  onClickDocument(e) {
+    let target: any = e.target;
+    if (this.elAddHoliday && target == this.elAddHoliday.nativeElement) {
+    } else if (this.elAddHoliday && isDescendant(this.elAddHoliday.nativeElement, target)) {
       let index = Number(target.getAttribute("index"));
-			let projectToBeAdded = {};
-      this.holidayList.push(projectToBeAdded);
-      this.addAlias();
-		} else if (this.elSelProject && isDescendant(this.elSelProject.nativeElement, target) ) {
-			let index = Number(target.getAttribute("index"));
-			let projectToBeAdded = {};
-      this.holidayList.push(projectToBeAdded);
-      
-      
-	
-			// let fa = this.ss.fb.array([]);
-		// 	for (let i = 0; i < 7; i++) {
-		// 		fa.push(new FormControl({ h: 0, m: 0 }, []))
-		// 	}
-		// 	(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
-		// 	projectToBeAdded.work_hours.push({date:'Total',enable: true,h:0,m:0})
-		// 	this.showProjectList = false;
-		// } else {
-		// 	this.showProjectList = false;
-		// }
+    }
   }
-}
-  
+
+  // index of the holiday list item for which the date picker is open 
+  indexOfHolidayInDatePicker: number = null
+
   // event listener on document to check if remove a project button is clicked
-	@HostListener("click", ['$event'])
-	onClickHost(e) {
-		let target: any = e.target;
+  @HostListener("click", ['$event'])
+  onClickHost(e) {
+
+    let target: any = e.target;
     let tempTarget = target;
-    console.log("============================================",tempTarget.classList)
-    if(tempTarget.classList.contains('holiday_option')){
-      console.log("-------------tempTarget---------------",tempTarget,tempTarget.getAttribute('value'));
-      // let cl=tempTarget.classList.toString();
-      // console.log("matched item",cl.match(/holiday_option-\d*/g) )
-      console.log("parent data index",parseInt(tempTarget.parentNode .getAttribute('data-index'), 10))
-      this.aliases['controls'][parseInt(tempTarget.parentNode.getAttribute('data-index'), 10)]['controls'].des.setValue(tempTarget.getAttribute('value'))
-      console.log("parent data value ",this.aliases['controls'][parseInt(tempTarget.parentNode.getAttribute('data-index'), 10)]['controls'].des.value);
-      this.options = []
-      this.showOptionIndex = -1
-      // cl.forEach(eachcl=>{
-      //   if
-      // })
-      
-    }
-    // if(tempTarget.classList.contains('location')){
-    //   console.log("-------------location value---------------",tempTarget,tempTarget.getAttribute('value'));
-    //   var existingLoc = []
-    //   var notExistingLoc = []
-    //   this.aliases['controls'].forEach(e=>{
-      
-    //     if(e['controls'].locations.value.indexOf(tempTarget.getAttribute('value'))==-1){
-    //       notExistingLoc.push(e)
-    //       console.log("=======notExistingLoc=======",notExistingLoc)
-    //     }
-    //   })
-    //   if(notExistingLoc.length!=0){
-    //     notExistingLoc.forEach(e=>{
-    //       // if(e['controls'].editable.value==true){}
-    //       var loc = e['controls'].locations.value
-    //       loc.push(tempTarget.getAttribute('value'))
-    //       e['controls'].locations.setValue(loc)
-    //     })
-    //   }else{
-    //     this.aliases['controls'].forEach(e=>{
-    //     var loc = e['controls'].locations.value
-    //     loc.splice(loc.indexOf(tempTarget.getAttribute('value')),1)
-    //     e['controls'].locations.setValue(loc)
-    //     })
-    //   }
-    // }
-    
-		while (tempTarget != this.el.nativeElement) {
-      if(tempTarget == null){
-        
-        break
+    while (tempTarget != this.el.nativeElement) {
+
+      if (tempTarget == null) {
+        break;
       }
-			// found remove row 
-			if (tempTarget.classList.contains('timesheet__row-remove')) {
-        this.holidayIndexToRemove = parseInt(tempTarget.getAttribute('data-index'), 10);
-        this.removeProjectFromTimeSheet();
-
-        this.deleteHoliday(this.holidayIndexToRemove);
-				// this.modalConfirmProjectRemoval.open()
-				break;
-			} else if (tempTarget.classList.contains('remove-project-cancel')) {
-				// close the confirm project removal pop up        
-				// this.modalConfirmProjectRemoval.close()
-				break;
-			} else if (tempTarget.classList.contains('remove-project-proceed')) {
-				// close the confirm project removal pop up        
-				this.removeProjectFromTimeSheet();
-				// this.modalConfirmProjectRemoval.close()
-				break;
-			}
-			tempTarget = tempTarget.parentNode;
-    }
-    // searchOptions
-  }
-  	// remove a project from timesheet                                                                                              
-	removeProjectFromTimeSheet() {
-    console.log("-------------------")
-    this.holidayList.splice(this.holidayIndexToRemove, 1)
-    // remove the row from the list 
-    
-		// this.removedAProject = true;
-
-		// this.hiddenActiveProjects.push(this.visibleActiveProjects.splice(this.holidayIndexToRemove, 1)[0]);
-		// this.holderInitialConfig.hiddenActiveProjects.push(this.holderInitialConfig.visibleActiveProjects.splice(this.holidayIndexToRemove, 1)[0]);
-		// (<FormArray>this.fgTimeFields.get('active_projects')).removeAt(this.holidayIndexToRemove);
-		// this.modalConfirmProjectRemoval.close();
-		this.cd.detectChanges();
-  }
-  elClick(e){
-    e.click()
-  }
-  changeYear(y){
-    console.log("------",y)
-    this.selectedYear = y.value
-    this.yearEditable = Number(this.selectedYear)>=Number(this.currentDate.getFullYear()) ? true : false;
-    this.editMode = false
-    this.getHolidayList(y.value)
-    
-  }
-
-  getDay(i){
-    console.log("----------getDay",typeof(i),i)
-    if(typeof(i)=="string"){
-      
-    return  this.datePipe.transform(new Date(i),"EEEE")
-    }
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    console.log("-----------------date",this.aliases)
-    
-    console.log("+++++++",this.aliases['controls'][i]['controls'].date.status)
-    if(this.aliases['controls'][i]['controls'].date.status != "INVALID"){
-        //AS GETTING FROM BACKEND
-      this.aliases['controls'][i]['controls'].count.setValue(this.getWorkdayCount(this.aliases['controls'][i]['controls'].date.value))
-
-    console.log("=====",this.aliases['controls'][i]['controls'].date.value.startDate._d,
-    this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE")
-    )
-    console.log("------------count value--------------",this.aliases['controls'][i]['controls'].count.value)
-    this.onCountChange(i)
-    // if(this.aliases['controls'][i]['controls'].count.value>1){
-    //   var crnt_dt = new Date(this.aliases['controls'][i]['controls'].date.value.startDate._d)
-    //   console.log("crnt_dt===",crnt_dt)
-      
-    //   for(let cnt=1;cnt<this.aliases['controls'][i]['controls'].count.value;cnt++){
-    //     crnt_dt.setDate( crnt_dt.getDate() + 1 )
-    //   if(crnt_dt.getDay()==6){
-    //     crnt_dt.setDate( crnt_dt.getDate() + 2 );
-    //   }
-    //   if(crnt_dt.getDay()==0){
-    //     crnt_dt.setDate( crnt_dt.getDate() + 1 );
-    //   }
-      
-    //   }
-    //   console.log("====day====",this.datePipe.transform(crnt_dt,"EEEE"))
-    //   this.aliases['controls'][i]['controls'].day.setValue(this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE")+"-"+this.datePipe.transform(crnt_dt,"EEEE"))  
-    //  }
-    // else{
-    // this.aliases['controls'][i]['controls'].day.setValue(this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE"))
-    // }
-    }
-    // console.log( this.datePipe.transform(Date.now(),'yyyy-MM-dd'));
-    // return this.datePipe.transform(Date.now(),"EEEE")
-   
-    // return this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE")
-  }
-  addRemoveLocation(i,l){
-    console.log(this.aliases['controls'][i]['controls'].locations.value)
-    if( this.aliases['controls'][i]['controls'].locations.value != null){
-    // var loc = this.aliases['controls'][i]['controls'].locations.value.split(',')
-    var loc = this.aliases['controls'][i]['controls'].locations.value
-    if(loc.indexOf(l)==-1){
-      loc.push(l)
-    }else{
-      loc.splice(loc.indexOf(l),1)
-    }
-    console.log("=======",loc)
-    this.aliases['controls'][i]['controls'].locations.setValue(loc)
-    // this.aliases['controls'][i]['controls'].locations.setValue(loc.join())
-  }
-  }
-  ifChecked(i,l){
-    if(Array.isArray(i)==true){
-      console.log("-----------------------check if")
-      var loc = i;
-    }
-    else if( this.aliases['controls'][i]['controls'].locations.value != null){
-    var loc = this.aliases['controls'][i]['controls'].locations.value
-    }
-    else{
-      return false
-    }
-    // console.log("-------------check------------",loc.indexOf(l))
-    if(loc.indexOf(l)==-1){
-      return false
-    }else{
-    return true
-    }
-    // var loc = this.aliases['controls'][i]['controls'].locations.value
-    // loc.forEach(e=>{
-    //   console.log("---------locc-----",e,'------l--',l)
-    //   if(e==l){
-    //     console.log("returning true")
-    //     return true
-    //   }
-    // })
-    // console.log("returning false")
-    
-
-  }
-  getFromTemplate(){
-    // this.holidayForm= this.fb.group({
-    //   holidays: this.fb.array([])
-    // });
-    // this.HOLIDAYCONFIG_TESTDATA.forEach(e=>{
-    //   this.addAlias();
-    //   var al=this.aliases['controls'][this.aliases.length-1]['controls'];
-      
-    //   al.date.setValue({startDate:moment(e.date),endDate:moment(e.date)});
-    //   this.getDay(this.aliases.length-1)
-    //   // al.day.setValue(e.day);
-    //   al.des.setValue(e.des);
-    //   al.locations.setValue(e.locations);
-    // })
-    this.http.request('get','location-holiday-cal/','year=2021').subscribe(res=>{
-      if(res.status==200){
-          console.log(res.body['results'])
-          res.body['results']["holidays"].forEach(e=>{
-          // this.addAlias();
-          e['week_day'] = this.getDay(e.holiday_date)
-          var loc_checks = []
-          this.headerLocation.forEach(l=>{
-            loc_checks.push(this.ifChecked(e.locations,l['id']))
-          })
-          e['loc_checks']= loc_checks
-          e['editable'] = true
-          this.holidayArrayData.push(e)
-          // var al=this.aliases['controls'][this.aliases.length-1]['controls'];
-          
-          // al.date.setValue({startDate:moment(e.holiday_date),endDate:moment(e.holiday_date)});
-          // this.getDay(this.aliases.length-1)
-          // // al.day.setValue(e.day);
-          // al.des.setValue(e.holiday_id);
-          // al.locations.setValue(e.locations);
-          })
-          this.edit(true)
-          this.holidayArrayData = []
-      }
-    })
-
-
-  }
-
-onCountChange(i){
-  if(this.aliases['controls'][i]['controls'].count.value>1){
-    var crnt_dt = new Date(this.aliases['controls'][i]['controls'].date.value.startDate._d)
-    console.log("crnt_dt===",crnt_dt)
-    
-    for(let cnt=1;cnt<this.aliases['controls'][i]['controls'].count.value;cnt++){
-      crnt_dt.setDate( crnt_dt.getDate() + 1 )
-    if(crnt_dt.getDay()==6){
-      crnt_dt.setDate( crnt_dt.getDate() + 2 );
-    }
-    if(crnt_dt.getDay()==0){
-      crnt_dt.setDate( crnt_dt.getDate() + 1 );
-    }
-    
-    }
-    console.log("====day====",this.datePipe.transform(crnt_dt,"EEEE"))
-    this.aliases['controls'][i]['controls'].day.setValue(this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE")+"-"+this.datePipe.transform(crnt_dt,"EEEE"))  
-   }
-  else{
-  this.aliases['controls'][i]['controls'].day.setValue(this.datePipe.transform(this.aliases['controls'][i]['controls'].date.value.startDate._d,"EEEE"))
-  }
-}
-
-  getWorkdayCount(d:Object){
-    if(d.hasOwnProperty('startDate') && d.hasOwnProperty('endDate'))
-    {
-      let start_dt = new Date(d["startDate"]._d);
-      let end_dt = new Date(d["endDate"]._d);
-    console.log("---------getWorkdayCount-----",d)
-    var count = 0;
-    while (start_dt <= end_dt) {
-      start_dt.setDate(start_dt.getDate() + 1);
-      if ((start_dt.getDay() != 0) && (start_dt.getDay() != 1)) {
-
-        count++;
+      let classList = tempTarget.classList;
+      // toggle the location checkbox for a holiday
+      if (classList.contains('holidays__checkbox') && this.editMode && !classList.contains('disabled')) {
+        let dataIndex = tempTarget.getAttribute('data-index');
+        let dataLocationId = Number(tempTarget.getAttribute('data-location_id'));
+        let locFormControl = this.faHolidayList.controls[dataIndex].get('locations');
+        let locationsValue = locFormControl.value
+        if (tempTarget.classList.contains('checked')) {
+          let indexToRemove = locationsValue.indexOf(dataLocationId);
+          locationsValue.splice(indexToRemove, 1)
+        } else {
+          locationsValue.push(dataLocationId);
+        }
+        locationsValue.sort((a, b) => a - b)
+        locFormControl.setValue(locationsValue)
+        break;
       }
 
-    }
-    return count;
-  }
-  }
-  openHolidayPopup(){
-    console.log("year-----",(new Date()).getFullYear().toString().trim())
-    this.addHolidayForm.controls.year.setValue(this.selectedYear);
-    // this.selectedYear = (new Date()).getFullYear().toString();
-    this.addHolidayForm.controls.option.setValue("Import from template");
-    this.addHolidayPopup.open();
-  }
-  selectAddHolidayOption(){
-    this.editMode = true
-    // console.log("selectAddHolidayOption--------",this.addHolidayForm.value)
-    // this.selectedYear = this.addHolidayForm.controls.year.value
-
-    if(this.addHolidayForm.controls.option.value == "Import from template"){
-    // this.getFromTemplate();
-    // this.getHolidayList(this.selectedYear)
-    this.getFromTemplate()
-    
-    }
-    else{
-      this.holidayForm= this.fb.group({
-        holidays: this.fb.array([])//,[this.uniqueBy('des')])//,this.uniqueDates('date')
-      });
-    }
-    this.addHolidayPopup.close();
-  }
-  changeSelectedYear(y){
-    this.selectedYear = y.value;
-  }
-  async getHolidayList(year=null){
-    await this.getLocation();
-
-    this.holidayForm= this.fb.group({
-      holidays: this.fb.array([])//,[this.uniqueBy('des')]) //,this.uniqueDates('date')
-    });
-    if(year == null){
-      year =''
-    }
-    this.holidayArrayData = []
-    this.showLocation = []
-    let existedLoc = []
-
-    this.http.request('get','location-holiday-cal/','year='+year).subscribe(res=>{
-      if(res.status==200){
-          console.log(res.body['results'])
-          res.body['results']["holidays"].forEach(e=>{
-          // this.addAlias();
-          console.log("===========================ee",e)
-          if(e.holiday_count>1){
-          e['week_day'] = this.getDay(e.holiday_date) + "-" + this.getDay(e.end_date)
-          }else{
-          e['week_day'] = this.getDay(e.holiday_date)
-          }
-
-          // e['work_day_count'] = this.getWorkdayCount({'startDate':moment(e.holiday_date),'endDate':moment(e.holiday_date)})
-
-          var loc_checks = []
-
-          for(let i=0;i<this.headerLocation.length;i++){
-            loc_checks.push(this.ifChecked(e.locations,this.headerLocation[i]['id'])); 
-            console.log("******************888",e.locations)
-            if(e.locations.indexOf(this.headerLocation[i]['id'])!=-1 && existedLoc.indexOf(i)==-1){
-              existedLoc.push(i);
-              
-            }
-            //   if( (this.headerLocation[i]['id']  in  Object.keys(this.showLocation))){
-            //   this.showLocation[this.headerLocation[i]['id']] = true
-            // }
-
-          }
-          // this.headerLocation.forEach(l=>{
-          //   loc_checks.push(this.ifChecked(e.locations,l['id']));
-          //   if( (l['id']  in  Object.keys(this.showLocation))){
-          //     this.showLocation[l['id']] = true
-          //   }
-          // })
-
-
-
-          e['loc_checks']= loc_checks;
-          this.holidayArrayData.push(e)
-
-
-
-          // var al=this.aliases['controls'][this.aliases.length-1]['controls'];
-          
-          // al.date.setValue({startDate:moment(e.holiday_date),endDate:moment(e.holiday_date)});
-          // this.getDay(this.aliases.length-1)
-          // // al.day.setValue(e.day);
-          // al.des.setValue(e.holiday_id);
-          // al.locations.setValue(e.locations);
-
-          })
-          var locCheck=[];
-        //   this.holidayArrayData.forEach(hl=>{
-            
-        //     locCheck.push(this.ifChecked(hl.locations,this.headerLocation[i]['id']));
-        //     hl['loc_checks']= locCheck
-        //    //  this.holidayArrayData.push(locCheck)
-           
-        //  })
-          for(let i=this.headerLocation.length;i>=0;i--){
-            if(existedLoc.indexOf(i)==-1){
-              console.log("-----------removing------------------",this.headerLocation[i]);
-              this.holidayArrayData.forEach(hl=>{
-                hl['loc_checks'].splice(i,1);
-                
-              })
-              
-            }
-            else{
-              this.showLocation.unshift(this.headerLocation[i])
-     
-            }
-          }
-
-          this.displayLocation = this.showLocation;
-          console.log("===================showLocation=================",this.showLocation);
-          this.IsNextYearVisible = res.body['results']["is_next_year_visible"]
-          this.isConfirmed = res.body['results']["is_confirmed"]
+      // open the date picker for selection of dates for the holiday
+      if (classList.contains('holidays__calendar-icon') || classList.contains('holidays__input-date')) {
+        let datePickerRefElement = tempTarget.previousElementSibling
+        this.indexOfHolidayInDatePicker = Number(tempTarget.getAttribute('data-index'));
+        // this.dateRangePicker.setSelection('custom')
+        let dateValue = this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('date').value
+        if (dateValue && dateValue['start_date'] && dateValue['end_date']) {
+          this.dateRangePicker.setCustomValue(new Date(dateValue['start_date']), new Date(dateValue['end_date']))
+        }
+        this.dateRangePicker.openDateRangePicker(datePickerRefElement)
+        break;
       }
-    })
-    console.log("holidayArrayData",this.holidayArrayData)
-    
-    
+
+      //  remove a row of holiday when the remove button is clicked
+      if (classList.contains('holidays__remove')) {
+        let indexOfHoliday = Number(tempTarget.getAttribute('data-index'));
+        this.holidayList[indexOfHoliday].delete = true;
+        this.faHolidayList.controls[indexOfHoliday].get('delete').setValue(true)
+      }
+
+      //  remove a row of holiday when the remove button is clicked
+      if (classList.contains('holidays__cell--locations') && this.editMode) {
+        let indexOfHoliday = Number(tempTarget.getAttribute('data-index'));
+        this.faHolidayList.controls[indexOfHoliday].get('locations').markAsTouched();
+      }
+
+      tempTarget = tempTarget.parentNode;
+    }
   }
 
-  async getLocation(){
-    this.showLocation =[];
-    var res = await this.http.request('get','location/').toPromise();
-      if(res.status == 200){
-        console.log("res.body['results']",res.body['results'])
-        this.headerLocation = res.body['results']
-        // this.headerLocation.forEach(e=>{
-        //   this.showLocation[e.id] = false;
-        // })
-        
-      }
-  }
-  edit(v){
-    if(v){
-      this.showLocation = this.headerLocation;
-      this.getDefaultHolidayList();
-      if(Number(this.selectedYear)>Number(this.currentDate.getFullYear())){
-        this.minSelectDate =  moment(this.selectedYear.toString()+"-01-01", "YYYY-MM-DD")
-      
-      }else{
-        this.minSelectDate =  moment(this.currentDate, "YYYY-MM-DD")
-      }
-      this.maxSelectDate=  moment( this.selectedYear.toString()+"-12-31", "YYYY-MM-DD")
-     
-      this.holidayArrayData.forEach(e=>{
-      this.addAlias()
-      var al=this.aliases['controls'][this.aliases.length-1]['controls'];
-        
-        al.date.setValue({startDate:moment(e.start_date),endDate:moment(e.end_date)});
-        // this.getDay(this.aliases.length-1)
-        
-        al.day.setValue(e.week_day);
-        al.des.setValue(e.holiday.holiday_name);
-        al.count.setValue(e.holiday_count);
-        al.locations.setValue(e.locations);
-        al.editable.setValue(e.editable)
+
+  @HostListener("input", ['$event'])
+  onInputDescriptionInput(e: Event) {
+    console.log('input')
+    let target: HTMLElement = <HTMLElement>e.target;
+    if (target.classList.contains('holidays__description')) {
+      let index = Number(target.getAttribute('data-index'));
+      let val = (<HTMLInputElement>target).value
+      this.faHolidayList.controls[index].get('description').setValue(val)
+      this.faHolidayList.controls[index].get('description').updateValueAndValidity();
+
+      this.filteredDefaultHolidayList = this.defaultHolidayList.filter((item) => {
+        if (val) {
+          return item.name.toLowerCase().includes(val.toLowerCase())
+        } else {
+          return true
+        }
       })
-    }else{
-      this.showLocation = this.displayLocation;
-      console.log("------this.holidayForm--before ====",this.holidayForm)
-      this.holidayForm.removeControl('holidays');
-      this.holidayForm.addControl('holidays', this.fb.array([]))//,[this.uniqueBy('des')]))//,this.uniqueDates('date')
-      console.log("------this.holidayForm--get",this.holidayForm.get('holidays'))
     }
-    
-    this.editMode = v;
   }
-  getDefaultHolidayList(){
-    this.defaultHoliday = []
 
-    this.http.request('get','default-holiday-list/').subscribe(res=>{
-      if(res.status == 200){
-        console.log("res.body['results']",res.body['results'])
-        this.defaultHoliday = res.body['results']
-      }
+  @HostListener("focusout", ['$event'])
+  onFocusOutDescriptionInput(e: Event) {
+    let target: HTMLElement = <HTMLElement>e.target;
+    if (target.classList.contains('holidays__description')) {
+      setTimeout(() => {
+        this.filteredDefaultHolidayList = this.defaultHolidayList
+      }, 250)
+    }
+  }
+
+  @HostListener("focusin", ['$event'])
+  onFocusInDescriptionInput(e: Event) {
+    let target: HTMLElement = <HTMLElement>e.target;
+    if (target.classList.contains('holidays__description')) {
+      let index = target.getAttribute('data-index');
+      this.holidayNameIndexInFocus = index;
+    }
+  }
+
+  /* on clicking the edit button */
+  onClickEdit() {
+    this.editMode = true;
+    // loop through the holiday list and add the form group with date and description into the faHoliday
+    this.faHolidayList = new FormArray([])
+    this.holidayList.forEach((item) => {
+      item.delete = false;
+      this.faHolidayList.push(this.fb.group({
+        date: [{ start_date: item.start_date, end_date: item.end_date }, [notWeekend(), YearVd(this.selectedYear)]],
+        description: [item.holiday.holiday_name, [Validators.required]],
+        count: [item.holiday_count],
+        locations: [[...item.locations]],
+        delete: [false]
+      }))
     })
-    
-  }
- 
-  getCurrentDate(){
-    this.displayedYear = []
-
-    this.http.request('get','get_current_date/').subscribe(res=>{
-      if(res.status == 200){
-        console.log("date=======",res.body['results'])
-        this.currentDate =  new Date(res.body['results'].date);
-        
-        // this.datePipe.transform(main_dt,'dd-MM-yyyy')
-        this.selectedYear =this.currentDate.getFullYear()
-        this.displayedYear.push((Number(this.currentDate.getFullYear())-1).toString(),this.currentDate.getFullYear(),(Number(this.currentDate.getFullYear())+1).toString())
-      }
-    })
-    
   }
 
-  
+  /* on selecting the date from the calendar for a holiday row item dates */
+  onDateSelection(val: DateRange<any>) {
+    this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('date').markAsTouched()
+    if (val.start && val.end) {
+      this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('date').setValue({ start_date: this.convertDatefmt(val.start), end_date: this.convertDatefmt(val.end) })
+      // // set the days count and 
+      let count = this.getWorkdayCount(val)
+      this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('count').setValue(count)
+      this.dateRangePicker.resetRange()
+      this.cdRef.detectChanges();
+    }
+  }
 
+  // when no date is selected in date picker
+  onCancelDatePicker() {
+    this.faHolidayList.controls[this.indexOfHolidayInDatePicker].get('date').markAsTouched()
+  }
 
-  submitHoliday(){
-    console.log("-----------------------")
-    console.log(this.holidayForm.value);
+  onSelectAutoComplete(data: MatAutocompleteSelectedEvent) {
+    this.faHolidayList.controls[this.holidayNameIndexInFocus].get('description').setValue(data.option.value)
+  }
 
-
-    var error_list = []
-    var main_list = []
-    var fes_list = []
-    var fes_error_list = []
-    var locationwise_holiday = []
-    var no_location_selected_error = []
-    for(let j=0;j<this.aliases['controls'].length;j++){
-      console.log("--------------------------------------------------------",this.aliases['controls'][j]['controls'].des.value)
-      console.log("--------------------------------------------------------",this.aliases['controls'][j]['controls'].date.value['startDate'].format('YYYY-MM-DD'))
-      if(this.aliases['controls'][j]['controls'].date.value['startDate']!=null){
-
-        const mainControlCount = this.aliases['controls'][j]['controls'].count
-        var mainControlLocation = this.aliases['controls'][j]['controls'].locations.value
-        // var new_date = moment(val, "YYYY-MM-DD").add(1, 'days');
-
-        var main_dt = new Date(this.aliases['controls'][j]['controls'].date.value['startDate'].format('YYYY-MM-DD')) 
-        if(fes_list.indexOf(this.aliases['controls'][j]['controls'].des.value.toLowerCase().trim())!=-1){
-          fes_error_list.push(j)
-        }else{
-        fes_list.push(this.aliases['controls'][j]['controls'].des.value.toLowerCase().trim())
+  getWorkdayCount(date: { end: Date, start: Date }) {
+    if (date.hasOwnProperty('start') && date.hasOwnProperty('end')) {
+      let startDate = new Date(date.start)
+      let endDate = new Date(date.end)
+      var count = 0;
+      while (startDate <= endDate) {
+        let startDay = startDate.getDay();
+        if ((startDay != 0) && (startDay != 6)) {
+          count++;
         }
-
-
-
-
-        
-        for(let cnt=0;cnt<mainControlCount.value;cnt++){
-          // if(main_list.indexOf(this.datePipe.transform(main_dt,'dd-MM-yyyy'))!=-1){
-          //   error_list.push(this.datePipe.transform(main_dt,'dd-MM-yyyy'))
-          // }else{
-          main_list.push(this.datePipe.transform(main_dt,'dd-MM-yyyy'))
-
-          if( mainControlLocation.length==0){
-            no_location_selected_error.push(this.datePipe.transform(main_dt,'dd-MM-yyyy'))
-          }
-          mainControlLocation.forEach(loc => {
-            console.log("location ",loc,this.datePipe.transform(main_dt,'dd-MM-yyyy'))
-            locationwise_holiday.push(this.datePipe.transform(main_dt,'dd-MM-yyyy')+","+loc.toString())
-          });
-          // }
-          if(mainControlCount.value==1){
-            break
-          }
-
-          main_dt.setDate( main_dt.getDate() + 1 )
-          if(main_dt.getDay()==6){
-            main_dt.setDate( main_dt.getDate() + 2 );
-          }
-          if(main_dt.getDay()==0){
-            main_dt.setDate( main_dt.getDate() + 1 );
-          }
-
-        }
-
+        startDate.setDate(startDate.getDate() + 1);
       }
+      return count;
     }
-    console.log("----------------main_list ",main_list)
-    console.log("----------------error_list ",error_list)
-    var locationwise_holiday_error = []
+  }
 
-    // console.log("---------------------locationwise_holiday-----------------",locationwise_holiday)
-    // for(let i = 0;i<locationwise_holiday.length;i++){
-    //   console.log("-----------------------i--------------",locationwise_holiday[i][0],locationwise_holiday[i][1])
-    //   for(let j = i;j<locationwise_holiday.length;j++){
-        
-    //     console.log("-----------------------j-------------",locationwise_holiday[j][0],locationwise_holiday[j][1],(locationwise_holiday[i][0]===locationwise_holiday[j][0]),(locationwise_holiday[i][1]===locationwise_holiday[j][1]),(i!=j))
-    //     if((locationwise_holiday[i][0]===locationwise_holiday[j][0])&&(locationwise_holiday[i][1]===locationwise_holiday[j][1])&&(i!=j)){
-    //     locationwise_holiday_error.push(locationwise_holiday[i][0])
-    //     }
-    //   }
-    // }
-    locationwise_holiday.forEach(loc_hol=>{
-      // console.log("----------------[loc_hol[0],loc_hol[1]]",loc_hol, [loc_hol[0],loc_hol[1]])
-      console.log("1st index",locationwise_holiday.indexOf(loc_hol));
-      console.log("Last index",locationwise_holiday.lastIndexOf(loc_hol));
-      if(locationwise_holiday.indexOf(loc_hol)!==locationwise_holiday.lastIndexOf(loc_hol)){
-        if(locationwise_holiday_error.indexOf(loc_hol.split(",",1).toString())===-1){
-        locationwise_holiday_error.push(loc_hol.split(",",1).toString())}
-      }
+  convertDatefmt(date, format = 'yyyy-MM-dd') {
+    return this.datepipe.transform(date, format);
+  }
+
+  // add holiday item into the holiday list
+  addHolidayItem() {
+
+    let holiday = {
+      "holiday_year": this.selectedYear,
+      "holiday_date": null,
+      "start_date": null,
+      "end_date": null,
+      "holiday_count": 0,
+      "holiday": {
+        "holiday_name": ""
+      },
+      "editable": true,
+      "locations": [
+      ]
+    };
+
+    this.holidayList.push(holiday);
+
+    let fg = this.fb.group({
+      date: [{ start_date: null, end_date: null }, [notWeekend(), YearVd(this.selectedYear)]],
+      description: ["", [Validators.required]],
+      count: [0],
+      locations: [[]],
+      delete: false
     })
 
-    if(no_location_selected_error.length>0){
-      this.ss.statusMessage.showStatusMessage(false,"Atleast one location should be selected for any holiday. No location is selected for   "+no_location_selected_error.toString())
-      return
+    this.faHolidayList.push(fg)
+
+    this.appendedHolidays.push(holiday)
+  }
+
+  onClickCancel() {
+    if (this.isNewHolidayList) {
+      // reset the holiday list if imported from template
+      this.holidayList = []
+      // set to false always as new holiday list is resolved
+      this.isNewHolidayList = false;
     }
 
-    if( locationwise_holiday_error.length>0){
-      this.ss.statusMessage.showStatusMessage(false,"Same locations are selected multiple times for  "+locationwise_holiday_error.toString())
-      return
+    // reset the delete status of each holiday list item
+    this.holidayList.forEach((item) => {
+      item.delete = false;
+    })
+
+    // if any newly added indexes remove them to revert the holiday list
+    if (this.appendedHolidays.length > 0) {
+      this.holidayList = this.holidayList.filter((item, index) => this.appendedHolidays.indexOf(item) == -1);
     }
 
-    if( error_list.length>0){
-      this.ss.statusMessage.showStatusMessage(false,"Duplicate dates found for "+error_list.toString())
-      return
-    }
-    if(fes_error_list.length>0){
-      this.ss.statusMessage.showStatusMessage(false,"Duplicate festivals found for "+fes_error_list.map(function(el){
-        this.aliases['controls'][el]['controls'].des.setErrors({'uniqueBy': true});
-        return this.aliases['controls'][el]['controls'].des.value }.bind(this)))
+    this.faHolidayList = new FormArray([])
+    this.editMode = false;
+  }
+
+  onClickSave() {
+
+    let datesWithoutAtleastOneSelection = []
+    let festivalNamesArray = []
+    let duplicateFestivalNames = [];
+    let duplicateFestivalIndex = [];
+    let dateLocationCombinations = [];
+
+    // loop through the current holiday list and find errors
+    this.faHolidayList.controls.forEach((control, index) => {
+
+      let dateValue = control.get('date').value;
+      let count = control.get('count').value;
+      let startDate = dateValue.start_date;
+      let locations = control.get('locations').value
+
+      // check for duplicate festival error
+      let festivalName = control.get('description').value.toLowerCase().trim()
+      if (festivalNamesArray.indexOf(festivalName) != -1) {
+        duplicateFestivalNames.push(festivalName)
+        duplicateFestivalIndex.push(index)
+      }
+      festivalNamesArray.push(festivalName)
+
+      // check for duplicate date location combination
+      if (count == 1) {
+        for (let j = 0; j < locations.length; j++) {
+          let date = this.convertDatefmt(new Date(startDate), 'dd-MM-yyyy');
+          dateLocationCombinations.push(date + " " + locations[j]);
+        }
+      } else {
+        for (let i = 0; i < count; i++) {
+          for (let j = 0; j < locations.length; j++) {
+            let date = this.convertDatefmt(new Date(startDate), 'dd-MM-yyyy');
+            dateLocationCombinations.push(date + " " + locations[j]);
+          }
+          startDate = this.convertDatefmt(new Date(new Date(startDate).getTime() + 86400000))
+        }
+      }
+
+      // check for atleast one location selected error
+      if (locations.length < 1) {
+        let dates = control.get('date').value;
+        if (dates.start_date == dates.end_date) {
+          datesWithoutAtleastOneSelection.push(this.convertDatefmt(dates.start_date, 'dd-MM-yyyy'))
+        } else {
+          datesWithoutAtleastOneSelection.push(this.convertDatefmt(dates.start_date, 'dd-MM-yyyy'), this.convertDatefmt(dates.end_date, 'dd-MM-yyyy'))
+        }
         return
+      }
+
+    })
+
+    // console.log(dateLocationCombinations)
+    let countDateLocationCombinations = _.pickBy(_.countBy(dateLocationCombinations), (val, key) => val > 1)
+
+    let datesWithSameLocationMultipleTimes = [];
+    _.forIn(countDateLocationCombinations, (val, key) => {
+      let splitVal = key.split(' ');
+      datesWithSameLocationMultipleTimes.push(splitVal[0]);
+    })
+
+    datesWithSameLocationMultipleTimes = _.uniq(datesWithSameLocationMultipleTimes)
+
+    if (datesWithoutAtleastOneSelection.length > 0) {
+      this.ss.statusMessage.showStatusMessage(false, 'Atleast one location should be selected for any holiday. No location is selected for ' + datesWithoutAtleastOneSelection.toString())
+      return
     }
 
+    // if same date is having same location in multiple holidays show the below error
+    if (datesWithSameLocationMultipleTimes.length > 0) {
+      this.ss.statusMessage.showStatusMessage(false, 'Same locations are selected multiple times for ' + datesWithSameLocationMultipleTimes.toString())
+      return
+    }
+
+    // check for same occassion name
+    if (duplicateFestivalNames.length > 0) {
+      duplicateFestivalIndex.forEach((idx) => {
+        let control = this.faHolidayList.controls[idx].get('description')
+        control.markAsTouched();
+        control.setErrors({ uniqueName: true })
+      })
+      this.ss.statusMessage.showStatusMessage(false, "Duplicate festivals found for " + duplicateFestivalNames.join(", "));
+      return
+    }
+
+    // check for duplicate dates
+
+    // set to false always if it is new holiday list then it is resolved
+    this.isNewHolidayList = false;
 
 
-   
     let formData = new FormData()
-    this.holidayForm.controls.holidays.value.forEach((element,index) => {
-      console.log("indside ",element.date.startDate.format('YYYY-MM-DD'),element.date.endDate.format('YYYY-MM-DD'),element.des,element.locations)
-      formData.append(index,JSON.stringify({'start_date':element.date.startDate.format('YYYY-MM-DD'),'end_date':element.date.endDate.format('YYYY-MM-DD'),
-      'holiday':element.des,'locations':element.locations,'holiday_year':this.selectedYear, 'holiday_count':element.count,
-      'holiday_date':element.date.startDate.format('YYYY-MM-DD')}))
+
+    this.faHolidayList.value.forEach((item, index) => {
+      if (!item.delete) {
+        formData.append(index, JSON.stringify({
+          'start_date': item.date.start_date, 'end_date': item.date.end_date,
+          'holiday': item.description, 'locations': item.locations, 'holiday_year': this.selectedYear, 'holiday_count': item.count,
+          'holiday_date': item.date.start_date
+        }));
+      }
     });
-    
-    this.http.request('post','update-location-holiday-cal/','',formData).subscribe(res=>{
-      if(res.status == 201){
-        console.log("===========================================",res.body);
+
+    this.http.request('post', 'update-location-holiday-cal/', '', formData).subscribe(res => {
+      if (res.status == 201) {
         this.editMode = false
+        this.faHolidayList = new FormArray([])
         this.getHolidayList(this.selectedYear);
       }
     })
+
   }
-    private holidayOptionSubscriber:Subscription; 
-    options = []
 
-    showOptionIndex = -1
-    getHolidayOptions(i){
-    //   let l=[]
-    //   this.defaultHoliday.forEach(e=>{
-    //     if(e['holiday_name'].toLowerCase().includes(evt.toLowerCase())){
-    //       l.push(e)
-    //     }
-    // })
-    // this.holidayForm.controls.locations.
-    this.showOptionIndex = i
-    let l=[]
-    this.options=[]
-    console.log("------------aliases",this.aliases['controls'][i])
-    this.holidayOptionSubscriber = this.aliases['controls'][i]['controls'].des.valueChanges.subscribe(val=>{
-      console.log("------------value changes",i,val)
+  changeYear(y) {
+    this.onClickCancel()
+    this.selectedYear = y.value
+    this.isSelectedYearEditable = Number(this.selectedYear) >= Number(this.currentDate.getFullYear()) ? true : false;
 
-      l=[]
-      this.defaultHoliday.forEach(e=>{
-        if(e['name'].toLowerCase().includes(val.toLowerCase())){
-          l.push(e)
+    // if the selected year is editable
+    if (this.isSelectedYearEditable) {
+      let today = new Date()
+      if (this.selectedYear == today.getFullYear()) {
+        // set the min date for the calendar to today if current year else set to 1 Jan
+        this.minDate = new Date()
+      } else {
+        // set the min date for the calendar to today if current year else set to 1 Jan
+        this.minDate = new Date(this.selectedYear, 0, 1)
+      }
+      // the maxdate for the calendar when opening for date selection for a holiday row in edit mode
+      this.maxDate = new Date(this.minDate.getFullYear(), 11, 31)
+    }
+    this.getHolidayList(y.value)
+  }
+
+  getFromTemplate() {
+    this.http.request('get', 'location-holiday-cal/', 'year=2021').subscribe(res => {
+      if (res.status == 200) {
+        let response = res.body['results'];
+        this.holidayList = response['holidays']
+        this.processHolidayListResponse()
+        this.onClickEdit();
+      }
+    })
+  }
+
+  /* open holiday pop up to show the form to select between import holidays or manually add holidays */
+  openHolidayPopup() {
+    this.isNewHolidayList = true;
+    let dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Add Holiday Option',
+        template: this.templateHolidayForm,
+        maxWidth: '500px'
+      },
+
+    })
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        if (this.selectedHolidayOption == "Import from template") {
+          this.holidayList = []
+          this.getFromTemplate();
+        } else if (this.selectedHolidayOption == "Add manually") {
+          this.holidayList = []
+          this.onClickEdit()
         }
-      })
-      // var error = null;
-      // for(let j=0;j<this.aliases['controls'].length;j++){
-      //   console.log("------------------------------matching-------",i,j,val.toLowerCase(),this.aliases['controls'][j]['controls'].des.value.toLowerCase())
-      //   if(j!=i){
-      //     if(val.toLowerCase() === this.aliases['controls'][j]['controls'].des.value.toLowerCase()){
-      //       error = true
-      //       break
-      //     }
-      //   }
-      // };
-      // console.log("------------------------------error-------",error)
-      // this.aliases['controls'][i]['controls'].des.setErrors({'notUnique': error})
-      // this.cd.detectChanges();
-
-      // console.log("----------error  ========",this.aliases['controls'][i]['controls'].des)
-      this.options = l
-      console.log("holiday optionsss     ",l)
-
+      }
+      this.selectedHolidayOption = null;
     })
   }
 
+  changeSelectedYear(y) {
+    this.selectedYear = y.value;
 
+    // if the selected year is editable
+    let today = new Date()
 
-getNextYearHoliday(){
-  this.selectedYear+=1
-  this.getHolidayList(this.selectedYear);
-}
-getCurrentYearHoliday(){
-  this.selectedYear = this.currentDate.getFullYear()
-  this.getHolidayList(this.selectedYear);
-}
+    if (this.selectedYear == today.getFullYear()) {
 
-confirmHoliday(){
-  let formData = new FormData()
-  formData.append("year",this.selectedYear)
-  this.http.request('post','confirm-holiday/','',formData).subscribe(res=>{
-    if(res.status == 201){
-      console.log("===========================================",res.body);
-      this.ss.statusMessage.showStatusMessage(true,res.body["results"])
-      this.isConfirmed = true
-      
+      // set the min date for the calendar to today if current year else set to 1 Jan
+      this.minDate = new Date()
+
+    } else {
+
+      // set the min date for the calendar to today if current year else set to 1 Jan
+      this.minDate = new Date(this.selectedYear, 0, 1)
+
     }
-    else{
-      this.ss.statusMessage.showStatusMessage(false,"Error while notifying")
-      this.isConfirmed = false
-    }
-  })
 
-  
-}
-
-
-  destroyHolidayOptions(i): void {
-    
-    console.log("--------destroyHolidayOptions ------")
-    this.holidayOptionSubscriber.unsubscribe();
-    // this.showOptionIndex = -1
-    setTimeout(()=>{
-      if(this.showOptionIndex==i){
-          this.showOptionIndex = -1;
-        }else{
-          console.log('====destroyHolidayOptions====used by',this.showOptionIndex)
-        }
-    
-    },250)
+    // the maxdate for the calendar when opening for date selection for a holiday row in edit mode
+    this.maxDate = new Date(this.minDate.getFullYear(), 11, 31)
   }
-   uniqueText(control:FormControl): Promise<any>|Observable<any> {
-    
-      let promise =  new Promise((resolve,reject)=>{
 
-      var error = null;
-      var count = 0
-      for(let j=0;j<this.aliases['controls'].length;j++){
-        console.log("------------------------------matching-------",j,this.showOptionIndex,control.value,this.aliases['controls'][j]['controls'].des.value.toLowerCase())
-        // if(j!=this.showOptionIndex){
-          if(control.value.toLowerCase() === this.aliases['controls'][j]['controls'].des.value.toLowerCase()){
-            // error = true
-            // break
-          // }
-          count ++
-        
-        }
-      };
-      error = (count >1) ? true:null;
-      if(error==true){
-      resolve( { 'notUnique': true } );
-      }
-      else{
-        resolve(null);
+  processHolidayListResponse() {
+    // set the day of start date and end date for each holiday (eg: Friday, Saturday)
+    this.holidayList = this.holidayList.map((item) => {
+      item.delete = false;
+      item.startDay = WeekDay[new Date(item.start_date).getDay()];
+      item.endDay = WeekDay[new Date(item.end_date).getDay()];
+      return item;
+    })
+
+    // get the distinct locations that are available in this holiday list
+    this.locationsInSelectedYear = [...new Set(this.holidayList.reduce((prev, curr, index, array) => {
+      return prev.concat(curr.locations);
+    }, []))]
+    let temp = this.locations.filter((item) => {
+      return this.locationsInSelectedYear.indexOf(item.id) !== -1
+    })
+    this.locationsInSelectedYear = temp
+  }
+
+  async getHolidayList(year = null) {
+
+    await this.getLocation();
+
+    this.http.request('get', 'location-holiday-cal/', 'year=' + (year || "")).subscribe(res => {
+      if (res.status == 200) {
+        let response = res.body['results'];
+        console.log(response)
+        this.showNextYear = response["is_next_year_visible"]
+        this.notifiedEmployees = response["is_confirmed"]
+
+        this.holidayList = response['holidays']
+
+        this.processHolidayListResponse()
       }
     })
-    return promise
+    // console.log("holidayArrayData", this.holidayArrayData)
+
+
   }
 
-  uniqueDate(control:FormControl): Promise<any>|Observable<any> {
-    
-    let promise =  new Promise((resolve,reject)=>{
+  async getLocation() {
+    var res = await this.http.request('get', 'location/').toPromise();
+    if (res.status == 200) {
+      console.log("res.body['results']", res.body['results'])
+      // this.headerLocation = res.body['results'] 
+      this.locations = res.body['results']
+    }
+  }
 
-    var error = null;
-    var all_dates = []
-    for(let j=0;j<this.aliases['controls'].length;j++){
-      console.log("------------------------------matching-------",j,this.showOptionIndex,control.value,this.aliases['controls'][j]['controls'].date.value)
-      // if((control.value['startDate'] != null) && (control.value['startDate'] != undefined)){
-      //   var start_yr = control.value['startDate'].format('YYYY');
-        
-      //   this.aliases['controls'][j]['controls'].date.value
-         
-      
-      // }
-      if(this.aliases['controls'][j]['controls'].date.value['startDate']!=null){
-        
-        if(all_dates.indexOf(this.aliases['controls'][j]['controls'].date.value['startDate'].format("YYYY-MM-DD"))==-1){
-        all_dates.push(this.aliases['controls'][j]['controls'].date.value['startDate'].format("YYYY-MM-DD"))
-      }else{
-        error =true
-        break
+
+  getDefaultHolidayList() {
+    this.defaultHolidayList = []
+
+    this.http.request('get', 'default-holiday-list/').subscribe(res => {
+      if (res.status == 200) {
+        console.log("res.body['results']", res.body['results'])
+        this.defaultHolidayList = res.body['results']
       }
-    }
+    })
 
-    };
-    console.log("-----array dates----",all_dates)
-    if(error==true){
-    resolve( { 'notUniqueDate': true } );
-    }
-    else{
-      resolve(null);
-    }
-  })
-  return promise
+  }
+
+  getCurrentDate() {
+    this.displayedYear = []
+
+    this.http.request('get', 'get_current_date/').subscribe(res => {
+      if (res.status == 200) {
+        this.currentDate = new Date(res.body['results'].date);
+        // this.datePipe.transform(main_dt,'dd-MM-yyyy')
+        this.selectedYear = this.currentDate.getFullYear()
+        this.displayedYear.push((Number(this.currentDate.getFullYear()) - 1).toString(), this.currentDate.getFullYear(), (Number(this.currentDate.getFullYear()) + 1).toString())
+      }
+    })
+
+  }
+
+
+  getNextYearHoliday() {
+    this.selectedYear += 1
+    this.getHolidayList(this.selectedYear);
+  }
+
+  getCurrentYearHoliday() {
+    this.selectedYear = this.currentDate.getFullYear()
+    this.getHolidayList(this.selectedYear);
+  }
+
+  confirmHoliday() {
+    let formData = new FormData()
+    formData.append("year", this.selectedYear)
+    this.http.request('post', 'confirm-holiday/', '', formData).subscribe(res => {
+      if (res.status == 201) {
+        this.ss.statusMessage.showStatusMessage(true, res.body["results"])
+        this.notifiedEmployees = true
+      }
+      else {
+        this.ss.statusMessage.showStatusMessage(false, "Error while notifying")
+        this.notifiedEmployees = false
+      }
+    })
+
+  }
+
+
 }
- 
-}
 
 
+// in no edit mode hide the location if atleast one holiday is not having the location selected
+// format the HTML with meaning ful class names
+// if past year the edit button should not be visible
+// if it is next year the edit buton should be visible
+// in the current year the holidays should not be editable if they are past
+// 

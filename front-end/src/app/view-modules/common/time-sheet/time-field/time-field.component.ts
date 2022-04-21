@@ -323,6 +323,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
         }
       }
     }
+    return true
   }
 
 
@@ -369,9 +370,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
         this.showErrorHalfVacation = false;
         this.cd.detectChanges();
       },3000)
-    }
-
-    
+    } 
   }
 
   //propagate changes into the form

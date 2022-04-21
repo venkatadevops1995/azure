@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -9,6 +9,7 @@ import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.
 import { Observable } from 'rxjs';
 import { map, startWith, subscribeOn } from 'rxjs/operators';
 import { async } from '@angular/core/testing';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 
 @Component({
   selector: 'app-add-project',
@@ -23,7 +24,7 @@ export class AddProjectComponent implements OnInit {
   filterAllActiveInactiveProject:any;
   USERS_DATA = [];
   filter_projects = [];
-  projectInputField = this.fb.control('',[Validators.required]); 
+  projectInputField = this.fb.control('',[]); 
 
   constructor(
     public dialog: MatDialog,
@@ -58,6 +59,7 @@ export class AddProjectComponent implements OnInit {
   ngOnInit(): void {
     this.getAllActiveInActiveProjects();   
   }
+
   private filterAllActiveInactiveProjectList(value: string) {
     const filterValue = value.toLowerCase();
     let result = this.project_list_search.filter(project => {
@@ -68,7 +70,7 @@ export class AddProjectComponent implements OnInit {
 
   getAllActiveInActiveProjects(){
     // this.allProjects=[]
-    console.log("-----------------",this.projectInputField.value)
+    // console.log("-----------------",this.projectInputField.value)
     this.http.request("get", "projects-active-inactive/").subscribe(res => {
       if(res.status === 200){
         let project_list = []
@@ -76,7 +78,7 @@ export class AddProjectComponent implements OnInit {
           // console.log("---------------",ele)
           Array.prototype.push.apply(project_list, [ele]);
         })
-        console.log('----------------project_list--',project_list)
+        // console.log('----------------project_list--',project_list)
 
         this.USERS_DATA = project_list;
         this.allProjects = [...this.USERS_DATA]
@@ -84,7 +86,7 @@ export class AddProjectComponent implements OnInit {
         allProjects.forEach(element => {
           this.project_list_search.push(element);
         });
-        console.log("data in project list search",this.project_list_search)
+        // console.log("data in project list search",this.project_list_search)
       }
 
     });

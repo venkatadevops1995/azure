@@ -49,49 +49,97 @@ ul {
     box-sizing: border-box;
 }
 
+
+// Rahul check customizing style for the checkbox for selectemp popup***********
+
+label input {
+    display: none; /* Hide the default checkbox */
+  }
+  
+  /* Style the artificial checkbox */
+  label span {
+    height: 18px;
+    width: 18px;
+    border-radius:50%;
+   
+    display: inline-block;
+    background: var(--col-primary-300);
+    // border: 1px solid var(--col-primary-300);
+    z-index: 1000px;
+    position: relative;
+  }
+  
+  /* Style its checked state...with a ticked icon */
+  input[type=checkbox]:checked + span:before {
+    content: '\2714';
+    position: absolute;
+    top: 0px;
+    left: 0;
+    background:var(--col-accent-500);
+    border: 1px solid var(--col-accent-500);
+    width: 100%;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: 100%;
+    height: 100%;
+    align-items: center;
+    border-radius: 50%;
+    z-index: 1000px;
+  }
+ 
+
+//********************************************************************
+
+// Rahul change *****************
+.custom_checkbox{
+    height: 40px;  
+    display: flex;
+    align-items: center;
+    &.all{
+        opacity: 0.6;
+    }
+}
+// *************************************
 .custom_checkbox>input[type=checkbox] {
     display: none;
 }
 
 .custom_checkbox>input[type=checkbox]+label {
-    display: inline-block;
-    // margin: 4px;
+    display: inline-block; 
     border-radius: 20px;
-    padding: 4px 12px;
+    padding: 3px 19px;
     margin-bottom: 0;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 1.70;
     color: #333;
-    text-align: center;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    text-align: center; 
     vertical-align: middle;
-    cursor: pointer;
-    background-color: #f5f5f5;
-    // background-image: -moz-linear-gradient(top, #fff, #e6e6e6);
-    // background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#e6e6e6));
-    // background-image: -webkit-linear-gradient(top, #fff, #e6e6e6);
-    // background-image: -o-linear-gradient(top, #fff, #e6e6e6);
-    // background-image: linear-gradient(to bottom, #fff, #e6e6e6);
-    background-repeat: repeat-x;
-    border-bottom-color: #b3b3b3;
-    border: 3px solid #ccc;
-    ;
-    // -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    // -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    // box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;   
+    border: 2px solid var(--col-primary-400);   
+    color:var(--col-primary-400);   
 }
 
 .custom_checkbox>input[type=checkbox]:checked+label {
     background-image: none;
-    outline: 0;
-    // -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-    // -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-    // box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-    border: 3px solid #1991DF;
-    color: #1991DF;
-    ;
+    outline: 0; 
+    // border: 2px solid var(--col-accent-500);  
+    border: 2px solid var(--col-primary-200);   
+    background:var(--col-primary-400) ;
+    // color:var(--col-primary-200);  
+    color:#fff;
 }
 
-.selectedBg {
-    background-color: #add8e6;
+// .selectedBg {
+//     background-color: #add8e6;
+// }
+.example::-webkit-scrollbar {
+    display: none;
+  }
+
+.margin_prev{
+    margin:10px 0px 0px 100px;
+}
+.margin_next{
+margin:  10px 0px 0px 0px;
 }

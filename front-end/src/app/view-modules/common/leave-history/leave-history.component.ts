@@ -3,26 +3,27 @@ import { HttpParams } from '@angular/common/http';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
-import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
-import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
+import { MatTableDataSource } from '@angular/material/table'; 
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+// import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-import { MonthYearComponent } from '../month-year/month-year.component';
+// import { MonthYearComponent } from '../month-year/month-year.component';
 @Component({
   selector: 'app-leave-history',
   templateUrl: './leave-history.component.html',
   styleUrls: ['./leave-history.component.scss']
 })
-export class LeaveHistoryComponent implements OnInit{
+export class LeaveHistoryComponent implements OnInit {
   // the sorting criteria for the historic leave applcn list
   sortHistoricKey: 'startDate' | 'endDate' | 'empName' | null = 'startDate'
-  side:boolean = true;
+  side: boolean = true;
   sortDirection: 'asc' | 'desc' | null = 'desc'
   // sorting in the historical leaves
   sortHistoric: any = {
@@ -36,29 +37,24 @@ export class LeaveHistoryComponent implements OnInit{
   leaveApplicationColumns: string[] = ['serial', 'id', 'emp_name', 'startdate', 'enddate', 'day_count', 'leave_type', 'status'];
   historyLeavesFiltersApplied: boolean = false
 
-  ranges: any = {
-    // 'Today': [moment(), moment()],
-    // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    // 'This Year': [moment().startOf('year'), moment().endOf('year')],
-    // 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-    // 'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'month').endOf('month')]
-  }
   fromdate: any;
   todate: any;
-  maxDate = moment().add(0, 'days')
+  maxDate = new Date();
 
   selectedHistoryRange: any = {};
   selectedAppliedRange: any = {};
   LEAVE_DATA_HISTORY = []
-  picker: DaterangepickerComponent;
+  // picker: DaterangepickerComponent;
   showMessage = false;
-  @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
+  // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
   @ViewChild(MatSort) sort1: MatSort;
-  isPageAccessable: Boolean=false;
+
+  @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
+
+  isPageAccessable: Boolean = false;
+
+  futureLeavesOnly: boolean = false;
+
   constructor(private ss: SingletonService,
     private http: HttpClientService,
     private datepipe: DatePipe,
@@ -66,14 +62,14 @@ export class LeaveHistoryComponent implements OnInit{
     private cd:ChangeDetectorRef
   ) {
 
-    side : this.any;
+    side: this.any;
     this.filteredManagers = this.managerCtrl.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
       );
   }
- 
+
 
   filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
@@ -81,30 +77,49 @@ export class LeaveHistoryComponent implements OnInit{
     return this.employeesOptions.filter(option => option.emp_name.toLowerCase().includes(filterValue))
     // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
   }
+
   managerCtrl = new FormControl();
   value; any;
   filteredManagers: Observable<any>;
-  monthFrom : number=new Date().getMonth()+1;
-  yearFrom : number=new Date().getFullYear();
+  monthFrom: number = new Date().getMonth() + 1;
+  yearFrom: number = new Date().getFullYear();
   employeeList: any[] = [];
   fgFilter = this.ss.fb.group({
     all: [''],
     employeeName: ['']
   })
+
   Ischecked: boolean = false;
+
   ngOnInit(): void {
     this.checkHrAccessForreports();
-    this.setPickerToLast30Days();
     this.getEmployees();
     this.Ischecked = false;
   }
-  
-  setPickerToLast30Days() {
-    this.selectedHistoryRange["startDate"] = this.ranges['Last 30 Days'][0];
-    this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
-    this.pickerDirective.writeValue(this.selectedHistoryRange)
-    
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.setPickerToLast30Days();
+    })
   }
+
+  setPickerToLast30Days() {
+    this.dateRangePicker.setPresetValue("Last 30 Days");
+  }
+
+  onDateSelect(date) {
+    this.selectedHistoryRange["startDate"] = date.start;
+    this.selectedHistoryRange["endDate"] = date.end;
+    let fgValue: any = this.managerCtrl.value
+    this.getLeaveApplications(true, fgValue)
+
+  }
+
+
+  onClickFutureLeavesOnly(data:MatCheckboxChange){
+    this.futureLeavesOnly = data.checked;    
+  }
+
   onSubmitResolvedLeaveFilter(e) {
     // console.log("Checked:", e.checked)
     let isFutureLeave= false
@@ -114,12 +129,13 @@ export class LeaveHistoryComponent implements OnInit{
       isFutureLeave = false
     }
     let fgValue: any = this.managerCtrl.value
-    
     console.log(fgValue, e);
+
     this.getLeaveApplications(true, fgValue,isFutureLeave)
-    let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
+    // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
 
   }
+
   getEmployees() {
     let params = new HttpParams({
       fromObject: {
@@ -142,10 +158,13 @@ export class LeaveHistoryComponent implements OnInit{
       }
     })
   }
+
   clear() {
     this.managerCtrl.reset();
     this.managerCtrl.setValue('');
+    this.getLeaveApplications(true, this.managerCtrl.value)
   }
+
   onSelectEmployee(employee: MatAutocompleteSelectedEvent) {
 
     this.employeeSelected = this.managerCtrl.value;
@@ -156,7 +175,7 @@ export class LeaveHistoryComponent implements OnInit{
       this.LEAVE_DATA_HISTORY = []
     }
   }
-  
+
   //  on clciking the export excel sheet of the resolved leave applications
   onClickExportResolved() {
     let mapping = {
@@ -169,7 +188,7 @@ export class LeaveHistoryComponent implements OnInit{
     if(this.Ischecked){
       future_leave = 'true'
     }
-    let dp: any = this.pickerDirective.value
+    let dp = this.dateRangePicker.value
     // get the sorting
     let params = new HttpParams({
       fromObject: {
@@ -184,24 +203,22 @@ export class LeaveHistoryComponent implements OnInit{
         sort_dir: this.sortDirection || ''
       }
     })
-    let url ='export-resolved'
-    // this.historyLeavesFiltersApplied =  true
-    if (dp && dp['startDate'] && dp['endDate']) {
-      let st_dt = new Date(dp["startDate"]._d);
-      let ed_dt = new Date(dp["endDate"]._d + 1);
-      params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-      params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
-      params = params.append('export',true.toString());
+    let url = 'export-resolved'
+    // this.historyLeavesFiltersApplied =  true 
+    let st_dt = dp.start
+    let ed_dt = new Date(dp.end.getTime() + 86400000);
+    params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
+    params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+    params = params.append('export', true.toString());
+    url = 'monthlycycleleavereport'
+    if (!this.side) {
+      params = params.append('month', this.monthFrom.toString());
+      params = params.append('year', this.yearFrom.toString());
+      params = params.append('cyclewise', true.toString());
+      params = params.append('export', true.toString());
       url = 'monthlycycleleavereport'
     }
-    if(!this.side){
-      params = params.append('month',this.monthFrom.toString());
-      params = params.append('year',this.yearFrom.toString());
-      params = params.append('cyclewise',true.toString());
-      params = params.append('export',true.toString());
-      url = 'monthlycycleleavereport'
-    }
-    this.http.noLoader(true).showProgress('download').request('get', 'leave/'+url+'/', params, "", {}, {
+    this.http.noLoader(true).showProgress('download').request('get', 'leave/' + url + '/', params, "", {}, {
       responseType: 'blob',
       progress: 'download'
     }).subscribe(res => {
@@ -215,6 +232,7 @@ export class LeaveHistoryComponent implements OnInit{
       }
     })
   }
+
   // get all leave application with pagination
   getLeaveApplications(isHistory: boolean = false, emp_name? , isFutureLeave:boolean=false) {
     let empName: any;
@@ -230,9 +248,10 @@ export class LeaveHistoryComponent implements OnInit{
       endDate: 'enddate'
     }
     let data;
-    
-    let dp: any = this.pickerDirective.value
-    
+
+    // let dp: any = this.pickerDirective.value
+    let dp = this.dateRangePicker.value
+
     if (isHistory) {
       data = this.LEAVE_DATA_HISTORY = []
     } else {
@@ -261,7 +280,8 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('sort_key', mapping[this.sortHistoricKey] || '')
       params = params.append('sort_dir', this.sortDirection || '')
       params = params.append('is_hr', 'true')
-      params = params.append('filter', 'history')
+
+      // params = params.append('filter', 'history')
       params = params.append('is_future_leave',isFutureLeave ? 'true': 'false')
     }
     
@@ -276,25 +296,31 @@ export class LeaveHistoryComponent implements OnInit{
       params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
       params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
     }
+
+    let st_dt = dp.start;
+    let ed_dt = dp.end;
+    params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
+    params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+
     if (this.side) {
       this.http.request('get', 'leave/monthlycycleleavereport/', params).subscribe(res => {
         if (res.status == 200) {
           res.body["results"].forEach(element => {
             data.push(element)
           })
-        this.showMessage = true
-      } else if (res.status == 204) {
+          this.showMessage = true
+        } else if (res.status == 204) {
 
-      } else {
-        this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
-      }
-      if (isHistory) {
-        this.historyLeavesFiltersApplied = true
-      }
-    })
+        } else {
+          this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
+        }
+        if (isHistory) {
+          this.historyLeavesFiltersApplied = true
+        }
+      })
     } else {
       let param = new HttpParams();
-      if (this.managerCtrl.value == "ALL" || this.managerCtrl.value == undefined || this.managerCtrl.value == "") {        
+      if (this.managerCtrl.value == "ALL" || this.managerCtrl.value == undefined || this.managerCtrl.value == "") {
       } else {
         param = param.append('emp_name', this.managerCtrl.value);
       }
@@ -305,77 +331,87 @@ export class LeaveHistoryComponent implements OnInit{
           res.body.forEach(element => {
             data.push(element)
           })
-        this.showMessage = true
-      } else if (res.status == 204) {
+          this.showMessage = true
+        } else if (res.status == 204) {
 
-      } else {
-        this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
-      }
-      if (isHistory) {
-        this.historyLeavesFiltersApplied = true
-      }
-    })
+        } else {
+          this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
+        }
+        if (isHistory) {
+          this.historyLeavesFiltersApplied = true
+        }
+      })
     }
   }
-  checkHrAccessForreports(){
-    
+
+  checkHrAccessForreports() {
+
     this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
       if (res.status == 200) {
-        this.isPageAccessable=res.body;
+        this.isPageAccessable = res.body;
       }
-      
+
     });
   }
+
   convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
+
   onClickSort(column: 'empName' | 'startDate' | 'endDate') {
     this.sortHistoric[column] = this.sortHistoric[column] == false ? 'desc' : this.sortHistoric[column] == 'desc' ? 'asc' : this.sortHistoric[column] == 'asc' ? false : 'desc'
     for (const key in this.sortHistoric) {
-        if (Object.prototype.hasOwnProperty.call(this.sortHistoric, key)) {
-            if (key != column) {
-                this.sortHistoric[key] = false
-            } else {
-                if (this.sortHistoric[column]) {
-                    this.sortHistoricKey = column
-                    this.sortDirection = this.sortHistoric[column]
-                } else {
-                    this.sortHistoricKey = null
-                    this.sortDirection = null
-                }
-            }
+      if (Object.prototype.hasOwnProperty.call(this.sortHistoric, key)) {
+        if (key != column) {
+          this.sortHistoric[key] = false
+        } else {
+          if (this.sortHistoric[column]) {
+            this.sortHistoricKey = column
+            this.sortDirection = this.sortHistoric[column]
+          } else {
+            this.sortHistoricKey = null
+            this.sortDirection = null
+          }
         }
+      }
     }
     this.getLeaveApplications(true)
-}
-getSide(er) {
-  this.side = er; 
-  this.getLeaveApplications(true);
-}
-getTrigger(er) {
-  this.yearFrom = er.year;
-  this.monthFrom = er.month;
-  if (er) {
-    if(this.yearFrom)
+  }
+
+  getSide(er) {
+    this.side = er;
     this.getLeaveApplications(true);
   }
-}
 
-onIsDisableClick(event){
- 
-  console.log("Ischecked is ::::",event);
-  this.Ischecked = event.checked;
-  if(event.checked){
-    this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
-    this.todate = this.convertDatefmt(this.ranges['This Month'][1])
-    // this.selected["endDate"] = this.ranges['This Month'][1];
-  }else{
-    this.fromdate = this.convertDatefmt('');
-    this.todate = this.convertDatefmt('');
+
+  // getTrigger(er) {
+  //   this.yearFrom = er.year;
+  //   this.monthFrom = er.month;
+  //   if (er) {
+  //     if (this.yearFrom)
+  //       this.getLeaveApplications(true);
+  //   }
+  // }
+
+
+  onIsDisableClick(event){
+  
+    console.log("Ischecked is ::::",event);
+    this.Ischecked = event.checked;
+    if(event.checked){
+      this.dateRangePicker.setPresetValue("This Month");
+      this.fromdate = this.dateRangePicker.value.start ;
+      this.todate =this.dateRangePicker.value.end ;
+      // this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
+      // this.todate = this.convertDatefmt(this.ranges['This Month'][1])
+      // this.selected["endDate"] = this.ranges['This Month'][1];
+    }else{
+      this.fromdate = this.convertDatefmt('');
+      this.todate = this.convertDatefmt('');
+    }
+    this.onSubmitResolvedLeaveFilter(event)
   }
-  this.onSubmitResolvedLeaveFilter(event)
-}
-ngAfterContentChecked(): void {
-  this.cd.detectChanges();
-}
+  ngAfterContentChecked(): void {
+    this.cd.detectChanges();
+  }
 }

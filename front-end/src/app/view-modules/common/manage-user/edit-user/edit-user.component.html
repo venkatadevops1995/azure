@@ -1,287 +1,211 @@
 <div>
-    <div class="flex" style="justify-content:space-between;">
+  <div class="pb-20 flex flex-col-xs flex-row-xmd center-xs between-xs middle-xmd">
+    <h2 class="heading fw-600">Edit Employee</h2>
+    <div class="fs-12 fs-md-14 flex w-md-70 w-xmd-50 end-xmd middle-xs mt-15 mt-xmd-0">
+      <mat-form-field class="no-pb w-50 mr-30 top-form-field single-row" >
+        <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField">
+        <svg matSuffix class="use-svg col-primary-300" symbol="triangle-down" [w]="8" (click)="clear()"></svg>
+        <mat-autocomplete class="fs-14" #auto="matAutocomplete">
+          <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
+            {{state.emp_name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <app-button [disabled]="searchField.invalid" [size]="is_XMD_LT ? 'small' : 'default'" (click)="getAllReportes()">
+        Submit
+      </app-button>
 
-        <div class="flex w-50">
-            <mat-form-field class="w-50 mr-10">
-                <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField" >
-                <button style="background: none;border:none;" mat-button type='button' matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                    <mat-icon>arrow_drop_down</mat-icon>
-                  </button>
-                <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">
-                        {{state.emp_name}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-            <!-- <p *ngIf="show" style="color: var(--color-danger);">Select Leader from list</p> -->
-            <div class="flex end-xs middle-xs" style="margin-top: -25px;">
-                <app-button  [disabled]="searchField.invalid" (click)="getAllReportes()">Submit
-                </app-button>
-            </div>
-
-<!--             
-            <mat-form-field class="w-50 mr-10">
-                <mat-label>Search employee</mat-label>
-                <input matInput [formControl]="searchField">
-                <button style="background: none;border:none;" mat-button type='reset' matSuffix mat-icon-button aria-label="Clear" (click)="reset()">
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-                <mat-error *ngIf="searchField.touched && searchField.hasError('required')">
-                    Please enter text
-                </mat-error>
-            </mat-form-field>
-
-            <div class="flex end-xs middle-xs" style="margin-top: -25px;">
-                <app-button size='small' theme="blue-lite" [disabled]="searchField.invalid" (click)="getAllReportes()">Submit</app-button>
-            </div>
-        </div> -->
-        <!-- <div style="display: inline-block;padding: 10px;">
-        <app-button size='small' theme="blue-lite" (click)="reset()">Reset</app-button>
-    </div> -->
     </div>
-</div>
-<table mat-table [dataSource]="USERS_DATA" *ngIf="USERS_DATA.length!=0" class="mat-elevation-z8">
+  </div>
+  <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
+  **********************************************************************
+  ************************************************************ -->
 
-    <ng-container matColumnDef="serial_no">
-        <th mat-header-cell *matHeaderCellDef> S.NO </th>
-        <td mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
-    </ng-container>
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
-    </ng-container>
+  <div class="w-100 of-x-auto" [tableAffix] *ngIf="USERS_DATA.length!=0">
 
-    <ng-container matColumnDef="staff_no">
-        <th mat-header-cell *matHeaderCellDef>Staff No. </th>
-        <td mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
-    </ng-container>
+    <table style="min-width:800px;" mat-table [dataSource]="USERS_DATA" class="mat-elevation-z8 w-100">
+      <ng-container matColumnDef="serial_no">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email </th>
-        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-    </ng-container>
+      <ng-container matColumnDef="name">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.emp_name}} </td>
+      </ng-container>
 
-    <!-- <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef> Edit </th>
-        <td mat-cell *matCellDef="let element;let i = index">
-            <button style=" border: none; outline: none;margin: 5px;" (click)=openEditDialog(i)><span class="material-icons">
-            edit
-            </span></button>
-            <button style=" border: none; outline: none;margin: 5px;" (click)=openDeleteDialog()><span class="material-icons">
-                delete
-                </span>
-            </button>
+      <ng-container matColumnDef="staff_no">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Staff No. </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.staff_no}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Email </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="company">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Group </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.company}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Category </th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.category_name}} </td>
+      </ng-container>
+
+
+
+
+      <ng-container matColumnDef="edit">
+
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
+        <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
+
+          <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+          <!-- Previous code-->
+          <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> -->
+          <!-- new code -->
+          <svg [attr.index]='i' class="use-svg edit" symbol="edit" [w]="16"
+            style="color: var(--col-primary-300);"></svg>
+          <!-- ****************************************************** -->
         </td>
-    </ng-container> -->
+      </ng-container>
+      <ng-container matColumnDef="disable">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Disable</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
+          <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
+          <!-- Previous code-->
+          <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
+          [disabled]="element.staging_status !== null ? true : false"
+          [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" style="border: none;cursor: pointer;  "
+          title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
+          svg-fill="currentColor"> -->
+          <!-- ****************************************************** -->
+          <!-- new code -->
+          <button class="action--btn disable" [attr.index]='i'
+            [disabled]="element.staging_status !== null ? true : false"
+            [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '"
+            style="border: none;cursor: pointer;  "
+            title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
+            svg-fill="currentColor">
+            <svg class="use-svg" symbol="disable" [w]="16"></svg>
 
-    <ng-container matColumnDef="company">
-        <th mat-header-cell *matHeaderCellDef> Group </th>
-        <td mat-cell *matCellDef="let element"> {{element.company}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef> Category </th>
-        <td mat-cell *matCellDef="let element"> {{element.category_name}} </td>
-    </ng-container>
-
-
-    <!-- <ng-container matColumnDef="reporting_manager">
-        <th mat-header-cell *matHeaderCellDef>Reporting Manager</th>
-
-
-        <td mat-cell *matCellDef="let element">
-
-            <div style="display:inline;" *ngIf="element.staged_managers['1'] !== undefined" class='fc_blue' tooltip="Current Manager: {{element.managers['1']['emp_name']}}" placement="bottom">{{element.staged_managers['1']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['1'] === undefined">{{element.managers['1']['emp_name']}}</div>
-
+          </button>
         </td>
-    </ng-container>
-
-    <ng-container matColumnDef="managers_manager">
-        <th mat-header-cell *matHeaderCellDef>Manager's Manager</th>
-        <td mat-cell *matCellDef="let element">
-
-            <div style="display:inline;" *ngIf="element.staged_managers['2'] !== undefined" class='fc_blue' tooltip="Current Manager: {{element.managers['2']['emp_name']}}" placement="bottom">{{element.staged_managers['2']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['2'] === undefined">{{element.managers['2']['emp_name']}}</div>
-
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="functional_manager">
-        <th mat-header-cell *matHeaderCellDef>Functional Owner</th>
-        <td mat-cell *matCellDef="let element">
-            <div style="display:inline;" *ngIf="element.staged_managers['3'] !== undefined" class='fc_blue' tooltip="Current Manager: {{element.managers['3']['emp_name']}}" placement="bottom">{{element.staged_managers['3']['emp_name']}}</div>
-            <div style="display:inline;" *ngIf="element.staged_managers['3'] === undefined">{{element.managers['3']['emp_name']}}</div>
-
-        </td>
-    </ng-container> -->
-
-
-
-    <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef> Edit</th>
-        <td mat-cell *matCellDef="let element;let i = index">
-            <button type="button" class="action--btn" style="border: none;" (click)="editUser(i)"><span class="material-icons">
-                mode_edit
-                </span></button>
-        </td>
-    </ng-container>
-    <ng-container matColumnDef="disable">
-        <th mat-header-cell *matHeaderCellDef> Disable</th>
-        <td mat-cell *matCellDef="let element;let i = index" >
-            <button class="action--btn" [ngClass]="element.staging_status !== null ? 'disable--emp-btn' : ' '" title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}" [disabled]="element.staging_status !== null ? true : false"  type="button" style="border: none;" (click)="setId(i); modalDisable.open()"><span class="material-icons">
-                delete 
-                </span></button>
-        </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<div *ngIf="USERS_DATA.length==0 && show_message==true" class="p-20">
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <!-- ****************************************************************************************
+******************************************************************************
+***************************************************************************** -->
+  <div *ngIf="USERS_DATA.length==0 && show_message==true" class="p-20 fs-14 col-primary-300">
     NO DATA AVAILABLE
+  </div>
 
-</div>
+  <!-- **************************************************************
+************************************************************ -->
+  <!-- Rahul change(no need some field in editUser popup change into modelpopup) ************************************
+ ************************************************* -->
+  <ng-template #editEmppopup>
+    <form class="fs-14 flex col nowrap center-xs" [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
+      <p class="col-primary-400">Select Category for</p>
+      <div class="fs-18 mb-30"> {{ editAbleEmpName  | titlecase }} </div>
 
-
-
-<app-modal-popup #editEmp [w]="'500px'" [h]="'480px'">
-    <div head>
-        Edit Employee
-    </div>
-    <div style="padding:30px;">
-        <form [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
-            <div class="grid-container">
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Name</mat-label>
-                    <input matInput formControlName="emp_name" readonly>
-                    <mat-error *ngIf="editUserForm.controls.emp_name.touched && editUserForm.controls.emp_name.hasError('required')">
-                        Please Enter Name
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Staff No.</mat-label>
-                    <input matInput formControlName="staff_no" readonly>
-                    <mat-error *ngIf="editUserForm.controls.staff_no.touched && editUserForm.controls.staff_no.hasError('required')">
-                        Please Enter Staff No.
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.staff_no.touched && editUserForm.controls.staff_no.hasError('is_duplicated')">
-                        Entered Staff No. already exists
-                    </mat-error>
-                </mat-form-field>
-
-
-                <mat-form-field class="disabled-input">
-                    <mat-label>Email</mat-label>
-                    <input matInput formControlName="email" readonly/>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('required')">
-                        Please Enter Email
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('email')">
-                        Please Enter valid Email
-                    </mat-error>
-                    <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('is_duplicated')">
-                        Entered Email already exists
-                    </mat-error>
-
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Group</mat-label>
-                    <mat-select formControlName="company" [disabled]="true">
-                        <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.company.touched && editUserForm.controls.company.hasError('required')">
-                        Please Select Group
-                    </mat-error>
-                </mat-form-field>
-
-
-
-                <mat-form-field>
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender" [disabled]="true">
-                        <mat-option [value]="gender['id']" *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.gender.touched && editUserForm.controls.gender.hasError('required')">
-                        Please Select Gender
-                    </mat-error>
-                </mat-form-field>
-
-
-                <mat-form-field>
-                    <mat-label>Category</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="editUserForm.controls.category.touched && editUserForm.controls.category.hasError('required')">
-                        Please Select Category
-                    </mat-error>
-                </mat-form-field>
-
-
-
-                <div mat-dialog-actions style="padding-bottom:20px">
-                    <div style="display: inline-block; text-align: center;">
-                        <app-button size='small' theme="blue-lite" type="submit" [disabled]="editUserForm.invalid">Update</app-button>
-                    </div>
-
-                    <div style="display: inline-block; text-align: center;padding-left: 10px;">
-                        <app-button size='small' theme="danger" type="button" (click)="close()">Close</app-button>
-                    </div>
-
-
-                </div>
-            </div>
-        </form>
-
-    </div>
-</app-modal-popup>
-<app-modal-popup [w]="500" [h]="500" #refModalDisable>
-    <div head="">
-        Confirm
-    </div>
-    <div class="p-15" style="padding-top: 45px;">
-        <div class="delete__emp">
-            <p>You want to disable : <span> {{ disableEmpName ? disableEmpName : '' }}</span> </p>
+      <mat-form-field>
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="editUserForm.controls.category.touched && editUserForm.controls.category.hasError('required')">
+          Please Select Category
+        </mat-error>
+      </mat-form-field>
+      <div class="center-xs  mt-20 pb-20" mat-dialog-actions >
+        <!-- <div style="display: inline-block; text-align: center;padding-left: 10px;">
+            <app-button size='small' theme="grey" type="button" (click)="close()">Close</app-button>
+        </div> -->
+        <div style="display: inline-block; text-align: center;">
+          <app-button size='small' theme="success" type="submit" [disabled]="editUserForm.invalid">Update</app-button>
         </div>
-       <form [formGroup]="deleteUserForm" style="padding: 0 20px 10px 20px;" >
-        <mat-form-field class="custompicker">
-            <mat-label>Relieving Date</mat-label>
-            <input matInput type="text" ngxDaterangepickerMd [locale]="{separator: ' To ',format: 'YYYY-MM-DD'}" #picker [singleDatePicker]="true" class="ngx-daterangepicker-action" [showRangeLabelOnInput]="false" style="border: none;background: none;color: #3a7bca;"
-                formControlName="dol" [closeOnAutoApply]="true" [autoApply]="true" readonly>
-            <!-- <button type="button" class="ngx-daterangepicker-action" style="background: none; border: none;cursor: pointer;">
-                <mat-icon role="img" (click)="open($event)" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;">date_range</mat-icon>
-              </button> -->
-            <mat-icon matSuffix role="img" class="mat-icon material-icons ngx-daterangepicker-action" style="color: #3a7bca;" (click)="open(picker)">date_range</mat-icon>
-            <mat-error *ngIf="deleteUserForm.get('dol').hasError('required')">
-                Please select Relieving Date
-            </mat-error>
+
+
+      </div>
+    </form>
+  </ng-template>
+  <!-- **************************************************************
+************************************************************ -->
+  <!-- rahul change added custom date(disable-employee popup) *****************************
+            ******************************************************************* -->
+  <ng-template #disableEmppopup>
+    <div class=" p-15 flex col nowrap center-xs">
+      <p class="col-primary-400">
+        You want to disable :
+      </p>
+      <div class="fs-18 mb-30 delete__emp">
+        {{ disableEmpName ? disableEmpName : '' }}
+      </div>
+      <!-- <div class="delete__emp">
+            <p> <span> </span> </p>
+        </div> -->
+      <form class="fs-14" [formGroup]="deleteUserForm">
+        <mat-form-field class="custompicker w-100">
+
+          <mat-label>Relieved Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dol" autocomplete="off" (keydown)="false"
+            (click)="picker.open()" (dateChange)="onDate($event)">
+          <svg matDatepickerToggleIcon (click)="picker.open()" matSuffix class="use-svg" symbol="calendar" w="20"></svg>
+          <!-- <div  
+            [svgIcon]="{url: './assets/icons-sprite-new.svg#calendar',w:20}" style="
+            color: var(--col-primary-300); 
+            cursor: pointer; 
+          " svg-fill="currentColor">
+          </div> -->
+          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+          <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+            Please select Relieving Date
+          </mat-error>
         </mat-form-field>
-       </form>
-        <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
-            <app-button theme="black" class="mr-30 zeros-project-cancel" (click)="modalDisable.close()">Cancel</app-button>
-            <app-button class="zeros-project-proceed" (click)="proeceedDisable()">Proceed</app-button>
-        </div>
+
+        <!-- <mat-form-field appearance="legacy" class="no-pb atai-date-range">
+            <app-atai-date-range [minDate]="minDate" [maxDate]="maxDate" [allowSameDateRange]="true" [showInput]="true"
+              [showPresets]="true" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+          </mat-form-field> -->
+      </form>
+      <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
+        <!-- <app-button theme="black" size="small" theme="grey"class="mr-30 zeros-project-cancel" (click)="disableEmpclose()">Cancel</app-button> -->
+        <app-button size="small" theme="success" class="zeros-project-proceed" (click)="proeceedDisable()">Proceed
+        </app-button>
+      </div>
     </div>
-</app-modal-popup>
-
-
-
-
-<app-modal-popup [w]="500" [h]="250" #refModalDisableError>
-    <div head="">
-        Disable Employee
+  </ng-template>
+  <!-- **************************************************************
+************************************************************ --> 
+  <!-- Rahul change (template refrance added for the getting error masg while disabling the employee)*****************-->
+  <ng-template #errorOnDisablePopup>
+    <div class=" flex col nowrap center-xs" style="gap:1em;">
+      <div class="flex center-xs">
+        <svg class="use-svg" symbol="yellow_alert" w="40"
+          style=" color: var(--col-primary-300); margin-top: 0px;"></svg>
+      </div>
+      <h1 class="fs-14 col-primary-100">{{errorMessage}}</h1>
+      <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Got it
+      </app-button>
     </div>
-   <h1 class="disable__emp_msg">{{errorMessage}}</h1>
-</app-modal-popup>
+  </ng-template>
+  <!-- *************************************************************************************************************** -->
 
-
-<app-modal-popup [w]="500" [h]="250" #refModalDisableSuccess>
-    <div head="">
-        Disable Employee
+  <ng-template #successOnDisablePopup>
+    <div class=" flex col nowrap center-xs" style="gap:1em;">
+      <div class="flex center-xs">
+        <svg class="use-svg" symbol="success-tick-circle" w="40" style=" color: var(--col-primary-300);  "></svg>
+      </div>
+      <h1 class="fs-14 col-primary-100">{{delete_emp_success_msg}}</h1>
+      <app-button size="small" theme="success" class="zeros-project-proceed" (click)="disableerorrpopup()">Done
+      </app-button>
     </div>
-    <h1 class="disable__emp_msg">{{delete_emp_success_msg}}</h1>
- </app-modal-popup>
+  </ng-template>

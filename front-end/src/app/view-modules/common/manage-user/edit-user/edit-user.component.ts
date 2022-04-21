@@ -1,23 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 import { HttpParams } from '@angular/common/http';
 import ValidateEmail from 'src/app/functions/validations/email';
 import { NotNull, NoDate } from '../manage-user.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, take } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+
 export interface UserData {
   emp_id: number;
   name: string;
   staff_no: number;
   company: string;
   role: number,
-  email:string,
+  email: string,
   // managers: {
   //   'emp_id': number;
   //   'emp_name': string;
@@ -32,51 +37,123 @@ export interface UserData {
 })
 export class EditUserComponent implements OnInit {
 
+  //  Rahul change(using Viewchild for modalPopup)**************************
+  @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
+  @ViewChild("table") table: ElementRef;
+  //  ***********************************************************************
+  // ********************************************************************
+  // ***************************************************************
+  //  Rahul change(using Viewchild for disable employee popup)**************************
+  @ViewChild("disableEmppopup") disableEmppopup: TemplateRef<any>;
+  @ViewChild("errorOnDisablePopup") errorOnDisablePopup: TemplateRef<any>;
+  @ViewChild("successOnDisablePopup") successOnDisablePopup: TemplateRef<any>;
+
+  //  ***********************************************************************
+  // ********************************************************************
+  // ***************************************************************
   @ViewChild('refModalDisable') modalDisable: ModalPopupComponent
   @ViewChild('refModalDisableError') modalDisableError: ModalPopupComponent
   @ViewChild('refModalDisableSuccess') modalDisableSuccess: ModalPopupComponent
-  
+
   @ViewChild('editEmp') editUserPopup: ModalPopupComponent;
-  
-  displayedColumns: string[] = ['serial_no','staff_no', 'name', 'company','email', 'category','edit',  'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+
+  //Rahul change(adding variable for use breakpoint observer api using singlton service)************
+  get is_XMD_LT() {
+    return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+  }
+  //*******************************************************************************************
+
+
+
+  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
+
   constructor(public dialog: MatDialog,
-    private datepipe : DatePipe,
+    private datepipe: DatePipe,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
-    private user: UserService) { 
-      this.filteredManagers = this.searchField.valueChanges
-        .pipe(
-          startWith(''),
-          map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
-        );
-    }
-    deleteUserForm = this.fb.group({
-      'dol': ['', [Validators.required, NoDate()]],
-    })
-  
+    private user: UserService,
+    // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
+    public dialogRef: MatDialogRef<any>,
+
+    private el: ElementRef
+    //*****************************************************************************************
+    // ***********************************************************************************************
+  ) {
+    this.filteredManagers = this.searchField.valueChanges
+      .pipe(
+        startWith(''),
+        map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
+      );
+
+
+
+  }
+  deleteUserForm = this.fb.group({
+    'dol': ['', [Validators.required, NoDate()]],
+  })
+
   USERS_DATA: UserData[] = [];
   ALL_CATEGORIES = [];
-  index : number = -1;
+  index: number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
-  ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
+  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }]
   show_message = false;
   filteredManagers: Observable<any>;
-  errorMessage : string = "";
+  errorMessage: string = "";
   disableEmpName: string = '';
-  delete_emp_success_msg:string ='';
+  editAbleEmpName: string = '';
+  delete_emp_success_msg: string = '';
   ngOnInit(): void {
     this.getAllReportes();
+    this.getCompanies()
+    this.getCategories();
+    // this.renderer.listen(this.table?.nativeElement,'click',(evt)=>{
+    //   console.log('hello u clicked on the table!!!')
+    // })
   }
   private filterManagerList(value: string) {
     const filterValue = value.toLowerCase();
     return this.employeeListSearch.filter(option => option.emp_name.toLowerCase().includes(filterValue))
     // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
   }
-  searchField = this.fb.control('ALL',[Validators.required])
-  
+  searchField = this.fb.control('ALL', [Validators.required])
+
+  //Rahul change(adding event daligation for table row when clicking on edit and disable icon) *******************************
+  @HostListener('click', ['$event'])
+  onClickHost(e) {
+    let target: any = e.target;
+    let tempTarget = target;
+    console.log("--------------click");
+    // if(e.target.classList.contains('edit')){
+    //   let index=e.target.getAttribute("index");
+    //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
+    //   this.editUser(index);
+    // }
+
+    while (tempTarget != this.el.nativeElement) {
+      if (tempTarget.classList.contains('edit')) {
+        console.log('::::::::::::::clicked on the edit icon');
+        let index = tempTarget.getAttribute("index");
+        this.editUser(index);
+        break;
+      }
+      if (tempTarget.classList.contains('disable')) {
+        console.log('::::::::::::::clicked on the disable icon');
+        let index = tempTarget.getAttribute("index");
+        this.setId(index);
+        this.disableEmppopupopen()
+        break;
+      }
+      tempTarget = tempTarget.parentNode;
+    }
+
+  }
+
+  //**************************************************************************** 
+
   editUserForm = this.fb.group({
     'emp_id': ['', Validators.required],
     'emp_name': ['', Validators.required],
@@ -88,12 +165,13 @@ export class EditUserComponent implements OnInit {
     'email': ['', [Validators.required, ValidateEmail]],
     // 'role': [1, Validators.required],
 
-    'category': ['',Validators.required],
+    'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
-    'gender' : ['',Validators.required],
+    'gender': ['', Validators.required],
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
+
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {
@@ -105,30 +183,32 @@ export class EditUserComponent implements OnInit {
       }
     })
   }
-  clear(){
+
+  clear() {
     this.searchField.reset();
     this.searchField.setValue('');
     this.searchField.updateValueAndValidity()
-   }
+  }
+
   getAllReportes(): void {
-    this.employeeListSearch=[]
-    const params = new HttpParams().set("type","hr").set("search",this.searchField.value)
-    console.log("-----------------",this.searchField.value)
-    this.http.request("get", "users/",params).subscribe(res => {
+    this.employeeListSearch = []
+    const params = new HttpParams().set("type", "hr").set("search", this.searchField.value)
+    console.log("-----------------", this.searchField.value)
+    this.http.request("get", "users/", params).subscribe(res => {
 
       if (res.body["success"] == true) {
-        this.show_message =true
+        this.show_message = true
         let emp_list = []
         res.body["results"].forEach(ele => {
           // console.log("---------------",ele)
           Array.prototype.push.apply(emp_list, [ele]);
         })
-        console.log('----------------emp_list--',emp_list)
+        console.log('----------------emp_list--', emp_list)
 
         this.USERS_DATA = emp_list;
         this.employeeList = [...this.USERS_DATA]
         let employeeList = [...this.USERS_DATA];
-        this.employeeListSearch.push({emp_id:-1,emp_name:'ALL'});
+        this.employeeListSearch.push({ emp_id: -1, emp_name: 'ALL' });
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
         });
@@ -156,16 +236,20 @@ export class EditUserComponent implements OnInit {
     })
 
   }
-  reset(){
+  reset() {
     this.searchField.reset()
     this.USERS_DATA = []
   }
+  // (rahul change) adding the onDateSelection() for selecting date****************
 
+  onDate(event): void {
+    console.log("Date input:", event)
 
-  editUser(i){
-    this.  getCompanies() 
-    this.getCategories()
-    
+  }
+  //***************************************************************************** */
+
+  editUser(i) { 
+
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
     this.editUserForm.controls.emp_name.setValue(this.USERS_DATA[i]["emp_name"]);
     this.editUserForm.controls.staff_no.setValue(this.USERS_DATA[i]["staff_no"]);
@@ -173,88 +257,196 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
-
-    this.editUserPopup.open()
+    // Rahul change(opening modal popup)******************************
+    // this.editUserPopup.open() 
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Edit Employee',
+        template: this.editEmppopup,
+        maxWidth: '420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+      },
+      autoFocus: false,
+    })
+    // calling setId() for getting userName corresponding to click index
+    this.setId(i)
+    // ******************************************************************
     console.log(i,)
     this
   }
-  close(){
+
+  close() {
     this.editUserForm.reset()
-    this.editUserPopup.close()
+    // this.editUserPopup.close()
+    // this.dialog.closeAll()
+    console.log("$$$$$  Close cl")
+    this.dialogRef.close()
 
   }
 
   updateEmp() {
-    this.http.request("put", "users/",'', this.editUserForm.value).subscribe(res => {
+    this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
       if (res.body["success"] == true) {
-          console.log("-------------------------")
-          this.close()
-          this.getAllReportes()
-          this
+        console.log("-------------------------")
+        this.close()
+        this.getAllReportes()
+        this
       }
     })
 
   }
   // disable user 
 
-  disableUser(i){
+  disableUser(i) {
     console.log(i);
-    this.getCompanies() 
-    this.getCategories();
     this.editUserForm.controls.emp_id.setValue(this.USERS_DATA[i]["emp_id"]);
     this.disableEmp();
   }
   disableEmp() {
-    let  obj = {
-      emp_id : this.editUserForm.value.emp_id,
-      relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
-    }
-    this.http.request("put", "delete/",'', obj).subscribe(res => {
-      if (res.status == 400) {
-          this.errorMessage = res.error.message + ". First update employee's manager";
-        this.modalDisableError.open();
-        this.deleteUserForm.controls.dol.setValue('')
-        return;
-      }else if(res.status == 406){
-        this.errorMessage = res.error.message;
-        this.modalDisableError.open()
-        this.deleteUserForm.controls.dol.setValue('');
-        return;
+    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%date%%%%%%%%%%%%%%%%%%%%', this.deleteUserForm.value.dol)
+    if (this.deleteUserForm.value.dol) {
+      let obj = {
+        emp_id: this.editUserForm.value.emp_id,
+        relieved: this.datepipe.transform(this.deleteUserForm.value.dol, 'yyyy-MM-dd'),
+        //   relieved : this.datepipe.transform(this.deleteUserForm.controls.dol.value.startDate._d, 'yyyy-MM-dd')
       }
-      if (res.body["success"] == true) {
-  
+
+      this.http.request("put", "delete/", '', obj).subscribe(res => {
+        if (res.status == 400) {
+          this.errorMessage = res.error.message + ". First update employee's manager";
+          // this.modalDisableError.open()
+          //Rahul change(open a dialog box on status 400 when user click on disable employee proceed button ) ************************
+
+          this.dialog.open(ConfirmDialogComponent, {
+            panelClass: 'confirm-remove-project',
+            backdropClass: 'cdk-overlay-darker-backdrop',
+            data: {
+              template: this.errorOnDisablePopup,
+              heading: '',
+              hideFooterButtons: true,
+            }
+          })
+          // **************************************************************** 
+          this.deleteUserForm.controls.dol.setValue('')
+          return;
+        } else if (res.status == 406) {
+          this.errorMessage = res.error.message;
+          // this.modalDisableError.open()
+          //Rahul change(open a dialog box  when user click on disable employee proceed button and enter releaving date less then 
+          //joining date ) ************************
+          this.dialog.open(ConfirmDialogComponent, {
+            panelClass: 'confirm-remove-project',
+            backdropClass: 'cdk-overlay-darker-backdrop',
+            data: {
+              template: this.errorOnDisablePopup,
+              heading: '',
+              hideFooterButtons: true,
+            }
+          })
+          // **************************************************************** 
+
+          this.deleteUserForm.controls.dol.setValue('')
+          return;
+        }
+        if (res.body["success"] == true) {
+
           console.log("-------------------------")
-          this.modalDisableSuccess.open()
+          // this.modalDisableError.open()
+          //Rahul change(open a dialog box on status success when user click on disable employee proceed button ) ************************
+
+          this.dialog.open(ConfirmDialogComponent, {
+            panelClass: 'confirm-remove-project',
+            backdropClass: 'cdk-overlay-darker-backdrop',
+            data: {
+              template: this.successOnDisablePopup,
+              heading: '',
+              hideFooterButtons: true,
+            }
+          })
+          // **************************************************************** 
           this.close()
           this.getAllReportes()
-          this
           this.delete_emp_success_msg = res.body.results
-          this.deleteUserForm.controls.dol.setValue('');
-      } else {
-        alert(res.body.message)
+          this.deleteUserForm.controls.dol.setValue('')
+          this
+        } else {
+          alert(res.body.message)
 
-        this.errorMessage = res.body.message;
-        this.modalDisableError.open()
-        this.deleteUserForm.controls.dol.setValue('');
-        return;
-        
-      }
-    })
+          this.errorMessage = res.body.message;
+          // this.modalDisableError.open();
+          //Rahul change(open a dialog box  when user click on disable employee proceed button and get some server error 
+          this.dialog.open(ConfirmDialogComponent, {
+            panelClass: 'confirm-remove-project',
+            backdropClass: 'cdk-overlay-darker-backdrop',
+            data: {
+              template: this.errorOnDisablePopup,
+              heading: '',
+              hideFooterButtons: true,
+            }
+          })
+          // **************************************************************** 
+
+          this.deleteUserForm.controls.dol.setValue('')
+          return;
+
+        }
+      })
+    } else {
+      return;
+    }
+
   }
-  setId(i : number) {
+  setId(i: number) {
     this.index = i;
-    this.disableEmpName = this.USERS_DATA[i]["emp_name"]    
+    this.disableEmpName = this.USERS_DATA[i]["emp_name"]
+    //Rahul change(assigning employee name after calling setId() from editUser() by passing the index number*****
+    //********************************************************************************************* 
+    this.editAbleEmpName = this.USERS_DATA[i]["emp_name"]
+    //**********************************************************************
   }
 
-   proeceedDisable() {
-     this.modalDisable.close();
-     if (this.index != -1) {
-       this.disableUser(this.index);
-     }
+  proeceedDisable() {
+    //  Rahul change (closing disableEmployee popup)***************************
+    //  **********************************************************************
+    //  this.modalDisable.close();
+    this.dialogRef.close();
+    if (this.index != -1) {
+      this.disableUser(this.index);
+    }
   }
-  open(e){
+  open(e) {
     console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
     e.click()
   }
+
+  //Rahul change (disableEmppopupopen() and disableEmppopupclose() are added)in order to open and close disable employee squre
+  // popup
+  disableEmppopupopen() {
+    this.deleteUserForm.get('dol').setValue("")
+    this.deleteUserForm.get('dol').markAsUntouched();
+    this.dialogRef = this.dialog.open(PopUpComponent, {
+      data: {
+        heading: 'Edit Employee',
+        template: this.disableEmppopup,
+        maxWidth: '420px',
+        hideFooterButtons: true,
+        showCloseButton: true,
+      },
+      autoFocus: false,
+    })
+  }
+  // disableEmpclose(){
+  //   this.dialogRef.close();
+  // }
+  //**************************************************************************************** */
+  //Rahul change ( disableerorrpopup() is added in order to close all confermation popup 
+  // while user click on disable employee proceed  button
+
+  disableerorrpopup() {
+    console.log('disable error popup have been close#####################')
+    this.dialog.closeAll();
+  }
+  //**************************************************************************************** */
 }
