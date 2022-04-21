@@ -32,6 +32,9 @@ class LocationView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         res = Location.objects.filter(status=1).values()
         return Response(utils.StyleRes(True,"location data",res), status=StatusCode.HTTP_OK)
 
@@ -39,6 +42,9 @@ class DefaultHolidayList(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         res = HolidayPermament.objects.filter(Q(status=1)).values()
         return  Response(utils.StyleRes(True,"holiday list data",res), status=StatusCode.HTTP_OK)
 
@@ -130,6 +136,9 @@ class LocationHolidayCalendarUpdateView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         # holiday_calendar_serial_data = HolidayCalendarSerializer(data = )
         # print(request.data)
         req_data = []
@@ -227,6 +236,9 @@ class DateView(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def get(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         current_date={'date':datetime.now().strftime("%Y-%m-%d")}
         return  Response(utils.StyleRes(True,"current date",current_date), status=StatusCode.HTTP_OK)
 
@@ -236,6 +248,9 @@ class ConfirmHoliday(APIView):
     @jwttokenvalidator
     @custom_exceptions
     def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400) 
         year = request.data.get("year",None)
         if (year != None and year != ""):
             holidays = HolidayCalendar.objects.filter(Q(holiday_year=year)&Q(status=1))

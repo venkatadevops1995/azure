@@ -35,6 +35,16 @@ def is_manager(func):
     return check_is_manager
 
 
+""" API view method decorator to check if a user is an admin """
+def is_admin(func):
+    def check_is_admin(self,request,*args,**kwargs): 
+        # print(request)
+        auth_details = utils.validateJWTToken(request)
+        if not auth_details['is_emp_admin']:
+            return Response({"message":'you are forbidden to make this request'},status=403)
+        return func(self,request, *args,**kwargs)
+    return check_is_admin
+
 def jwttokenvalidator(viewfunction):
     def validator(*args, **kwargs):
         request=args[1]

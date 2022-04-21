@@ -88,7 +88,7 @@ def get_leave_requests(qp, emp_id,is_hr=False):
                 today = today.replace(hour=0, minute=0, second=0, microsecond=0)
                 is_date_between_startdate_end_date = (Q(startdate__gte=start_date) & Q(startdate__lte=end_date)) | (Q(enddate__gte=start_date) & Q(enddate__lte=end_date)) | (Q(startdate__lte=start_date) & Q(enddate__gte=end_date) & ~(Q(startdate__custom_gte=today) & Q(enddate__custom_lte=today)))
 
-        base_query_set_leave_requests = LeaveRequest.objects.prefetch_related('leave_set','leavediscrepancy')
+        base_query_set_leave_requests = LeaveRequest.objects.prefetch_related('leave_set','leavediscrepancy').filter((~Q(leavediscrepancy__status = 1)))
         if is_manager:
             query_expression = Q(emp__in=employees)
             if qp.get('emp_name'):

@@ -108,9 +108,9 @@ CRONJOBS = [
     ('5 0 1 * *', 'vedikaweb.vedikaapi.cron.LeaveUpdateCron'), #EVERY 1ST DAY OF MONTH LEAVE UPDATE
     ('15 0 * * *', 'vedikaweb.vedikaapi.cron.autoApprovalOfExpiredLeaveRequests'), # AUTO APPROVE LEAVES
     ('*/10 * * * *', 'vedikaweb.vedikaapi.cron.emailCron'), #Cron to send all pending emails
-    ('5 20 28-31 * *','vedikaweb.vedikaapi.cron.sendMisMail'),#  Cron to Send MIS Mail on the end of the month at 20:05
-    ('5 20 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 20:05
-    ('5 19 * * *','vedikaweb.vedikaapi.cron.relieveEmployee')#Cron to Run  Every day at 19:05 to disable the employee from staged table
+    ('5 22 28-31 * *','vedikaweb.vedikaapi.cron.sendMisMail'),#  Cron to Send MIS Mail on the end of the month at 22:05
+    ('10 22 28-31 * *','vedikaweb.vedikaapi.cron.sendLeaveBalanceEmail'),#Cron to Send CLB Mail on the end of the month at 22:05
+    ('5 21 * * *','vedikaweb.vedikaapi.cron.relieveEmployee')#Cron to Run  Every day at 21:05 to disable the employee from staged table
 ]
 
 ROOT_URLCONF = 'vedikaweb.urls'
@@ -306,7 +306,7 @@ SUPPORT_EMAIL = 'atwork@atai.ai'
 
 IGNORE_ADMIN_EMAILS=[]
 SENDEMAILTOALL=False
-CUSTOM_EMAILS = ['mahab@atai.ai','sravan@atai.ai','moulali@atai.ai','rhitam@atai.ai']
+CUSTOM_EMAILS = ['moulali@atai.ai','dipak@atai.ai']
 
 
 MONTH_CYCLE_START_DATE = 26

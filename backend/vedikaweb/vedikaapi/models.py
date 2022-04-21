@@ -756,6 +756,8 @@ class LeaveBalance(models.Model):
     created = models.DateTimeField(default=timezone.now)
     comments = models.CharField(max_length=255, blank=True, null=True)
     status = models.IntegerField()
+    current_leave_balance = models.FloatField(blank=True,null=True)
+    modified_leave_balance = models.FloatField(blank=True,null=True)
     class Meta:
         managed = False
         db_table = 'leave_balance'
