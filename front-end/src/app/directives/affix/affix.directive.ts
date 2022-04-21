@@ -10,7 +10,7 @@ interface ataiAffix {
     referenceElement?: any;
     referenceHierarchy?: 'p' | 'p.p' | any,
     disable?: boolean,
-    scrollX?:number
+    scrollX?: number
 }
 
 @Directive({ selector: '[ataiAffix]' })
@@ -28,6 +28,7 @@ export class AffixDirective {
         private el: ElementRef,
         private renderer: Renderer2,
         private windowRef: WindowReferenceService,
+        private ss: SingletonService,
         @Inject(DOCUMENT) private doc: Document
     ) {
     }
@@ -48,7 +49,12 @@ export class AffixDirective {
     // the mutation observer of for auto update
     observer: MutationObserver;
 
-    ngAfterViewInit() { 
+    ngAfterViewInit() {
+        this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
+            setTimeout(() => { 
+                this.cloneElement() 
+            }, 450)
+        })
         fromEvent(this.windowRef.nativeWindow, 'scroll').pipe(takeUntil(this.destroy$), skipWhile(() => {
             let reference = this.ataiAffix.referenceElement ? this.ataiAffix.referenceElement : this.el.nativeElement.parentElement;
             let offsetHeight = reference.offsetHeight;
@@ -75,14 +81,14 @@ export class AffixDirective {
                 let target = (<HTMLElement>this.el.nativeElement);
                 let targetRect = target.getBoundingClientRect();
                 let referenceRect = reference.getBoundingClientRect()
-                this.wrapperDiv.style.width = referenceRect.width+'px';
+                this.wrapperDiv.style.width = referenceRect.width + 'px';
                 this.wrapperDiv.style.overflowX = 'auto'
 
                 // console.log(referenceRect.top, targetRect.height)
 
-                if(this.ataiAffix.scrollX){
+                if (this.ataiAffix.scrollX) {
                     this.wrapperDiv.scrollLeft = this.scrollX
-                }else{
+                } else {
                     this.wrapperDiv.scrollLeft = 0;
                 }
 
@@ -100,14 +106,14 @@ export class AffixDirective {
         })
     }
 
-    ngOnChanges(values: SimpleChanges) {  
-        if(values.ataiAffix && (values.ataiAffix.currentValue != values.ataiAffix.previousValue)){
+    ngOnChanges(values: SimpleChanges) {
+        if (values.ataiAffix && (values.ataiAffix.currentValue != values.ataiAffix.previousValue)) {
             this.cloneElement();
             this.observer = new MutationObserver(() => this.cloneElement());
             this.observer.observe(this.el.nativeElement, { subtree: true, childList: true });
         }
-        if(values.scrollX && (values.scrollX.currentValue != values.scrollX.previousValue)){
-            if(this.wrapperDiv){
+        if (values.scrollX && (values.scrollX.currentValue != values.scrollX.previousValue)) {
+            if (this.wrapperDiv) {
                 this.wrapperDiv.scrollLeft = this.scrollX || 0
             }
         }
@@ -119,7 +125,7 @@ export class AffixDirective {
             let clone = (<HTMLElement>this.el.nativeElement).cloneNode(true);
             this.clone = (<HTMLElement>clone);
             this.wrapperDiv.appendChild(this.clone);
-            this.wrapperDiv.style.display = 'none'; 
+            this.wrapperDiv.style.display = 'none';
             this.renderer.insertBefore(this.el.nativeElement.parentNode, this.wrapperDiv, this.el.nativeElement)
         } else {
             this.renderer.removeChild(this.wrapperDiv.parentNode, this.wrapperDiv);
