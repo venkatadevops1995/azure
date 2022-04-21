@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/vedika",
+            "outputPath": "dist/front-end",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -59,7 +59,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.test.ts"
                 }
               ],
               "outputHashing": "all"
@@ -79,10 +79,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "Vedika:build:production"
+              "browserTarget": "front-end:build:production"
             },
             "development": {
-              "browserTarget": "Vedika:build:development"
+              "browserTarget": "front-end:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -90,7 +90,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Vedika:build"
+            "browserTarget": "front-end:build"
           }
         },
         "test": {
@@ -115,5 +115,5 @@
       }
     }
   },
-  "defaultProject": "Vedika"
+  "defaultProject": "front-end"
 }
