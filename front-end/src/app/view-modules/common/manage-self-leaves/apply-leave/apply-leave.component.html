@@ -94,18 +94,24 @@
         <div class="row fs-12 fs-sm-14 ">
           <div class="col-sm-6 col-xs-12 ">
             <div class="w-100">
+
               <mat-form-field appearance="legacy" class="no-pb w-100">
+
                 <mat-label>
                   {{applyForm.controls.category.value == 'Multiple Days' ? 'Select start date':'Select date'}}
                 </mat-label>
+
                 <input (focus)="refPicker1.open()" formControlName="startDate"
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput
                   [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
 
                 <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="refPicker1.open()"></svg>
+
                 <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
+
               </mat-form-field>
+
               <div
                 *ngIf="applyForm.controls.category.value == 'Multiple Days' &&  applyForm.controls.type.value.name=='Paid'"
                 class="mt-5">
@@ -211,7 +217,8 @@
       be changed on
       submission of the request</p>
     <div class="w-100 of-auto">
-      <table style="min-width: 500px;" class="w-100" mat-table [dataSource]="TIMESHEET_DISCREPANCY_DATA" *ngIf="TIMESHEET_DISCREPANCY_DATA.length!=0">
+      <table style="min-width: 500px;" class="w-100" mat-table [dataSource]="TIMESHEET_DISCREPANCY_DATA"
+        *ngIf="TIMESHEET_DISCREPANCY_DATA.length!=0">
 
         <ng-container matColumnDef="serial">
           <th mat-header-cell *matHeaderCellDef style="width: 80px;"> S No </th>
