@@ -54,18 +54,13 @@ export class ApplyLeaveComponent implements OnInit {
   // user gender from the jwt token
   gender: string;
 
-
   selectedEndDate: any;
-
 
   currentBalance = 0;
 
-
   leaveHours = ["FIRST", "SECOND"];
 
-
   TIMESHEET_DISCREPANCY_DATA: any = []
-
 
   @Output('event') eventEmitter: EventEmitter<any> = new EventEmitter();
 

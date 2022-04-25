@@ -129,8 +129,8 @@ export class AppComponent {
   redirectBasedOnSession() {
     if (!this.ss.isPreSignIn) {
       if (!this.user.validateSession()) {
-        // this.user.logout();
-        // this.router.navigate(['login']);
+        this.user.logout();
+        this.router.navigate(['login']);
       }
     } else {
       if (this.user.validateSession()) {
