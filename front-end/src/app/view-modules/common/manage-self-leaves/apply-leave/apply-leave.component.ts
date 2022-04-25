@@ -274,7 +274,9 @@ export class ApplyLeaveComponent implements OnInit {
       this.applyForm.get('endDate').reset();
       this.applyForm.get('reason').reset();
       this.applyForm.get('startDateSecondHalf').disable();
+      this.applyForm.get('startDateSecondHalf').setValue(false);
       this.applyForm.get('endDateFirstHalf').disable();
+      this.applyForm.get('endDateFirstHalf').setValue(false);
       this.applyForm.get('invitationUpload').reset();
 
       this.selectedCount = 0
