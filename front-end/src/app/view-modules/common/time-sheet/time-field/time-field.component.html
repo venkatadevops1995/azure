@@ -16,8 +16,7 @@
         d="M9.80715 3.96454e-05H1.19742C0.139577 3.96454e-05 -0.407847 1.30594 0.358403 2.0892L4.80919 6.64071C5.28353 7.12579 6.04951 7.12579 6.52384 6.6035L10.6828 2.05198C11.376 1.26839 10.8652 0 9.80715 0V3.96454e-05Z" />
     </svg>
     <ul *ngIf="showDropDown" class="mins__list">
-      <li [class.active]="minsActive == min" class="mins__item" *ngFor="let min of minsDdValues;let i =index;"
-        [attr.data-min]="min">{{min}}</li>
+      <li [class.active]="inFocusMinIndex == i" class="mins__item" *ngFor="let min of minsDdValues;let i =index;"  [attr.data-min]="min">{{min}}</li>
     </ul>
   </div>
 </div>

@@ -22,7 +22,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   @ViewChild('input') elInput: ElementRef;
 
   // input to know the index of the time field in the week
-  @Input() index:number = undefined;
+  @Input() index: number = undefined;
 
   // mins dropdown values 
   minsDdValues = ['00', '15', '30', '45'];
@@ -49,13 +49,13 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   showDropDown: boolean = false;
 
   // boolean template token to show or hide the error for invalid number for hours
-  showErrorHours:boolean = false
+  showErrorHours: boolean = false
 
   // boolean template token to show or hide the error for total hours more than 24
   showErrorTotal: boolean = false;
 
   // errot type when the error is total error to show the arrow at the appropriate position
-  errorTotalType:'minutes' | 'hours';
+  errorTotalType: 'minutes' | 'hours';
 
   // the mins option that is in focus
   inFocusMinIndex = 0;
@@ -63,19 +63,18 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   //current form control. helpful in validating and accessing form control  Even when it is not assigned a formcontrol we are using a dummy control
   control: AbstractControl;
 
+  showErrorVacation: boolean = false;
 
-  showErrorVacation : boolean = false;
+  showErrorHoliday: boolean = false;
 
-  showErrorHoliday : boolean = false;
-
-  showErrorHalfVacation : boolean = false;
+  showErrorHalfVacation: boolean = false;
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     private cd: ChangeDetectorRef,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document,
-		private tsService:TimeSheetService
+    private tsService: TimeSheetService
   ) {
 
     if (ngControl) {
@@ -87,7 +86,6 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     // set the control to the ngControl
     this.control = (this.ngControl) ? this.ngControl.control : new FormControl();
-
   }
 
   ngAfterViewInit() {
@@ -95,15 +93,13 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     this.document.addEventListener('focusout', this, true)
     this.document.addEventListener('keyup', this, true)
     this.document.addEventListener('keydown', this, true)
-    // console.log(this.elMinsActive)
   }
 
   ngOnDestroy() {
     this.document.removeEventListener('focusin', this, true);
     this.document.removeEventListener('focusout', this, true)
-    this.document.removeEventListener('keyup', this, true)
-    this.document.removeEventListener('keydown', this, true)
-
+    this.document.removeEventListener('keyup', this, true);
+    this.document.removeEventListener('keydown', this, true);
   }
 
 
@@ -121,42 +117,41 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     if (target == this.elMinsActive.nativeElement) {
       this.showDropDown = true;
     } else if (isDescendant(this.elMinsActive.nativeElement, target) && target.classList.contains('mins__item')) {
-      // console.log("clicked",)
       let prevMins = this.value.m;
-      this.minsActive = target.getAttribute("data-min"); 
+      this.minsActive = target.getAttribute("data-min");
       let dayTotalTime = this.tsService.totalArray[this.index];
-      let tempMinsActive =this.minsActive == "00" ? 0 : parseInt(this.minsActive, 10);
+      let tempMinsActive = this.minsActive == "00" ? 0 : parseInt(this.minsActive, 10);
       // let tempTime = 
       let totalMinsActive = dayTotalTime.m + tempMinsActive - prevMins;
-      if((dayTotalTime.h == 24 && (tempMinsActive -prevMins) > 0) || (dayTotalTime.h == 23 && totalMinsActive >= 60 && totalMinsActive%60 > 0)){
+      if ((dayTotalTime.h == 24 && (tempMinsActive - prevMins) > 0) || (dayTotalTime.h == 23 && totalMinsActive >= 60 && totalMinsActive % 60 > 0)) {
         // set total hour error and set minutes to 00
         this.minsActive = "00";
         this.errorTotalType = 'minutes';
         this.showError('total');
       }
-      if((this.tsService.vacationArray[this.index]==5)&& (tempMinsActive>0) && (
-        (dayTotalTime.h > 10) || 
-        ((dayTotalTime.h == 10) && (totalMinsActive>0 )) ||
-         ((dayTotalTime.h == 9) && (totalMinsActive>60))
-          )
-        ){
+      if ((this.tsService.vacationArray[this.index] == 5) && (tempMinsActive > 0) && (
+        (dayTotalTime.h > 10) ||
+        ((dayTotalTime.h == 10) && (totalMinsActive > 0)) ||
+        ((dayTotalTime.h == 9) && (totalMinsActive > 60))
+      )
+      ) {
         this.errorTotalType = 'minutes';
         this.showError('halfVacation');
       }
-      if((this.tsService.vacationArray[this.index]==8)&& (tempMinsActive>0) &&(
-        (dayTotalTime.h > 8) || 
-         (totalMinsActive>0)
-          )
-        ){
+      if ((this.tsService.vacationArray[this.index] == 8) && (tempMinsActive > 0) && (
+        (dayTotalTime.h > 8) ||
+        (totalMinsActive > 0)
+      )
+      ) {
 
         this.errorTotalType = 'minutes';
         this.showError('vacation');
       }
-      if((this.tsService.holidayArray[this.index]==8)&& (tempMinsActive>0) &&(
-        (dayTotalTime.h > 8) || 
-         (totalMinsActive>0)
-          )
-        ){
+      if ((this.tsService.holidayArray[this.index] == 8) && (tempMinsActive > 0) && (
+        (dayTotalTime.h > 8) ||
+        (totalMinsActive > 0)
+      )
+      ) {
 
         this.errorTotalType = 'minutes';
         this.showError('holiday');
@@ -169,7 +164,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
       this.showDropDown = false;
     } else {
       this.showDropDown = false;
-    } 
+    }
   }
 
   // on change event on the document
@@ -177,13 +172,13 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   onChangeDocument(e: Event) {
     let target: any = e.target;
     if (target == this.elInput.nativeElement) {
-      let prevHours : any= this.value.h || 0;
+      let prevHours: any = this.value.h || 0;
       this.hours = parseInt(target.value, 10);
       if (this.hours >= 0 && this.hours <= 24) {
         // if total time is more than 24 hours
         let dayTotalTime = this.tsService.totalArray[this.index];
 
-        if((dayTotalTime.h + this.hours - prevHours ) > 24 || ((dayTotalTime.h + this.hours  - prevHours) == 24 && (dayTotalTime.m > 0))){
+        if ((dayTotalTime.h + this.hours - prevHours) > 24 || ((dayTotalTime.h + this.hours - prevHours) == 24 && (dayTotalTime.m > 0))) {
           this.hours = 0;
           this.renderer.setProperty(this.elInput.nativeElement, 'value', this.hours)
           this.errorTotalType = 'hours';
@@ -191,36 +186,33 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
         }
         this.value = this.getValue();
         this.propagateChange(this.value);
-      } else { 
+      } else {
         this.hours = 0;
         this.renderer.setProperty(this.elInput.nativeElement, 'value', this.hours)
         this.value = this.getValue();
-        this.propagateChange(this.value);        
+        this.propagateChange(this.value);
         this.showError("hour")
       }
-      if((this.hours)>0 && this.tsService.holidayArray[this.index]>0 ){
+      if ((this.hours) > 0 && this.tsService.holidayArray[this.index] > 0) {
         this.errorTotalType = 'hours';
         this.showError("holiday");
       }
-      if(this.tsService.vacationArray[this.index]==8){
+      if (this.tsService.vacationArray[this.index] == 8) {
         let dayTotalTime = this.tsService.totalArray[this.index];
-        if((this.hours)>0 && (dayTotalTime.h + this.hours - prevHours ) > 8 || ((dayTotalTime.h + this.hours  - prevHours) == 8 && (dayTotalTime.m > 0))){
+        if ((this.hours) > 0 && (dayTotalTime.h + this.hours - prevHours) > 8 || ((dayTotalTime.h + this.hours - prevHours) == 8 && (dayTotalTime.m > 0))) {
           this.errorTotalType = 'hours';
-        this.showError("vacation");
+          this.showError("vacation");
         }
       }
-      if(this.tsService.vacationArray[this.index]==5){
+      if (this.tsService.vacationArray[this.index] == 5) {
         let dayTotalTime = this.tsService.totalArray[this.index];
-        console.log("vacation ",dayTotalTime,this.hours,prevHours);
-        
-        if( (this.hours)>0 && (dayTotalTime.h + this.hours - prevHours ) > 10 ||
-         ((dayTotalTime.h + this.hours  - prevHours) == 10 && (dayTotalTime.m > 0))){
-          this.errorTotalType = 'hours';
-        this.showError("halfVacation");
-      }
-      }
 
-      
+        if ((this.hours) > 0 && (dayTotalTime.h + this.hours - prevHours) > 10 ||
+          ((dayTotalTime.h + this.hours - prevHours) == 10 && (dayTotalTime.m > 0))) {
+          this.errorTotalType = 'hours';
+          this.showError("halfVacation");
+        }
+      }
     }
   }
 
@@ -243,44 +235,44 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
           if (e['keyCode'] == 13) {
             this.showDropDown = false;
             let prevMins = this.value.m;
-            this.minsActive = this.minsDdValues[this.inFocusMinIndex]; 
+            this.minsActive = this.minsDdValues[this.inFocusMinIndex];
             let dayTotalTime = this.tsService.totalArray[this.index];
-            let tempMinsActive =this.minsActive == "00" ? 0 : parseInt(this.minsActive, 10);
+            let tempMinsActive = this.minsActive == "00" ? 0 : parseInt(this.minsActive, 10);
 
             let totalMinsActive = dayTotalTime.m + tempMinsActive - prevMins;
 
 
 
-            if((dayTotalTime.h == 24 && (tempMinsActive - prevMins) > 0)){
+            if ((dayTotalTime.h == 24 && (tempMinsActive - prevMins) > 0)) {
               // set total hour error and set minutes to 00
               this.minsActive = "00";
               this.errorTotalType = 'minutes';
               this.showError('total');
             }
-            if((this.tsService.vacationArray[this.index]==5)&& (tempMinsActive>0) &&(
-              (dayTotalTime.h > 10) || 
-              ((dayTotalTime.h == 10) && (totalMinsActive>0 )) ||
-               ((dayTotalTime.h == 9) && (totalMinsActive>60))
-                )
-              ){
+            if ((this.tsService.vacationArray[this.index] == 5) && (tempMinsActive > 0) && (
+              (dayTotalTime.h > 10) ||
+              ((dayTotalTime.h == 10) && (totalMinsActive > 0)) ||
+              ((dayTotalTime.h == 9) && (totalMinsActive > 60))
+            )
+            ) {
 
               this.errorTotalType = 'minutes';
               this.showError('halfVacation');
             }
-            if((this.tsService.vacationArray[this.index]==8)&& (tempMinsActive>0) &&(
-              (dayTotalTime.h > 8) || 
-               (totalMinsActive>0)
-                )
-              ){
+            if ((this.tsService.vacationArray[this.index] == 8) && (tempMinsActive > 0) && (
+              (dayTotalTime.h > 8) ||
+              (totalMinsActive > 0)
+            )
+            ) {
 
               this.errorTotalType = 'minutes';
               this.showError('vacation');
             }
-            if((this.tsService.holidayArray[this.index]==8)&& (tempMinsActive>0) &&(
-              (dayTotalTime.h > 8) || 
-               (totalMinsActive>0)
-                )
-              ){
+            if ((this.tsService.holidayArray[this.index] == 8) && (tempMinsActive > 0) && (
+              (dayTotalTime.h > 8) ||
+              (totalMinsActive > 0)
+            )
+            ) {
 
               this.errorTotalType = 'minutes';
               this.showError('holiday');
@@ -293,16 +285,20 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
             // this.showDropDown = false;
             if (this.inFocusMinIndex != 0) {
               this.inFocusMinIndex--;
-              this.cd.detectChanges();
+            }else{
+              this.inFocusMinIndex =this.minsDdValues.length - 1
             }
+            this.cd.detectChanges();
             return false;
           } else if (e['keyCode'] == 40) {
             e.preventDefault();
             // this.showDropDown = false;
             if (this.inFocusMinIndex != this.minsDdValues.length - 1) {
               this.inFocusMinIndex++;
-              this.cd.detectChanges();
+            }else{
+              this.inFocusMinIndex = 0
             }
+            this.cd.detectChanges();
             return false;
           }
           break;
@@ -315,9 +311,9 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
       }
 
     } else if (target == this.elInput.nativeElement) {
-      if(event.type == 'keydown'){
-        let invalidKeys = [69,190,32]; 
-        if(invalidKeys.indexOf(e['keyCode']) != -1 ){
+      if (event.type == 'keydown') {
+        let invalidKeys = [69, 190, 32];
+        if (invalidKeys.indexOf(e['keyCode']) != -1) {
           e.preventDefault();
           return false;
         }
@@ -339,38 +335,38 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  showError(type:"hour" | "total"|"holiday"|"vacation"|"halfVacation"){
-    if(type == "hour"){
+  showError(type: "hour" | "total" | "holiday" | "vacation" | "halfVacation") {
+    if (type == "hour") {
       this.showErrorHours = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showErrorHours = false;
         this.cd.detectChanges();
-      },3000)
-    }else if(type == "total"){
+      }, 3000)
+    } else if (type == "total") {
       this.showErrorTotal = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showErrorTotal = false;
         this.cd.detectChanges();
-      },3000)
-    }else if(type == "holiday"){
+      }, 3000)
+    } else if (type == "holiday") {
       this.showErrorHoliday = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showErrorHoliday = false;
         this.cd.detectChanges();
-      },3000)
-    }else if(type == "vacation"){
+      }, 3000)
+    } else if (type == "vacation") {
       this.showErrorVacation = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showErrorVacation = false;
         this.cd.detectChanges();
-      },3000)
-    }else if(type == "halfVacation"){
+      }, 3000)
+    } else if (type == "halfVacation") {
       this.showErrorHalfVacation = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showErrorHalfVacation = false;
         this.cd.detectChanges();
-      },3000)
-    } 
+      }, 3000)
+    }
   }
 
   //propagate changes into the form
@@ -381,7 +377,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     if (value) {
       this.hours = value.h || 0;
       this.minsActive = value.m || this.minsDdValues[0];
-      this.value = this.getValue();  
+      this.value = this.getValue();
     } else {
       this.hours = 0;
       this.minsActive = this.minsDdValues[0];
