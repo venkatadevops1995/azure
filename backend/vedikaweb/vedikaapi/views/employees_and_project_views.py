@@ -927,7 +927,7 @@ class EmployeeDetails(APIView):
             elif(each.priority==3):
                 response[0]['functional_manager']=each.manager.emp_name
         today = datetime.now().date()
-        leave_requests_obj = LeaveRequest.objects.prefetch_related(Prefetch('leave_set',queryset=Leave.objects.filter(leave_request__emp__emp_name=emp_name,leave_on__date=today))).filter(emp__emp_name=emp_name,startdate__lte=today,enddate__gte=today).annotate(
+        leave_requests_obj = LeaveRequest.objects.prefetch_related(Prefetch('leave_set',queryset=Leave.objects.filter(leave_request__emp__emp_name=emp_name,leave_on__date=today))).filter((Q(emp__emp_name=emp_name))&(Q(startdate__lte=today)) & (Q(enddate__gte=today)) & (Q(status__in =[1,4,5])) & ~(Q(leavediscrepancy__status__in =[1]))).annotate(
             leave_on_ = F('leave__leave_on'),
             day_leave_type = F('leave__day_leave_type')
         )

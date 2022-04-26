@@ -10,9 +10,13 @@
       </div>
     </div>
     <div class="emp-profile__name">
-      <h2 class="col-primary-50 fw-500 mt-10 mt-md-0">{{data?.emp_name}}</h2>
-      <div class="fs-13 col-secondary-text-primary-500 mb-10">
-        <!-- On leave 13/01/2022 -->&nbsp;
+      <h2 class="col-primary-50 fw-500 mt-10 mt-md-0 mb-5" style="font-size: 32px;font-weight: 700;">{{data?.emp_name}}</h2>
+      <div class="fs-13 col-secondary-text-primary-500 mb-15" style="font-size: 16px;" >
+        <span class="dot" *ngIf="data?.emp_details?.leave_flag"></span>
+        <span *ngIf="data?.emp_details?.leave_flag && data?.emp_details?.day_leave_type=='FULL' && !data?.emp_details?.multi_leave" class="ml-5">Onleave Today</span>
+        <span *ngIf="data?.emp_details?.leave_flag && data?.emp_details?.day_leave_type=='FIRST_HALF' && !data?.emp_details?.multi_leave" class="ml-5">Onleave <br>Today first half</span>
+        <span *ngIf="data?.emp_details?.leave_flag && data?.emp_details?.day_leave_type=='SECOND_HALF' && !data?.emp_details?.multi_leave" class="ml-5">Onleave <br>Today second half</span>
+        <span *ngIf="data?.emp_details?.leave_flag && data?.emp_details?.day_leave_type=='FULL' && data?.emp_details?.multi_leave" class="ml-5">Onleave <br>({{data?.emp_details?.startdate | date }} To {{data?.emp_details?.enddate | date }})</span>
       </div>
     </div>
   </div>
