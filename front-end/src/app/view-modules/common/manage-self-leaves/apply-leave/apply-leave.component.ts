@@ -468,7 +468,7 @@ export class ApplyLeaveComponent implements OnInit {
   openApplyPopUp() {
     this.applyForm.reset({ "daterange": { value: '', disabled: true } });
     this.leaveTypes = []
-    this.http.request('get', 'leave/types').subscribe(res => {
+    this.http.request('get', 'leave/types/').subscribe(res => {
       if (res.status == 200) {
 
         let valToSet = null
@@ -498,6 +498,7 @@ export class ApplyLeaveComponent implements OnInit {
         this.applyForm.get('category').setValue('Single Day');
       }
       else {
+        alert(JSON.stringify(res))
         this.ss.statusMessage.showStatusMessage(false, "Could not get the leave types")
       }
     })
@@ -607,7 +608,7 @@ export class ApplyLeaveComponent implements OnInit {
 
   // get the leave requests available for the current user for special leave types
   getLeaveRequestsAvailability() {
-    this.http.request('get', 'leave/special-leave-requests-available').subscribe((res) => {
+    this.http.request('get', 'leave/special-leave-requests-available/').subscribe((res) => {
       if (res.status == 200) {
         this.specialLeaveTypeRequestsAvailable = res.body['results']
         console.log(this.specialLeaveTypeRequestsAvailable);

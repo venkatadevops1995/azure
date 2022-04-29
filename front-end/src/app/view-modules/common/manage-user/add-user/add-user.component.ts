@@ -10,13 +10,13 @@ import ValidateEmail from 'src/app/functions/validations/email';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { UserService } from 'src/app/services/user.service';
-import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { take} from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Subject, takeUntil } from 'rxjs';
 // Rahul changes *****************************
 import { MAT_DATE_LOCALE, NativeDateAdapter } from "@angular/material/core";
-import { DateAdapter,MAT_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { formatDate } from '@angular/common';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 export interface UserData {
@@ -45,11 +45,11 @@ export function NotNull(): ValidatorFn {
 
 export function NoDate(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    if(control.value==null){
-      return  { notNull: true }
+    if (control.value == null) {
+      return { notNull: true }
     }
     const res = ((control.value['startDate'] === null) || control.value['startDate'] === "")
-    
+
     return res ? { notNull: true } : null
   }
 }
@@ -58,23 +58,23 @@ export function NoDate(): ValidatorFn {
 // **************************************************************
 export const PICK_FORMATS = {
   parse: {
-    dateInput: {month: 'numeric', year: 'numeric', day: 'numeric'}
+    dateInput: { month: 'numeric', year: 'numeric', day: 'numeric' }
   },
   display: {
-      dateInput: 'input',
-      monthYearLabel: {year: 'numeric', month: 'numeric'},
-      dateA11yLabel: {year: 'numeric', month: 'numeric'},
-      monthYearA11yLabel: {year: 'numeric', month: 'numeric'}
+    dateInput: 'input',
+    monthYearLabel: { year: 'numeric', month: 'numeric' },
+    dateA11yLabel: { year: 'numeric', month: 'numeric' },
+    monthYearA11yLabel: { year: 'numeric', month: 'numeric' }
   }
-};  
+};
 
 export class PickDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: Object): string {
-      if (displayFormat === 'input') {
-          return formatDate(date,'yyyy-MM-dd',this.locale);
-      } else {
-          return formatDate(date,'MMM YYYY',this.locale);
-      }
+    if (displayFormat === 'input') {
+      return formatDate(date, 'yyyy-MM-dd', this.locale);
+    } else {
+      return formatDate(date, 'MMM YYYY', this.locale);
+    }
   }
 }
 //****************************************************************** */
@@ -84,17 +84,19 @@ export class PickDateAdapter extends NativeDateAdapter {
   styleUrls: ['./add-user.component.scss'],
   // rahul changes ***********************************
   providers: [
-    {provide: DateAdapter, useClass: PickDateAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
-] 
-// ******************************************************
+    { provide: DateAdapter, useClass: PickDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS }
+  ]
+  // ******************************************************
 })
-export class AddUserComponent implements OnInit ,AfterViewInit   {
- 
+export class AddUserComponent implements OnInit, AfterViewInit {
+
   // @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
   @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
+
   // Rahul changes ****************************
-  @ViewChild('f') myNgForm:NgForm;
+  @ViewChild('f') myNgForm: NgForm;
+
   // ***********************************************
   ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   displayedColumns: string[] = ['staff_no', 'name', 'company', 'reporting_manager', 'managers_manager', 'functional_manager', 'edit'];
@@ -109,11 +111,12 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
   ALL_CATEGORIES = []
   effected_emp_count = 0;
-  //Rahul change(adding variable for use breakpoint observer api using singlton service)************
- 
-  get is_XMD_LT(){
+
+  //Rahul change(adding variable for use breakpoint observer api using singlton service)************ 
+  get is_XMD_LT() {
     return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
   }
+
   //*******************************************************************************************
   // ROLES = [...this.ATWORK_ROLES]; //[{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }]
   ROLES = cloneDeep(this.ATWORK_ROLES)
@@ -124,24 +127,21 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
   makeSelfFM = false;
   newUserRoleValue = 1;
   user_role_id: any;
-  is_emp_admin : boolean = false;
+  is_emp_admin: boolean = false;
   ALL_LOCATIONS = []
-  ALL_GENDERS = [{name:"Male",id:1},{name:"Female",id:2},{name:"Other",id:0}]
-  MARITAL_STATUS = [{name:"Married",value:true},{name:"Unmarried",value:false}]
-  date:any
+  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }]
+  MARITAL_STATUS = [{ name: "Married", value: true }, { name: "Unmarried", value: false }]
+  date: any
+
   constructor(public dialog: MatDialog,
     private ss: SingletonService,
     private http: HttpClientService,
     private fb: FormBuilder,
     private datepipe: DatePipe,
     private user: UserService,
-    ) {
-      
-     }
+  ) {
 
-
-
-
+  }
 
 
   addUserForm = this.fb.group({
@@ -154,10 +154,10 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     'fun_own': ['', [Validators.required, NotNull()]],
     'email': ['', [Validators.required, ValidateEmail]],
     'role': [1, Validators.required],
-    'location' : ['', Validators.required],
-    'category': ['',Validators.required],
+    'location': ['', Validators.required],
+    'category': ['', Validators.required],
     'doj': ['', [Validators.required, NoDate()]],
-    'gender' : ['',Validators.required],
+    'gender': ['', Validators.required],
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -179,19 +179,14 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
   changeRoleForm = this.fb.group({
     'emp_id': ['', Validators.required],
     'role_id': ['', Validators.required],
-
   })
 
   fileUpdateForm = this.fb.group({
-    'file':['',Validators.required],
-    'password':[]
+    'file': ['', Validators.required],
+    'password': []
   })
 
-
-  editableItem = new FormControl("manager");
-
-
-
+  editableItem = new FormControl("manager"); 
 
   ngOnInit(): void {
     this.user_role_id = this.user.getRoleId();
@@ -211,11 +206,11 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     this.ROLES = cloneDeep(this.ATWORK_ROLES)
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
 
   }
 
-  reset(){
+  reset() {
     //Rahul change(resetting all fields and setting default form value after clicking on reset())
     this.myNgForm.resetForm()
     //***************************************************************************************** */
@@ -232,7 +227,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     this.makeSelfMM = false;
     this.makeSelfFM = false;
     this.ROLES = cloneDeep(this.ATWORK_ROLES)
-  
+
     // this.reset()
   }
 
@@ -401,7 +396,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
     formData.append('email', this.addUserForm.controls.email.value);
     formData.append('role', this.addUserForm.controls.role.value);
-    
+
     formData.append('category', this.addUserForm.controls.category.value);
     formData.append('location', this.addUserForm.controls.location.value);
     formData.append('gender', this.addUserForm.controls.gender.value);
@@ -411,13 +406,13 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
     // formData.append('is_married', this.addUserForm.controls.is_married.value);
     // formData.append('patentry_maternity_cnt', this.addUserForm.controls.patentry_maternity_cnt.value);
-  // ******************************************************
-  // ******************************************************
-  // *****************************************************
-  // logging the formdata in console after submission
+    // ******************************************************
+    // ******************************************************
+    // *****************************************************
+    // logging the formdata in console after submission
 
-    formData.forEach(i=>{
-      console.log("Posting payload for add user:" ,i)
+    formData.forEach(i => {
+      console.log("Posting payload for add user:", i)
     })
     // this.reset();
     // *************************************************
@@ -426,8 +421,8 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, "User has been created successfully");
-        
-       this.myNgForm.resetForm()
+
+        this.myNgForm.resetForm()
         this.newUserFirstName = '';
         this.newUserLastName = '';
         this.newUserRoleValue = 1;
@@ -436,7 +431,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
         }
         this.getAllReportes();
         this.addUserForm.reset({ 'role': 1 });
-         this.reset();
+        this.reset();
       } else if (res.error) {
 
         Object.keys(res.error["results"][0]).forEach(ele => {
@@ -452,28 +447,28 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
 
   }
-  onMaritalStatusChange(){
-    if(this.addUserForm.controls.is_married.value==false){
-    this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
+  onMaritalStatusChange() {
+    if (this.addUserForm.controls.is_married.value == false) {
+      this.addUserForm.controls.patentry_maternity_cnt.setValue(0)
     }
-}
-//Rahul change Open dialogBox dynamically(rahul changes) ************************
+  }
+  //Rahul change Open dialogBox dynamically(rahul changes) ************************
   // openDialog(): void {
-    // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    //   panelClass: 'confirm-remove-project',
-    //   backdropClass:'cdk-overlay-darker-backdrop',
-    //   data: {
-    //       confirmMessage: 'Are you sure to add this employee?'
-    //   }
-    // })
-    // dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-    //     console.log('######################',data)
-    //     if(data){
-    //       // call addUser
-    //       this.addUser();
-    //       //Reeset the for
-    //     }
-    // })
+  // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+  //   panelClass: 'confirm-remove-project',
+  //   backdropClass:'cdk-overlay-darker-backdrop',
+  //   data: {
+  //       confirmMessage: 'Are you sure to add this employee?'
+  //   }
+  // })
+  // dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+  //     console.log('######################',data)
+  //     if(data){
+  //       // call addUser
+  //       this.addUser();
+  //       //Reeset the for
+  //     }
+  // })
   // }       
   // **************************************************************** 
   getCategories() {
@@ -540,7 +535,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
       if (res.status == 200) {
         let emp_list = []
-        if (res.body['results']['role'] ) {
+        if (res.body['results']['role']) {
           emp_list.push({
             "emp_id": res.body['results']['emp_id'],
             "email": res.body['results']['email'],
@@ -559,19 +554,19 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     })
   }
 
-  async getEffectedEmpList(){
+  async getEffectedEmpList() {
     let emp = this.changeRoleForm.controls.emp_id.value;
-    
+
     this.effected_emp_count = 0
-    let res= await this.http.request('get','transfer-emp','emp_id='+emp).toPromise();
+    let res = await this.http.request('get', 'transfer-emp/', 'emp_id=' + emp).toPromise();
     let emp_list = []
-     res.body["results"].forEach(e=>{
+    res.body["results"].forEach(e => {
       emp_list.push(e["emp_name"])
-     })
-     this.effected_emp_count  = emp_list.length
-     return emp_list
+    })
+    this.effected_emp_count = emp_list.length
+    return emp_list
   }
-  open(e){
+  open(e) {
     console.log("---------------------------------------------------[[[[[[[[[[[[[[[[[[")
     e.click()
   }
@@ -581,44 +576,44 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
 
 
-  openConfirmation(){
+  openConfirmation() {
     // this.confirmationModal.open()
     // this.openDialog()
     //Rahul change Open dialogBox dynamically(rahul changes) ************************
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       panelClass: 'confirm-remove-project',
-      backdropClass:'cdk-overlay-darker-backdrop',
+      backdropClass: 'cdk-overlay-darker-backdrop',
       data: {
-          confirmMessage: 'Are you sure to add this employee?'
+        confirmMessage: 'Are you sure to add this employee?'
       }
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-        console.log('######################',data)
-        if(data){
-          // call addUser
-          this.addUser();
-          //Reeset the for
-        }
+      console.log('######################', data)
+      if (data) {
+        // call addUser
+        this.addUser();
+        //Reeset the for
+      }
     })
-     // ************************************************** *
-      // ************************************************** *
-       // ************************************************** *
-        // ************************************************** *
-         // ************************************************** *
+    // ************************************************** *
+    // ************************************************** *
+    // ************************************************** *
+    // ************************************************** *
+    // ************************************************** *
   }
 
 
-  closeConfirmation(){
+  closeConfirmation() {
     // this.confirmationModal.close()
-    
+
   }
 
   onDate(event): void {
-    console.log("Date input:",event)
-    
+    console.log("Date input:", event)
+
   }
   // addUserForm = new FormGroup({},{updateOn: ‘submit’});
- 
+
 
 
 }

@@ -711,7 +711,7 @@ get is_XMD_LT(){
     let emp = this.changeRoleForm.controls.emp_id.value;
 
     this.effected_emp_count = 0
-    let res = await this.http.request('get', 'transfer-emp', 'emp_id=' + emp).toPromise();
+    let res = await this.http.request('get', 'transfer-emp/', 'emp_id=' + emp).toPromise();
     let emp_list = []
     res.body["results"].forEach(e => {
       emp_list.push(e["emp_name"])

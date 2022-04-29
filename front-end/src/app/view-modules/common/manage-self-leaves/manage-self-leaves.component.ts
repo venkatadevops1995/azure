@@ -207,7 +207,7 @@ export class ManageSelfLeavesComponent implements OnInit {
                 heading: 'Leave Request Details',
                 maxWidth: '700px',
                 template: this.templateRefLeaveDetails
-            }
+            } 
         })
     }
 

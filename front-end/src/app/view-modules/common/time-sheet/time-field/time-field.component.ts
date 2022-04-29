@@ -1,14 +1,15 @@
 import { TimeSheetService } from './../time-sheet.service';
 import { DOCUMENT } from '@angular/common';
 import { ControlValueAccessor, NgControl, AbstractControl, FormControl } from '@angular/forms';
-import { Component, OnInit, HostListener, ViewChild, ElementRef, Optional, Self, Input, HostBinding, ChangeDetectionStrategy, ChangeDetectorRef, Renderer2, Inject } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, Optional, Self, Input, HostBinding, ChangeDetectionStrategy, ChangeDetectorRef, Renderer2, Inject, ViewEncapsulation } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 
 @Component({
   selector: 'app-time-field',
   templateUrl: './time-field.component.html',
   styleUrls: ['./time-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation:ViewEncapsulation.None
 })
 export class TimeFieldComponent implements OnInit, ControlValueAccessor {
 

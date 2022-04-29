@@ -4,8 +4,8 @@
       <h2 class="heading">Leave History </h2>
     </div>
 
-    <div class="flex bottom-md flex-col-xs flex-row-md end-xs fs-12 fs-md-14 middle-xs ">
-      <mat-form-field   class="mr-md-30 no-pb mb-15 mb-md-0 top-form-field">
+    <div class="w-100 flex bottom-xmd flex-col-xs flex-row-xmd end-xs fs-12 fs-md-14 middle-xs ">
+      <mat-form-field class="mr-xmd-30 no-pb mb-15 mb-xmd-0 top-form-field">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
           [(ngModel)]="value">
         <div *ngIf="value" class="use-svg" style="position: absolute;right: 5px;top:50%;transform:translateY(-50%);"
@@ -19,8 +19,9 @@
       </mat-form-field>
 
 
-      <mat-form-field class="no-pb atai-date-range no-pb  top-form-field"  >
-        <app-atai-date-range [disabled]="Ischecked ? true : false"   (dateSelected)="onDateSelect($event)"></app-atai-date-range>
+      <mat-form-field class="no-pb atai-date-range no-pb  top-form-field">
+        <app-atai-date-range [disabled]="Ischecked ? true : false" (dateSelected)="onDateSelect($event)">
+        </app-atai-date-range>
       </mat-form-field>
 
       <!-- <div class="fs-14 col-primary-400 flex start-xs ml-md-30 mt-15 mt-md-0 ">
@@ -30,20 +31,20 @@
         </mat-checkbox>
       </div> -->
       <div class="future__leave_checkbox fs-14 col-primary-400 flex start-xs">
-        <mat-checkbox color="accent"  [checked]= "Ischecked"  (change) = "onIsDisableClick($event)"> 
-          <label class="fs-14 fs-md-16 col-primary-200" > Future Leaves Only</label>
-          </mat-checkbox>
+        <mat-checkbox color="accent" [checked]="Ischecked" (change)="onIsDisableClick($event)">
+          <label class="fs-12 fs-md-14 fs-xmd-16 col-primary-200"> Future Leaves Only</label>
+        </mat-checkbox>
       </div>
-      
+
       <!-- <div class="future__leave_checkbox">
         <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onIsDisableClick($event)"> 
         <label style="font-size: 16px;"> Future Leaves Only</label>
         </mat-checkbox>
     </div> -->
-      <svg title="Download" class="export_icon ml-md-20 use-svg mt-15 mt-md-0" (click)="onClickExportResolved()"
+      <svg title="Download" class="export_icon ml-xmd-20 use-svg mt-15 mt-xmd-0" (click)="onClickExportResolved()"
         symbol="excel-green" w="25">
       </svg>
-      
+
 
     </div>
   </div>
