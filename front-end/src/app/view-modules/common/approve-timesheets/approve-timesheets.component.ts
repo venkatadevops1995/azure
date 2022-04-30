@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
+import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 
 @Component({
   selector: 'app-approve-timesheets',
@@ -201,7 +202,11 @@ export class ApproveTimesheetsComponent implements OnInit {
       tempTarget = tempTarget.parentNode;
     }
   }
-
+// Rahul change(adding class for making the input field right aligned for<550px)*****
+get is_XS(){
+  return this.ss.responsive.isMatched(AtaiBreakPoints.XS)
+}
+//****************************************************************************
   // on submitting the search by filter form
   onSubmitSearch(value, page, count, change?) {
     if (change == 1) {

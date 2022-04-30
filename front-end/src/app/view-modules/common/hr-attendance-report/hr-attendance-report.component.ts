@@ -51,7 +51,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.filteredManagers = this.option.valueChanges
       .pipe(
         startWith(''),
-        map(state => state ? this.filterManagerList(state) : this.EMPS.slice())
+        map(state => state ? this.filterManagerList(state) : this.EMPS?.slice())
       );
   }
 
@@ -61,6 +61,10 @@ export class HrAttendanceReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let today = new Date();
+    let last30days = new Date(new Date().setDate(today.getDate() - 30));
+    this.todate = last30days.getFullYear()+'-'+(last30days.getMonth()+1)+'-'+last30days.getDate();
+    this.fromdate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     this.checkHrAccessForreports();
     this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();

@@ -29,14 +29,21 @@
           <label class="pointer col-primary-300" for="mat-checkbox-disabled-employee-input"> Future Leaves Only</label>
         </mat-checkbox>
       </div> -->
-      <svg title="Download" class="export_icon ml-md-20 use-svg mt-15 mt-md-0" (click)="onClickExportResolved()"
-        symbol="excel-green" w="25">
-      </svg>
-      <div class="future__leave_checkbox">
+      <div class="future__leave_checkbox fs-14 col-primary-400 flex start-xs">
+        <mat-checkbox color="accent"  [checked]= "Ischecked"  (change) = "onIsDisableClick($event)"> 
+          <label style="font-size: 16px;"> Future Leaves Only</label>
+          </mat-checkbox>
+      </div>
+      
+      <!-- <div class="future__leave_checkbox">
         <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onIsDisableClick($event)"> 
         <label style="font-size: 16px;"> Future Leaves Only</label>
         </mat-checkbox>
-    </div>
+    </div> -->
+      <svg title="Download" class="export_icon ml-md-20 use-svg mt-15 mt-md-0" (click)="onClickExportResolved()"
+        symbol="excel-green" w="25">
+      </svg>
+      
 
     </div>
   </div>

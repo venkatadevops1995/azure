@@ -1,14 +1,14 @@
-<div class="flex end-xs mb-5">
-  <span *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--color-success);"
+<!-- <div class="flex end-xs mb-5">
+  <span *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--col-accent-500);"
     class="dot"></span>
-  <span *ngIf="pendingApprovalCount > 0" class="dot" style="background-color: var(--color-danger);"></span>
+  <span *ngIf="pendingApprovalCount > 0" class="dot" style="background-color:red;"></span>
   <span *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="dot"
-    style="background-color: var(--color-warning);"></span>
-</div>
+    style="background-color: var(--color-warn-500);"></span>
+</div> -->
 <div class="pb-20 flex between-xmd flex-col-xs flex-row-xmd">
   <h2 class="heading">Team Timesheets
   </h2>
-  <div class="flex bottom-xs ">
+  <div class="flex between-xs">
     <div class="flex center-xs  col-primary-200 fs-12 mr-30 mt-15 mt-md-0">
       <a [dbdFileDownload]="{endPoint:'downloadwst/', responseType:'blob'}" class="flex middle-xs pointer">
         <svg class="ml-3 mr-10 use-svg" symbol="download" w="20"></svg> WTR
@@ -17,9 +17,10 @@
         <svg class="mr-10 use-svg" symbol="download" w="20"></svg> WSR
       </a>
     </div>
+ <div [ngClass]="is_XS ?'w-100':''">
     <form #searchForm="ngForm" [formGroup]="fgSearch">
       <div class="flex end-xs top-xs fs-14">
-        <mat-form-field class="no-pb">
+        <mat-form-field [ngClass]="is_XS ?'mt-15':''" class="no-pb">
           <mat-select formControlName="filtervalue"
             (selectionChange)="onSubmitSearch($event.value,1,paginator.pageSize,1)">
             <mat-option *ngFor="let item of filterArray" [value]="item.value">
@@ -29,6 +30,16 @@
         </mat-form-field>
       </div>
     </form>
+  <!-- Rahul changes(showing dots based on pending and approve timesheet)*********** -->
+  <div class="flex end-xs mb-5">
+    <span *ngIf="pendingApprovalCount == 0 && rejectedCount == 0" style="background-color: var(--col-accent-500);"
+      class="dot"></span>
+    <span *ngIf="pendingApprovalCount > 0" class="dot" style="background-color:red;"></span>
+    <span *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="dot"
+      style="background-color: var(--color-warn-500);"></span>
+  </div>
+</div>
+  <!-- ********************************************************************** -->
   </div>
 </div> 
 <div class="timesheet"> 
