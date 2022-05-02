@@ -29,6 +29,10 @@ body {
 }
 
 
+.mat-input-element{
+  caret-color:var(--col-accent-500);
+}
+
 /* Mat Table */
 
 .mat-header-cell {
@@ -328,21 +332,23 @@ mat-dialog-container.mat-dialog-container {
 
     .mat-radio-label-content {
       padding: 0.35em 1.2em;
-      border: 1px solid var(--col-primary-300);
+      border: 2px solid var(--col-primary-400);
       border-radius: 20px;
       font-size: inherit;
+      color: var(--col-primary-200);
     }
 
     &.mat-radio-checked {
       .mat-radio-label-content {
-        background: var(--col-accent-500);
-        border: 1px solid var(--col-accent-100);
+        border: 2px solid var(--col-primary-200);
+        background: var(--col-primary-400);
+        color:#fff;
       }
     }
 
     &.mat-radio-disabled {
       .mat-radio-label-content {
-        opacity: 0.5;
+        opacity: 0.3;
       }
     }
   }
@@ -356,16 +362,18 @@ mat-dialog-container.mat-dialog-container {
 
     .mat-checkbox-label {
       padding: 0.35em 1.2em;
-      border: 1px solid var(--col-primary-300);
+      border: 2px solid var(--col-primary-400);
       border-radius: 20px;
       font-size: inherit;
       line-height: unset;
+      color: var(--col-primary-200);
     }
 
     &.mat-checkbox-checked {
       .mat-checkbox-label {
-        background: var(--col-accent-500);
-        border: 1px solid var(--col-accent-100);
+        border: 2px solid var(--col-primary-200);
+        background: var(--col-primary-400);
+        color:#fff;
       }
     }
   }
@@ -373,7 +381,7 @@ mat-dialog-container.mat-dialog-container {
   &.mat-checkbox-disabled {
     &.button-style {
       .mat-checkbox-label {
-        opacity: 0.5;
+        opacity: 0.3;
       }
     }
   }

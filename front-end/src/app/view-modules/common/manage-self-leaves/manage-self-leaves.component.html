@@ -162,7 +162,7 @@
               <svg class="use-svg col-primary-300"
                 (click)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true}; openLeaveDetails()"
                 title="View Details" symbol="view-details" w="20"></svg>
-              <svg class="use-svg ml-10 col-primary-300" (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
+              <svg *ngIf="element.discrepancy_status == null" class="use-svg ml-10 col-primary-300" (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
                 symbol="edit" w="20"></svg>
             </div>
           </td>

@@ -18,6 +18,7 @@ import { FileDownloadService } from 'src/app/directives/file-download/file-downl
 import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
+import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 @Component({
     selector: 'app-manage-self-leaves',
     templateUrl: './manage-self-leaves.component.html',
@@ -25,6 +26,8 @@ import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
     animations: [slideAnimationTrigger]
 })
 export class ManageSelfLeavesComponent implements OnInit {
+
+    @ViewChild(AtaiDateRangeComponent) dateRangePicker: AtaiDateRangeComponent;
 
 
     appliedLeaveColumns: string[] = ['serial', 'startdate', 'enddate', 'day_count', 'leave_type', 'status', 'view'];
@@ -377,8 +380,8 @@ export class ManageSelfLeavesComponent implements OnInit {
             startDate: 'startdate',
             endDate: 'enddate'
         }
-        // let dp: any = this.pickerDirective.value
-        let dp: any = {}
+        // let dp: any = this.pickerDirective.value 
+        let dp = this.dateRangePicker.value
         // get the sorting
         let params = new HttpParams({
             fromObject: {
@@ -388,9 +391,9 @@ export class ManageSelfLeavesComponent implements OnInit {
         })
 
         // this.historyLeavesFiltersApplied =  true
-        if (dp && dp['startDate'] && dp['endDate']) {
-            let st_dt = new Date(dp["startDate"]._d);
-            let ed_dt = new Date(dp["endDate"]._d + 1);
+        if (dp && dp.start && dp.end) {
+            let st_dt = dp.start;
+            let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
             params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
             params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
         }

@@ -207,7 +207,9 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
+    setTimeout(()=>{
+      this.myNgForm.resetForm()
+    },300)
   }
 
   reset() {

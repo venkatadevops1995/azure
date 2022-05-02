@@ -47,7 +47,7 @@ export class AppComponent {
 
   isSideBarOpen: boolean = false;
 
-  iconsPrefetched: boolean = false;
+  iconsPrefetched: boolean = false; 
 
   constructor(
     private ss: SingletonService,
@@ -67,9 +67,8 @@ export class AppComponent {
       this.isSideBarOpen = this.ss.sideBarToggle
     })
     this.ss.responsive = this.responsive;
-    this.ss.responsive.observe([..._.values(AtaiBreakPoints)]).pipe(takeUntil(this.destroy$)).subscribe(val => {
-      console.log(val)
-      this.ss.responsiveState = val.breakpoints;
+    this.ss.responsive.observe([..._.values(AtaiBreakPoints)]).pipe(takeUntil(this.destroy$)).subscribe(val => { 
+      this.ss.responsiveState = val.breakpoints; 
     })
   }
 

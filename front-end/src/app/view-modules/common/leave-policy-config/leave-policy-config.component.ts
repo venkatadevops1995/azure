@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
@@ -107,6 +107,14 @@ export class LeavePolicyConfigComponent implements OnInit {
     ngOnDestroy() {
         this.destroy$.next(null);
         this.destroy$.complete()
+    }
+
+    
+    @HostListener('keydown', ['$event'])
+    onKeyDown(e: KeyboardEvent) { 
+        if (e.key == '-' || e.key == 'e') {
+            return false
+        }
     }
 
     // on horizontal scroll affix the employee type

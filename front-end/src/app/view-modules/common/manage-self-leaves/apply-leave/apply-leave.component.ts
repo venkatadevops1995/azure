@@ -142,6 +142,7 @@ export class ApplyLeaveComponent implements OnInit {
       }
     },
     dataPickerFilterEnd: (date: Date) => {
+      // console.log(date)
       let startDate = this.datePickerLeaveApplcn.startAtEndDate;
       startDate.setHours(0, 0, 0, 0)
       if (date) {
@@ -149,7 +150,11 @@ export class ApplyLeaveComponent implements OnInit {
         let leaveType = this.applyForm.get('type').value.name
         let condition = false;
         let endDate = this.datePickerLeaveApplcn.endAtEndDate
+        if(leaveType == 'marriage'){
+          endDate = this.datePickerLeaveApplcn.addDaysToDate(startDate,4)
+        }
         condition = !(date < startDate) && !(date > endDate)
+        console.log(date.getDate(),condition, startDate.getDate(), endDate.getDate())
         return (condition && (day != 0 && day != 6) && (!this.checkDateisThere(date, this.holidayList))) && date.getFullYear() == this.today.getFullYear()
 
       }
@@ -229,6 +234,8 @@ export class ApplyLeaveComponent implements OnInit {
       }
       this.chosenDate()
       let fcEndDate = this.applyForm.get('endDate');
+      this.applyForm.get('endDateFirstHalf').reset()
+      this.applyForm.get('startDateSecondHalf').reset()
       if (this.applyForm.get('category').value == 'Multiple Days') {
         fcEndDate.setValidators([Validators.required])
       } else {
@@ -575,23 +582,26 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   onChangeStartDate(e) {
-    let addDaysToDate = this.datePickerLeaveApplcn.addDaysToDate
-
+    let addDaysToDate = this.datePickerLeaveApplcn.addDaysToDate;
     let dateSelected = e.value;
     let endDateTimeStamp = addDaysToDate(dateSelected, 1);
     this.datePickerLeaveApplcn.startAtEndDate = new Date(endDateTimeStamp)
     let leaveType = this.applyForm.get('type').value.name
-    this.datePickerLeaveApplcn.endAtEndDate = addDaysToDate(dateSelected, this.datePickerLeaveApplcn.noOfLeaveDays[leaveType] - 1, leaveType == 'Maternity')
+    let noOfLeaveDays = this.datePickerLeaveApplcn.noOfLeaveDays[leaveType] || 4;
     let fcEndDate = this.applyForm.get('endDate');
-    if (leaveType == 'Maternity' || leaveType == 'Paternity' || leaveType == 'Marriage') {
-      this.selectedEndDate = this.datePickerLeaveApplcn.endAtEndDate;
-      fcEndDate.setValue(this.selectedEndDate);
-      this.applyForm.updateValueAndValidity();
-    }
-    else {
+    this.datePickerLeaveApplcn.endAtEndDate = addDaysToDate(dateSelected, noOfLeaveDays - 1, leaveType == 'Maternity')
+    if(noOfLeaveDays > 0){
+      if (leaveType == 'Maternity' || leaveType == 'Paternity' || leaveType == 'Marriage') {
+        this.selectedEndDate = this.datePickerLeaveApplcn.endAtEndDate;
+        fcEndDate.setValue(this.selectedEndDate);
+        this.applyForm.updateValueAndValidity();
+      }
+      else {
+        fcEndDate.reset();
+      }
+    }else{ 
       fcEndDate.reset();
     }
-
 
   }
 

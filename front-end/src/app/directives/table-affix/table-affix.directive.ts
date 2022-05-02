@@ -65,9 +65,19 @@ export class TableAffixDirective {
     let targetNode = this.el.nativeElement.querySelector('thead');
     this.originalTable = this.el.nativeElement.querySelector('table');
     this.wrapperTable.appendChild(targetNode.cloneNode(true));
+    let originalThs = Array.from(this.originalTable.querySelectorAll('th'))
+    this.wrapperTable.insertAdjacentHTML('afterbegin',"<colgroup></colgroup>")
+    let colGroup = this.wrapperTable.querySelector('colgroup')
+    Array.from(this.wrapperTable.querySelectorAll('th')).forEach((thItem:any,index) => {
+      let width = getComputedStyle(originalThs[index]).width; 
+      let col = document.createElement('col')
+      colGroup.appendChild(col)
+      col.setAttribute('width',parseInt(width,10)+"")
+    });
     this.wrapperDiv.appendChild(this.wrapperTable);
 
-    this.setCloneTableWidth() 
+    this.setCloneTableWidth()
+
     this.renderer.insertBefore(this.el.nativeElement.parentNode, this.wrapperDiv, this.el.nativeElement);
     this.wrapperDiv.style.display = 'none';
 
@@ -79,7 +89,6 @@ export class TableAffixDirective {
 
     fromEvent(this.windowRef.nativeWindow, 'scroll').pipe(takeUntil(this.destroy$)).subscribe(e => {
 
-
       let reference = this.originalTable;
 
       let target = (<HTMLElement>this.wrapperTable.querySelector('thead'));
@@ -89,8 +98,8 @@ export class TableAffixDirective {
       let referenceRect = reference.getBoundingClientRect();
 
       let width = getComputedStyle(this.el.nativeElement).width;
-      this.wrapperDiv.style.width = width
 
+      this.wrapperDiv.style.width = width;
 
       if (referenceRect.top < 0 && (referenceRect.bottom - targetRect.height) > 0) {
         console.log('in range')

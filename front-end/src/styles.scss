@@ -21,6 +21,7 @@ body {
 
 * {
   font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
+  caret-color: var(--col-accent-500);
 }
 
 img {
@@ -129,6 +130,7 @@ img {
   }
 
 }
+
 
 // the form field in the top form of the many of the views
 .top-form-field {

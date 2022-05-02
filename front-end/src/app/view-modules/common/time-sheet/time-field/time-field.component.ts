@@ -9,9 +9,11 @@ import { isDescendant } from 'src/app/functions/isDescendent.fn';
   templateUrl: './time-field.component.html',
   styleUrls: ['./time-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class TimeFieldComponent implements OnInit, ControlValueAccessor {
+
+  upDownKeyPressed: boolean = false;
 
   // should the input and drop down be disabled or enabled
   @Input() disabled: boolean = false;
@@ -159,13 +161,19 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
       }
       this.value = this.getValue();
       this.propagateChange(this.value);
-      this.showDropDown = false;
+      this.closeMinsDropDown()
     } else if (target == this.elInput.nativeElement) {
       this.elInput.nativeElement.select()
-      this.showDropDown = false;
+      this.closeMinsDropDown()
     } else {
-      this.showDropDown = false;
+      this.closeMinsDropDown()
     }
+  }
+
+  closeMinsDropDown() {
+    this.showDropDown = false;
+    this.upDownKeyPressed = false;
+    this.inFocusMinIndex = undefined
   }
 
   // on change event on the document
@@ -229,21 +237,16 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
           this.cd.detectChanges();
           break;
         case 'focusout':
-          this.showDropDown = false;
+          this.closeMinsDropDown()
           this.cd.detectChanges();
           break;
         case 'keyup':
           if (e['keyCode'] == 13) {
-            this.showDropDown = false;
             let prevMins = this.value.m;
-            this.minsActive = this.minsDdValues[this.inFocusMinIndex];
+            this.minsActive = this.inFocusMinIndex == undefined ? this.minsActive : this.minsDdValues[this.inFocusMinIndex];
             let dayTotalTime = this.tsService.totalArray[this.index];
             let tempMinsActive = this.minsActive == "00" ? 0 : parseInt(this.minsActive, 10);
-
             let totalMinsActive = dayTotalTime.m + tempMinsActive - prevMins;
-
-
-
             if ((dayTotalTime.h == 24 && (tempMinsActive - prevMins) > 0)) {
               // set total hour error and set minutes to 00
               this.minsActive = "00";
@@ -265,38 +268,42 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
               (totalMinsActive > 0)
             )
             ) {
-
               this.errorTotalType = 'minutes';
               this.showError('vacation');
             }
-            if ((this.tsService.holidayArray[this.index] == 8) && (tempMinsActive > 0) && (
-              (dayTotalTime.h > 8) ||
-              (totalMinsActive > 0)
-            )
-            ) {
-
+            if ((this.tsService.holidayArray[this.index] == 8) && (tempMinsActive > 0) && ((dayTotalTime.h > 8) || (totalMinsActive > 0))) {
               this.errorTotalType = 'minutes';
               this.showError('holiday');
             }
             this.value = this.getValue();
+            this.closeMinsDropDown()
             this.propagateChange(this.value);
             this.cd.detectChanges();
           } else if (e['keyCode'] == 38) {
             e.preventDefault();
+            this.upDownKeyPressed = true;
             // this.showDropDown = false;
             if (this.inFocusMinIndex != 0) {
               this.inFocusMinIndex--;
-            }else{
-              this.inFocusMinIndex =this.minsDdValues.length - 1
+            } else {
+              this.inFocusMinIndex = this.minsDdValues.length - 1
             }
+            if (isNaN(this.inFocusMinIndex)) {
+              this.inFocusMinIndex = this.minsDdValues.length - 1
+            }
+            console.log(this.inFocusMinIndex)
             this.cd.detectChanges();
             return false;
           } else if (e['keyCode'] == 40) {
             e.preventDefault();
+            this.upDownKeyPressed = true;
             // this.showDropDown = false;
             if (this.inFocusMinIndex != this.minsDdValues.length - 1) {
               this.inFocusMinIndex++;
-            }else{
+            } else {
+              this.inFocusMinIndex = 0
+            }
+            if (isNaN(this.inFocusMinIndex)) {
               this.inFocusMinIndex = 0
             }
             this.cd.detectChanges();
@@ -312,6 +319,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
       }
 
     } else if (target == this.elInput.nativeElement) {
+      this.upDownKeyPressed = false;
       if (event.type == 'keydown') {
         let invalidKeys = [69, 190, 32];
         if (invalidKeys.indexOf(e['keyCode']) != -1) {

@@ -72,7 +72,7 @@
               <span *ngIf="!leaveCredit?.edit || leaveType?.status == 0">
                 {{leaveType?.status == 0 ? 'NA' : leaveType?.value }}
               </span>
-              <input class="input-leave-policy-config" type="number" step="0.5" min="0" [(ngModel)]="leaveType.value"
+              <input class="input-leave-policy-config" type="number" [attr.step]="leaveType?.type == 'paid' ? 0.5 : 1" min="0" [(ngModel)]="leaveType.value"
                 *ngIf="leaveCredit?.edit && leaveType?.status != 0" />
             </div>
           </ng-container>
