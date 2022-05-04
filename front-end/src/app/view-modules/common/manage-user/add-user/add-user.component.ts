@@ -108,7 +108,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   edited_emp_role: any;
   PROJECT_LIST: ProjectData[] = []
   GROUPS_DATA = []
-  IS_mobile:boolean=false;
+  IS_mobile: boolean = false;
   ALL_CATEGORIES = []
   effected_emp_count = 0;
 
@@ -139,14 +139,14 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private datepipe: DatePipe,
     private user: UserService,
-    ) {
-      this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val=>{ 
- this.IS_mobile=val.matches;
-//  console.log(val.matches)
-      })
-       
-      
-     }
+  ) {
+    this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val => {
+      this.IS_mobile = val.matches;
+      //  console.log(val.matches)
+    })
+
+
+  }
 
 
 
@@ -195,7 +195,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     'password': []
   })
 
-  editableItem = new FormControl("manager"); 
+  editableItem = new FormControl("manager");
 
   ngOnInit(): void {
     this.user_role_id = this.user.getRoleId();
@@ -216,9 +216,9 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.myNgForm.resetForm()
-    },300)
+    }, 300)
   }
 
   reset() {
@@ -585,26 +585,29 @@ export class AddUserComponent implements OnInit, AfterViewInit {
 
 
 
-  openConfirmation(){
+  openConfirmation() {
     // this.confirmationModal.open()
     // this.openDialog()
     //Rahul change Open dialogBox dynamically(rahul changes) ************************
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      panelClass: 'confirm-remove-project',
-      backdropClass: 'cdk-overlay-darker-backdrop',
-      data: {
+    if (this.addUserForm.valid) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        panelClass: 'confirm-remove-project',
+        backdropClass: 'cdk-overlay-darker-backdrop',
+        data: {
           confirmMessage: 'Are you sure to add this employee?'
-      },
-      restoreFocus:true
-    })
-    dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-      console.log('######################', data)
-      if (data) {
-        // call addUser
-        this.addUser();
-        //Reeset the for
-      }
-    })
+        },
+        restoreFocus: true
+      })
+      dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+        console.log('######################', data)
+        if (data) {
+          // call addUser
+          this.addUser();
+          //Reeset the for
+        }
+      })
+
+    }
     // ************************************************** *
     // ************************************************** *
     // ************************************************** *

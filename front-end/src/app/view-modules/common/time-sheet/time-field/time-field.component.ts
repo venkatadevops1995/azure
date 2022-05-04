@@ -230,7 +230,6 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   handleEvent(e: Event) {
     let target = e.target;
     if (target == this.elMinsActive.nativeElement) {
-
       switch (event.type) {
         case 'focusin':
           this.showDropDown = true;
@@ -280,6 +279,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
             this.propagateChange(this.value);
             this.cd.detectChanges();
           } else if (e['keyCode'] == 38) {
+            e.stopPropagation()
             e.preventDefault();
             this.upDownKeyPressed = true;
             // this.showDropDown = false;
@@ -295,6 +295,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
             this.cd.detectChanges();
             return false;
           } else if (e['keyCode'] == 40) {
+            e.stopPropagation()
             e.preventDefault();
             this.upDownKeyPressed = true;
             // this.showDropDown = false;
@@ -312,7 +313,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
           break;
         case 'keydown':
           if ([32, 37, 38, 39, 40].indexOf(event['keyCode']) > -1) {
-            event.preventDefault();
+            e.preventDefault();
           }
           break;
 
