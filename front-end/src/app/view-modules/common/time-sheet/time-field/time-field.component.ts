@@ -94,15 +94,15 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   ngAfterViewInit() {
     this.document.addEventListener('focusin', this, true);
     this.document.addEventListener('focusout', this, true)
-    this.document.addEventListener('keyup', this, true)
-    this.document.addEventListener('keydown', this, true)
+    this.document.addEventListener('keyup', this, { passive: false })
+    this.document.addEventListener('keydown', this, { passive: false })
   }
 
   ngOnDestroy() {
     this.document.removeEventListener('focusin', this, true);
     this.document.removeEventListener('focusout', this, true)
-    this.document.removeEventListener('keyup', this, true);
-    this.document.removeEventListener('keydown', this, true);
+    this.document.removeEventListener('keyup', this, { passive: false });
+    this.document.removeEventListener('keydown', this, { passive: false });
   }
 
 
