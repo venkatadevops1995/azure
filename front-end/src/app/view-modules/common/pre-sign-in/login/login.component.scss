@@ -21,9 +21,9 @@
     }
 }
 
- a:focus{
-     border:1px dotted var(--col-primary-300);
- }
+//  a:focus{
+//      border:1px dotted var(--col-primary-300);
+//  }
 @media screen and (max-width:1024px){
     :host{
         .welcome-heading{
