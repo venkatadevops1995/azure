@@ -238,7 +238,7 @@
           align-items: center;
 
           &:hover {
-            background: var(--color-quaternary-dark);
+            background: var(--col-primary-200);
           }
         }
       }
@@ -379,3 +379,6 @@
     }
   }
 }
+.grey{
+  background-color: var(--col-primary-200);
+ }

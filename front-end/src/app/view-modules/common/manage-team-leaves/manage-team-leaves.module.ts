@@ -23,6 +23,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 @NgModule({
   declarations: [ManageTeamLeavesComponent, ConfirmRejectLeaveComponent],
@@ -48,7 +49,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     MatCheckboxModule,
     FileDownloadModule,
     UseSvgModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    FocusModule
   ],
   exports: [ManageTeamLeavesComponent]
 })

@@ -140,11 +140,13 @@ get is_XMD_LT(){
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
     }),
+    setTimeout(()=>{
       this.filteredManagers = this.managerCtrl.valueChanges
         .pipe(
           startWith(''),
           map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
         );
+      },300)
   }
 
   //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
@@ -259,6 +261,7 @@ get is_XMD_LT(){
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     this.getAllReportes();
+    console.log('::::::::::::::',this.filteredManagers)
   }
 
   ngOnDestroy() {
@@ -276,14 +279,20 @@ get is_XMD_LT(){
         res.body["results"].forEach(ele => {
           // console.log("---------------",ele)
           Array.prototype.push.apply(emp_list, [ele]);
+          
         })
 
         this.USERS_DATA = emp_list;
-        this.employeeList = [...this.USERS_DATA]
+        this.employeeList = [...this.USERS_DATA];
+        
         let employeeList = [...this.USERS_DATA];
         this.employeeListSearch.push({ emp_id: -1, emp_name: 'ALL' });
+      
+        console.log('>>>>>>>>>>>>>>>>>>>>>Userdata',this.employeeListSearch)
+   
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
+         
         });
 
         this.showMessage = true;
@@ -589,6 +598,7 @@ get is_XMD_LT(){
         showCloseButton: true,
       },
       autoFocus: false,
+      restoreFocus:true
     })
     /////////////////////////////////////
     this.edited_emp_name = this.USERS_DATA[i].emp_name

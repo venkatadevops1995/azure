@@ -63,11 +63,13 @@ export class LeaveHistoryComponent implements OnInit {
   ) {
 
     side: this.any;
+    setTimeout(()=>{
     this.filteredManagers = this.managerCtrl.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
       );
+    },300)
   }
 
 

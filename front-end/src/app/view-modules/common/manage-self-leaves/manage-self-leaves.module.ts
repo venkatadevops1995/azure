@@ -21,6 +21,7 @@ import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 @NgModule({
   declarations: [ManageSelfLeavesComponent, ApplyLeaveComponent],
   imports: [
@@ -44,7 +45,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     UseSvgModule,
     AtaiDateRangeModule,
     PopUpModule,
-    MatTabsModule
+    MatTabsModule,
+    FocusModule
   ],
   providers:[ 
   ]

@@ -1,4 +1,5 @@
 <!-- <h2 mat-dialog-title color="accent">Confirm</h2> -->
+<div class="dummy" appFocus></div>
 <div class="confirm-heading ">
   <span *ngIf="dataMerged?.heading">{{dataMerged?.heading}}</span>
 </div>
@@ -18,7 +19,7 @@
   <div style="position: relative;top:0px;" *ngIf="!dataMerged?.template">
 
     <mat-dialog-actions style="margin-bottom:0px;" class="between-xs">
-      <app-button tabindex="0" [mat-dialog-close]="false" cdkFocusInitial  theme="grey" type="button" [size]="(is_XMD_LT ? 'small' : 'default')">
+      <app-button  [mat-dialog-close]="false" cdkFocusInitial  theme="grey" type="button" [size]="(is_XMD_LT ? 'small' : 'default')">
         {{ dataMerged?.Cancel}}
       </app-button>
       <div class="mr-5 ml-10" *ngIf="!dataMerged?.onlyForAlert">

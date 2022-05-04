@@ -41,6 +41,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
 import { UseSvgModule } from './components/use-svg/use-svg.module';
+import { FocusModule } from './directives/focuseDirective/focus/focus.module';
 
 
 
@@ -80,6 +81,7 @@ import { UseSvgModule } from './components/use-svg/use-svg.module';
     MatRadioModule,
     MatDialogModule,
     UseSvgModule,
+    FocusModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable

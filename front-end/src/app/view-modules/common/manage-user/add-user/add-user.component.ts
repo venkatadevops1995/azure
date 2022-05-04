@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, NgForm, ValidatorFn, Validators } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
@@ -106,7 +106,7 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
   edited_emp_role: any;
   PROJECT_LIST: ProjectData[] = []
   GROUPS_DATA = []
-
+  IS_mobile:boolean=false;
   ALL_CATEGORIES = []
   effected_emp_count = 0;
   //Rahul change(adding variable for use breakpoint observer api using singlton service)************
@@ -136,6 +136,11 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
     private datepipe: DatePipe,
     private user: UserService,
     ) {
+      this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val=>{ 
+ this.IS_mobile=val.matches;
+//  console.log(val.matches)
+      })
+       
       
      }
 
@@ -579,8 +584,6 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
 
 
 
-
-
   openConfirmation(){
     // this.confirmationModal.open()
     // this.openDialog()
@@ -590,7 +593,8 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
       backdropClass:'cdk-overlay-darker-backdrop',
       data: {
           confirmMessage: 'Are you sure to add this employee?'
-      }
+      },
+      restoreFocus:true
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
         console.log('######################',data)

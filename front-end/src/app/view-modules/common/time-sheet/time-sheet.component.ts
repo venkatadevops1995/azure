@@ -1,7 +1,7 @@
 import { TimeSheetService } from './time-sheet.service';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
-import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, SimpleChanges, HostListener, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, HostBinding, ViewChildren, QueryList } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
@@ -381,7 +381,118 @@ export class TimeSheetComponent implements OnInit {
 		})
  
 	}
+  //Rahul changes(adding Tab nevigation)**********************************************
+  public currentIndex: number = 0;
+  list:number=0;
+  activeIndex;
+  elements;
+  @ViewChildren('select')select:QueryList<ElementRef>;
+  @ViewChildren('text') text:QueryList<ElementRef>
+  @ViewChildren('field')field:QueryList<ElementRef>
+  public key_pressed(event) {
+   
+    // this.list= Array.from(event.target.children).length;
+    this.list = this.select.toArray().length;
+    console.log('hello',this.list)
+    // this.users = this.keyboardEventsManager.activeItem.item.name;
+    if(event.keyCode==27)
+	this.showProjectList = false;
+    if (event.keyCode == 13) {
+      this.showProjectList = !this.showProjectList;
+     
+      this.select.toArray().forEach(element => {
+        console.log('----->',element.nativeElement.classList.value)
+        console.log('&&&&&&&&&&&&',this.currentIndex);
+     
+        if(element.nativeElement.classList.contains('grey'))
+        {
+          let i;
+          i= element.nativeElement.getAttribute('index');
+          console.log('!!!!!!!!!!!!!@@@@@@@@@',i)
+            if(i=== undefined ||i==NaN ){
+                return
+            }
+            else{
+            //   console.log("I from if ", i);
+            //   let projectToBeAdded = this.wsrActiveProjectsHidden[i];
+            //       this.wsrActiveProjectsVisible.push(projectToBeAdded);
+            //       this.wsrActiveProjectsHidden.splice(i, 1);
+            //       (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
+            //     this.cd.detectChanges();
+            //   this.textarea.get(this.wsrActiveProjectsVisible.length-1).nativeElement.focus();
+            //       this.showProjectList = false;
+			// let index = Number(event.target.getAttribute(i));
+			let projectToBeAdded = this.hiddenActiveProjects[i];
+			this.visibleActiveProjects.push(projectToBeAdded);
+			this.holderInitialdata.visibleActiveProjects.push(this.holderInitialdata.hiddenActiveProjects[i]);
+			projectToBeAdded.addedIntoForm = true;
+			this.hiddenActiveProjects.splice(i, 1);
+			this.holderInitialdata.hiddenActiveProjects.splice(i, 1);
+			let fa = this.ss.fb.array([]);
+				for (let i = 0; i < 7; i++) {
+					fa.push(new FormControl({ h: 0, m: 0 }, []))
+				
+					
+				}
+				(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
 
+				// this.cd.detectChanges();
+				// this.field.get(projectToBeAdded.work_hours).nativeElement.focus();
+
+				projectToBeAdded.work_hours.push({ date: 'Total', enable: true, h: 0, m: 0 })
+				this.showProjectList = false;
+				this.onProjectSelection.emit({ type: 'add', project: projectToBeAdded });
+            }
+      }
+  
+      });
+
+     
+
+      
+    
+      // passing the event to key manager so we get a change fired
+   console.log('enter has been pressed')
+    }
+
+    switch(event.keyCode){ //13
+      case 38: //  arrow up
+      event.stopPropagation();
+               if (this.currentIndex <= 0) 
+                  this.currentIndex = this.list - 1;
+                 else 
+                  this.currentIndex = (this.currentIndex - 1) % this.list;
+                
+                console.log('keyup', this.currentIndex);
+      break;
+      case 40: //  arrow down
+      event.stopPropagation();
+             
+             this.currentIndex = (this.currentIndex + 1) % this.list;
+              console.log('keydown', this.currentIndex);
+      break;
+      default: this.currentIndex=0;
+  }
+  this.cd.detectChanges();
+  this.select.toArray().forEach((ele) => {
+    let i;
+    i = parseInt(ele.nativeElement.getAttribute('id'));
+    console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement,i);
+    if (this.currentIndex == i) {
+      console.log('currentIndex::::::',this.currentIndex);
+      ele.nativeElement.classList.add('grey');
+     
+    } else if(this.currentIndex !== i){
+
+      ele.nativeElement.classList.remove('grey');
+    }
+    console.log('hello i am true');
+  });
+  
+  
+}
+
+  //*************************************************************************************** 
 	ngOnChanges(changes: SimpleChanges) {
 		let data = changes.data;
 		if (data && data.currentValue != data.previousValue) {
@@ -503,7 +614,8 @@ export class TimeSheetComponent implements OnInit {
 					backdropClass: 'cdk-overlay-darker-backdrop',
 					data: {
 						confirmMessage: 'Are you sure you want to remove the project ? All entries will be lost.'
-					}
+					},
+					restoreFocus:true
 				})
 				dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
 					// console.log(data)

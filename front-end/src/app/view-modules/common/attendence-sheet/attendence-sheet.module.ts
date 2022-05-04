@@ -15,6 +15,7 @@ import { ToolTipModule } from 'src/app/directives/tool-tip/tool-tip.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { AffixModule } from 'src/app/directives/affix/affix.module';
 import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 @NgModule({
@@ -25,6 +26,8 @@ import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.mod
     MatTableModule,
     MatInputModule,
     FormsModule,
+    FocusModule,
+ 
     // NgxDaterangepickerMd.forRoot(),
     MatFormFieldModule,
     FileDownloadModule,

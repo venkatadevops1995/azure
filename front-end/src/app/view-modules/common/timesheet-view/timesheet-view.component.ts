@@ -1,10 +1,10 @@
 import { HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, AnyForUntypedForms } from '@angular/forms';
 import { SingletonService } from './../../../services/singleton.service';
 import { TimeSheetComponent } from './../../common/time-sheet/time-sheet.component';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef, TemplateRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, HostListener, ElementRef, TemplateRef, Renderer2, ViewChildren, QueryList } from '@angular/core';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
 import { emptyFormArray } from 'src/app/functions/empty-form-array.fn';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
@@ -127,111 +127,107 @@ export class TimesheetViewComponent implements OnInit {
   get is_MD_LT(){
     return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
   }
-  public activeIndex: number = 0;
-  list:any=0;
-  @ViewChild('select')select:ElementRef;
-   keyboardEventsManager:ListKeyManager<any>;
-   users = [];
+
+
+
+// Rahul changes(adding the arrow key nevigation)*******************
+
+  public currentIndex: number = 0;
+  list:number=0;
+  activeIndex;
+  elements;
+  @ViewChildren('select')select:QueryList<ElementRef>;
+  @ViewChildren('text') text:QueryList<ElementRef>
+  @ViewChildren('textarea') textarea:QueryList<ElementRef>
+
+
   public key_pressed(event) {
-  
-    this.list= Array.from(event.target.children).length;
+   
+    // this.list= Array.from(event.target.children).length;
+    this.list = this.select.toArray().length;
+    console.log('hello',this.list)
     // this.users = this.keyboardEventsManager.activeItem.item.name;
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!',event)
-    if (event.keyCode === 13) {
+    if(event.keyCode==27)
+	this.showProjectList = false;
+    if (event.keyCode == 13) {
+      this.showProjectList = !this.showProjectList;
+     
+      this.select.toArray().forEach(element => {
+        console.log('----->',element.nativeElement.classList.value)
+        console.log('&&&&&&&&&&&&',this.currentIndex);
+     
+        if(element.nativeElement.classList.contains('grey'))
+        {
+          let i;
+          i= element.nativeElement.getAttribute('index');
+          console.log('!!!!!!!!!!!!!@@@@@@@@@',i)
+            if(i=== undefined ||i==NaN ){
+                return
+            }
+            else{
+              console.log("I from if ", i);
+              let projectToBeAdded = this.wsrActiveProjectsHidden[i];
+                  this.wsrActiveProjectsVisible.push(projectToBeAdded);
+                  this.wsrActiveProjectsHidden.splice(i, 1);
+                  (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
+                this.cd.detectChanges();
+              this.textarea.get(this.wsrActiveProjectsVisible.length-1).nativeElement.focus();
+                  this.showProjectList = false;
+              
+            }
+      }
+  
+      });
+
+     
+
+      
+    
       // passing the event to key manager so we get a change fired
    console.log('enter has been pressed')
     }
-    switch(event.keyCode){
-      case 13:  this.showProjectList = !this.showProjectList;
+
+    switch(event.keyCode){ //13
+      case 38: //  arrow up
+      event.stopPropagation();
+               if (this.currentIndex <= 0) 
+                  this.currentIndex = this.list - 1;
+                 else 
+                  this.currentIndex = (this.currentIndex - 1) % this.list;
+                
+                console.log('keyup', this.currentIndex);
       break;
-      case 38:
-        if(this.activeIndex==0){
-          this.activeIndex=this.list-1
-        }
-        else{
-          --this.activeIndex;
-        }
-        this.rendrer.addClass(this.select.nativeElement,'select')
-        console.log('keyup')
-        console.log('selected index:::38',this.activeIndex);
-        break
-      case 40:
-        if(this.activeIndex==this.list-1){
-          this.activeIndex=0;
-        }else{
-        ++this.activeIndex;
-        }
-      this.rendrer.addClass(this.select.nativeElement,'select')
-        console.log('keyDown')
-        console.log('selected index:::40',this.activeIndex);
-        // return this.nextActiveMatch();
-        break
-      default:
-        this.activeIndex = 0
+      case 40: //  arrow down
+      event.stopPropagation();
+             
+             this.currentIndex = (this.currentIndex + 1) % this.list;
+              console.log('keydown', this.currentIndex);
+      break;
+      default: this.currentIndex=0;
   }
-}
-    //  key_pressed_1(event:any){
+  this.cd.detectChanges();
+  this.select.toArray().forEach((ele) => {
+    let i;
+    i = parseInt(ele.nativeElement.getAttribute('id'));
+    console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement,i);
+    if (this.currentIndex == i) {
+      console.log('currentIndex::::::',this.currentIndex);
+      ele.nativeElement.classList.add('grey');
      
-    //    console.log('list:::',this.list);
-    //console.log('universal key index',this.activeIndex);
+    } else if(this.currentIndex !== i){
+
+      ele.nativeElement.classList.remove('grey');
+    }
+    console.log('hello i am true');
+  });
   
-    // switch(event.keyCode){
-    //   case 38:
-        // if(this.activeIndex > 0){
-        //   this.activeIndex= --this.activeIndex  ;
-        // }else if(this.activeIndex == 0){
-        //   this.activeIndex = this.list
-        // }
-        // else
-        //   this.activeIndex = this.activeIndex;
-      //   if(this.activeIndex==0){
-      //     this.activeIndex=this.list-1
-      //   }
-      //   else{
-      //     --this.activeIndex;
-      //   }
-      //   this.rendrer.addClass(this.select.nativeElement,'active')
-      //   console.log('keyup')
-      //   console.log('selected index:::38',this.activeIndex);
-      //   break
-      // case 40:
-        // if(this.activeIndex <= this.list-1){ // 0 
-        //   this.activeIndex= ++this.activeIndex;
-        // }
-        // // else if(this.activeIndex == 0){
-        // //   this.activeIndex = 0
-        // // }
-        // else{
-        // this.activeIndex = this.activeIndex;
-        // }
-    //     if(this.activeIndex==this.list-1){
-    //       this.activeIndex=0;
-    //     }else{
-    //     ++this.activeIndex;
-    //     }
-    //   this.rendrer.addClass(this.select.nativeElement,'active')
-    //     console.log('keyDown')
-    //     console.log('selected index:::40',this.activeIndex);
-    //     // return this.nextActiveMatch();
-    //     break
-    //   default:
-    //     this.activeIndex = 0
-
-    // }
-    // if(this.activeIndex == )
-    // console.log("^^^^^",event.target.children)
+  
+}
 
 
-// }
-
-
-  // public nextActiveMatch() {
-  //   // this.rendrer.addClass(this.select.nativeElement,'select');
-    
-  // public prevActiveMatch () {
-  //   // this.rendrer.addClass(this.select.nativeElement,'select');
-    
-  // }
+//***************************************************************************
+//**************************************************************************
+//****************************************************************************
 
 
 
@@ -242,7 +238,8 @@ export class TimesheetViewComponent implements OnInit {
     private router: Router,
     private el: ElementRef,
     private dialog: MatDialog ,
-    private rendrer:Renderer2
+    private rendrer:Renderer2,
+    
   
   ) {
     this.fgWsrProjects = this.ss.fb.group({
@@ -304,6 +301,11 @@ export class TimesheetViewComponent implements OnInit {
       let target:HTMLElement = e['target'];
       this.translateTimesheetTitle = target.scrollLeft 
     })
+    // Rahul change ************************
+    this.list = this.select.toArray().length;
+    this.elements=this.select.toArray();
+    
+    //*********************************************
   }
 
   ngOnDestroy() {
@@ -479,7 +481,8 @@ export class TimesheetViewComponent implements OnInit {
         hideFooterButtons: true,
         template: this.templateRefManagerComments,
         maxWidth: '500px'
-      }
+      },
+      restoreFocus:true
     })
   }
 
@@ -516,7 +519,8 @@ export class TimesheetViewComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
-      }
+      },
+      restoreFocus:true
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
       console.log(result)
@@ -621,7 +625,8 @@ export class TimesheetViewComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
-      }
+      },
+      restoreFocus:true
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
       console.log(result)

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -44,6 +44,7 @@ export class PolicyListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private renderer: Renderer2,
     public dialog: MatDialog,
+    // private cd :ChangeDetectorRef,
     private user: UserService) { }
 
   ngOnInit(): void {
@@ -128,6 +129,7 @@ export class PolicyListComponent implements OnInit {
           mb_30:false
         },
         autoFocus: false,
+        restoreFocus:true
       })
 
     // ******************************************************************************
@@ -149,7 +151,8 @@ export class PolicyListComponent implements OnInit {
           backdropClass:'cdk-overlay-darker-backdrop',
           data: {
               confirmMessage: 'Are you sure want to delete the policy ?'
-          }
+          },
+          restoreFocus:true
         })
         dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
             console.log('######################',data)
@@ -190,5 +193,6 @@ export class PolicyListComponent implements OnInit {
     parentUrl.splice(-1, 1);
 
     this.router.navigate([parentUrl.join("/") + '/document-config'], { state: { policy_id: pol_id, type: type_id } });
+    // this.cd.detectChanges();
   }
 }

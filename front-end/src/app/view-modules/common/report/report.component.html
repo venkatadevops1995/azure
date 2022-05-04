@@ -1,5 +1,6 @@
+<div class="dummy" appFocus></div>
 <div class="flex flex-col-xs flex-row-xmd between-md start-xs top-md middle-xmd  mb-20">
-  <h2 class="mb-15 mb-xmd-0">Report</h2>
+  <h2  class="mb-15 mb-xmd-0">Report</h2>
   <div class="flex flex-col-xs flex-row-md   fs-12 fs-md-14 mb-20 center-xs middle-xs bottom-md">
     <mat-form-field class=" mr-md-30 no-pb mb-15 mb-md-0 top-form-field">
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
@@ -15,7 +16,7 @@
       <app-atai-date-range [presets]="datePickerPresets" [maxDate]="maxDate" (dateSelected)="onDateSelection($event)">
       </app-atai-date-range>
     </mat-form-field>
-    <svg class="export_icon ml-md-30  use-svg"
+    <svg tabindex="0" class="export_icon ml-md-30  use-svg"
       [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}" w="25" symbol="excel-green"
       style=" cursor:pointer;">
     </svg>

@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div>
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
     <div class="flex pb-20 flex-col-xs flex-row-xmd middle-xmd  between-xs">
@@ -98,7 +99,7 @@
         <!-- <svg class="use-svg col-primary-300 " (click)="editManagers(i)" symbol="edit" w="16"></svg> -->
         <!-- ****************************************************** -->
         <!-- new code -->
-        <svg class="use-svg col-primary-300 edit" [attr.index]='i' symbol="edit" w="16"></svg>
+        <svg tabindex="0" (keydown.enter)="onClickHost($event)" class="use-svg col-primary-300 edit" [attr.index]='i' symbol="edit" w="16"></svg>
       </td>
     </ng-container>
 
@@ -240,7 +241,7 @@
                       <span class="checkmark"></span>
                     </label>
                   </li>
-
+                   
                 </ul>
               </div>
             </div>
@@ -351,7 +352,7 @@
             style="display: inline-block;position: relative;min-width: 280px;min-height: 65px; padding: 10px 0px 0px 20px;"
             class="box2 mat-form-field-flex ">
 
-            <p style="margin: 0 0 0 0px;">Atwork Role</p>
+            <p style="margin: 0 0 10px 0px;">Atwork Role</p>
             <div style="padding-left: 2px;">
               <ul>
                 <li *ngFor="let role of ROLES;let i=index">
@@ -362,7 +363,13 @@
                     <span class="checkmark"></span>
                   </label>
                 </li>
-
+                <!-- Rahul change******************* -->
+              <!-- <li class="mr-20 fs-16 fw-600" *ngFor="let role of ROLES;let i=index"> 
+                <mat-checkbox  [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">{{role.name}}</mat-checkbox>
+                <mat-checkbox  (change)="selectRole(i,$event,false)" *ngIf="role.name != 'L0' "
+                      [checked]="role.selected" [disabled]="role.disabled" style="color:var(--col-primary-300);">{{role.name}}</mat-checkbox>
+                </li> -->
+                  <!-- ***************************************** -->
               </ul>
             </div>
           </div>

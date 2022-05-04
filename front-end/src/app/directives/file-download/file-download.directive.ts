@@ -240,6 +240,68 @@ export class FileDownloadDirective {
 
     }
 
+
+
+
+   // Adding event handeler for dowload button on enter key pressed 
+   @HostListener('keydown.enter')pressEnter(){
+    var headers = new HttpHeaders();
+    // headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/octet-stream');
+
+    let dataBlob;
+
+    //headers.append('Cache-Control', 'max-age=86400');
+    // let options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+
+    // send the angular 2 http GET request to fetch the File Data ( Blob or Array Buffer ) using the API
+    this.httpClient.noLoader(this.dbdFileDownload.noLoader).showProgress('download').request(this.dbdFileDownload.method, this.dbdFileDownload.endPoint, "", this.dbdFileDownload.body, headers, {
+        responseType: this.dbdFileDownload.responseType,
+        progress: 'download',
+    })
+        .subscribe((res: HttpResponse<any>) => {
+            if (res.status === 200) {
+                // get the file name from the header - Content Disposition
+                let fileName: string = this.getFileName(res);
+
+                switch (this.dbdFileDownload.responseType) {
+                    case "text":
+                        dataBlob = this.b64toBlob(res.body);
+                        break;
+                    case "blob":
+                        dataBlob = res.body;
+                        break;
+                    case "arrayBuffer":
+                        //responseType = ResponseContentType.ArrayBuffer;
+                        break;
+                    case "json":
+                        //responseType = ResponseContentType.Json;
+                        break;
+                    default:
+                        dataBlob = res.body;
+                        break;
+                }
+
+                if (this.dbdFileDownload.responseType === "text") {
+                    this.openPopUp(dataBlob, fileName);
+                } else {
+                    this.download(res.body, fileName, res['headers'].get('Content-Type'));
+                }
+                // on finish emit the event
+                this.onFinish.emit(true);
+            } else {
+                // on finish emit the event
+                this.onFinish.emit(false);
+            }
+
+        });
+   }
+
+   //******************************************************************
+
+
+
+
     // get file name from the content disposition header
     getFileName(res): string {
 

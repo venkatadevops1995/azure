@@ -5,15 +5,17 @@
   <span *ngIf="pendingApprovalCount == 0 && rejectedCount > 0" class="dot"
     style="background-color: var(--color-warn-500);"></span>
 </div> -->
+<div class="dummy" appFocus></div>
 <div class="pb-20 flex between-xmd flex-col-xs flex-row-xmd">
+
   <h2 class="heading">Team Timesheets
   </h2>
   <div class="flex between-xs">
     <div class="flex center-xs  col-primary-200 fs-12 mr-30 mt-15 mt-md-0">
-      <a [dbdFileDownload]="{endPoint:'downloadwst/', responseType:'blob'}" class="flex middle-xs pointer">
+      <a tabindex="0"  [dbdFileDownload]="{endPoint:'downloadwst/', responseType:'blob'}" class="flex middle-xs pointer">
         <svg class="ml-3 mr-10 use-svg" symbol="download" w="20"></svg> WTR
       </a>
-      <a [dbdFileDownload]="{endPoint:'downloadwsr/',responseType:'blob'}" class="flex middle-xs mr-50 ml-50 pointer">
+      <a tabindex="0" [dbdFileDownload]="{endPoint:'downloadwsr/',responseType:'blob'}" class="flex middle-xs mr-50 ml-50 pointer">
         <svg class="mr-10 use-svg" symbol="download" w="20"></svg> WSR
       </a>
     </div>
@@ -84,7 +86,7 @@
         <div *ngFor="let project of data.active_projects;let i=index;">
           <ng-container *ngIf="project.visibilityFlag">
             <div class="resolve-popup__project-name fs-14 mb-15 pl-10">{{project?.project_name}}</div>
-            <textarea disabled class="textarea-black mb-30 fs-14 fs-xmd-16 ">{{project.work_report}}</textarea>
+            <textarea  disabled class="textarea-black mb-30 fs-14 fs-xmd-16 ">{{project.work_report}}</textarea>
           </ng-container>
         </div>
       </div>
