@@ -166,8 +166,9 @@
             cursor: pointer; 
           " svg-fill="currentColor">
           </div> -->
+
           <mat-datepicker [touchUi]="IS_mobile" (selectedChanged)="onDate($event)" #picker></mat-datepicker>
-          <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
+          <mat-error *ngIf="deleteUserForm.controls.dol.touched || deleteUserForm.controls.dol.touched ">
             Please select Relieving Date
           </mat-error>
         </mat-form-field>
@@ -179,7 +180,7 @@
       </form>
       <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
         <!-- <app-button theme="black" size="small" theme="grey"class="mr-30 zeros-project-cancel" (click)="disableEmpclose()">Cancel</app-button> -->
-        <app-button size="small" theme="success" class="zeros-project-proceed" [disabled]="deleteUserForm.invalid" (click)="proeceedDisable()">Proceed
+        <app-button size="small"  [disabled]="deleteUserForm.invalid" theme="success" class="zeros-project-proceed" (click)="proeceedDisable()">Proceed
         </app-button>
       </div>
     </div>

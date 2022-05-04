@@ -181,6 +181,15 @@ setTimeout(()=>{
         this.selectedHistoryRange["endDate"] = date.last;
         this.fromdate = date.start
         this.todate = date.start
+        let fgValue: any = this.managerCtrl.value
+        console.log(fgValue);
+        if (fgValue == 'ALL' || fgValue) {
+            this.getLeaveApplications(true, fgValue)
+            this.showMessage = true
+
+        } else {
+            this.LEAVE_DATA_HISTORY = []
+        }
     }
 
 

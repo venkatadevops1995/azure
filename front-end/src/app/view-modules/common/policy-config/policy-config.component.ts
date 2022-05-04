@@ -546,10 +546,18 @@ DisableCheck:boolean=false;
           this.emp_count = 0;
           this.companyList.completed = true;
           this.companyList.subtasks.forEach(t => t.completed = true);
-        } else {
-          this.ss.statusMessage.showStatusMessage(false, "Issue while creating policy");
-
-        }
+        }else if(res.error){
+          console.log("error",res.error["results"]['company_list'])
+          if(res.error["results"]['company_list']){
+            let error_message ="Please select atleast one company group."
+            console.log(error_message)
+            this.ss.statusMessage.showStatusMessage(false, error_message);
+          }
+          else {
+            this.ss.statusMessage.showStatusMessage(false, "Issue while creating policy");
+  
+          }         
+        } 
       })
     } else {
 

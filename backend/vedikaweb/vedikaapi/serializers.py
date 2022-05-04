@@ -389,6 +389,11 @@ class NewEmpSerializer(serializers.Serializer):
         if(len(company_data)==0):  
             raise serializers.ValidationError("Company with name \"{}\" does not exist".format(data),code=409)
         return company_data[0].name
+    def validate(self,data):
+        emp_name = data["firstName"]+ " "+data["lastName"]
+        if(Employee.objects.filter(emp_name = emp_name).exists()):
+            raise serializers.ValidationError("Same Name employee already exists.",code=409)
+        return data
 
 class UpdateProjectSerializer(serializers.Serializer):
     emp_id = serializers.IntegerField()
@@ -645,6 +650,11 @@ class LeaveTypeSerializer(serializers.ModelSerializer):
 class UpdateLeaveConfigSerializer(serializers.Serializer): 
     id= serializers.IntegerField(required=True)
     max_leaves=serializers.FloatField(required=True) 
+
+    def validate_max_leaves(self,data):
+        if data < 0 :
+            raise serializers.ValidationError('Value should not be  less than 0')
+        return data
     
 class LeaveConfigSerializer(serializers.ModelSerializer):  
     id = serializers.ReadOnlyField()
@@ -808,6 +818,10 @@ class PolicyDocumentCreateSerializer(serializers.Serializer):
     emp_list = serializers.ListField(
          child=serializers.PrimaryKeyRelatedField(queryset=Employee.objects.filter(status=1)),required=False
     )
+    def validate_company_list(self,data):
+        if len(data) == 0 :
+            raise serializers.ValidationError("Company List must be not empty.",code=409)
+        return data
     def validate(self,data):
 
         if data['enable_for'] == 'FEW' and (('emp_list' not in data) or len(data['emp_list'])==0):
