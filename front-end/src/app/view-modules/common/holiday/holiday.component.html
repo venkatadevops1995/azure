@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div style="display: flex;justify-content: space-between;">
   <h2 class="heading mb-20">Holiday List {{this.selectedYear}}</h2>
 
@@ -60,7 +61,7 @@
           <div class="holidays__row" *ngIf="!holiday?.delete" [ngStyle]="{'grid-template-columns':'  minmax(120px, 2fr) minmax(130px, 1.3fr) minmax(80px, 1fr) 80px repeat('+(editMode ? locations.length : locationsInSelectedYear.length )+',minmax(80px,100px))'}">
             <div class="holidays__cell holidays__cell--date holidays__cell--left pos-r">
               <ng-container *ngIf="editMode && holiday.editable">
-                <svg [attr.data-index]="i" class="holidays__remove col-warn-400 use-svg" symbol="remove" w="15">
+                <svg  [attr.data-index]="i" class="holidays__remove col-warn-400 use-svg" symbol="remove" w="15">
                 </svg>
               </ng-container>
               <ng-container *ngIf="!editMode || (editMode && !holiday.editable)">
@@ -146,7 +147,7 @@
             <div class="holidays__cell holidays__cell--locations pos-r"
               *ngFor="let location of (editMode ? locations :locationsInSelectedYear);let j = index;"
               [attr.data-index]="i">
-              <div [attr.data-index]="i" [attr.data-location_id]="location.id" class="holidays__checkbox "
+              <div  [attr.data-index]="i" [attr.data-location_id]="location.id" class="holidays__checkbox "
                 [class.edit-mode]="editMode"
                 [class.checked]="(!editMode && holiday.locations.indexOf(location.id) != -1) || (editMode && faHolidayList.controls[i].value.locations.indexOf(location.id) != -1)"
                 [class.disabled]="!holiday?.editable && editMode"></div> 
@@ -158,8 +159,8 @@
 
   </div>
 
-  <div class="dis-ib mt-15 " *ngIf="editMode">
-    <div (click)="addHolidayItem()" class="flex middle-xs center-xs btn-outline ml-10">
+  <div   tabindex="0" (keydown.enter)="addHolidayItem()" class="dis-ib mt-15 " *ngIf="editMode">
+    <div  (click)="addHolidayItem()" class="flex middle-xs center-xs btn-outline ml-10">
       <svg class=" mr-5 use-svg" symbol="add-circle" w="14" svg-fill="currentColor">
       </svg>
       Add Holiday

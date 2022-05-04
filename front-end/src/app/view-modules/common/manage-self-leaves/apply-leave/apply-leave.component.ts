@@ -190,7 +190,7 @@ export class ApplyLeaveComponent implements OnInit {
   @ViewChild('timesheetDiscrepancyDialog') timesheetDiscrepancyPopup: ModalPopupComponent;
 
   specialLeaveTypeRequestsAvailable: Array<{ id: number, name: string, available: number }> = []
-
+  IS_mobile:boolean=false;
   constructor(
     public dialog: MatDialog,
     private fb: FormBuilder,
@@ -216,7 +216,9 @@ export class ApplyLeaveComponent implements OnInit {
     })
 
     // this.ss.responsive.observe(AtaiBreakPoints.)
-
+    this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val=>{ 
+      this.IS_mobile=val.matches;
+      })
   }
 
   ngOnInit(): void {
@@ -411,8 +413,9 @@ export class ApplyLeaveComponent implements OnInit {
                 showCloseButton: true,
                 hideFooterButtons: true,
                 maxWidth: '800px',
-                minWidth: '300px'
-              }
+                minWidth:'300px'
+              },
+              restoreFocus:true
             })
           }
           else {
@@ -697,7 +700,8 @@ export class ApplyLeaveComponent implements OnInit {
 
                 confirmMessage: res.error.message,
                 onlyForAlert: true
-              }
+              },
+              restoreFocus:true
             })
           }
           else if (res.status == 409) {

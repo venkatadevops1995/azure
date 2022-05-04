@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div >
   <h2 class="heading">Document Configuration</h2>
   <div [ngClass]="Is_match ? 'margin_next' : 'margin_prev'" > 
@@ -120,6 +121,8 @@
                             <div style="display: flex; flex-direction: column">
                               <div>
                                 <a
+                                tabindex="0"
+                                (keydown.enter)="openSelectedEmp()"
                                   style="padding-top: 4px"
                                   *ngIf="
                                     optn.option == 'FEW' &&
@@ -133,6 +136,8 @@
                                 <!-- <span *ngIf="optn.option=='FEW' && policyForm.controls.enable_for.value == 'FEW'" class="ml-10" (click)="editSelectEmp()" [svgIcon]="{url:'./assets/icons-sprite.svg#add',w:20,h:20}" style="color:var(--color-tertiary);margin-top:2px;cursor:pointer;vertical-align: bottom;"
                                                                     svg-fill="var(--color-secondary)"></span> -->
                                 <svg
+                                  tabindex="0"
+                                  (keydown.enter)="editSelectEmp()"
                                   *ngIf="
                                     optn.option == 'FEW' &&
                                     policyForm.controls.enable_for.value ==

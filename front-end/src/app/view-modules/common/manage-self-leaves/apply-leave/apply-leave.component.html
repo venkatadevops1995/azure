@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <form [formGroup]="applyForm" #f="ngForm" class="fs-14">
   <div class="container-fluid">
     <div class="row fs-12 fs-sm-14 ">
@@ -59,7 +60,7 @@
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterStart" matInput
                   [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
                 <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="refPicker1.open()"></svg>
-                <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
+                <mat-datepicker [touchUi]="IS_mobile"  (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
               </mat-form-field>
               <div
@@ -106,8 +107,7 @@
                   [matDatepicker]="refPicker1" (dateInput)="onChangeStartDate($event)" readonly>
 
                 <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="refPicker1.open()"></svg>
-
-                <mat-datepicker (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
+                <mat-datepicker [touchUi]="IS_mobile" (opened)="onOpenStartDateDatePicker()" [dateClass]="datePickerLeaveApplcn.dateClass()"
                   [startAt]="datePickerLeaveApplcn.startAtStartDate" #refPicker1></mat-datepicker>
 
               </mat-form-field>
@@ -134,7 +134,7 @@
                   [matDatepickerFilter]="datePickerLeaveApplcn.dataPickerFilterEnd" matInput
                   [matDatepicker]="refPicker2" [value]="selectedEndDate" readonly>
                 <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="refPicker2.open()"></svg>
-                <mat-datepicker (opened)="onOpenEndDateDatePicker()"
+                <mat-datepicker [touchUi]="IS_mobile" (opened)="onOpenEndDateDatePicker()"
                   [dateClass]="datePickerLeaveApplcn.dateClass('end')" [startAt]="datePickerLeaveApplcn.startAtendDate"
                   #refPicker2 color="primary"></mat-datepicker>
               </mat-form-field>

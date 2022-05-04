@@ -4,6 +4,7 @@ import { PopUpComponent } from './pop-up.component';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { ButtonModule } from '../button/button.module';
 import { UseSvgModule } from '../use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { UseSvgModule } from '../use-svg/use-svg.module';
     CommonModule,
     MatDialogModule,
     ButtonModule,
-    UseSvgModule
+    UseSvgModule,
+    FocusModule
   ],
   exports: [PopUpComponent],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} },

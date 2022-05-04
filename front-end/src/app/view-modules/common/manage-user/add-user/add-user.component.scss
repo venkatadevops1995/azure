@@ -79,6 +79,31 @@ mat-form-field {
 }
 
 
+// @media screen and (min-width: 320px) and (max-width:550px) and  (orientation: portrait) {
+//     .mat-datepicker-content-touch .mat-datepicker-content-container {
+//         min-width: 310px !important;
+//         height: auto;
+//     }
+//   }
+
+
+::ng-deep.mat-datepicker-content-container{
+    width: 310px !important;
+    height: unset !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Create a custom checkbox */
 
 .checkmark {

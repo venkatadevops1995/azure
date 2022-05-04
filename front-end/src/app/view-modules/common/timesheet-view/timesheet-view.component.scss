@@ -41,7 +41,7 @@
         padding: 0 15px;
         cursor: pointer;
         &:hover {
-          background: var(--color-quaternary-dark);
+          background: var(--col-primary-200);
         }
       }
     }
@@ -105,6 +105,6 @@
     }
   }
 }
-.select{
- background-color: red;
+.grey{
+ background-color: var(--col-primary-200);
 }

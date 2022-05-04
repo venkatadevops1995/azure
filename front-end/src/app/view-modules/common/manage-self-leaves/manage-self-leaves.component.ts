@@ -157,7 +157,8 @@ export class ManageSelfLeavesComponent implements OnInit {
                 showCloseButton: true,
                 heading: 'Apply Leave',
                 maxWidth: '900px'
-            }
+            },
+            restoreFocus:true
         });
 
         this.dialogRefLeaveApplication.afterClosed().pipe(take(1)).subscribe(() => {
@@ -174,7 +175,8 @@ export class ManageSelfLeavesComponent implements OnInit {
                 confirmMessage: 'Are you sure you want to raise correction ?',
                 showTextbox: true,
                 placeholderTextField: 'Enter correction comments'
-            }
+            },
+            restoreFocus:true
         })
 
         // 
@@ -210,7 +212,8 @@ export class ManageSelfLeavesComponent implements OnInit {
                 heading: 'Leave Request Details',
                 maxWidth: '700px',
                 template: this.templateRefLeaveDetails
-            } 
+            },
+            restoreFocus:true
         })
     }
 
@@ -233,6 +236,7 @@ export class ManageSelfLeavesComponent implements OnInit {
                 Cancel:'No',
                 Proceed:'Yes'
             },
+            restoreFocus:true,
             panelClass: 'confirm-popup'
         })
         dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {

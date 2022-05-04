@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div>
   <div class="pb-20 flex flex-col-xs flex-row-xmd center-xs between-xs middle-xmd">
     <h2 class="heading fw-600">Edit Employee</h2>
@@ -67,7 +68,7 @@
           <!-- Previous code-->
           <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> -->
           <!-- new code -->
-          <svg [attr.index]='i' class="use-svg edit" symbol="edit" [w]="20"
+          <svg tabindex="0" (keydown.enter)="onClickHost($event)" [attr.index]='i' class="use-svg edit" symbol="edit" [w]="20"
             style="color: var(--col-primary-300);"></svg>
           <!-- ****************************************************** -->
         </td>
@@ -165,7 +166,7 @@
             cursor: pointer; 
           " svg-fill="currentColor">
           </div> -->
-          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+          <mat-datepicker [touchUi]="IS_mobile" (selectedChanged)="onDate($event)" #picker></mat-datepicker>
           <mat-error *ngIf="deleteUserForm.controls.dol.touched ">
             Please select Relieving Date
           </mat-error>
@@ -178,7 +179,7 @@
       </form>
       <div class="flex mt-40 end-xs" style="justify-content: center;align-items: center;">
         <!-- <app-button theme="black" size="small" theme="grey"class="mr-30 zeros-project-cancel" (click)="disableEmpclose()">Cancel</app-button> -->
-        <app-button size="small" theme="success" class="zeros-project-proceed" (click)="proeceedDisable()">Proceed
+        <app-button size="small" theme="success" class="zeros-project-proceed" [disabled]="deleteUserForm.invalid" (click)="proeceedDisable()">Proceed
         </app-button>
       </div>
     </div>

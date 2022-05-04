@@ -8,6 +8,7 @@ import { ButtonModule } from 'src/app/components/button/button.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -21,7 +22,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     ButtonModule,
     ReactiveFormsModule,
     FormsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    FocusModule
   ]
 })
 export class ImportExportLeaveModule { }

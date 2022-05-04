@@ -77,7 +77,7 @@
         </div>
       </div>
       <div class="w-15 flex center-xs middle-xs">
-        <div (click)="onClickResolveBtns('view',{empId:data?.emp_id})"
+        <div tabindex="0" (keydown.enter)="onClickResolveBtns('view',{empId:data?.emp_id})"(click)="onClickResolveBtns('view',{empId:data?.emp_id})"
           class="flex center-xs col col-primary-200 pointer">
           <svg class="use-svg" symbol="view-details" w="20"></svg>
           <span class="fs-10 mt-5">WSR</span>
@@ -95,12 +95,12 @@
           {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
           {{project?.cumulative?.m | number:'2.' }}]
         </span>
-        <svg *ngIf="project.priority != 1 && !disable" [attr.data-index]='i'
+        <svg tabindex="0" *ngIf="project.priority != 1 && !disable" [attr.data-index]='i'
           class="timesheet__row-remove col-warn-500 use-svg" symbol="remove" w="14"></svg>
       </div>
       <ng-container *ngFor="let day of project?.work_hours;let j=index;">
-        <div *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
-          <app-time-field [index]="j"
+        <div #field *ngIf="day?.date != 'Total' && mode != 'resolve-timesheet'">
+          <app-time-field  [index]="j"
             [formControl]="fgTimeFields['controls']['active_projects']['controls'][i].controls[j]" [editable]="!disable"
             [disabled]="!day?.enable"></app-time-field>
         </div>
@@ -111,15 +111,16 @@
         </div>
       </ng-container>
     </div>
-    <div *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
+    <div  *ngIf="!disable && hiddenActiveProjects.length > 0" class="timesheet__row timesheet--sel-project"
       style="z-index: 11;">
-      <div #selProject class="sel-project" [class.disabled]="hiddenActiveProjects.length < 1">
-        <div tabindex="0" class="flex middle-xs center-xs sel-project__btn btn-outline">
+      <div   (keydown)="key_pressed($event)" #selProject class="sel-project " [class.disabled]="hiddenActiveProjects.length < 1">
+        <div tabindex="0"  class=" flex middle-xs center-xs sel-project__btn btn-outline">
           <svg class=" mr-5 use-svg" symbol="add-circle" w="14"></svg>
           Select Project
         </div>
         <div class="sel-project__project-list" *ngIf="showProjectList && hiddenActiveProjects.length > 0">
           <div class="sel-project__project" [attr.data-project]="project?.project_id" [attr.index]="i"
+          #select id="{{ i }}"
             *ngFor="let project of hiddenActiveProjects;let i = index;">
             {{project?.project_name}}
           </div>

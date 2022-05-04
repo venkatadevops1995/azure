@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ButtonModule } from '../button/button.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MatInputModule } from '@angular/material/input';
     MatToolbarModule,
     ButtonModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    FocusModule
   ],
   exports: [
     ConfirmDialogComponent

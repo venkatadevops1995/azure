@@ -98,7 +98,8 @@ export class SingletonService {
       panelClass: 'confirm-popup',
       data: {
         confirmMessage: message
-      }
+      },
+      restoreFocus:true
     })
     if (callback) {
       dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
