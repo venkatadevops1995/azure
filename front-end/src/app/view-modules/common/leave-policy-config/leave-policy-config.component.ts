@@ -297,10 +297,16 @@ export class LeavePolicyConfigComponent implements OnInit {
                 } else {
                     // retain the leavecredits in edit and edit copy and show the error message
                     if (res.status == 422 || res.status == 400) {
-                        this.ss.statusMessage.showStatusMessage(false, 'Something wrong with the data sent')
+                        if(res['error'][0]['max_leaves']){
+                            let message = res['error'][0]['max_leaves'][0]
+                            this.ss.statusMessage.showStatusMessage(false, message)
+                        }else{
+                            this.ss.statusMessage.showStatusMessage(false, 'Something wrong with the data sent')
+                        }                       
                     } else if (res.status == 404) {
                         this.ss.statusMessage.showStatusMessage(false, 'Some of the leave credits are not found.')
-                    } else {
+                    }
+                    else {
                         this.ss.statusMessage.showStatusMessage(false, 'Something went wrong')
                     }
                 }

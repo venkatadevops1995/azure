@@ -440,12 +440,21 @@ export class AddUserComponent implements OnInit ,AfterViewInit   {
       } else if (res.error) {
 
         Object.keys(res.error["results"][0]).forEach(ele => {
-          error_message += " " + ele;
-          this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true })
+          if(ele == 'non_field_errors' ){
+            error_message = res.error["results"][0][ele];
+            this.addUserForm.controls['firstName'].setErrors({ 'is_duplicated': true });
+            this.addUserForm.controls['lastName'].setErrors({ 'is_duplicated': true });
+          }else{
+            error_message += " " + ele;
+            this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true })
+          }
         })
 
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
 
+      }else if(res.status == 409){
+        error_message +=  res['results'][0]['non_field_errors'];
+        this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
       }
       // this.confirmationModal.close()
     })

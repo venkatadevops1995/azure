@@ -123,7 +123,7 @@ class CreatePolicyView(APIView):
             
 
             return Response(utils.StyleRes(True,"Policy created successfully", policy_serial_data.data), status=StatusCode.HTTP_CREATED)
-        return Response(utils.StyleRes(False,"Policy creation error", str(policy_serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+        return Response(utils.StyleRes(False,"Policy creation error", policy_serial_data.errors), status=StatusCode.HTTP_BAD_REQUEST)
 
     def put(self,request,pk,*args,**kwargs):
         try: 

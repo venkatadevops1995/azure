@@ -575,6 +575,7 @@ export class ApplyLeaveComponent implements OnInit {
     } else if (f.category.value == 'Single Day') {
       this.selectedCount = (f.startDate.value) ? 1 : 0
     }
+    this.selectedCount = Math.abs( this.selectedCount)
     this.cdRef.detectChanges();
   }
 
