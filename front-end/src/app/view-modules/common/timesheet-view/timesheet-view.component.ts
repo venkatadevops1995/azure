@@ -142,7 +142,6 @@ export class TimesheetViewComponent implements OnInit {
 
 
   public key_pressed(event) {
-   
     // this.list= Array.from(event.target.children).length;
     this.list = this.select.toArray().length;
     console.log('hello',this.list)
@@ -190,6 +189,7 @@ export class TimesheetViewComponent implements OnInit {
     switch(event.keyCode){ //13
       case 38: //  arrow up
       event.stopPropagation();
+      event.preventDefault();
                if (this.currentIndex <= 0) 
                   this.currentIndex = this.list - 1;
                  else 
@@ -199,7 +199,7 @@ export class TimesheetViewComponent implements OnInit {
       break;
       case 40: //  arrow down
       event.stopPropagation();
-             
+      event.preventDefault();
              this.currentIndex = (this.currentIndex + 1) % this.list;
               console.log('keydown', this.currentIndex);
       break;

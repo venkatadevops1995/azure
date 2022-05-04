@@ -390,7 +390,8 @@ export class TimeSheetComponent implements OnInit {
   @ViewChildren('text') text:QueryList<ElementRef>
   @ViewChildren('field')field:QueryList<ElementRef>
   public key_pressed(event) {
-   
+	// event.stopPropagation();
+	// event.preventDefault();
     // this.list= Array.from(event.target.children).length;
     this.list = this.select.toArray().length;
     console.log('hello',this.list)
@@ -458,6 +459,7 @@ export class TimeSheetComponent implements OnInit {
     switch(event.keyCode){ //13
       case 38: //  arrow up
       event.stopPropagation();
+      event.preventDefault();
                if (this.currentIndex <= 0) 
                   this.currentIndex = this.list - 1;
                  else 
@@ -467,6 +469,7 @@ export class TimeSheetComponent implements OnInit {
       break;
       case 40: //  arrow down
       event.stopPropagation();
+      event.preventDefault();
              
              this.currentIndex = (this.currentIndex + 1) % this.list;
               console.log('keydown', this.currentIndex);
