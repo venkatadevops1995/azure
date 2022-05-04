@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { LoaderComponent } from './components/loader/loader.component';
@@ -12,10 +12,12 @@ import { UserService } from './services/user.service';
 import * as _ from 'lodash';
 import { AtaiBreakPoints } from './constants/atai-breakpoints';
 import { routerNewAnimation } from './animations/router-new.animation';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { isDescendant } from './functions/isDescendent.fn';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'] 
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
 
@@ -30,6 +32,9 @@ export class AppComponent {
 
   // ref to the global svg compoonent
   @ViewChild(SvgComponent) svg;
+
+  // ref to the global progress compoonent
+  @ViewChild(SidebarComponent, /* TODO: add static flag */   { static: false }) sidebarComponent;
 
   // boolean to know whether it is pre sign in area
   isPreSignIn: boolean = true;
@@ -98,6 +103,14 @@ export class AppComponent {
   @HostListener('click', ['$event'])
   onClickHost(e: Event) {
     this.redirectBasedOnSession();
+    // close the sidebar menu if open for less than laptop resolutions
+    if (this.ss.responsiveState[AtaiBreakPoints.LG_LT]) {
+      let target = e.target;
+      console.log('less than lt')
+      if (this.sidebarComponent && e.target != this.sidebarComponent.el.nativeElement && !isDescendant(this.sidebarComponent.el.nativeElement, target)) {
+        this.sidebarComponent.setSidebarStatus(false)
+      }
+    }
   }
 
   // get the default svg sprite urls on load of the application
@@ -129,8 +142,8 @@ export class AppComponent {
   redirectBasedOnSession() {
     if (!this.ss.isPreSignIn) {
       if (!this.user.validateSession()) {
-        // this.user.logout();
-        // this.router.navigate(['login']);
+        this.user.logout();
+        this.router.navigate(['login']);
       }
     } else {
       if (this.user.validateSession()) {

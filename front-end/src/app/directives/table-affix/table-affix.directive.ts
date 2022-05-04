@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Directive, ElementRef, Inject, Input, Renderer2, SimpleChanges } from '@angular/core';
 import { fromEvent, Subject, takeUntil } from 'rxjs';
+import { SingletonService } from 'src/app/services/singleton.service';
 import { WindowReferenceService } from 'src/app/services/window-reference.service';
 
 interface tableAffix {
@@ -13,7 +14,7 @@ interface tableAffix {
 export class TableAffixDirective {
 
   // declare the property of the directive to access the input value 
-  @Input() tableAffix: tableAffix; 
+  @Input() tableAffix: tableAffix;
 
   destroy$: Subject<any> = new Subject();
 
@@ -32,32 +33,41 @@ export class TableAffixDirective {
     private el: ElementRef,
     private renderer: Renderer2,
     private windowRef: WindowReferenceService,
-    @Inject(DOCUMENT) private doc: Document) { }
+    @Inject(DOCUMENT) private doc: Document,
+    private ss: SingletonService) { }
 
 
   ngOnChanges(values: SimpleChanges) {
-    if (values.tableAffix && (values.tableAffix.currentValue != values.tableAffix.previousValue)) { 
+    if (values.tableAffix && (values.tableAffix.currentValue != values.tableAffix.previousValue)) {
 
     }
   }
 
-  ngAfterViewInit() { 
+
+  setCloneTableWidth() {
+    // for each table header cell set the width of the table header cell in the clone 
+    let originalWidth = this.originalTable.getBoundingClientRect().width;
+    this.wrapperTable.style.width = originalWidth + 'px';
+  }
+
+  ngAfterViewInit() {
+
+    this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
+      setTimeout(() => {
+        let width = getComputedStyle(this.el.nativeElement).width;
+        this.setCloneTableWidth()
+        this.wrapperDiv.style.width = width
+        this.renderer.setStyle(this.wrapperDiv, 'width', width + 'px')
+      }, 450)
+    })
     this.wrapperDiv = document.createElement('div');
     this.wrapperTable = document.createElement('table');
     let targetNode = this.el.nativeElement.querySelector('thead');
     this.originalTable = this.el.nativeElement.querySelector('table');
     this.wrapperTable.appendChild(targetNode.cloneNode(true));
     this.wrapperDiv.appendChild(this.wrapperTable);
-    
-    // for each table header cell set the width of the table header cell in the clone
-    this.wrapperTable.style.minWidth = this.originalTable.style.minWidth
-    this.wrapperTable.style.width = this.originalTable.getBoundingClientRect().width+'px'
-    this.wrapperTable.querySelector('thead').style.width = "100%"
-    let thOriginal = this.el.nativeElement.querySelectorAll('th');
-    let thClone = this.wrapperTable.querySelectorAll('th')
-    // thClone.forEach((item: HTMLElement, index) => {
-    //   item.style.width = getComputedStyle(thOriginal[index]).width
-    // })
+
+    this.setCloneTableWidth() 
     this.renderer.insertBefore(this.el.nativeElement.parentNode, this.wrapperDiv, this.el.nativeElement);
     this.wrapperDiv.style.display = 'none';
 
@@ -68,36 +78,36 @@ export class TableAffixDirective {
     });
 
     fromEvent(this.windowRef.nativeWindow, 'scroll').pipe(takeUntil(this.destroy$)).subscribe(e => {
- 
 
-        let reference = this.originalTable;
 
-        let target = (<HTMLElement>this.wrapperTable.querySelector('thead'));
+      let reference = this.originalTable;
 
-        let targetRect = target.getBoundingClientRect();
+      let target = (<HTMLElement>this.wrapperTable.querySelector('thead'));
 
-        let referenceRect = reference.getBoundingClientRect();
- 
-        let width = getComputedStyle(this.el.nativeElement).width; 
-        this.wrapperDiv.style.width = width  
+      let targetRect = target.getBoundingClientRect();
 
- 
-        if (referenceRect.top < 0 && (referenceRect.bottom - targetRect.height) > 0) {
-          console.log('in range')
-          this.wrapperDiv.classList.add('affix-target');
-          this.wrapperDiv.style.display = reference.style.display;
-        } else {
-          console.log('out of range')
-          this.wrapperDiv.classList.remove('affix-target')
-          this.wrapperDiv.style.display = 'none'
-        }
- 
+      let referenceRect = reference.getBoundingClientRect();
+
+      let width = getComputedStyle(this.el.nativeElement).width;
+      this.wrapperDiv.style.width = width
+
+
+      if (referenceRect.top < 0 && (referenceRect.bottom - targetRect.height) > 0) {
+        console.log('in range')
+        this.wrapperDiv.classList.add('affix-target');
+        this.wrapperDiv.style.display = reference.style.display;
+      } else {
+        console.log('out of range')
+        this.wrapperDiv.classList.remove('affix-target')
+        this.wrapperDiv.style.display = 'none'
+      }
+
     })
   }
 
   ngOnDestroy() {
     this.destroy$.next(null)
-    this.destroy$.complete(); 
+    this.destroy$.complete();
   }
 
 

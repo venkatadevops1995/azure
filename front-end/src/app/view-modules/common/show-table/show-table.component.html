@@ -1,4 +1,5 @@
 <table mat-table [dataSource]="LEAVE_DATA_HISTORY"  matSort class="mat-elevation-z8 w-100" matSort>
+
     <ng-container matColumnDef="serial">
         <th mat-header-cell *matHeaderCellDef  > S.No. </th>
         <td mat-cell *matCellDef="let element;let i=index;">{{i+1}}</td>
@@ -55,6 +56,6 @@
             </div>
         </td>
     </ng-container>
-    <tr mat-header-row *matHeaderRowDef="leaveApplicationColumns sticky: true"></tr>
+    <tr mat-header-row *matHeaderRowDef="leaveApplicationColumns  "></tr>
     <tr mat-row *matRowDef="let row; columns: leaveApplicationColumns; "></tr>
 </table>

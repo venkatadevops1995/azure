@@ -6,7 +6,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
+import { distinctUntilChanged, first, Subject, take, takeUntil } from 'rxjs';
 import { slideAnimationTrigger } from 'src/app/animations/slide.animation';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
@@ -54,18 +54,13 @@ export class ApplyLeaveComponent implements OnInit {
   // user gender from the jwt token
   gender: string;
 
-
   selectedEndDate: any;
-
 
   currentBalance = 0;
 
-
   leaveHours = ["FIRST", "SECOND"];
 
-
   TIMESHEET_DISCREPANCY_DATA: any = []
-
 
   @Output('event') eventEmitter: EventEmitter<any> = new EventEmitter();
 
@@ -74,9 +69,16 @@ export class ApplyLeaveComponent implements OnInit {
 
   dialogRefDiscrepancyData: MatDialogRef<any>;
 
+  get startDateDatePicker() {
+    let today = new Date();
+    let defaultStartDate = new Date(this.today.getTime() - 60 * MILLISECONDS_DAY)
+    let firstDayOfYear = new Date(today.getFullYear(), 0, 1)
+    return (defaultStartDate.getTime() >= firstDayOfYear.getTime()) ? defaultStartDate : firstDayOfYear;
+  }
+
   // Dateipicker
   datePickerLeaveApplcn: any = {
-    startAtStartDate: new Date(this.today.getTime() - 30 * MILLISECONDS_DAY),
+    startAtStartDate: this.startDateDatePicker,
     startAtEndDate: new Date(),
     endAtEndDate: new Date(),
     noOfLeaveDays: {
@@ -221,6 +223,7 @@ export class ApplyLeaveComponent implements OnInit {
     this.getCurrentLeaveBalance();
     this.getLeaveRequestsAvailability();
     this.getLeaveConfig()
+
     // TODO: merge the value changes of the form. currently as the change detector is continuously firing in this compnent it is handled this way
     this.applyForm.get('startDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       if (val) {
@@ -233,6 +236,9 @@ export class ApplyLeaveComponent implements OnInit {
       } else {
         fcEndDate.clearValidators();
       }
+      if (this.datePickerStartDate) {
+        this.datePickerStartDate.startAt = val
+      }
       fcEndDate.updateValueAndValidity();
     });
 
@@ -240,7 +246,11 @@ export class ApplyLeaveComponent implements OnInit {
       this.disableHalfDayCheckBoxes()
       this.restDates()
       this.chosenDate()
+      if (this.datePickerStartDate) {
+        this.datePickerStartDate.startAt = this.today
+      }
     })
+
     this.applyForm.get('endDate').valueChanges.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((val) => {
       if (val) {
         this.applyForm.get('endDateFirstHalf').enable()
@@ -257,12 +267,14 @@ export class ApplyLeaveComponent implements OnInit {
       this.chosenDate()
     })
     this.applyForm.get('type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((val) => {
-      this.applyForm.get('startDate').reset()
-      this.applyForm.get('endDate').reset()
-      this.applyForm.get('reason').reset()
+      this.applyForm.get('startDate').reset();
+      this.applyForm.get('endDate').reset();
+      this.applyForm.get('reason').reset();
       this.applyForm.get('startDateSecondHalf').disable();
+      this.applyForm.get('startDateSecondHalf').setValue(false);
       this.applyForm.get('endDateFirstHalf').disable();
-      this.applyForm.get('invitationUpload').reset()
+      this.applyForm.get('endDateFirstHalf').setValue(false);
+      this.applyForm.get('invitationUpload').reset();
 
       this.selectedCount = 0
       let category = this.applyForm.get('category')
@@ -297,7 +309,7 @@ export class ApplyLeaveComponent implements OnInit {
     this.destroy$.complete();
   }
 
- 
+
 
   getHolidays() {
     let emp_id = this.user.getEmpId()
@@ -457,9 +469,9 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   openApplyPopUp() {
-    this.applyForm.reset({ "daterange": { value: '', disabled: true } }); 
+    this.applyForm.reset({ "daterange": { value: '', disabled: true } });
     this.leaveTypes = []
-    this.http.request('get', 'leave/types').subscribe(res => {
+    this.http.request('get', 'leave/types/').subscribe(res => {
       if (res.status == 200) {
 
         let valToSet = null
@@ -479,16 +491,17 @@ export class ApplyLeaveComponent implements OnInit {
             }
             this.leaveTypes.push(element);
           }
-        }); 
+        });
 
         this.applyForm.reset()
         this.applyForm.markAsUntouched()
         this.applyForm.markAsPristine()
         this.applyFormSubmitted = false;
         this.applyForm.get('type').setValue(valToSet);
-        this.applyForm.get('category').setValue('Single Day'); 
+        this.applyForm.get('category').setValue('Single Day');
       }
       else {
+        alert(JSON.stringify(res))
         this.ss.statusMessage.showStatusMessage(false, "Could not get the leave types")
       }
     })
@@ -598,7 +611,7 @@ export class ApplyLeaveComponent implements OnInit {
 
   // get the leave requests available for the current user for special leave types
   getLeaveRequestsAvailability() {
-    this.http.request('get', 'leave/special-leave-requests-available').subscribe((res) => {
+    this.http.request('get', 'leave/special-leave-requests-available/').subscribe((res) => {
       if (res.status == 200) {
         this.specialLeaveTypeRequestsAvailable = res.body['results']
         console.log(this.specialLeaveTypeRequestsAvailable);
@@ -608,7 +621,7 @@ export class ApplyLeaveComponent implements OnInit {
       }
     })
   }
- 
+
   onSubmitApplyForm() {
 
     // this.applyFormSubmitted = true;

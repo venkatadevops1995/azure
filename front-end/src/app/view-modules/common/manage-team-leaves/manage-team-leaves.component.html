@@ -22,8 +22,8 @@
           </ng-container>
 
           <ng-container matColumnDef="employee">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_name}}</td>
+            <th mat-header-cell *matHeaderCellDef class="p-table-5"> Name </th>
+            <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_name}}</td>
           </ng-container>
 
           <ng-container matColumnDef="day_count">
@@ -48,14 +48,14 @@
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status </th>
-            <td mat-cell *matCellDef="let element"> {{element?.req_status}} </td>
+            <th mat-header-cell *matHeaderCellDef class="p-table-5">Status </th>
+            <td mat-cell *matCellDef="let element" class="p-table-5"> {{element?.req_status}} </td>
           </ng-container>
 
           <ng-container matColumnDef="view">
             <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              <div class="flex middle-xs center-xs">
+              <div class="flex middle-xs ">
                 <!-- <app-button class=" view-leave-details mr-5" title="View Details" type="button" theme="blue-lite"
                   size="extra-small" style="border: none;background-color:transparent;" [attr.data-id]="element.id"
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">
@@ -115,8 +115,8 @@
             </ng-container>
 
             <ng-container matColumnDef="employee">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_name}}</td>
+              <th mat-header-cell *matHeaderCellDef class="p-table-5"> Name </th>
+              <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_name}}</td>
             </ng-container>
 
             <ng-container matColumnDef="day_count">
@@ -141,14 +141,14 @@
             </ng-container>
 
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status </th>
-              <td mat-cell *matCellDef="let element"> {{leaveApplcnStatus[element?.status_discrepancy]}} </td>
+              <th mat-header-cell *matHeaderCellDef class="p-table-5">Status </th>
+              <td mat-cell *matCellDef="let element" class="p-table-5"> {{leaveApplcnStatus[element?.status_discrepancy]}} </td>
             </ng-container>
 
             <ng-container matColumnDef="view">
               <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
-                <div class="flex middle-xs center-xs">
+                <div class="flex middle-xs ">
 
                   <svg class="col-primary-200 mr-15 view-leave-discrepancy-details   use-svg" title="View Details"
                     symbol="view-details" w="20" [attr.data-id]="element.id"
@@ -204,8 +204,8 @@
             </ng-container>
 
             <ng-container matColumnDef="employee">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_name}}</td>
+              <th mat-header-cell *matHeaderCellDef class="p-table-5"> Name </th>
+              <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_name}}</td>
             </ng-container>
 
             <ng-container matColumnDef="day_count">
@@ -230,14 +230,14 @@
             </ng-container>
 
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Leave Status </th>
-              <td mat-cell *matCellDef="let element"> {{leaveApplcnStatus[element?.status]}} </td>
+              <th mat-header-cell *matHeaderCellDef class="p-table-5">Leave Status </th>
+              <td mat-cell *matCellDef="let element" class="p-table-5"> {{leaveApplcnStatus[element?.status]}} </td>
             </ng-container>
 
             <ng-container matColumnDef="view">
               <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
-                <div class="flex middle-xs center-xs">
+                <div class="flex middle-xs ">
 
                   <svg class="col-primary-200 mr-15    use-svg" title="View Details"
                     (click)="getResTimesheetDiscrepancies(element.leave_request_id)" symbol="view-details" w="20"
@@ -331,13 +331,13 @@
         </ng-container>
 
         <ng-container matColumnDef="employee">
-          <th mat-header-cell *matHeaderCellDef [class.show-on-hover]="!sortHistoric.empName">
+          <th mat-header-cell *matHeaderCellDef [class.show-on-hover]="!sortHistoric.empName" class="p-table-5">
             Name
             <svg svg-fill="currentColor" class="col-primary-300   sort-icon pos-r use-svg" style="top:2px"
               (click)="onClickSort('empName')" [symbol]="(sortHistoric.empName ? 'asc':'desc')" w="12">
             </svg>
           </th>
-          <td mat-cell *matCellDef="let element;let i=index;">{{element?.emp_name}}</td>
+          <td mat-cell *matCellDef="let element;let i=index;" class="p-table-5">{{element?.emp_name}}</td>
         </ng-container>
 
         <ng-container matColumnDef="day_count">
@@ -371,8 +371,8 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status </th>
-          <td mat-cell *matCellDef="let element"> {{element?.req_status}} </td>
+          <th mat-header-cell *matHeaderCellDef class="p-table-5">Status </th>
+          <td mat-cell *matCellDef="let element" class="p-table-5"> {{element?.req_status}} </td>
         </ng-container>
 
         <ng-container matColumnDef="view">

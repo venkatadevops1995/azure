@@ -63,6 +63,7 @@ body {
 
 .mat-header-row {
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
   z-index: 100 !important;
   height: 61px !important;
@@ -91,6 +92,7 @@ body {
 .mat-row {
   height: 52px !important;
   border-bottom-width: 0px;
+  content-visibility: auto;
 
   &:not(tr) {
     background: var(--col-primary-A200);
@@ -126,7 +128,6 @@ body {
 //giving border radious to left side of first header cell
 th.mat-header-cell:first-of-type {
   border-radius: 10px 0 0 10px;
-
 }
 
 // removing left padding from first column

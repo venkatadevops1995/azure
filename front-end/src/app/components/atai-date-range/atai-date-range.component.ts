@@ -43,7 +43,7 @@ const _MatDateRangeMixinBase = mixinErrorState(MatDateRangeCompBase);
 
 })
 export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements OnInit, ControlValueAccessor, MatFormFieldControl<any>, CanUpdateErrorState {
- 
+
 
   // mat form field error state matcher
   @Input() override errorStateMatcher: ErrorStateMatcher;
@@ -53,14 +53,14 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
   @Input() showInput: boolean = true;
 
-  // whether to show the input field for the calendar (some cases we need just the date picker to be attached to some external input field)
+  // whether to disable or not
   @Input() disabled: boolean = false;
 
   // whether to allow same date to be selected as start and end date
   @Input() allowSameDateRange: boolean = false;
 
   get empty() {
-    let selection = this._model.selection; 
+    let selection = this._model.selection;
     return !(!!selection.start && !!selection.end);
   }
 
@@ -111,6 +111,8 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   @ViewChild('calendarTemplate') calendarTemplateRef;
 
   @ViewChild('dateField') dateFieldRef: ElementRef;
+
+  @ViewChild('iconSvg') elIconRef: ElementRef
 
   // the overlay reference of the overlay module
   overlayRef: OverlayRef;
@@ -231,7 +233,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   focused = false;
 
   // boolean to hold if the current width is less than LG (1350px)
-  get is_LG_LT (){
+  get is_LG_LT() {
     return this.ss.responsiveState[AtaiBreakPoints.LG_LT];
   }
 
@@ -256,7 +258,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     private nativeDateAdapter: NativeDateAdapter,
     private cdRef: ChangeDetectorRef,
     public override _defaultErrorStateMatcher: ErrorStateMatcher,
-    private ss:SingletonService,
+    private ss: SingletonService,
     @Optional() public override _parentForm: NgForm,
     @Optional() public override _parentFormGroup: FormGroupDirective,
     @Optional() @Self() public override ngControl: NgControl,
@@ -288,7 +290,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   ngOnInit(): void {
     this._model = this._rangeModel;
-    
+
     if (this.ngControl) {
       this.ngControl.statusChanges.subscribe((status) => {
         console.log(status);
@@ -314,7 +316,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     // console.log(svgFontSize)
   }
 
-  ngDoCheck() { 
+  ngDoCheck() {
     if (this.ngControl) {
       this.updateErrorState();
       // this.stateChanges.next();
@@ -455,6 +457,37 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       this.propagateChange(this._model.selection)
     }
 
+  }
+
+
+  @HostListener('document:keydown.enter', ['$event'])
+  onEnter(e) {
+    console.log(e.target, this.elIconRef)
+    let target = e.target;
+    if (target.classList.contains('atai-date-range__calendar-icon')) {
+      this.openDateRangePicker()
+    } else if (target.classList.contains('selection-preset')) {
+      let targetId = target['id'];
+      let targetIndex = Number(target.getAttribute('data-index'));
+      let setClass = () => {
+        target.classList.add('selected')
+        this.selectedPresetRef = target;
+        this.overlayRef.dispose()
+        this.subscribeBackDropClick.unsubscribe()
+      }
+      if (this.selectedPresetRef) {
+        this.selectedPresetRef.classList.remove('selected')
+      }
+      let preset = this.selectionPresets[targetIndex]
+      this.setSelection(preset.id)
+      setClass();
+      this.dateMeta.dateString = preset.str;
+      this.propagateChange(this._model.selection)
+      // setTimeout(() => {
+      // }, 2000)
+      console.log(this.elIconRef.nativeElement,this.dateFieldRef)
+      // this.elIconRef.nativeElement.focus()
+    }
   }
 
   /* 
@@ -707,7 +740,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   }
 
   ngOnDestroy() {
-    this.stateChanges.complete(); 
+    this.stateChanges.complete();
     this.fm.stopMonitoring(this.el.nativeElement);
   }
 

@@ -328,7 +328,7 @@ export class LeaveHistoryComponent implements OnInit {
       }
       param = param.append("month", `${this.monthFrom}`);
       param = param.append("year", `${this.yearFrom}`);
-      this.http.request('get', `leave/monthlycycleleavereport`, param).subscribe(res => {
+      this.http.request('get', `leave/monthlycycleleavereport/`, param).subscribe(res => {
         if (res.status == 200) {
           res.body.forEach(element => {
             data.push(element)

@@ -141,7 +141,7 @@
   </div>
   <!-- <div head>{{clicked_policy_name}}</div> -->
   <div style="text-align: center">
-    <pdf-viewer [ngStyle]="{'height': is_XS ? '415px' : '470px'}"[src]="filepathUrl" (after-load-complete)="loader()" [render-text]="true"
+    <pdf-viewer [ngStyle]="{'height': '80vh'}" [original-size]="true" [autoresize]="true" (page-rendered)="pageRendered($event)" (after-load-complete)="loader()"[src]="filepathUrl" [zoom]="setZoomIN()" [zoom-scale]="'page-width'" [render-text]="true" 
       style="display: block;">
     </pdf-viewer>
     <!-- <app-secured-file [src]="filepathUrl"></app-secured-file> -->

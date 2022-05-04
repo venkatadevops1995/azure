@@ -37,7 +37,7 @@
       <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('is_duplicated')">
         Entered Email already exists
       </mat-error>
-
+      <!-- {{addUserForm.controls.email.touched}} {{addUserForm.controls.email.hasError('required')}} -->
     </mat-form-field>
 
     <mat-form-field>

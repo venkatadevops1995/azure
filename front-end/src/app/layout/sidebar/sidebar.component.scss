@@ -102,6 +102,17 @@
           }
         }
 
+        a{          
+
+          &:hover:not(.active){
+            background: linear-gradient(to right, var(--col-primary-400), var(--col-primary-900));
+            color: var(--col-primary-200);
+            &:before {
+              display: none;
+            }
+          }
+        }
+
         >ul {
           color: var(--col-primary-400);
           font-size: 13px;
@@ -115,7 +126,7 @@
               &.active {
                 background: linear-gradient(to right, var(--col-primary-400), var(--col-primary-900));
                 color: var(--on-primary-400);
-              }
+              } 
             }
           }
         }
