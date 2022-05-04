@@ -7,8 +7,7 @@
       </h2>
       <div class="flex fs-14 w-md-60 w-xmd-50 bottom-xs  end-xmd mt-15 mt-xmd-0">
         <mat-form-field class="no-pb w-50 mr-30 top-form-field single-row">
-          <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
-            [(ngModel)]="value">
+          <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" (focus)="onFocus()" [formControl]="managerCtrl" [(ngModel)]="value" >
           <svg matSuffix class="col-primary-300 use-svg" (click)="clear()" symbol="triangle-down" w="8"></svg>
           <mat-autocomplete class="fs-14" #auto="matAutocomplete">
             <mat-option *ngFor="let state of filteredManagers | async" [value]="state.emp_name">

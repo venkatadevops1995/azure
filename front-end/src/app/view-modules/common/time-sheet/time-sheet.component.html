@@ -89,7 +89,7 @@
 
 <ng-template #activeProjectsTemplate>
   <div class="timesheet__body">
-    <div class="timesheet__row" style="z-index: 12;" *ngFor="let project of visibleActiveProjects;let i=index;">
+    <div class="timesheet__row" [ngStyle]="{'zIndex':(12 - i)}" *ngFor="let project of visibleActiveProjects;let i=index;">
       <div class="project">
         <span class="translate-title-text">
           {{project?.project_name}} [{{project?.cumulative?.h | number:'2.'}} :
