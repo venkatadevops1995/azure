@@ -99,7 +99,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getEmailToggleStatus() {
-    this.http.request('get', 'leave/mail-opted', "",).subscribe(res => {
+    this.http.request('get', 'leave/mail-opted/', "",).subscribe(res => {
       console.log(res)
       if (res.status == 200) {
         this.isEmailEnabled = res.body.results['email-opted'].toLowerCase() == 'true' ? true : false;

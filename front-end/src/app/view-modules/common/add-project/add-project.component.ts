@@ -34,6 +34,7 @@ export class AddProjectComponent implements OnInit {
     private user: UserService,
     private cdRef:ChangeDetectorRef
   ) {
+  
    this.projectInputField.valueChanges
         .pipe(
           map(
@@ -42,8 +43,8 @@ export class AddProjectComponent implements OnInit {
             }
           )
         )
-        .subscribe ((project)=>{ 
-          this.filterAllActiveInactiveProject = project
+        .subscribe ((project)=>{        
+          this.filterAllActiveInactiveProject = project     
           // console.log("####5678",this.projectInputField.value.length);
           let inputvalue = this.projectInputField?.value?.trim();
           console.log("Input value after trim:",inputvalue?.length);
@@ -53,7 +54,7 @@ export class AddProjectComponent implements OnInit {
           // this.isDisabledSave = project.map(p=> p.name.includes(inputvalue))
 
         })
-        
+     
     }
 
   ngOnInit(): void {
@@ -76,7 +77,7 @@ export class AddProjectComponent implements OnInit {
         let project_list = []
         res.body["results"].forEach(ele => {
           // console.log("---------------",ele)
-          Array.prototype.push.apply(project_list, [ele]);
+          Array.prototype.push.apply(project_list, [ele]);      
         })
         // console.log('----------------project_list--',project_list)
 
@@ -85,6 +86,9 @@ export class AddProjectComponent implements OnInit {
         let allProjects = [...this.USERS_DATA];
         allProjects.forEach(element => {
           this.project_list_search.push(element);
+          // Rahul change (assigning value to initialize the project on load)
+          this.filterAllActiveInactiveProject=this.project_list_search;
+          //************************************************************ 
         });
         // console.log("data in project list search",this.project_list_search)
       }

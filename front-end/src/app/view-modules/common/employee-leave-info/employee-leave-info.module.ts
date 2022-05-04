@@ -16,6 +16,7 @@ import { FileDownloadModule } from 'src/app/directives/file-download/file-downlo
 import { TooltipModule } from 'src/app/directives/tooltip/tooltip.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -39,7 +40,8 @@ import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.mod
     FileDownloadModule,
     TooltipModule,
     MatAutocompleteModule,
-    TableAffixModule
+    TableAffixModule,
+    FocusModule
   ],
   exports:[EmployeeLeaveInfoComponent]
 })

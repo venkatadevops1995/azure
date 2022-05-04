@@ -84,11 +84,11 @@ export class ManageUserComponent implements OnInit {
   edited_emp_name: any = ""
   PROJECT_LIST: ProjectData[] = []
   GROUPS_DATA = []
-//Rahul change(adding variable for use breakpoint observer api using singlton service)************
-get is_XMD_LT(){
-  return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
-}
-//*******************************************************************************************
+  //Rahul change(adding variable for use breakpoint observer api using singlton service)************
+  get is_XMD_LT() {
+    return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+  }
+  //*******************************************************************************************
   ALL_CATEGORIES = []
   effected_emp_count = 0;
 
@@ -140,11 +140,13 @@ get is_XMD_LT(){
     this.fgSearch = this.ss.fb.group({
       filtervalue: ["", [Validators.required]],
     }),
-      this.filteredManagers = this.managerCtrl.valueChanges
-        .pipe(
-          startWith(''),
-          map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
-        );
+      setTimeout(() => {
+        this.filteredManagers = this.managerCtrl.valueChanges
+          .pipe(
+            startWith(''),
+            map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
+          );
+      }, 300)
   }
 
   //Rahul change(adding event daligation for table row when clicking on edit ) *******************************
@@ -186,6 +188,10 @@ get is_XMD_LT(){
   clear() {
     this.managerCtrl.reset();
     this.managerCtrl.setValue('');
+  }
+
+  onFocus(){ 
+    this.managerCtrl.setValue(this.managerCtrl.value);
   }
 
   // on submitting the search by filter form
@@ -259,6 +265,7 @@ get is_XMD_LT(){
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     this.getAllReportes();
+    console.log('::::::::::::::', this.filteredManagers)
   }
 
   ngOnDestroy() {
@@ -276,14 +283,20 @@ get is_XMD_LT(){
         res.body["results"].forEach(ele => {
           // console.log("---------------",ele)
           Array.prototype.push.apply(emp_list, [ele]);
+
         })
 
         this.USERS_DATA = emp_list;
-        this.employeeList = [...this.USERS_DATA]
+        this.employeeList = [...this.USERS_DATA];
+
         let employeeList = [...this.USERS_DATA];
         this.employeeListSearch.push({ emp_id: -1, emp_name: 'ALL' });
+
+        console.log('>>>>>>>>>>>>>>>>>>>>>Userdata', this.employeeListSearch)
+
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
+
         });
 
         this.showMessage = true;
@@ -458,6 +471,7 @@ get is_XMD_LT(){
 
     }
   }
+
   openAddUserDialog(): void {
 
     this.getCategories();
@@ -475,10 +489,6 @@ get is_XMD_LT(){
     this.ROLES = cloneDeep(this.ATWORK_ROLES)
 
     this.addUserPopup.open();
-
-
-
-
   }
 
 
@@ -491,6 +501,7 @@ get is_XMD_LT(){
     this.ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }];
     this.ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }];
   }
+
   addUser() {
     let error_message = '';
 
@@ -515,8 +526,6 @@ get is_XMD_LT(){
     formData.append('category', this.addUserForm.controls.category.value);
     formData.append('gender', this.addUserForm.controls.gender.value);
     formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value.startDate._d, 'yyyy-MM-dd'));
-    // formData.append('is_married', this.addUserForm.controls.is_married.value);
-    // formData.append('patentry_maternity_cnt', this.addUserForm.controls.patentry_maternity_cnt.value);
 
 
 
@@ -589,6 +598,7 @@ get is_XMD_LT(){
         showCloseButton: true,
       },
       autoFocus: false,
+      restoreFocus: true
     })
     /////////////////////////////////////
     this.edited_emp_name = this.USERS_DATA[i].emp_name
@@ -711,7 +721,7 @@ get is_XMD_LT(){
     let emp = this.changeRoleForm.controls.emp_id.value;
 
     this.effected_emp_count = 0
-    let res = await this.http.request('get', 'transfer-emp', 'emp_id=' + emp).toPromise();
+    let res = await this.http.request('get', 'transfer-emp/', 'emp_id=' + emp).toPromise();
     let emp_list = []
     res.body["results"].forEach(e => {
       emp_list.push(e["emp_name"])
@@ -751,9 +761,9 @@ get is_XMD_LT(){
         //Previous code 
         // this.editManagerPopup.close();
         //New code
-         // Rahul change (closing the EditManagerDialog when employee role changed successfully)***************************************
-         this.dialogRef.close()
-         //*************************************************************************** 
+        // Rahul change (closing the EditManagerDialog when employee role changed successfully)***************************************
+        this.dialogRef.close()
+        //*************************************************************************** 
         console.log('@@@@@@!!!!!!!!!$$$$$$$$$$$ edit manager popup close successfully');
         this.getAllReportes();
       } else {

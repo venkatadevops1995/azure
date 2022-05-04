@@ -1,7 +1,8 @@
+<div class="dummy" appFocus></div>
 <div>
   <div class="pb-20 flex flex-col-xs flex-row-xmd center-xs between-xs middle-xmd">
     <h2 class="heading fw-600">Edit Employee</h2>
-    <div class="fs-12 fs-md-14 flex w-md-70 w-xmd-50 end-xmd middle-xs mt-15 mt-xmd-0">
+    <div class="fs-12 fs-md-14 flex w-md-70 w-xmd-50 end-xmd middle-xs bottom-xmd mt-15 mt-xmd-0">
       <mat-form-field class="no-pb w-50 mr-30 top-form-field single-row" >
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="searchField">
         <svg matSuffix class="use-svg col-primary-300" symbol="triangle-down" [w]="8" (click)="clear()"></svg>
@@ -67,7 +68,7 @@
           <!-- Previous code-->
           <!-- <svg (click)="editUser(i)" [attr.index] = 'i' class="use-svg edit" symbol="edit" [w]="16" style="color: var(--col-primary-300);"></svg> -->
           <!-- new code -->
-          <svg [attr.index]='i' class="use-svg edit" symbol="edit" [w]="16"
+          <svg tabindex="0" (keydown.enter)="onClickHost($event)" [attr.index]='i' class="use-svg edit" symbol="edit" [w]="20"
             style="color: var(--col-primary-300);"></svg>
           <!-- ****************************************************** -->
         </td>
@@ -90,7 +91,7 @@
             style="border: none;cursor: pointer;  "
             title="{{element.staging_status === null ? '':'Employee will be disabled on'+' ' +element.staging_relieved}}"
             svg-fill="currentColor">
-            <svg class="use-svg" symbol="disable" [w]="16"></svg>
+            <svg class="use-svg" symbol="disable" [w]="20"></svg>
 
           </button>
         </td>
@@ -165,8 +166,9 @@
             cursor: pointer; 
           " svg-fill="currentColor">
           </div> -->
-          <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
-          <mat-error *ngIf="deleteUserForm.controls.dol.touched || deleteUserForm.invalid">
+
+          <mat-datepicker [touchUi]="IS_mobile" (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+          <mat-error *ngIf="deleteUserForm.controls.dol.touched || deleteUserForm.controls.dol.touched ">
             Please select Relieving Date
           </mat-error>
         </mat-form-field>

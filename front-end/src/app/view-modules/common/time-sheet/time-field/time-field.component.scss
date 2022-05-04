@@ -1,5 +1,5 @@
-:host {
-  --height: 26px;
+app-time-field {
+  --height: 28px;
   min-width: 70px;
   max-width: 70px;
   width: 90%;
@@ -22,7 +22,7 @@
     -moz-appearance: textfield;
     font-size: 14px;
     text-align: right;
-    min-width: 25px;
+    min-width: 25px; 
 
     &.black-text {
       color: var(--col-primary-A100);
@@ -51,11 +51,13 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: calc(100% + 10px);
+    top: calc(100% + 10px);
     width: 200px;
     text-align: center;
     border-radius: 5px;
     font-size: 11px;
+    z-index: 20;
+    line-height: 1.38;
   }
 
   p:after {
@@ -65,14 +67,14 @@
     width: 20px;
     height: 15px;
     background: var(--col-warn-600);
-    top: 100%;
-    clip-path: polygon(0px 0px, 100% 0px, 50% 100%, 0px 0px);
+    bottom: calc(100% - 2px);
+    clip-path: polygon(0px 100%, 50% 0px, 100% 100%, 0px 100%);
   }
 
   p.minutes {
     left: auto;
     right: 0px;
-    transform: none
+    transform: none;
   }
 
   p.minutes:after {
@@ -91,7 +93,7 @@
       }
     }
 
-    .mins {
+    .mins { 
       .mins__active {
         color: var(--col-primary-800);
         pointer-events: none;
@@ -127,11 +129,7 @@
         color: var(--col-primary-A100);
       }
 
-      padding-left: 4px;
-
-      &:focus {
-        // outline: 4px dashed #aaa;
-      }
+      padding-left: 4px; 
 
       svg {
         position: absolute;
@@ -177,6 +175,9 @@
 
         &.active {
           background: linear-gradient(109.87deg, var(--col-primary-100) -161.09%, var(--col-primary-900));
+        }
+        &.focus {
+          background: linear-gradient(109.87deg, var(--col-primary-50) -161.09%, var(--col-primary-400));
         }
       }
 

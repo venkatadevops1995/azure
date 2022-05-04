@@ -577,7 +577,7 @@ export class HolidayComponent implements OnInit {
         template: this.templateHolidayForm,
         maxWidth: '500px'
       },
-
+      restoreFocus:true
     })
 
     dialogRef.afterClosed().pipe(take(1)).subscribe(result => {

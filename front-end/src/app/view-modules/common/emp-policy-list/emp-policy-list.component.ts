@@ -93,6 +93,7 @@ export class EmpPolicyListComponent implements OnInit {
           mb_30:false
         },
         autoFocus: false,
+        restoreFocus:true
       })
 
     // ******************************************************************************

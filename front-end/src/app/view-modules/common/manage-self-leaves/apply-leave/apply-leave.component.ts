@@ -54,18 +54,13 @@ export class ApplyLeaveComponent implements OnInit {
   // user gender from the jwt token
   gender: string;
 
-
   selectedEndDate: any;
-
 
   currentBalance = 0;
 
-
   leaveHours = ["FIRST", "SECOND"];
 
-
   TIMESHEET_DISCREPANCY_DATA: any = []
-
 
   @Output('event') eventEmitter: EventEmitter<any> = new EventEmitter();
 
@@ -147,6 +142,7 @@ export class ApplyLeaveComponent implements OnInit {
       }
     },
     dataPickerFilterEnd: (date: Date) => {
+      // console.log(date)
       let startDate = this.datePickerLeaveApplcn.startAtEndDate;
       startDate.setHours(0, 0, 0, 0)
       if (date) {
@@ -154,7 +150,11 @@ export class ApplyLeaveComponent implements OnInit {
         let leaveType = this.applyForm.get('type').value.name
         let condition = false;
         let endDate = this.datePickerLeaveApplcn.endAtEndDate
+        if(leaveType == 'marriage'){
+          endDate = this.datePickerLeaveApplcn.addDaysToDate(startDate,4)
+        }
         condition = !(date < startDate) && !(date > endDate)
+        console.log(date.getDate(),condition, startDate.getDate(), endDate.getDate())
         return (condition && (day != 0 && day != 6) && (!this.checkDateisThere(date, this.holidayList))) && date.getFullYear() == this.today.getFullYear()
 
       }
@@ -190,7 +190,7 @@ export class ApplyLeaveComponent implements OnInit {
   @ViewChild('timesheetDiscrepancyDialog') timesheetDiscrepancyPopup: ModalPopupComponent;
 
   specialLeaveTypeRequestsAvailable: Array<{ id: number, name: string, available: number }> = []
-
+  IS_mobile:boolean=false;
   constructor(
     public dialog: MatDialog,
     private fb: FormBuilder,
@@ -216,7 +216,9 @@ export class ApplyLeaveComponent implements OnInit {
     })
 
     // this.ss.responsive.observe(AtaiBreakPoints.)
-
+    this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val=>{ 
+      this.IS_mobile=val.matches;
+      })
   }
 
   ngOnInit(): void {
@@ -234,6 +236,8 @@ export class ApplyLeaveComponent implements OnInit {
       }
       this.chosenDate()
       let fcEndDate = this.applyForm.get('endDate');
+      this.applyForm.get('endDateFirstHalf').reset()
+      this.applyForm.get('startDateSecondHalf').reset()
       if (this.applyForm.get('category').value == 'Multiple Days') {
         fcEndDate.setValidators([Validators.required])
       } else {
@@ -409,8 +413,9 @@ export class ApplyLeaveComponent implements OnInit {
                 showCloseButton: true,
                 hideFooterButtons: true,
                 maxWidth: '800px',
-                minWidth: '300px'
-              }
+                minWidth:'300px'
+              },
+              restoreFocus:true
             })
           }
           else {
@@ -473,7 +478,7 @@ export class ApplyLeaveComponent implements OnInit {
   openApplyPopUp() {
     this.applyForm.reset({ "daterange": { value: '', disabled: true } });
     this.leaveTypes = []
-    this.http.request('get', 'leave/types').subscribe(res => {
+    this.http.request('get', 'leave/types/').subscribe(res => {
       if (res.status == 200) {
 
         let valToSet = null
@@ -503,6 +508,7 @@ export class ApplyLeaveComponent implements OnInit {
         this.applyForm.get('category').setValue('Single Day');
       }
       else {
+        alert(JSON.stringify(res))
         this.ss.statusMessage.showStatusMessage(false, "Could not get the leave types")
       }
     })
@@ -580,23 +586,26 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   onChangeStartDate(e) {
-    let addDaysToDate = this.datePickerLeaveApplcn.addDaysToDate
-
+    let addDaysToDate = this.datePickerLeaveApplcn.addDaysToDate;
     let dateSelected = e.value;
     let endDateTimeStamp = addDaysToDate(dateSelected, 1);
     this.datePickerLeaveApplcn.startAtEndDate = new Date(endDateTimeStamp)
     let leaveType = this.applyForm.get('type').value.name
-    this.datePickerLeaveApplcn.endAtEndDate = addDaysToDate(dateSelected, this.datePickerLeaveApplcn.noOfLeaveDays[leaveType] - 1, leaveType == 'Maternity')
+    let noOfLeaveDays = this.datePickerLeaveApplcn.noOfLeaveDays[leaveType] || 4;
     let fcEndDate = this.applyForm.get('endDate');
-    if (leaveType == 'Maternity' || leaveType == 'Paternity' || leaveType == 'Marriage') {
-      this.selectedEndDate = this.datePickerLeaveApplcn.endAtEndDate;
-      fcEndDate.setValue(this.selectedEndDate);
-      this.applyForm.updateValueAndValidity();
-    }
-    else {
+    this.datePickerLeaveApplcn.endAtEndDate = addDaysToDate(dateSelected, noOfLeaveDays - 1, leaveType == 'Maternity')
+    if(noOfLeaveDays > 0){
+      if (leaveType == 'Maternity' || leaveType == 'Paternity' || leaveType == 'Marriage') {
+        this.selectedEndDate = this.datePickerLeaveApplcn.endAtEndDate;
+        fcEndDate.setValue(this.selectedEndDate);
+        this.applyForm.updateValueAndValidity();
+      }
+      else {
+        fcEndDate.reset();
+      }
+    }else{ 
       fcEndDate.reset();
     }
-
 
   }
 
@@ -613,7 +622,7 @@ export class ApplyLeaveComponent implements OnInit {
 
   // get the leave requests available for the current user for special leave types
   getLeaveRequestsAvailability() {
-    this.http.request('get', 'leave/special-leave-requests-available').subscribe((res) => {
+    this.http.request('get', 'leave/special-leave-requests-available/').subscribe((res) => {
       if (res.status == 200) {
         this.specialLeaveTypeRequestsAvailable = res.body['results']
         console.log(this.specialLeaveTypeRequestsAvailable);
@@ -692,7 +701,8 @@ export class ApplyLeaveComponent implements OnInit {
 
                 confirmMessage: res.error.message,
                 onlyForAlert: true
-              }
+              },
+              restoreFocus:true
             })
           }
           else if (res.status == 409) {

@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div class="mb-20">
   <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="onSubmitSearch(managerCtrl.value)">
 
@@ -110,22 +111,22 @@
           </div>
         </div>
         <div style="display: grid;grid-template-columns: repeat(3,1fr);grid-column-gap: 1px;" class="mt-25 mt-md-55">
-          <div class="flex middle-xs  fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
+          <div  class="flex middle-xs  fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
             style="cursor:pointer;flex-direction: column;"
             [dbdFileDownload]="{endPoint:'downloadwst/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
-            <svg fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg><span>WTR</span>
+            <svg tabindex="0" fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg><span>WTR</span>
           </div>
 
           <div class="flex middle-xs fg-5 p-5 center-xs fs-14 download-bn col-primary-400"
             style="cursor:pointer;flex-direction: column;"
             [dbdFileDownload]="{endPoint:'downloadwsr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
-            <svg fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg>WSR
+            <svg tabindex="0" fill="#9B9B9B" class=" use-svg   ml-5" stroke="none" symbol="excel-green" w="20"></svg>WSR
           </div>
 
           <div class="flex middle-xs fg-5 p-5 center-xs fs-14 mr-10 download-bn col-primary-400"
             style="cursor:pointer;flex-direction: column;"
             [dbdFileDownload]="{endPoint:'downloadncr/?' + getWeeks(week.prev_week,week.emp_id),responseType:'blob'}">
-            <svg fill="#9B9B9B" class="use-svg   ml-5 mt-3" symbol="excel-green" w="20"></svg>NCR
+            <svg tabindex="0" fill="#9B9B9B" class="use-svg   ml-5 mt-3" symbol="excel-green" w="20"></svg>NCR
           </div>
         </div>
         <!-- <div style="display: grid;grid-template-columns: repeat(2,1fr);grid-column-gap: 10px;" class="mt-10">

@@ -67,7 +67,7 @@ export class EditUserComponent implements OnInit {
 
   displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
-
+  IS_mobile:boolean=false;
   constructor(public dialog: MatDialog,
     private datepipe: DatePipe,
     private ss: SingletonService,
@@ -86,9 +86,9 @@ export class EditUserComponent implements OnInit {
         startWith(''),
         map(state => state ? this.filterManagerList(state) : this.employeeListSearch.slice())
       );
-
-
-
+      this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val=>{ 
+        this.IS_mobile=val.matches;
+             })
   }
   deleteUserForm = this.fb.group({
     'dol': ['', [Validators.required, NoDate()]],
@@ -268,6 +268,7 @@ export class EditUserComponent implements OnInit {
         showCloseButton: true,
       },
       autoFocus: false,
+      restoreFocus:true
     })
     // calling setId() for getting userName corresponding to click index
     this.setId(i)
@@ -326,7 +327,8 @@ export class EditUserComponent implements OnInit {
               template: this.errorOnDisablePopup,
               heading: '',
               hideFooterButtons: true,
-            }
+            },
+            restoreFocus:true
           })
           // **************************************************************** 
           this.deleteUserForm.controls.dol.setValue('')
@@ -343,7 +345,8 @@ export class EditUserComponent implements OnInit {
               template: this.errorOnDisablePopup,
               heading: '',
               hideFooterButtons: true,
-            }
+            },
+            restoreFocus:true
           })
           // **************************************************************** 
 
@@ -363,7 +366,8 @@ export class EditUserComponent implements OnInit {
               template: this.successOnDisablePopup,
               heading: '',
               hideFooterButtons: true,
-            }
+            },
+            restoreFocus:true
           })
           // **************************************************************** 
           this.close()
@@ -384,7 +388,8 @@ export class EditUserComponent implements OnInit {
               template: this.errorOnDisablePopup,
               heading: '',
               hideFooterButtons: true,
-            }
+            },
+            restoreFocus:true
           })
           // **************************************************************** 
 
@@ -435,6 +440,7 @@ export class EditUserComponent implements OnInit {
         showCloseButton: true,
       },
       autoFocus: false,
+      restoreFocus:true
     })
   }
   // disableEmpclose(){

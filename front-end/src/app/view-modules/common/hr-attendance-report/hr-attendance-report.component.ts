@@ -67,6 +67,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.fromdate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     this.checkHrAccessForreports();
     this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    console.log('##################1',this.ATTENDENCE_DATA.length);
     this.getReporters();
   }
 
@@ -82,6 +83,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.fromdate = this.convertDatefmt(data.start)
     this.todate = this.convertDatefmt(data.end)
     this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    console.log('##################2',this.ATTENDENCE_DATA.length)
   }
 
   checkHrAccessForreports() {
@@ -105,7 +107,10 @@ export class HrAttendanceReportComponent implements OnInit {
           console.log(res.body['results'])
           this.ATTENDENCE_DATA = res.body['results'];
           this.downloadable = false;
-          this.showMessage = true;
+          setTimeout(()=>{
+            // console.log('##################1',this.ATTENDENCE_DATA.length);
+            this.showMessage = true;
+          },300)
         }
       })
     }
@@ -132,6 +137,7 @@ export class HrAttendanceReportComponent implements OnInit {
     });
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
+    console.log('##################3',this.ATTENDENCE_DATA.length)
   }
 
   clear() {

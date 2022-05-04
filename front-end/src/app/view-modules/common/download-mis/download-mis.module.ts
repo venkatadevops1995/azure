@@ -13,6 +13,7 @@ import { MatCheckbox, MatCheckboxModule , MatCheckboxChange ,MatCheckboxClickAct
 import { ButtonModule } from 'src/app/components/button/button.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -35,7 +36,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     TooltipModule,
     MatCheckboxModule,
     ButtonModule,
-    AtaiDateRangeModule
+    AtaiDateRangeModule,
+    FocusModule
   ]
 })
 export class DownloadMisModule { }

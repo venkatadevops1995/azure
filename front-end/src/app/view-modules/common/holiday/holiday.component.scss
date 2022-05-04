@@ -48,6 +48,9 @@
       color: var(--col-primary-100);
       display: grid;
 
+      &:hover{
+        box-shadow: 0px 0px 1px -1px rgb(136 136 136 / 50%), 0px 1.5px 10px 1px rgb(136 136 136 / 22%);
+      }
       >* {
         height: 55px;
         display: flex;

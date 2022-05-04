@@ -12,6 +12,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatIconModule } from '@angular/material/icon';
 import { SvgIconModule } from 'src/app/directives/svg-icon/svg-icon.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -30,7 +31,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     PipesModule,
     ButtonModule,
     MatIconModule,
-    UseSvgModule
+    UseSvgModule,
+    FocusModule
   ]
 })
 export class LeavePolicyConfigModule { }

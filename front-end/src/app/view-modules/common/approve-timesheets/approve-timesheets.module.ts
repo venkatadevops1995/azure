@@ -13,6 +13,7 @@ import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import {  MatDialogModule } from '@angular/material/dialog'; 
 import { StylePaginatorModule } from 'src/app/directives/style-paginator/style-paginator.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -32,7 +33,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     TimeSheetModule,
     PopUpModule,
     MatDialogModule, 
-    StylePaginatorModule
+    StylePaginatorModule,
+    FocusModule
   ]
 })
 export class ApproveTimesheetsModule { }

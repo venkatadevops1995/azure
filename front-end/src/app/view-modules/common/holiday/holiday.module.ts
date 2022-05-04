@@ -18,6 +18,7 @@ import { PopUpModule } from 'src/app/components/pop-up/pop-up.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { AffixModule } from 'src/app/directives/affix/affix.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 @NgModule({
   declarations: [HolidayComponent],
@@ -37,7 +38,8 @@ import { AffixModule } from 'src/app/directives/affix/affix.module';
     AtaiDateRangeModule,
     PopUpModule,
     MatDialogModule,
-    AffixModule
+    AffixModule,
+    FocusModule
   ],
   providers: [DatePipe]
 })

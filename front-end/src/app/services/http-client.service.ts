@@ -179,6 +179,7 @@ export class HttpClientService {
                 withCredentials: withCredentials
             }
         ));
+        // alert(JSON.stringify(processedHeaders));
         // return the observable by filtering the emission of the value based on the desired events of the request
         return httpRequest.pipe(filter((event) => {
             switch (event.type) {

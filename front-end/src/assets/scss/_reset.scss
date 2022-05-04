@@ -49,7 +49,12 @@ table {
 }
 *:focus {
     outline: none;
+    // box-shadow: 0 10px 10px 10px rgba($color: #fff, $alpha: 0.2);
 }
+*:focus-visible:not(textarea,input){
+  outline:1px dotted var(--col-accent-500);
+}
+
 *{
 	box-sizing: border-box;
 }
