@@ -61,7 +61,7 @@
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">
                   View
                 </app-button> -->
-                <svg tabindex="0"  class="col-primary-200 mr-15 view-leave-details  use-svg" title="View Details"
+                <svg tabindex="0"  class=" mr-15 view-leave-details  use-svg" title="View Details"
                   symbol="view-details" w="20" [attr.data-id]="element.id"
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                   svg-fill="currentColor"></svg>
@@ -150,7 +150,7 @@
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs ">
 
-                  <svg class="col-primary-200 mr-15 view-leave-discrepancy-details   use-svg" title="View Details"
+                  <svg class=" mr-15 view-leave-discrepancy-details   use-svg" title="View Details"
                     symbol="view-details" w="20" [attr.data-id]="element.id"
                     [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                     svg-fill="currentColor"></svg>
@@ -239,7 +239,7 @@
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs ">
 
-                  <svg class="col-primary-200 mr-15    use-svg" title="View Details"
+                  <svg class=" mr-15    use-svg" title="View Details"
                     (click)="getResTimesheetDiscrepancies(element.leave_request_id)" symbol="view-details" w="20"
                     svg-fill="currentColor"></svg>
 
@@ -378,7 +378,7 @@
           <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs center-xs">
-              <svg tabindex="0" (keydown.enter)="getResTimesheetDiscrepancies(element.leave_request_id)" class="col-primary-200  view-leave-details-history use-svg" title="View Details"
+              <svg tabindex="0" (keydown.enter)="getResTimesheetDiscrepancies(element.leave_request_id)" class="  view-leave-details-history use-svg" title="View Details"
                 (click)="getResTimesheetDiscrepancies(element.leave_request_id)" [attr.data-id]="element.id"
                 [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                 symbol="view-details" w="20"></svg>

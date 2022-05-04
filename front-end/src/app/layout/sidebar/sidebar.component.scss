@@ -105,8 +105,9 @@
         a{          
 
           &:hover:not(.active){
-            background: linear-gradient(to right, var(--col-primary-400), var(--col-primary-900));
-            color: var(--col-primary-200);
+            // background: linear-gradient(to right, var(--col-primary-400), var(--col-primary-900));
+            // color: var(--col-primary-200);
+            color:#fff;
             &:before {
               display: none;
             }
@@ -139,7 +140,7 @@
   display: inline-block;
   width: 10px;
   height: 10px;
-  background: red;
+  background: var(--col-warn-500);
   border-radius: 50%;
   margin-right: 5px;
   position: absolute;

@@ -76,7 +76,7 @@
             <td mat-cell *matCellDef="let element;let i = index">
               <div class="flex middle-xs start-xs ">
 
-                <svg class="use-svg col-primary-300" (click)="leaveDetailsRequestId = { request_id: element.id }; openLeaveDetails()"
+                <svg class="use-svg " (click)="leaveDetailsRequestId = { request_id: element.id }; openLeaveDetails()"
                   title="View Details" symbol="view-details" w="20" svg-fill="currentColor"></svg>
                 <svg
                   *ngIf="element.status != leaveApplcnStatus.Rejected && element.status != leaveApplcnStatus.EmployeeCancelled && !(element.status == leaveApplcnStatus.Approved && element.isInProgress)"
@@ -160,10 +160,10 @@
           <th mat-header-cell *matHeaderCellDef> Action</th>
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs start-xs  ">
-              <svg tabindex="0" (keydown.enter)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true};openLeaveDetails()" class="use-svg col-primary-300"
+              <svg tabindex="0" (keydown.enter)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true};openLeaveDetails()" class="use-svg "
                 (click)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true}; openLeaveDetails()"
                 title="View Details" symbol="view-details" w="20"></svg>
-              <svg *ngIf="element.discrepancy_status == null" tabindex="0" (keydown.enter)="onClickRaiseDiscrepancy($event,element)" class="use-svg ml-10 col-primary-300" (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
+              <svg *ngIf="element.discrepancy_status == null" tabindex="0" (keydown.enter)="onClickRaiseDiscrepancy($event,element)" class="use-svg ml-10 " (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
                 symbol="edit" w="20"></svg>
             </div>
           </td>
