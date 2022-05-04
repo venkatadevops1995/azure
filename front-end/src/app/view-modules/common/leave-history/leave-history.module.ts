@@ -14,6 +14,7 @@ import { ShowTableModule } from '../show-table/show-table.module';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { MatCheckbox, MatCheckboxModule , MatCheckboxChange ,MatCheckboxClickAction } from '@angular/material/checkbox';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -38,7 +39,8 @@ import { MatCheckbox, MatCheckboxModule , MatCheckboxChange ,MatCheckboxClickAct
     MatSortModule,
     ShowTableModule,
     AtaiDateRangeModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    FocusModule
 
   ]
 })

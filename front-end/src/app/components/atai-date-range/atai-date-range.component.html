@@ -1,10 +1,11 @@
 <div class="atai-date-range" *ngIf="showInput" [class.disabled]="disabled">
   <div class="atai-date-range__input" style="font-size: inherit;" #dateField>
-    <mat-form-field color="accent" appearance="legacy" (click)="disabled ? null :openDateRangePicker()">
+    <mat-form-field  tabindex="-1" color="accent" appearance="legacy" (click)="disabled ? null :openDateRangePicker()">
       <mat-label>{{label}}</mat-label>
-      <input matInput autocomplete="off" #input placeholder="Select Date" [attr.value]="dateMeta.dateString">
-    </mat-form-field> 
-    <svg (click)="disabled ? null :openDateRangePicker()" class="atai-date-range__calendar-icon pointer use-svg" symbol="calendar" [w]="20"></svg>
+      <input  tabindex="-1" matInput autocomplete="off" #input placeholder="Select Date" [attr.value]="dateMeta.dateString">
+    </mat-form-field>
+    <svg tabindex="0" #iconSvg (click)="disabled ? null :openDateRangePicker()" class="atai-date-range__calendar-icon pointer use-svg"
+      symbol="calendar" [w]="20"></svg> 
   </div>
 </div>
 <ng-template #calendarTemplate>
@@ -12,8 +13,9 @@
     <div>
       <div class="atai-date-range__calendar">
         <div *ngIf="showPresets" class="selection-presets">
-          <div *ngFor="let preset of selectionPresets;let i = index;" setMonthView="maxDate" [attr.data-index]="i" [attr.id]="preset.id"
-            [class.selected]="dateMeta.dateString == preset.str" class="selection-preset">{{preset.str}}</div>
+          <div *ngFor="let preset of selectionPresets;let i = index;" tabindex="0" setMonthView="maxDate" [attr.data-index]="i"
+            [attr.id]="preset.id" [class.selected]="dateMeta.dateString == preset.str" class="selection-preset">
+            {{preset.str}}</div>
         </div>
         <mat-calendar (mouseover)="onHover($event)" readonly style="width:100%; height:auto" [dateClass]="dateClass"
           [selected]="dateMeta.selectedRange" (selectedChange)="onSelect($event)" [minDate]="minDate"

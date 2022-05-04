@@ -13,7 +13,7 @@ import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.
 
 import { LeaveApplcnStatus } from 'src/app/constants'
 import { Observable, Subject } from 'rxjs';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
 import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
@@ -132,21 +132,24 @@ export class ManageTeamLeavesComponent implements OnInit {
             all: [''],
             employeeName: ['']
         })
-
+setTimeout(()=>{
         this.filteredManagers = this.managerCtrl.valueChanges
             .pipe(
                 startWith(''),
                 map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
             );
+        },200)
     }
 
     filterManagerList(value: string) {
         const filterValue = value.toLowerCase();
         return this.employeesOptions.filter(option => option.emp_name.toLowerCase().includes(filterValue))
+
         // return this.filterArray.filter(state => state.emp_name.toLowerCase().indexOf(filterValue) === 0);
     }
 
     clear() {
+        console.log('::::::::::',this.employeesOptions)
         this.managerCtrl.reset();
         this.managerCtrl.setValue('');
     }
@@ -178,6 +181,15 @@ export class ManageTeamLeavesComponent implements OnInit {
         this.selectedHistoryRange["endDate"] = date.last;
         this.fromdate = date.start
         this.todate = date.start
+        let fgValue: any = this.managerCtrl.value
+        console.log(fgValue);
+        if (fgValue == 'ALL' || fgValue) {
+            this.getLeaveApplications(true, fgValue)
+            this.showMessage = true
+
+        } else {
+            this.LEAVE_DATA_HISTORY = []
+        }
     }
 
 
@@ -189,6 +201,7 @@ export class ManageTeamLeavesComponent implements OnInit {
             this.getLeaveDiscrepancies()
             this.getTimesheetDiscrepancies()
         }, 100)
+       
     }
 
     ngOnDestroy() {
@@ -286,7 +299,8 @@ export class ManageTeamLeavesComponent implements OnInit {
                 showCloseButtons: true,
                 heading: 'Leave Request Details',
                 maxWidth: '800px'
-            }
+            },
+            restoreFocus:true
         })
     }
 
@@ -306,7 +320,8 @@ export class ManageTeamLeavesComponent implements OnInit {
                     data: {
                         confirmMessage: 'Are you sure you want to ' + approveReject.toUpperCase() + ' this leave ' + (isDiscrepancy ? 'correction ' : '') + 'request ?',
                         showTextbox: approveReject != 'approve'
-                    }
+                    },
+                    restoreFocus:true
                 })
                 // resolve the leave application
                 dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
@@ -525,7 +540,8 @@ export class ManageTeamLeavesComponent implements OnInit {
                         showCloseButton: true,
                         maxWidth: '700px',
                         heading:'Timesheet Correction'
-                    }
+                    },
+                    restoreFocus:true
                 })
             } else if (res.status == 204) {
                 this.LEAVE_REQ_TIMESHEET_DISCREPANCY = []
@@ -552,5 +568,5 @@ export class ManageTeamLeavesComponent implements OnInit {
             }
         })
     }
-
+   
 }

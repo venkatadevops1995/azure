@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div>
   <h2 class="heading mb-20">Document</h2>
   <div class="not--exsiting-policy fs-14 col-primary-400" *ngIf="EMPLOYEE_FILTERED_DATA.length == 0 && dataResolution">
@@ -39,7 +40,7 @@
 
           <div class="company" *ngFor="let com of element.company_list">
             {{ com.company_name }}
-            <button class="badge--custom"
+            <button tabindex="-1" class="badge--custom"
               [ngClass]=" com.count > 99 || com.count == 'All' ? 'badge--custom--sm ': ''">{{com.count}} </button>
           </div>
         </td>
@@ -47,7 +48,10 @@
       <ng-container matColumnDef="view">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef>View</th>
         <td class="p-table-5" mat-cell *matCellDef="let element" title="View Policy">
-          <svg class="ml-5 col-primary-300 use-svg " symbol="view-details" w="20"
+          <svg 
+          tabindex="0" 
+          (keydown.enter)="openPolicyDetails(element.policy_name,element.id)"
+          class="ml-5  use-svg " symbol="view-details" w="20"
             (click)="openPolicyDetails(element.policy_name,element.id)" style=" 
               margin-top: 0px; 
             "></svg>
@@ -61,7 +65,9 @@
             class="ml-5 material-icons"
             (click)="navigateToEdit(element.id, element.policy_type)"
              style="color: black;cursor: pointer;margin-bottom: 10px;"><span style="font-size: 16px">mode_edit</span></span> -->
-          <svg class="col-primary-300 use-svg" symbol="edit" w="20" svg-fill="currentColor"
+          <svg tabindex="0" 
+          (keydown.enter)="navigateToEdit(element.id, element.policy_type)"
+          class=" use-svg" symbol="edit" w="20" svg-fill="currentColor"
             (click)="navigateToEdit(element.id, element.policy_type)"></svg>
           <!-- ************************************ -->
         </td>
@@ -69,7 +75,10 @@
       <ng-container matColumnDef="delete">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef>Delete</th>
         <td class="p-table-5" mat-cell *matCellDef="let element" title="Delete Policy">
-          <svg class="ml-5 use-svg" symbol="delete" w="20" (click)="openDeletePolicy(element.id)" style=" 
+          <svg
+          tabindex="0" 
+          (keydown.enter)="openDeletePolicy(element.id)"
+          class="ml-5 use-svg" symbol="delete" w="20" (click)="openDeletePolicy(element.id)" style=" 
               margin-top: 0px; 
             " fill="#FF0000"></svg>
         </td>

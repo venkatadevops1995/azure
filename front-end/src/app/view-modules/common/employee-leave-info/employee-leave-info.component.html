@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div class="flex between-xmd flex-col-xs flex-row-xmd top-xs middle-xmd  mb-30">
   <h2 class="heading">
     Bulk Leave Update
@@ -72,7 +73,7 @@
           class="material-icons">
           mode_edit
         </span></button> -->
-        <svg class="col-primary-300 use-svg" symbol="edit" w="20" svg-fill="currentColor"
+        <svg tabindex="0" (keydown.enter)="openEditDialog(i)" class=" use-svg" symbol="edit" w="20" svg-fill="currentColor"
           (click)="openEditDialog(i)"></svg>
       </td>
 
@@ -91,7 +92,6 @@
 </div>
 
 <ng-template #editLeaveDialog>
-
   <p class="mb-20 flex middle-xs">
     <span class="fs-14 col-primary-300">Edit Leave Balance for : &nbsp;</span> <b class="col-primary-100 fg-1"
       style="word-break: break-word;">{{edited_emp_name}}</b>
@@ -105,7 +105,7 @@
 
       <mat-form-field class="max-w250 mt-10 ">
         <mat-label>Modify</mat-label>
-        <input type="number" placeholder="Enter leave balance" aria-label="Number" matInput
+        <input appFocus type="number" placeholder="Enter leave balance" aria-label="Number" matInput
           formControlName="leave_credits" step="0.5">
         <mat-error class="fs-12"
           *ngIf="(editLeaveForm.controls.leave_credits.touched && editLeaveForm.controls.leave_credits.hasError('required'))">

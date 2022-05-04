@@ -12,6 +12,8 @@ import { ReportComponent } from './report.component';
 import { AtaiDateRangeModule } from 'src/app/components/atai-date-range/atai-date-range.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { DownloadReportMessageModule } from 'src/app/components/download-report-message/download-report-message.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
+
 
 
 
@@ -22,6 +24,8 @@ import { DownloadReportMessageModule } from 'src/app/components/download-report-
     MatTableModule,
     MatInputModule,
     FormsModule,
+    FocusModule
+    ,
     // NgxDaterangepickerMd.forRoot(),
     FileDownloadModule,
     MatInputModule,

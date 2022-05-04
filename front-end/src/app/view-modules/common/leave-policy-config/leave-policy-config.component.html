@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div>
   <div>
     <div class="policy-grid-wrap">
@@ -72,21 +73,21 @@
               <span *ngIf="!leaveCredit?.edit || leaveType?.status == 0">
                 {{leaveType?.status == 0 ? 'NA' : leaveType?.value }}
               </span>
-              <input class="input-leave-policy-config" type="number" step="0.5" min="0" [(ngModel)]="leaveType.value"
+              <input class="input-leave-policy-config" type="number" [attr.step]="leaveType?.type == 'paid' ? 0.5 : 1" min="0" [(ngModel)]="leaveType.value"
                 *ngIf="leaveCredit?.edit && leaveType?.status != 0" />
             </div>
           </ng-container>
 
           <div class="policy-grid-cell action">
 
-            <svg class="policy-grid-edit-icon col-primary-200 use-svg" symbol="edit" w="20" [attr.data-index]="i"
+            <svg tabindex="0"  class="policy-grid-edit-icon  use-svg" symbol="edit" w="20" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="!leaveCredit?.edit" svg-fill="currentColor">
             </svg>
 
-            <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="17" [attr.data-index]="i"
+            <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="20" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
-            <svg class="policy-grid-close-icon use-svg ml-5" symbol="circle-close-red" w="20" [attr.data-index]="i"
+            <svg class="policy-grid-close-icon use-svg ml-5" symbol="circle-close-red" w="25" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
           </div>
@@ -127,14 +128,14 @@
           </ng-container>
           <div class="policy-grid-cell action">
 
-            <svg class="policy-grid-edit-icon col-primary-200 use-svg" symbol="edit" w="20" [attr.data-index]="i"
+            <svg tabindex="0" class="policy-grid-edit-icon  use-svg" symbol="edit" w="20" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="!leaveCredit?.edit" svg-fill="currentColor">
             </svg>
 
-            <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="17" [attr.data-index]="i"
+            <svg class="policy-grid-save-button use-svg" symbol="tick-circle" w="20" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
 
-            <svg class="policy-grid-close-icon use-svg ml-5" symbol="circle-close-red" w="20" [attr.data-index]="i"
+            <svg class="policy-grid-close-icon use-svg ml-5" symbol="circle-close-red" w="25" [attr.data-index]="i"
               [attr.data-emp-type-id]="leaveCredit.category_id" *ngIf="leaveCredit?.edit"></svg>
           </div>
         </ng-container>

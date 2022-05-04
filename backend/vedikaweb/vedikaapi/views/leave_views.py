@@ -736,7 +736,7 @@ class ExportResolvedLeaves(APIView):
         qp = request.query_params
         is_manager = json.loads(qp.get('is_manager','false'))
         is_hr = json.loads(qp.get('is_hr','false'))
-        monthly_time_cycle_flag = json.loads(qp.get('cyclewise','true'))
+        monthly_time_cycle_flag = json.loads(qp.get('cyclewise','false'))
         threshold = self.request.query_params.get('previous',1)
         
         emp_name = ""
@@ -754,7 +754,6 @@ class ExportResolvedLeaves(APIView):
         else:
             start_date= datetime.strftime(datetime.strptime(qp.get('start_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S'),'%Y-%m-%d')
             end_date = datetime.strftime(datetime.strptime(qp.get('end_date', datetime.now().strftime('%Y-%m-%dT%H:%M:%S')), '%Y-%m-%dT%H:%M:%S'),'%Y-%m-%d')
-        # print(start_date,end_date,"=================")
         excel_file = utils.contentTypesResponce('xl',emp_name+'_LeaveHistory_'+start_date+"_"+end_date+".xlsx")
         excel = ExcelServices(excel_file,in_memory=True,multisheetFlag=True)
         columns = ['Staff No','Name','Applied on','Start Date','End Date','Total Days','Leave Type','Leave Status']

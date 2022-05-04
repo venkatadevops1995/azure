@@ -2,7 +2,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { UserService } from 'src/app/services/user.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import enmTsStatus from 'src/app/enums/timesheet-status.enum';
@@ -56,6 +56,7 @@ export class SidebarComponent implements OnInit {
     private ss: SingletonService,
     private user: UserService,
     private http: HttpClientService, 
+    public el:ElementRef
   ) {
 
     this.toggle = this.menu.map(i => false);
@@ -72,7 +73,6 @@ export class SidebarComponent implements OnInit {
     this.isSidebarOpen = status;
     this.ss.sideBarToggle = status;
     this.ss.sideBarToggle$.next(status)
-
   }
 
   ngOnInit(): void {

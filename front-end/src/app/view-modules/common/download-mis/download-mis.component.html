@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <div class="mis__wrapper">
   <h2 class="heading mb-20">Download Employee Details</h2>
 
@@ -9,7 +10,7 @@
           </app-atai-date-range>
         </mat-form-field>
         <div class="mis__checkbox fs-14 col-primary-400 flex start-xs">
-          <mat-checkbox [checked]="Ischecked" color="accent" (change)="onIsDisableClick($event)"
+          <mat-checkbox tabindex="0" [checked]="Ischecked" color="accent" (change)="onIsDisableClick($event)"
             id="mat-checkbox-disabled-employee">
             <label class="pointer" for="mat-checkbox-disabled-employee-input"> Disabled Employee</label>
           </mat-checkbox>

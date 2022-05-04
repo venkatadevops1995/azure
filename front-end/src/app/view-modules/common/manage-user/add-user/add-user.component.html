@@ -1,3 +1,4 @@
+<div class="dummy" appFocus></div>
 <h2 class="heading fw-600">Add Employee</h2>
 
 <form [formGroup]="addUserForm" (ngSubmit)="openConfirmation()" class="mt-lg-30 mt-xmd-30 mt-20 fs-12 fs-md-14"
@@ -10,7 +11,7 @@
         <input autocomplete="off" autofocus="off" matInput formControlName="firstName" [(ngModel)]='newUserFirstName' autofocus>
         <mat-error
           *ngIf=" addUserForm.controls.firstName.touched && addUserForm.controls.firstName.hasError('required')">
-          Please enter First Name
+          Please enter First Name 
         </mat-error>
       </mat-form-field>
 
@@ -36,7 +37,7 @@
       <mat-error *ngIf="addUserForm.controls.email.touched && addUserForm.controls.email.hasError('is_duplicated')">
         Entered Email already exists
       </mat-error>
-
+      <!-- {{addUserForm.controls.email.touched}} {{addUserForm.controls.email.hasError('required')}} -->
     </mat-form-field>
 
     <mat-form-field>
@@ -99,32 +100,41 @@
       <p style="margin: 0 0 5px 0px;color:var(--col-primary-300);">Atwork Role</p>
       <div>
         <ul>
-          <li class="mb-lg-5" *ngFor="let role of ROLES;let i=index"> 
+          <!-- <li class="mb-lg-5" *ngFor="let role of ROLES;let i=index"> 
             <label class="container mr-10 mb-5 " style="color:var(--col-primary-100)"> {{role.name}}
               <input type="checkbox" [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">
               <input type="checkbox" (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' "
-                [checked]="role.selected" [disabled]="role.disabled">
+               [checked]="role.selected" [disabled]="role.disabled">
               <span class="checkmark"></span>
             </label> 
+          
+          </li> -->
+              <!-- Rahul change******************* -->
+              <li class="mr-25 fs-16 fw-600" *ngFor="let role of ROLES;let i=index"> 
+          <mat-checkbox (change)="selectRole(i,role.selected)" *ngIf="role.name != 'L0' " 
+          [checked]="role.selected" [disabled]="role.disabled" style="color:var(--col-primary-300);">{{role.name}}</mat-checkbox>
+            <mat-checkbox  [disabled]="true" *ngIf="role.name === 'L0'" [checked]="true">{{role.name}}</mat-checkbox>
           </li>
-
+            <!-- ***************************************** -->
         </ul>
       </div>
     </div>
 
     <mat-form-field class="custompicker">
       <mat-label>Date of Joining</mat-label>
-      <input (focus)="picker.open()"  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput [matDatepicker]="picker"
+      <input  (focus)="picker.open()"  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput [matDatepicker]="picker"
         formControlName="doj" (dateChange)="onDate($event)">
-      <svg matSuffix class="use-svg" symbol="calendar" w="20" (click)="picker.open()"></svg>
-      <mat-datepicker (selectedChanged)="onDate($event)" #picker></mat-datepicker>
+       
+      <svg  matSuffix class="use-svg" symbol="calendar" w="20" (click)="picker.open()"></svg>
+  
+      <mat-datepicker [touchUi]="IS_mobile"  (selectedChanged)="onDate($event)" #picker></mat-datepicker>
       <mat-error *ngIf="addUserForm.controls.doj.touched ">
         Please select Date of Joining
       </mat-error>
     </mat-form-field>
     
-    <ng-container *ngIf="!makeSelfFM">
-      <mat-form-field>
+    <ng-container  *ngIf="!makeSelfFM">
+      <mat-form-field  >
         <mat-label>Functional Owner</mat-label>
         <mat-select  formControlName="fun_own" (selectionChange)="changeFM($event.value,newUserRoleValue)">
           <mat-option  [value]=0 *ngIf="newUserRoleValue==4" class="self-option">Self

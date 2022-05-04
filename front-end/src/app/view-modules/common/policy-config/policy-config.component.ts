@@ -312,7 +312,8 @@ DisableCheck:boolean=false;
           backdropClass: 'cdk-overlay-darker-backdrop',
           data: {
             confirmMessage: `Are you sure to discard${this.emp_count}selected employee(s) ?`
-          }
+          },
+          restoreFocus:true
         })
         dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
           console.log('######################', data)
@@ -374,6 +375,7 @@ DisableCheck:boolean=false;
         mb_30: false
       },
       autoFocus: false,
+      restoreFocus:true
     })
     //*************************************
     let selectedComps = []
@@ -426,6 +428,7 @@ DisableCheck:boolean=false;
         mb_30: false
       },
       autoFocus: false,
+      restoreFocus:true
     })
     // **************************************************************
   }
@@ -543,10 +546,18 @@ DisableCheck:boolean=false;
           this.emp_count = 0;
           this.companyList.completed = true;
           this.companyList.subtasks.forEach(t => t.completed = true);
-        } else {
-          this.ss.statusMessage.showStatusMessage(false, "Issue while creating policy");
-
-        }
+        }else if(res.error){
+          console.log("error",res.error["results"]['company_list'])
+          if(res.error["results"]['company_list']){
+            let error_message ="Please select atleast one company group."
+            console.log(error_message)
+            this.ss.statusMessage.showStatusMessage(false, error_message);
+          }
+          else {
+            this.ss.statusMessage.showStatusMessage(false, "Issue while creating policy");
+  
+          }         
+        } 
       })
     } else {
 
@@ -579,6 +590,9 @@ DisableCheck:boolean=false;
     this.EMPLOYEE_DATA = []
     var res = await this.http.request('GET', 'users/', 'type=hr&search=ALL', this.policyForm.value).toPromise()
     if (res.status == 200) {
+      //Rahul change(issue fixed when we open selectedEmp popup after closed selectEmp popup just by resetting the array)
+      this.SELECTED_EMPLOYEE_DATA=[];
+      //***********************************************************
       res.body['results'].forEach(e => {
         var emp = e;
 
@@ -589,7 +603,8 @@ DisableCheck:boolean=false;
         } else {
           emp["selected"] = true;
           console.log("SELECTED_EMPLOYEE_DATA                        ===");
-
+          console.log(':::::::::::::::-->',this.SELECTED_EMPLOYEE_DATA)
+         
           this.SELECTED_EMPLOYEE_DATA.push(e)
         }
         this.EMPLOYEE_DATA.push(emp)
@@ -723,7 +738,8 @@ DisableCheck:boolean=false;
         backdropClass: 'cdk-overlay-darker-backdrop',
         data: {
           confirmMessage: 'Are you sure to publish Policy with the selected groups?'
-        }
+        },
+        restoreFocus:true
       })
       dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
         console.log('######################', data)

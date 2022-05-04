@@ -1,15 +1,16 @@
-import { Component, OnInit, Inject, TemplateRef } from '@angular/core';
+import { Component, OnInit, Inject, TemplateRef, HostBinding } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 import { SingletonService } from 'src/app/services/singleton.service';
 
-type ConfirmPopUpData = { heading: string, confirmMessage?: string, 
+type ConfirmPopUpData = {
+  heading: string, confirmMessage?: string,
   hideFooterButtons?: boolean, showCloseButton?: boolean,
-   maxWidth?: any, template?: TemplateRef<any>, minWidth: any, onlyForAlert?: boolean, 
-   showTextbox?: boolean, placeholderTextField?:any,Cancel:string,Proceed:string}
-
+  maxWidth?: any, template?: TemplateRef<any>, width: any, minWidth: any, onlyForAlert?: boolean,
+  showTextbox?: boolean, placeholderTextField?: any, Cancel: string, Proceed: string
+}
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -25,11 +26,12 @@ export class ConfirmDialogComponent implements OnInit {
     hideFooterButtons: false,
     maxWidth: '420px',
     template: null,
-    minWidth: '420px',
+    minWidth: 'auto',
+    width: '80vw',
     showTextbox: false,
-    placeholderTextField:'Enter comments',
-    Cancel:'Cancel',
-    Proceed:'Proceed'
+    placeholderTextField: 'Enter comments',
+    Cancel: 'Cancel',
+    Proceed: 'Proceed'
   }
 
   destroy$: Subject<any> = new Subject();
@@ -39,7 +41,7 @@ export class ConfirmDialogComponent implements OnInit {
 
   fcText: FormControl = new FormControl('')
 
-  get is_XMD_LT(){
+  get is_XMD_LT() {
     return this.ss.responsiveState[AtaiBreakPoints.XMD_LT];
   }
 
@@ -47,11 +49,19 @@ export class ConfirmDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: ConfirmPopUpData,
     private ss: SingletonService
   ) {
-    this.dataMerged = { ...this.defaultData, ...data } 
+    this.dataMerged = { ...this.defaultData, ...data }
   }
 
   ngOnInit(): void {
 
+  }
+
+  @HostBinding('style.max-width') get maxWidth() {
+    return this.dataMerged.maxWidth;
+  }
+
+  @HostBinding('style.width') get width() {
+    return this.dataMerged.width;
   }
 
 }

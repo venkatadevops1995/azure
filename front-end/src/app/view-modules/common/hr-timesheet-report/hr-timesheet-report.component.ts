@@ -91,7 +91,7 @@ export class HrTimesheetReportComponent implements OnInit {
   } 
 
   getStatus() {
-    this.http.request("get", 'reportdatesavailability',).subscribe(res => {
+    this.http.request("get", 'reportdatesavailability/',).subscribe(res => {
       if (res.status == 200) {
         this.message = res.body.msg.msg;
         let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd'));

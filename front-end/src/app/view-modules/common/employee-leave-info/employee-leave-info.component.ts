@@ -189,7 +189,8 @@ export class EmployeeLeaveInfoComponent implements OnInit {
         hideFooterButtons:true,
         showCloseButton:true,
         minWidth:'250px'
-      }
+      },
+      restoreFocus:true
     })
     // this.editProjectPopup.open();
 

@@ -9,6 +9,7 @@ import { ButtonModule } from 'src/app/components/button/button.module';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
+import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
 
 
 
@@ -21,7 +22,8 @@ import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.mod
     ModalPopupModule,
     ButtonModule, 
     PdfViewerModule,
-    TableAffixModule
+    TableAffixModule,
+    FocusModule
   ]
 })
 export class PolicyListModule { }

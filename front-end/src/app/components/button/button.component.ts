@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, HostBinding, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, ElementRef, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss']
+  styleUrls: ['./button.component.scss'],
+  encapsulation:ViewEncapsulation.None
 })
 export class ButtonComponent implements OnInit {
 
@@ -32,8 +33,8 @@ export class ButtonComponent implements OnInit {
       this.colors.stop = 'rgba(128,128,128,0.2)';
     }else if(this.theme == 'red'){
       this.colors.start = 'var(--col-warn-500)';
-      this.colors.stop = 'var(--col-warn-A100)';
-    }
+      this.colors.stop = 'var(--col-warn-A200)';
+    } 
   }
 
   ngAfterViewInit() {

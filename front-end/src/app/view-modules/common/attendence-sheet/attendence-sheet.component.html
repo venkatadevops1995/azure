@@ -1,5 +1,6 @@
+<div class="dummy" appFocus></div>
 <div class="flex mb-20  flex-row-xmd flex-col-xs">
-  <h1 class="attendance-heading fw-600 flex nowrap  fs-24 middle-xs start-xs">Attendance</h1>
+  <h1  class="attendance-heading fw-600 flex nowrap  fs-24 middle-xs start-xs">Attendance</h1>
   <div class="start-xs bottom-md middle-xs mt-15 mt-xmd-0 flex fs-12 fs-md-14  flex-nowrap-md flex-col-xs flex-row-md  fg-1 end-xmd start-xs">
     <mat-form-field class="w-100  no-pb mr-md-30 top-form-field "  >
       <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="option"
@@ -15,7 +16,7 @@
       style="width: 225px;">
       <app-atai-date-range [maxDate]="maxDate" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
     </mat-form-field>
-    <div [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}" class="mt-15 mt-md-0">
+    <div tabindex="0" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}" class="mt-15 mt-md-0">
       <svg matSuffix class=" use-svg" symbol="excel-green" w="25"></svg>
     </div>
   </div>

@@ -3,8 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { SingletonService } from "./singleton.service";
 import { UserService } from "./user.service";
-import { HttpClientService } from 'src/app/services/http-client.service';
-
+import { HttpClientService } from 'src/app/services/http-client.service'; 
 
 // For Hr
 @Injectable({

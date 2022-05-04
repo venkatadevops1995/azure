@@ -88,7 +88,7 @@ export class ReportComponent implements OnInit {
   // }
 
   getStatus() {
-    this.http.request("get", 'reportdatesavailability',).subscribe(res => {
+    this.http.request("get", 'reportdatesavailability/',).subscribe(res => {
       if (res.status == 200) {
 
         this.message = res.body.msg.msg;

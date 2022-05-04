@@ -346,7 +346,7 @@ get is_XS(){
           heading:'Weekly Status Report',
           maxWidth:'780px'
         },
-       
+        restoreFocus:true
       })
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
 
@@ -412,7 +412,7 @@ get is_XS(){
           hideFooterButtons:true,
           showCloseButton:true,
         },
-      
+        restoreFocus:true
       })
       this.dialogRef.afterOpened().pipe(take(1)).subscribe((val) => {
         this.commentForm.resetForm()

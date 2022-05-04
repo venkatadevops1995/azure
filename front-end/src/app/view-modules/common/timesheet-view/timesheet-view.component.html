@@ -1,6 +1,7 @@
-
+<div class="dummy" appFocus></div>
 <div  class="flex middle-sm between-sm mb-15 flex-col-xs flex-row-sm">
-  <h2 class="dis-ib"  appFocus class="heading mb ">
+
+  <h2 class="dis-ib"   class="heading mb ">
     {{timeSheetType == 'rejected' ? 'Rejected' : 'Weekly'}} Timesheet
   </h2>
   <a (click)="openManagerComments()" *ngIf="timeSheetType == 'rejected' && weeklyTimeSheetData" href="javascript:;"
@@ -26,7 +27,7 @@
       <div *ngFor="let project of wsrActiveProjectsVisible;let i=index;">
         <div class="wsr__project-name mb-10 mt-20">{{project?.project_name}}</div>
         <div></div>
-        <textarea placeholder="Add details  of the project"
+        <textarea #textarea placeholder="Add details  of the project"
           [formControl]="fgWsrProjects['controls']['active_projects']['controls'][i] "
           class="wsr__project-text  fs-14 fs-md-16"></textarea>
       </div>
@@ -38,8 +39,8 @@
           </svg>
           Select Project
         </div>
-        <div  tabindex="0"  class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
-          <div id="select" #select   class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
+        <div   class="wsr__sel-project-list" *ngIf="showProjectList && wsrActiveProjectsHidden.length > 0">
+          <div  #select id="{{ i }}"  class="wsr__sel-project-project" [attr.data-project]="project?.project_id" [attr.index]="i"
             *ngFor="let project of wsrActiveProjectsHidden;let i = index;" tabindex="index" >
             {{project?.project_name}}
           </div>

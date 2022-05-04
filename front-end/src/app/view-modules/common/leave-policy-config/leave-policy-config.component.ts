@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ModalPopupComponent } from 'src/app/components/modal-popup/modal-popup.component';
 import { isDescendant } from 'src/app/functions/isDescendent.fn';
@@ -107,6 +107,14 @@ export class LeavePolicyConfigComponent implements OnInit {
     ngOnDestroy() {
         this.destroy$.next(null);
         this.destroy$.complete()
+    }
+
+    
+    @HostListener('keydown', ['$event'])
+    onKeyDown(e: KeyboardEvent) { 
+        if (e.key == '-' || e.key == 'e') {
+            return false
+        }
     }
 
     // on horizontal scroll affix the employee type
@@ -297,10 +305,16 @@ export class LeavePolicyConfigComponent implements OnInit {
                 } else {
                     // retain the leavecredits in edit and edit copy and show the error message
                     if (res.status == 422 || res.status == 400) {
-                        this.ss.statusMessage.showStatusMessage(false, 'Something wrong with the data sent')
+                        if(res['error'][0]['max_leaves']){
+                            let message = res['error'][0]['max_leaves'][0]
+                            this.ss.statusMessage.showStatusMessage(false, message)
+                        }else{
+                            this.ss.statusMessage.showStatusMessage(false, 'Something wrong with the data sent')
+                        }                       
                     } else if (res.status == 404) {
                         this.ss.statusMessage.showStatusMessage(false, 'Some of the leave credits are not found.')
-                    } else {
+                    }
+                    else {
                         this.ss.statusMessage.showStatusMessage(false, 'Something went wrong')
                     }
                 }

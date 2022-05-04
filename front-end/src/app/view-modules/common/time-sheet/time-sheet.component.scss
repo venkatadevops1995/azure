@@ -106,7 +106,7 @@
     .dot-red {
       height: 10px;
       width: 10px;
-      background-color: var(--col-warn);
+      background-color: var(--col-warn-500);
       border-radius: 50%;
       display: inline-block;
     }
@@ -231,14 +231,14 @@
         div {
           height: auto;
           max-height: 100px;
-          min-height: 30px;
-          padding: 0 15px;
+          min-height: 40px;
+          padding: 5px 15px;
           cursor: pointer;
           display: flex;
           align-items: center;
 
           &:hover {
-            background: var(--color-quaternary-dark);
+            background: var(--col-primary-200);
           }
         }
       }
@@ -379,3 +379,6 @@
     }
   }
 }
+.grey{
+  background-color: var(--col-primary-200);
+ }
