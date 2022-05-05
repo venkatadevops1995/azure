@@ -433,7 +433,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   */
   @HostListener('document:click', ['$event'])
   onClick(e: Event) {
-    console.log('click document')
+    // console.log('click document')
     let target, targetId, targetIndex;
     target = e.target;
     targetId = e.target['id'];

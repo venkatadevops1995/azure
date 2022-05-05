@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
   role_id: Number = this.user.getRoleId();
   is_admin: Boolean = this.user.getIsEmpAdmin();
   leaveFlag: Boolean = false;
+  
   // template ref element for the modal pop up of change password
   @ViewChild('refModalChangePassword') modalChangePassword: ModalPopupComponent;
 
@@ -106,6 +107,8 @@ export class HeaderComponent implements OnInit {
       }
     })
   }
+
+
   onEmailToggle(event) {
     let status = 0;
     if (event.checked) {
@@ -121,6 +124,7 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
+
   getCompliance() {
     this.http.request('get', 'compliance/', "",).subscribe(res => {
       console.log(res)

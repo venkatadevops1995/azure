@@ -29,8 +29,8 @@ body {
 }
 
 
-.mat-input-element{
-  caret-color:var(--col-accent-500);
+.mat-input-element {
+  caret-color: var(--col-accent-500);
 }
 
 /* Mat Table */
@@ -85,11 +85,48 @@ body {
   justify-content: flex-start;
 }
 
+/* mat table Header for sorting in affixed table */
+.affix-target{
+  .mat-header-cell {
+    &[aria-sort="none"] {
+      &:hover {
+        .mat-sort-header-arrow {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+  .mat-sort-header-pointer-left{
+    transform:rotate(-45deg);
+  }
+  .mat-sort-header-pointer-right{
+    transform:rotate(45deg);
+  }
+  
+  [aria-sort="ascending"] {
+    .mat-sort-header-arrow {
+      opacity: 1;
+    }
+  }
+  [aria-sort="descending"] {
+    .mat-sort-header-arrow {
+      opacity: 1;
+    }
+    .mat-sort-header-pointer-left{
+      transform:rotate(45deg);
+      top:10px;
+    }
+    .mat-sort-header-pointer-right{
+      transform:rotate(-45deg);
+      top:10px;
+    }
+  }
+}
+
 .table-colum-left {
   .mat-sort-header-container {
     justify-content: flex-start;
   }
-
 }
 
 
@@ -342,7 +379,7 @@ mat-dialog-container.mat-dialog-container {
       .mat-radio-label-content {
         border: 2px solid var(--col-primary-200);
         background: var(--col-primary-400);
-        color:#fff;
+        color: #fff;
       }
     }
 
@@ -373,7 +410,7 @@ mat-dialog-container.mat-dialog-container {
       .mat-checkbox-label {
         border: 2px solid var(--col-primary-200);
         background: var(--col-primary-400);
-        color:#fff;
+        color: #fff;
       }
     }
   }
@@ -478,28 +515,32 @@ mat-dialog-container.mat-dialog-container {
       width: 27px;
       height: 10px;
     }
-    .mat-slide-toggle-thumb-container{
+
+    .mat-slide-toggle-thumb-container {
       width: 15px;
       height: 15px;
-      top:-2px;
+      top: -2px;
     }
-    .mat-slide-toggle-ripple{
+
+    .mat-slide-toggle-ripple {
       width: 30px;
       height: 30px;
       top: calc(50% - 15px);
       left: calc(50% - 15px);
     }
-    .mat-slide-toggle-thumb{
+
+    .mat-slide-toggle-thumb {
       width: 15px;
       height: 15px;
     }
   }
 }
 
-.mat-datepicker-content{
+.mat-datepicker-content {
   background: #111;
-  border:1px solid #777;
+  border: 1px solid #777;
 }
+
 @media screen and (max-width:768px) {
   .apply-leave {
     .mat-tab-label {

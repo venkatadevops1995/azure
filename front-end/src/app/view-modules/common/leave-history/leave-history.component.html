@@ -6,6 +6,7 @@
     </div>
 
     <div class="w-100 flex bottom-xmd flex-col-xs flex-row-xmd end-xs fs-12 fs-md-14 middle-xs ">
+
       <mat-form-field class="mr-xmd-30 no-pb mb-15 mb-xmd-0 top-form-field">
         <input matInput placeholder="Search" aria-label="Leader" [matAutocomplete]="auto" [formControl]="managerCtrl"
           [(ngModel)]="value">
@@ -31,6 +32,7 @@
           <label class="pointer col-primary-300" for="mat-checkbox-disabled-employee-input"> Future Leaves Only</label>
         </mat-checkbox>
       </div> -->
+
       <div class="future__leave_checkbox fs-14 col-primary-400 flex start-xs">
         <mat-checkbox color="accent" [checked]="Ischecked" (change)="onIsDisableClick($event)">
           <label class="fs-12 fs-md-14 fs-xmd-16 col-primary-200"> Future Leaves Only</label>
@@ -60,13 +62,12 @@
       </ng-container>
 
 
-      <div style="overflow-y: auto;max-height: 450px;" class="pr-10" *ngIf="LEAVE_DATA_HISTORY.length" #refTableWrap>
-        <app-show-table [LEAVE_DATA_HISTORY]="LEAVE_DATA_HISTORY" style="width:100%"></app-show-table>
+      <div [tableAffix]="{affixReference:'this',sort:showTable.sort}" style=" max-height: 450px;" class="pr-10 w-100 of-auto"
+        *ngIf="LEAVE_DATA_HISTORY.length" #refTableWrap>
+        <app-show-table #showTable [LEAVE_DATA_HISTORY]="LEAVE_DATA_HISTORY" style="width:100%"></app-show-table>
       </div>
     </div>
-  </div>
-
-  <!-- <app-leave-details #showAppliedLeaveDialog type='team' [requestId]="leaveDetailsRequestId"></app-leave-details> -->
+  </div> 
 </ng-container>
 
 

@@ -22,6 +22,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
+import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 @NgModule({
   declarations: [ManageSelfLeavesComponent, ApplyLeaveComponent],
   imports: [
@@ -46,7 +47,8 @@ import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.modu
     AtaiDateRangeModule,
     PopUpModule,
     MatTabsModule,
-    FocusModule
+    FocusModule,
+    TableAffixModule
   ],
   providers:[ 
   ]
