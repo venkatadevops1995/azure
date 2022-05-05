@@ -1,8 +1,8 @@
 <div class="dummy" appFocus></div>
-<div style="display: flex;justify-content: space-between;">
+<div class="flex-col-xs flex-row-sm flex between-xs">
   <h2 class="heading mb-20">Holiday List {{this.selectedYear}}</h2>
 
-  <div *ngIf="isAdmin && notifiedEmployees==false && editMode==false" style="display:flex">
+  <div *ngIf="isAdmin && notifiedEmployees==false && editMode==false" class="flex mb-25 mb-sm-0">
     <app-button theme="blue-lite" size="small" type="submit" (click)="confirmHoliday()">Notify Employees</app-button>
   </div>
 </div>
