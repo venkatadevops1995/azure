@@ -85,7 +85,7 @@ export class EmpPolicyListComponent implements OnInit {
           heading: `${this.clicked_policy_name}`,
           template:this.PolicyDetailsPopUp,
           maxWidth:'70vw',
-          minWidth:'300px',
+          minWidth:'280px',
           hideFooterButtons: true,
           showCloseButton: true,
           padding_horizontal:false,

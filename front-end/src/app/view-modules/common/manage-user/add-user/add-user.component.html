@@ -122,8 +122,8 @@
 
     <mat-form-field class="custompicker">
       <mat-label>Date of Joining</mat-label>
-      <input  (focus)="picker.open()"  autocomplete="off" (keydown)="false" (click)="picker.open()" matInput [matDatepicker]="picker"
-        formControlName="doj" (dateChange)="onDate($event)">
+      <input    autocomplete="off"  (click)="picker.open()" matInput [matDatepicker]="picker"
+        formControlName="doj" (dateChange)="onDate($event)" readonly>
        
       <svg  matSuffix class="use-svg" symbol="calendar" w="20" (click)="picker.open()"></svg>
   
