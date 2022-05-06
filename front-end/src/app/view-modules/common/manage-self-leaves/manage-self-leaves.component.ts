@@ -97,23 +97,18 @@ export class ManageSelfLeavesComponent implements OnInit {
     @ViewChild(ApplyLeaveComponent) applyLeaveRef: ApplyLeaveComponent;
 
     constructor(
-        public datepipe: DatePipe,
-        private fb: FormBuilder,
+        public datepipe: DatePipe, 
         private http: HttpClientService,
-        private ss: SingletonService,
-        private cdRef: ChangeDetectorRef,
+        private ss: SingletonService, 
         public dialog: MatDialog,
         private user: UserService,
         private fileDownload: FileDownloadService
     ) {
 
-
         this.fgDiscrepancyForm = this.ss.fb.group({
             selectedDays: ["", Validators.required],
             comments: ["", Validators.required]
-        })
-
-        console.log(this.minDate, this.maxDate)
+        }) 
     }
 
     ngOnInit(): void {
@@ -126,8 +121,6 @@ export class ManageSelfLeavesComponent implements OnInit {
         // this.selectedHistoryRange["endDate"] = this.ranges['Last 30 Days'][1];
         this.selectedHistoryRange["startDate"] = null;
         this.selectedHistoryRange["endDate"] = null;
-
-
     } 
 
     ngOnDestroy() {
