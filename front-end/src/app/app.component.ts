@@ -36,6 +36,8 @@ export class AppComponent {
   // ref to the global progress compoonent
   @ViewChild(SidebarComponent, /* TODO: add static flag */   { static: false }) sidebarComponent;
 
+  @ViewChild('layout') layoutEl:ElementRef;
+
   // boolean to know whether it is pre sign in area
   isPreSignIn: boolean = true;
 
@@ -83,6 +85,7 @@ export class AppComponent {
       this.cdRef.detectChanges();
       this.redirectBasedOnSession();
     })
+    this.layoutEl.nativeElement.style.transition ='padding-left 0.3s ease-in-out'
   }
 
   ngOnDestroy() {
@@ -104,8 +107,7 @@ export class AppComponent {
     this.redirectBasedOnSession();
     // close the sidebar menu if open for less than laptop resolutions
     if (this.ss.responsiveState[AtaiBreakPoints.LG_LT]) {
-      let target = e.target;
-      console.log('less than lt')
+      let target = e.target; 
       if (this.sidebarComponent && e.target != this.sidebarComponent.el.nativeElement && !isDescendant(this.sidebarComponent.el.nativeElement, target)) {
         this.sidebarComponent.setSidebarStatus(false)
       }

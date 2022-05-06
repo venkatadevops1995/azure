@@ -15,6 +15,7 @@ export class ShowTableComponent implements OnInit {
   ngOnInit(): void {
   }
   @Input() LEAVE_DATA_HISTORY : any;
+  
   @ViewChild(MatSort) sort: MatSort;
   ngAfterViewInit() {
     setTimeout(()=>{

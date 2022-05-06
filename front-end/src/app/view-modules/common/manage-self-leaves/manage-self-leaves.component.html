@@ -36,9 +36,8 @@
         No leave requests available
       </div>
 
-      <div style=" max-height: 250px;" class="of-auto w-100">
-        <table mat-table [dataSource]="LEAVE_APPLICATION_DATA" *ngIf="LEAVE_APPLICATION_DATA.length!=0"
-          class="mat-elevation-z8 w-100">
+      <div style=" max-height: 250px;" class="of-auto w-100" [tableAffix]="{'affixReference' : 'this'}" *ngIf="LEAVE_APPLICATION_DATA.length!=0">
+        <table mat-table [dataSource]="LEAVE_APPLICATION_DATA" class="mat-elevation-z8 w-100" >
 
           <ng-container matColumnDef="serial">
             <th mat-header-cell *matHeaderCellDef style="width: 80px;"> S.No. </th>
@@ -114,7 +113,7 @@
     <div class="mt-20 fs-14 col-primary-300" *ngIf="LEAVE_HISTORY_DATA.length==0 && leaveHistoryErrMsg===true">
       No leave history available
     </div>
-    <div class="mt-20 w-100 of-auto">
+    <div class="mt-20 w-100 of-auto" >
       <table mat-table [dataSource]="LEAVE_HISTORY_DATA" *ngIf="LEAVE_HISTORY_DATA.length!=0"
         class="mat-elevation-z8 w-100">
 
