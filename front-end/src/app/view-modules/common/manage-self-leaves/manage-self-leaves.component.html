@@ -32,7 +32,7 @@
     </h2>
 
     <div class="grid">
-      <div class=" fs-14 col-primary-300" *ngIf="LEAVE_APPLICATION_DATA.length==0">
+      <div class=" fs-14 col-primary-300" *ngIf="LEAVE_APPLICATION_DATA.length==0 && leaveErrMsg===true">
         No leave requests available
       </div>
 
@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-20 fs-14 col-primary-300" *ngIf="LEAVE_HISTORY_DATA.length==0">
+    <div class="mt-20 fs-14 col-primary-300" *ngIf="LEAVE_HISTORY_DATA.length==0 && leaveHistoryErrMsg===true">
       No leave history available
     </div>
     <div class="mt-20 w-100 of-auto">

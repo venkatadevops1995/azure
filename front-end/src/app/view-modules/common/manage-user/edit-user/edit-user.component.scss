@@ -40,8 +40,10 @@
 }
 button.disable--emp-btn{
     color: var(--col-warn-500) !important;
-    pointer-events: none;
     cursor: default !important;
+    svg{
+        pointer-events: none;
+    }
 }
  button.action--btn{
     background-color: transparent;

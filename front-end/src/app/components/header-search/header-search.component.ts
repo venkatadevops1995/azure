@@ -113,7 +113,8 @@ export class HeaderSearchComponent implements OnInit {
         let dialogRef = this.dialog.open(EmployeeProfileDetailsComponent, {
           panelClass: 'employee-profile-details',
           backdropClass: '',
-          data: this.employeeInput
+          data: this.employeeInput,
+          maxWidth: '90vw'
         })
       } else {
         console.log("INVALID")
