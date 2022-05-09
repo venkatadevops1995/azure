@@ -59,7 +59,7 @@
         <div *ngIf="data.status == 1" class="flex">
           <app-button class="timesheet__approve  ml-15 pointer-none" theme="grey" size='small'>Approved
           </app-button>
-          <app-button class="timesheet__reject ml-15" size='small' theme="danger"
+          <app-button class="timesheet__reject ml-15" size='small' theme="red"
             (click)="onClickResolveBtns('reject',{wkNo:data.week_number,empId:data.emp_id,year:data.year})">Reject
           </app-button>
         </div>

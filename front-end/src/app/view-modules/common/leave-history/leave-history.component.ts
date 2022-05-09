@@ -5,12 +5,13 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table'; 
+import { MatTableDataSource } from '@angular/material/table';
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 // import { DaterangepickerComponent } from 'ngx-daterangepicker-material/daterangepicker.component';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AtaiDateRangeComponent } from 'src/app/components/atai-date-range/atai-date-range.component';
+import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
@@ -59,17 +60,17 @@ export class LeaveHistoryComponent implements OnInit {
     private http: HttpClientService,
     private datepipe: DatePipe,
     private fileDownload: FileDownloadService,
-    private cd:ChangeDetectorRef
+    private cd: ChangeDetectorRef
   ) {
 
     side: this.any;
-    setTimeout(()=>{
-    this.filteredManagers = this.managerCtrl.valueChanges
-      .pipe(
-        startWith(''),
-        map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
-      );
-    },300)
+    setTimeout(() => {
+      this.filteredManagers = this.managerCtrl.valueChanges
+        .pipe(
+          startWith(''),
+          map(state => state ? this.filterManagerList(state) : this.employeesOptions.slice())
+        );
+    }, 300)
   }
 
 
@@ -114,26 +115,25 @@ export class LeaveHistoryComponent implements OnInit {
     this.selectedHistoryRange["endDate"] = date.end;
     let fgValue: any = this.managerCtrl.value
     this.getLeaveApplications(true, fgValue)
-
   }
 
 
-  onClickFutureLeavesOnly(data:MatCheckboxChange){
-    this.futureLeavesOnly = data.checked;    
+  onClickFutureLeavesOnly(data: MatCheckboxChange) {
+    this.futureLeavesOnly = data.checked;
   }
 
   onSubmitResolvedLeaveFilter(e) {
     // console.log("Checked:", e.checked)
-    let isFutureLeave= false
-    if(this.Ischecked){
+    let isFutureLeave = false
+    if (this.Ischecked) {
       isFutureLeave = true
-    }else{
+    } else {
       isFutureLeave = false
     }
     let fgValue: any = this.managerCtrl.value
     console.log(fgValue, e);
 
-    this.getLeaveApplications(true, fgValue,isFutureLeave)
+    this.getLeaveApplications(true, fgValue, isFutureLeave)
     // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
 
   }
@@ -187,7 +187,7 @@ export class LeaveHistoryComponent implements OnInit {
       endDate: 'enddate'
     }
     let future_leave = 'false'
-    if(this.Ischecked){
+    if (this.Ischecked) {
       future_leave = 'true'
     }
     let dp = this.dateRangePicker.value
@@ -198,7 +198,7 @@ export class LeaveHistoryComponent implements OnInit {
         is_history: 'true',
         filter: 'history',
         is_hr: 'true',
-        is_future_leave:future_leave,
+        is_future_leave: future_leave,
         emp_name: (this.managerCtrl.value) || "",
         emp_id: String(this.employeeSelected?.emp_id) || "",
         sort_key: mapping[this.sortHistoricKey] || '',
@@ -236,7 +236,7 @@ export class LeaveHistoryComponent implements OnInit {
   }
 
   // get all leave application with pagination
-  getLeaveApplications(isHistory: boolean = false, emp_name? , isFutureLeave:boolean=false) {
+  getLeaveApplications(isHistory: boolean = false, emp_name?, isFutureLeave: boolean = false) {
     let empName: any;
     if (emp_name) {
       empName = emp_name
@@ -284,25 +284,16 @@ export class LeaveHistoryComponent implements OnInit {
       params = params.append('is_hr', 'true')
 
       // params = params.append('filter', 'history')
-      params = params.append('is_future_leave',isFutureLeave ? 'true': 'false')
-    }
-    
-    if (dp && dp['startDate'] && dp['endDate']) {
-      let st_dt = new Date(dp["startDate"]._d);
-      let ed_dt = new Date(dp["endDate"]._d + 1);
-      params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-      params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
-    }else{
-      let st_dt =this.selectedHistoryRange.startDate._d
-      let ed_dt = this.selectedHistoryRange.endDate._d
-      params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-      params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+      params = params.append('is_future_leave', isFutureLeave ? 'true' : 'false')
     }
 
-    let st_dt = dp.start;
-    let ed_dt = dp.end;
-    params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-    params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+
+    if (dp && dp.start && dp.end) {
+      let st_dt = dp.start;
+      let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
+      params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
+      params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+    }
 
     if (this.side) {
       this.http.request('get', 'leave/monthlycycleleavereport/', params).subscribe(res => {
@@ -396,18 +387,18 @@ export class LeaveHistoryComponent implements OnInit {
   // }
 
 
-  onIsDisableClick(event){
-  
-    console.log("Ischecked is ::::",event);
+  onIsDisableClick(event) {
+
+    console.log("Ischecked is ::::", event);
     this.Ischecked = event.checked;
-    if(event.checked){
-      this.dateRangePicker.setPresetValue("This Month");
-      this.fromdate = this.dateRangePicker.value.start ;
-      this.todate =this.dateRangePicker.value.end ;
+    if (event.checked) {
+      this.dateRangePicker.setPresetValue("Last 30 Days");
+      this.fromdate = this.dateRangePicker.value.start;
+      this.todate = this.dateRangePicker.value.end;
       // this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
       // this.todate = this.convertDatefmt(this.ranges['This Month'][1])
       // this.selected["endDate"] = this.ranges['This Month'][1];
-    }else{
+    } else {
       this.fromdate = this.convertDatefmt('');
       this.todate = this.convertDatefmt('');
     }

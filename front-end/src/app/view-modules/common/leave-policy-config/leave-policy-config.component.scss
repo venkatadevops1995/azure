@@ -69,6 +69,9 @@
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid #888;
     text-align: center;
+    &.no-entry{
+      background-color: rgba(255, 202, 202, 1);
+    }
   }
 }
 
