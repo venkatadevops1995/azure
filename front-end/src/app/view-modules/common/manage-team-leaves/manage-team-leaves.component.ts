@@ -40,7 +40,11 @@ export class ManageTeamLeavesComponent implements OnInit {
 
     // form group for filter
     fgFilter: FormGroup;
-
+    // Rahul change(fixing the error msg on load for leave req,timesheet correction,leave correction)*********
+    leaveReqErrMsg=false
+    leavecorrErrMsg=false;
+    timesheetErrMsg=false;
+    //********************************************************************************************************* 
     // manager comments form control in the leave details pop up
     fcManagerComments: FormControl = new FormControl("", Validators.required)
 
@@ -298,8 +302,10 @@ setTimeout(()=>{
                 hideFooterButtons: true,
                 showCloseButtons: true,
                 heading: 'Leave Request Details',
-                maxWidth: '800px'
+                maxWidth: '800px',
+               
             },
+           
             restoreFocus:true
         })
     }
@@ -403,6 +409,7 @@ setTimeout(()=>{
             params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
         }
         this.http.request('get', 'leave/request/', params).subscribe(res => {
+            this.leaveReqErrMsg=true;
             if (res.status == 200) {
                 console.log("---------------------", isHistory ? 'HISTORY' : 'PENDING', res.body["results"]);
                 res.body["results"].forEach(element => {
@@ -422,6 +429,7 @@ setTimeout(()=>{
     // get leave discrepancies
     getLeaveDiscrepancies() {
         this.http.request('get', 'leave/discrepancy/').subscribe((res) => {
+            this.leavecorrErrMsg=true;
             if (res.status == 200) {
                 console.log(res.body)
                 this.LEAVE_DATA_DISCREPANCY = res.body['results']
@@ -511,6 +519,7 @@ setTimeout(()=>{
     // get timeheet discrepancies
     getTimesheetDiscrepancies() {
         this.http.request('get', 'timesheet-discrepancy/').subscribe((res) => {
+            this.timesheetErrMsg=true
             if (res.status == 200) {
                 console.log(res.body)
                 this.TIMESHEET_DISCREPANCY = res.body['results']
@@ -527,6 +536,8 @@ setTimeout(()=>{
     timesheetDiscrepancyColumns: string[] = ['date', 'project', 'posted_hours', 'modified_hours']
     timesheetDiscrepancyId = ""
     getResTimesheetDiscrepancies(id) {
+        console.log('-------------->>>>>>>>>',id);
+        console.log('@@@@@@@@@@@@@@@',this.LEAVE_DATA_HISTORY);
         this.timesheetDiscrepancyId = id
         this.http.request('get', 'timesheet-discrepancy/' + id + "/").subscribe((res) => {
             if (res.status == 200) {

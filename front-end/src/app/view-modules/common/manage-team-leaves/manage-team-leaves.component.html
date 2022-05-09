@@ -2,7 +2,7 @@
 <div class="bg-box mt-20">
   <h2 class="heading mb-20"> Leave Requests </h2>
   <div class="grid">
-    <div class="fs-14 col-primary-200" *ngIf="LEAVE_DATA_PENDING.length==0">
+    <div class="fs-14 col-primary-200" *ngIf="LEAVE_DATA_PENDING.length==0 && leaveReqErrMsg===true">
       No Leave requests to resolve
     </div>
     <div style="overflow: auto;max-height: 450px;" #refTableWrap>
@@ -93,7 +93,7 @@
   <div class="flex col">
     <h2 class="heading mb-20">Leave Correction Requests</h2>
     <div class="grid">
-      <div class="fs-14 col-primary-200" *ngIf="LEAVE_DATA_DISCREPANCY.length==0">
+      <div class="fs-14 col-primary-200" *ngIf="LEAVE_DATA_DISCREPANCY.length==0 && leavecorrErrMsg===true">
         No Leave Corrections to resolve
       </div>
       <div style="overflow: auto;max-height: 450px;" #refTableWrap>
@@ -182,7 +182,7 @@
   <div class="flex col">
     <h2 class="heading mb-20">Timesheet Correction Requests</h2>
     <div class="grid">
-      <div class="fs-14 col-primary-200" *ngIf="TIMESHEET_DISCREPANCY.length==0">
+      <div class="fs-14 col-primary-200" *ngIf="TIMESHEET_DISCREPANCY.length==0 && timesheetErrMsg===true">
         No Timesheet Corrections to resolve
       </div>
       <div style="overflow: auto;max-height: 450px;" #refTableWrap>
@@ -379,7 +379,7 @@
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs center-xs">
               <svg tabindex="0" (keydown.enter)="getResTimesheetDiscrepancies(element.leave_request_id)" class="  view-leave-details-history use-svg" title="View Details"
-                (click)="getResTimesheetDiscrepancies(element.leave_request_id)" [attr.data-id]="element.id"
+                 [attr.data-id]="element.id"
                 [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                 symbol="view-details" w="20"></svg>
             </div>
@@ -394,7 +394,7 @@
 </div>
 
 <ng-template #showAppliedLeaveDialog>
-  <app-leave-details type='team' [requestId]="leaveDetailsRequestId"></app-leave-details>
+  <app-leave-details type='team' [requestId]="leaveDetailsRequestId" ></app-leave-details>
 </ng-template>
 
 <ng-template #timesheetDiscrepancyDialog>

@@ -47,7 +47,8 @@ export class ManageSelfLeavesComponent implements OnInit {
 
     fromdate: any;
     todate: any;
-
+    leaveErrMsg:boolean=false;
+    leaveHistoryErrMsg:boolean=false;
     currentBalance = 0;
 
     // the min date for the calendar when opening for date selection for a holiday row in edit mode
@@ -271,6 +272,7 @@ export class ManageSelfLeavesComponent implements OnInit {
             params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
         }
         this.http.request('get', 'leave/request/', params).subscribe(res => {
+            this.leaveHistoryErrMsg=true;   
             if (res.status == 200) {
                 console.log("---------------------", res.body["results"]);
                 res.body["results"].forEach(element => {
@@ -278,7 +280,10 @@ export class ManageSelfLeavesComponent implements OnInit {
                 })
             } else if (res.status == 204) {
 
-            } else {
+            }else if(res.status['results']===true){
+                this.leaveHistoryErrMsg=false;
+            }
+            else {
                 this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
             }
         })
@@ -289,6 +294,7 @@ export class ManageSelfLeavesComponent implements OnInit {
         let params = new HttpParams()
         params = params.append('filter', 'pending')
         this.http.request('get', "leave/request/", params).subscribe(res => {
+            this.leaveErrMsg=true
             console.log("applied leaves", res);
             if (res.status == 200) {
                 res.body["results"].forEach(element => {
@@ -303,6 +309,8 @@ export class ManageSelfLeavesComponent implements OnInit {
                     this.LEAVE_APPLICATION_DATA.push(element)
                 });
                 this.appliedCount = this.LEAVE_APPLICATION_DATA.length;
+            }else if(res.status['results']===true){
+                this.leaveErrMsg=false;
             }
         })
         // this.LEAVE_APPLICATION_DATA = [...this.LEAVE_APPLICATION_TEST_DATA];

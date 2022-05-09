@@ -1,4 +1,4 @@
-<div class="emp-profile">
+<div class="emp-profile" [style.width]="Is_match? '90vw':''">
   <div class="emp-profile__close">
     <svg class="use-svg col-primary-200" (click)="onClickClose()" w="30" svg-fill="none"
       symbol="circle-close-red"></svg>
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="emp-profile__name">
-      <h2 class="col-primary-50 fw-500 mt-10 mt-md-0 mb-5" style="font-size: 32px;font-weight: 700;">{{data?.emp_name}}</h2>
+      <h2 class="col-primary-50 fw-500 mt-10 mt-md-0 mb-5 fs-22 fw-xmd-700 fs-xmd-32" >{{data?.emp_name}}</h2>
       <div class="fs-13 col-secondary-text-primary-500 mb-15" style="font-size: 16px;" >
         <span class="dot" *ngIf="data?.emp_details?.leave_flag"></span>
         <span *ngIf="data?.emp_details?.leave_flag && data?.emp_details?.day_leave_type=='FULL' && !data?.emp_details?.multi_leave" class="ml-5">Onleave Today</span>

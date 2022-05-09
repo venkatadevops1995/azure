@@ -33,7 +33,7 @@ export class L2DashboardComponent implements OnInit {
 
   //filter for Dashboard
   filterArray: Leader[] = [];
-
+  massageShow:boolean=false;
   managerCtrl = new FormControl();
 
   filteredManagers: Observable<Leader[]>;
@@ -117,7 +117,8 @@ export class L2DashboardComponent implements OnInit {
       }
     });
     if (emp_id) {
-      this.http.request("get", 'get-historical-data/', 'emp_id=' + emp_id).subscribe(res => {
+      this.http.request("get", 'get-historical-data/', 'emp_id=' + emp_id).subscribe((res) => {
+        this.massageShow = true;
         if (res.status == 200) {
           this.weekWiseData = res.body;
         }
