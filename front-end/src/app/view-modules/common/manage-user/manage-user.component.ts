@@ -381,8 +381,10 @@ export class ManageUserComponent implements OnInit {
     this.addUserForm.controls.fun_own.reset();
     this.addUserForm.controls.man_manager.reset();
     this.addUserForm.controls.rep_manager.reset();
-    this.MM_DATA = []
-    this.RM_DATA = []
+    // Rahul change(In order to fix after clicking checkbox MM and RM will become empty value)*************
+    // this.MM_DATA = []
+    // this.RM_DATA = []
+    //******************************************************************************************* 
     // console.log(this.PreviousRoleVlaue,"===================>>>>>>>>>>>>",this.ROLES,onload,is_deselected)
     if (is_deselected) {
       this.selectedRoleValue = selectedRole + 1;

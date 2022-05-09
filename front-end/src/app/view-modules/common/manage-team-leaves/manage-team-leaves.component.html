@@ -379,7 +379,7 @@
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs center-xs">
               <svg tabindex="0" (keydown.enter)="getResTimesheetDiscrepancies(element.leave_request_id)" class="  view-leave-details-history use-svg" title="View Details"
-                (click)="getResTimesheetDiscrepancies(element.leave_request_id)" [attr.data-id]="element.id"
+                 [attr.data-id]="element.id"
                 [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                 symbol="view-details" w="20"></svg>
             </div>

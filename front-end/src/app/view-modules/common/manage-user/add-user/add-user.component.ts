@@ -218,6 +218,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.myNgForm.resetForm()
+      this.addUserForm.reset({ 'role': 1 });
     }, 300)
   }
 
