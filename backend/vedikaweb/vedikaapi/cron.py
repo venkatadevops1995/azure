@@ -1057,12 +1057,12 @@ def relieveEmployee():
                 else:
                     Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                     StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
-                    log.info("Employee - " + emp_id +" is disabled")
+                    log.info("Employee - " + str(emp_id) +" is disabled")
 
             # ##Employee is not any manager // so update him/her
             else:
                 Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                 StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
-                log.info("Employee - " + emp_id +" is disabled")
+                log.info("Employee - " + str(emp_id) +" is disabled")
     else:
         log.info("There are no any stagged employees available for this date.")
