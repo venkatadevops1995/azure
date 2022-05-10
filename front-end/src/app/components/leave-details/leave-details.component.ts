@@ -67,7 +67,7 @@ export class LeaveDetailsComponent {
         if (dataChange && dataChange.currentValue) {
             this.processInputData(dataChange.currentValue)
         } else if (requestIdChange && requestIdChange.currentValue) {
-            this.getLeaveRequestDetails(this.requestId)
+            // this.getLeaveRequestDetails(this.requestId)
         }
 
     }
