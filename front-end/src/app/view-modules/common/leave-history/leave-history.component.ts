@@ -387,7 +387,7 @@ export class LeaveHistoryComponent implements OnInit {
   // }
 
 
-  onIsDisableClick(event) {
+  onFutureLeaveClick(event) {
 
     console.log("Ischecked is ::::", event);
     this.Ischecked = event.checked;
