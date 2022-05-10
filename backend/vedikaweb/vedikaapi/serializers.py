@@ -655,6 +655,13 @@ class UpdateLeaveConfigSerializer(serializers.Serializer):
         if data < 0 :
             raise serializers.ValidationError('Value should not be  less than 0')
         return data
+    def validate(self,data):
+        id = data['id']
+        specialLeaveIdList = [3,4,5]
+        if(id in specialLeaveIdList):
+            if not(data['max_leaves'].is_integer()):
+                raise serializers.ValidationError('Value should not be float')
+        return data
     
 class LeaveConfigSerializer(serializers.ModelSerializer):  
     id = serializers.ReadOnlyField()

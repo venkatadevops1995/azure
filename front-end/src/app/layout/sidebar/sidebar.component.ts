@@ -139,10 +139,10 @@ export class SidebarComponent implements OnInit {
 
   checkHrAccessForreports() {
 
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(async res => {
       if (res.status == 200) {
 
-        this.isReportsAccessable = res.body;
+        this.isReportsAccessable = await res.body;
       }
     })
   }
