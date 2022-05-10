@@ -396,7 +396,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         }
         break;
       case ('lastMonth'):
-        console.log('last month');
+        // console.log('last month');
         d.setDate(1);
         let lastMonthlastDayDate = new Date(d.getTime() - 86400000)
         let lastMonthLastDay = lastMonthlastDayDate.getDate()
@@ -415,11 +415,13 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         }
         break;
       case ('custom'):
-        console.log('custom selection');
+        // console.log('custom selection');
         this._model.updateSelection({ start: null, end: null } as unknown as any, this);
         let dateRange = this.dateMeta.dateString.split(' - ');
-        this._model.add(new Date(dateRange[0]));
-        this._model.add(new Date(dateRange[1]));
+        let startDateSplit = dateRange[0].split('-') 
+        let endDateSplit = dateRange[1].split('-')  
+        this._model.add(new Date(Number(startDateSplit[2]),(Number(startDateSplit[1]) -1),Number(startDateSplit[0])));
+        this._model.add(new Date(Number(endDateSplit[2]),(Number(endDateSplit[1]) -1),Number(endDateSplit[0]))); 
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
         if (emit) {
           this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
