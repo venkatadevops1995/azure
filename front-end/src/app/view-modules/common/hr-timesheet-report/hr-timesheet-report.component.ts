@@ -120,11 +120,9 @@ export class HrTimesheetReportComponent implements OnInit {
 
   getDownloadEndPoint() {
     if(this.dateRange){
-      let dp = this.dateRange.value;  
-      let st_dt = dp.start
-      let ed_dt = new Date(dp.end.getTime() + 86400000);
-      this.fromdate =  this.datepipe.transform(st_dt, 'yyyy-MM-dd')
-      this.todate = this.datepipe.transform(ed_dt, 'yyyy-MM-dd');
+      let dp = this.dateRange.value;   
+      this.fromdate =  this.datepipe.transform(dp.start, 'yyyy-MM-dd')
+      this.todate = this.datepipe.transform(dp.end, 'yyyy-MM-dd');
     }
 
     if (this.selectedEmpId === 'all') {
