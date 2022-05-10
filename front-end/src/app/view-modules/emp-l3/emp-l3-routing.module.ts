@@ -33,7 +33,7 @@ import {AuthGuardSecurityService_HR,
 const routes: Routes = [
   // { path: '', component: EmpL3Component },
   {path:"",redirectTo:"history-dashboard",pathMatch:'full'},
-  { path: 'history-dashboard', component: L2DashboardComponent }, 
+  { path: 'history-dashboard', component: L2DashboardComponent ,canActivate:[AuthGuardSecurityService_Manager]}, 
   { path: 'approve-timesheets', component: ApproveTimesheetsComponent , canActivate:[AuthGuardSecurityService_Manager] }, 
   { path: 'timesheet', component: TimesheetViewComponent }, 
   { path: 'rejected-timesheet', component: TimesheetViewComponent },
