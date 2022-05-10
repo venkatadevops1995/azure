@@ -36,7 +36,7 @@
         No leave requests available
       </div>
 
-      <div style=" max-height: 250px;" class="of-auto w-100" [tableAffix]="{'affixReference' : 'this'}" *ngIf="LEAVE_APPLICATION_DATA.length!=0">
+      <div style="max-height: 250px;" class="of-auto w-100" [tableAffix]="{'affixReference' : 'this'}" *ngIf="LEAVE_APPLICATION_DATA.length!=0" >
         <table mat-table [dataSource]="LEAVE_APPLICATION_DATA" class="mat-elevation-z8 w-100" >
 
           <ng-container matColumnDef="serial">

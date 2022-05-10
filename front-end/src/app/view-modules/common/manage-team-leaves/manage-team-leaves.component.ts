@@ -536,6 +536,8 @@ setTimeout(()=>{
     timesheetDiscrepancyColumns: string[] = ['date', 'project', 'posted_hours', 'modified_hours']
     timesheetDiscrepancyId = ""
     getResTimesheetDiscrepancies(id) {
+        console.log('-------------->>>>>>>>>',id);
+        console.log('@@@@@@@@@@@@@@@',this.LEAVE_DATA_HISTORY);
         this.timesheetDiscrepancyId = id
         this.http.request('get', 'timesheet-discrepancy/' + id + "/").subscribe((res) => {
             if (res.status == 200) {

@@ -64,6 +64,9 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
     return !(!!selection.start && !!selection.end);
   }
 
+  // the date to be in view on opening the calendar
+  @Input() startDate = new Date();
+
   // ID attribute for the field and for attribute for the label
   @Input() idd = "daterange-picker-" + Math.floor((Math.random() * 100) + 1);
 
@@ -278,7 +281,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   }
 
   ngOnChanges(changes) {
-    let presetChange: SimpleChange = changes['presets']
+    let presetChange: SimpleChange = changes['presets'] 
     if (presetChange && presetChange['currentValue']) {
       let presetInput = presetChange['currentValue'];
       this.selectionPresets = this.defaultPresets.filter(item => {
