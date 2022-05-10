@@ -387,21 +387,25 @@ export class LeaveHistoryComponent implements OnInit {
   // }
 
 
-  onIsDisableClick(event) {
+  onFutureLeaveClick(event) {
 
     console.log("Ischecked is ::::", event);
     this.Ischecked = event.checked;
-    if (event.checked) {
-      this.dateRangePicker.setPresetValue("Last 30 Days");
-      this.fromdate = this.dateRangePicker.value.start;
-      this.todate = this.dateRangePicker.value.end;
-      // this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
-      // this.todate = this.convertDatefmt(this.ranges['This Month'][1])
-      // this.selected["endDate"] = this.ranges['This Month'][1];
-    } else {
-      this.fromdate = this.convertDatefmt('');
-      this.todate = this.convertDatefmt('');
-    }
+    this.fromdate = this.convertDatefmt('');
+    this.todate = this.convertDatefmt('');
+    // if (event.checked) {
+    //   this.fromdate = this.convertDatefmt('');
+    //   this.todate = this.convertDatefmt('');
+    //   // this.dateRangePicker.setPresetValue("Last 30 Days");
+    //   // this.fromdate = this.dateRangePicker.value.start;
+    //   // this.todate = this.dateRangePicker.value.end;
+    //   // this.fromdate = this.convertDatefmt(this.ranges['This Month'][0])
+    //   // this.todate = this.convertDatefmt(this.ranges['This Month'][1])
+    //   // this.selected["endDate"] = this.ranges['This Month'][1];
+    // } else {
+    //   this.fromdate = this.convertDatefmt('');
+    //   this.todate = this.convertDatefmt('');
+    // }
     this.onSubmitResolvedLeaveFilter(event)
   }
   ngAfterContentChecked(): void {

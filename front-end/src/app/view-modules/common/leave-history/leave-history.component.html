@@ -20,19 +20,20 @@
         </mat-autocomplete>
       </mat-form-field>
 
+
       <mat-form-field class="no-pb atai-date-range no-pb  top-form-field">
-        <app-atai-date-range [disabled]="Ischecked ? true : false" (dateSelected)="onDateSelect($event)">
+        <app-atai-date-range [disabled]="Ischecked" (dateSelected)="onDateSelect($event)">
         </app-atai-date-range>
-      </mat-form-field> 
+      </mat-form-field>
 
       <div class="future__leave_checkbox fs-14 col-primary-400 flex start-xs">
-        <mat-checkbox color="accent" [checked]="Ischecked" (change)="onIsDisableClick($event)">
+        <mat-checkbox color="accent" [checked]="Ischecked" (change)="onFutureLeaveClick($event)">
           <label class="fs-12 fs-md-14 fs-xmd-16 col-primary-200"> Future Leaves Only</label>
         </mat-checkbox>
       </div>
 
       <!-- <div class="future__leave_checkbox">
-        <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onIsDisableClick($event)"> 
+        <mat-checkbox [checked]= "Ischecked"  color="primary" (change) = "onFutureLeaveClick($event)"> 
         <label style="font-size: 16px;"> Future Leaves Only</label>
         </mat-checkbox>
     </div> -->
