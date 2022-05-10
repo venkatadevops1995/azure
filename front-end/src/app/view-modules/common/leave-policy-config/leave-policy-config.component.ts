@@ -115,6 +115,9 @@ export class LeavePolicyConfigComponent implements OnInit {
         if (e.key == '-' || e.key == 'e') {
             return false
         }
+        if((<any>e.target).classList.contains('special-leaves') && e.key == '.'){
+            return false;
+        } 
     }
 
     // on horizontal scroll affix the employee type
@@ -237,7 +240,19 @@ export class LeavePolicyConfigComponent implements OnInit {
             } else if (classList.contains('policy-grid-save-button')) {
                 let orderEmpType = tempTarget.getAttribute('data-index');
                 let leaveConfigObj = leaveCredits[orderEmpType];
-                this.saveLeaveConfig(leaveConfigObj, grid);
+                // check if any of the fields is empty or invalid and show error message if any
+                let hasErrors = false
+                let leaveTypeCredits = leaveConfigObj.leave_type_credits;
+                leaveTypeCredits.forEach((item) => {
+                    if(!item.value && item.value != 0){
+                        hasErrors = true;
+                    }
+                });
+                if(hasErrors){
+                    this.ss.statusMessage.showStatusMessage(false,"The leave credit fields cannot be empty");
+                }else{
+                    this.saveLeaveConfig(leaveConfigObj, grid);
+                }
             } else if (classList.contains('policy-grid-close-icon')) {
                 let orderEmpType = tempTarget.getAttribute('data-index');
                 let leaveConfigObj = leaveCredits[orderEmpType];

@@ -13,13 +13,13 @@
     <div>
       <div class="atai-date-range__calendar">
         <div *ngIf="showPresets" class="selection-presets">
-          <div *ngFor="let preset of selectionPresets;let i = index;" tabindex="0" setMonthView="maxDate" [attr.data-index]="i"
+          <div *ngFor="let preset of selectionPresets;let i = index;" tabindex="0" [attr.data-index]="i"
             [attr.id]="preset.id" [class.selected]="dateMeta.dateString == preset.str" class="selection-preset">
             {{preset.str}}</div>
         </div>
         <mat-calendar (mouseover)="onHover($event)" readonly style="width:100%; height:auto" [dateClass]="dateClass"
           [selected]="dateMeta.selectedRange" (selectedChange)="onSelect($event)" [minDate]="minDate"
-          [startAt]="this._model?.selection?.start || minDate" [maxDate]="maxDate" (monthSelected)="changeMonth($event)"
+          [startAt]="this._model?.selection?.start || startDate" [maxDate]="maxDate" (monthSelected)="changeMonth($event)"
           (_userSelection)="_handleUserSelection($event)">
         </mat-calendar>
         <!-- <div class="buttons mb-10 w-90"

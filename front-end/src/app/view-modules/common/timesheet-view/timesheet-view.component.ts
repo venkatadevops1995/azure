@@ -122,112 +122,105 @@ export class TimesheetViewComponent implements OnInit {
   formControlsCount: number = 0;
 
   // the translation value to set on scroll so the title look fixed
-  translateTimesheetTitle:number = 0;
+  translateTimesheetTitle: number = 0;
 
-  get is_MD_LT(){
+  get is_MD_LT() {
     return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
   }
 
-
-
-// Rahul changes(adding the arrow key nevigation)*******************
+  // Rahul changes(adding the arrow key nevigation)*******************
 
   public currentIndex: number = 0;
-  list:number=0;
+  list: number = 0;
   activeIndex;
   elements;
-  @ViewChildren('select')select:QueryList<ElementRef>;
-  @ViewChildren('text') text:QueryList<ElementRef>
-  @ViewChildren('textarea') textarea:QueryList<ElementRef>
+  @ViewChildren('select') select: QueryList<ElementRef>;
+  @ViewChildren('text') text: QueryList<ElementRef>
+  @ViewChildren('textarea') textarea: QueryList<ElementRef>
 
 
   public key_pressed(event) {
     // this.list= Array.from(event.target.children).length;
     this.list = this.select.toArray().length;
-    console.log('hello',this.list)
+    console.log('hello', this.list)
     // this.users = this.keyboardEventsManager.activeItem.item.name;
-    if(event.keyCode==27)
-	this.showProjectList = false;
+    if (event.keyCode == 27)
+      this.showProjectList = false;
     if (event.keyCode == 13) {
       this.showProjectList = !this.showProjectList;
-     
+
       this.select.toArray().forEach(element => {
-        console.log('----->',element.nativeElement.classList.value)
-        console.log('&&&&&&&&&&&&',this.currentIndex);
-     
-        if(element.nativeElement.classList.contains('grey'))
-        {
+        console.log('----->', element.nativeElement.classList.value)
+        console.log('&&&&&&&&&&&&', this.currentIndex);
+
+        if (element.nativeElement.classList.contains('grey')) {
           let i;
-          i= element.nativeElement.getAttribute('index');
-          console.log('!!!!!!!!!!!!!@@@@@@@@@',i)
-            if(i=== undefined ||i==NaN ){
-                return
-            }
-            else{
-              console.log("I from if ", i);
-              let projectToBeAdded = this.wsrActiveProjectsHidden[i];
-                  this.wsrActiveProjectsVisible.push(projectToBeAdded);
-                  this.wsrActiveProjectsHidden.splice(i, 1);
-                  (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
-                this.cd.detectChanges();
-              this.textarea.get(this.wsrActiveProjectsVisible.length-1).nativeElement.focus();
-                  this.showProjectList = false;
-              
-            }
-      }
-  
+          i = element.nativeElement.getAttribute('index');
+          console.log('!!!!!!!!!!!!!@@@@@@@@@', i)
+          if (i === undefined || i == NaN) {
+            return
+          }
+          else {
+            console.log("I from if ", i);
+            let projectToBeAdded = this.wsrActiveProjectsHidden[i];
+            this.wsrActiveProjectsVisible.push(projectToBeAdded);
+            this.wsrActiveProjectsHidden.splice(i, 1);
+            (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
+            this.cd.detectChanges();
+            this.textarea.get(this.wsrActiveProjectsVisible.length - 1).nativeElement.focus();
+            this.showProjectList = false;
+
+          }
+        }
+
       });
 
-     
-
-      
-    
       // passing the event to key manager so we get a change fired
-   console.log('enter has been pressed')
+      console.log('enter has been pressed')
     }
 
-    switch(event.keyCode){ //13
+    switch (event.keyCode) { //13
       case 38: //  arrow up
-      event.stopPropagation();
-      event.preventDefault();
-               if (this.currentIndex <= 0) 
-                  this.currentIndex = this.list - 1;
-                 else 
-                  this.currentIndex = (this.currentIndex - 1) % this.list;
-                
-                console.log('keyup', this.currentIndex);
-      break;
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.currentIndex <= 0)
+          this.currentIndex = this.list - 1;
+        else
+          this.currentIndex = (this.currentIndex - 1) % this.list;
+
+        console.log('keyup', this.currentIndex);
+        break;
       case 40: //  arrow down
-      event.stopPropagation();
-      event.preventDefault();
-             this.currentIndex = (this.currentIndex + 1) % this.list;
-              console.log('keydown', this.currentIndex);
-      break;
-      default: this.currentIndex=0;
-  }
-  this.cd.detectChanges();
-  this.select.toArray().forEach((ele) => {
-    let i;
-    i = parseInt(ele.nativeElement.getAttribute('id'));
-    console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement,i);
-    if (this.currentIndex == i) {
-      console.log('currentIndex::::::',this.currentIndex);
-      ele.nativeElement.classList.add('grey');
-     
-    } else if(this.currentIndex !== i){
-
-      ele.nativeElement.classList.remove('grey');
+        event.stopPropagation();
+        event.preventDefault();
+        this.currentIndex = (this.currentIndex + 1) % this.list;
+        console.log('keydown', this.currentIndex);
+        break;
+      default: this.currentIndex = 0;
     }
-    console.log('hello i am true');
-  });
-  
-  
-}
+    this.cd.detectChanges();
+    this.select.toArray().forEach((ele) => {
+      let i;
+      i = parseInt(ele.nativeElement.getAttribute('id'));
+      console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement, i);
+      if (this.currentIndex == i) {
+        console.log('currentIndex::::::', this.currentIndex);
+        ele.nativeElement.classList.add('grey');
+
+      } else if (this.currentIndex !== i) {
+
+        ele.nativeElement.classList.remove('grey');
+      }
+      console.log('hello i am true');
+    });
 
 
-//***************************************************************************
-//**************************************************************************
-//****************************************************************************
+  }
+
+
+  //***************************************************************************
+  //**************************************************************************
+  //****************************************************************************
 
 
 
@@ -237,17 +230,17 @@ export class TimesheetViewComponent implements OnInit {
     private ss: SingletonService,
     private router: Router,
     private el: ElementRef,
-    private dialog: MatDialog ,
-    private rendrer:Renderer2,
-    
-  
+    private dialog: MatDialog,
+    private rendrer: Renderer2,
+
+
   ) {
     this.fgWsrProjects = this.ss.fb.group({
       active_projects: this.ss.fb.array([]),
       general: new FormControl('')
     });
     this.hasRejectedValueChange = this.timeSheetType != 'rejected';
- 
+
   }
 
   ngOnInit(): void {
@@ -296,15 +289,15 @@ export class TimesheetViewComponent implements OnInit {
     this.getWeeklyTimeSheetData(true)
   }
 
-  ngAfterViewInit(){ 
-    fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
-      let target:HTMLElement = e['target'];
-      this.translateTimesheetTitle = target.scrollLeft 
+  ngAfterViewInit() {
+    fromEvent(this.elTimesheetWrap.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe((e) => {
+      let target: HTMLElement = e['target'];
+      this.translateTimesheetTitle = target.scrollLeft
     })
     // Rahul change ************************
     this.list = this.select.toArray().length;
-    this.elements=this.select.toArray();
-    
+    this.elements = this.select.toArray();
+
     //*********************************************
   }
 
@@ -482,7 +475,7 @@ export class TimesheetViewComponent implements OnInit {
         template: this.templateRefManagerComments,
         maxWidth: '500px'
       },
-      restoreFocus:true
+      restoreFocus: true
     })
   }
 
@@ -518,9 +511,9 @@ export class TimesheetViewComponent implements OnInit {
   confirmSaveSubmit() {
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
+        confirmMessage: 'Are you sure you want to proceed ?'
       },
-      restoreFocus:true
+      restoreFocus: true
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
       console.log(result)
@@ -626,7 +619,7 @@ export class TimesheetViewComponent implements OnInit {
       data: {
         confirmMessage: 'One or more projects are having all entries as zero. Are you sure you want to proceed?'
       },
-      restoreFocus:true
+      restoreFocus: true
     })
     dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
       console.log(result)

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms'; 
+import { FormControl } from '@angular/forms';
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class HrTimesheetReportComponent implements OnInit {
   isPageAccessable: Boolean = false;
   ;
   // @ViewChild(DaterangepickerDirective, { static: true }) pickerDirective: DaterangepickerDirective;
-  todate: any; 
+  todate: any;
   maxDate: any = new Date();
   datePickerPresets: SelectionPresetTypes = ['Last 30 Days', 'Last Month', 'This Month']
   selected: any = {};
@@ -36,7 +36,7 @@ export class HrTimesheetReportComponent implements OnInit {
   availableDate: any;
   selectedEmpId: any;
   value: any;
-  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService, private cdRef:ChangeDetectorRef) {
+  constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService, private cdRef: ChangeDetectorRef) {
     this.filteredManagers = this.option.valueChanges
       .pipe(
         startWith(''),
@@ -62,7 +62,7 @@ export class HrTimesheetReportComponent implements OnInit {
     // this.pickerDirective.open(e);
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
 
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
@@ -72,7 +72,7 @@ export class HrTimesheetReportComponent implements OnInit {
 
   ngAfterViewInit() {
     this.checkHrAccessForreports();
-    if(this.dateRange){
+    if (this.dateRange) {
       this.dateRange.setPresetValue('Last 30 Days');
     }
   }
@@ -88,18 +88,18 @@ export class HrTimesheetReportComponent implements OnInit {
         }
       }
     });
-  } 
+  }
 
   getStatus() {
     this.http.request("get", 'reportdatesavailability/',).subscribe(res => {
       if (res.status == 200) {
         this.message = res.body.msg.msg;
         let days = this.calculateDiff(this.datepipe.transform(res.body.availbledate, 'yyyy-MM-dd'));
-        
+
         // set the max date
         this.maxDate = new Date(this.maxDate.getTime() - (days * MILLISECONDS_DAY));
-        this.maxDate.setHours(0,0,0,0)
-        if(this.dateRange){
+        this.maxDate.setHours(0, 0, 0, 0)
+        if (this.dateRange) {
           this.dateRange.maxDate = this.maxDate;
           this.dateRange.setPresetValue('Last 30 Days');
         }
@@ -109,16 +109,24 @@ export class HrTimesheetReportComponent implements OnInit {
 
   calculateDiff(sentDate) {
     var date1: any = new Date(sentDate);
-    var date2: any = new Date(); 
+    var date2: any = new Date();
     var diffDays: any = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
     return diffDays;
   }
 
   convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
-  } 
+  }
 
   getDownloadEndPoint() {
+    if(this.dateRange){
+      let dp = this.dateRange.value;  
+      let st_dt = dp.start
+      let ed_dt = new Date(dp.end.getTime() + 86400000);
+      this.fromdate =  this.datepipe.transform(st_dt, 'yyyy-MM-dd')
+      this.todate = this.datepipe.transform(ed_dt, 'yyyy-MM-dd');
+    }
+
     if (this.selectedEmpId === 'all') {
       return 'report/?from=' + this.fromdate + '&to=' + this.todate + '&download=' + true + '&emp_id=' + this.user.getEmpId() + '&all_emp=true&is_hr=true'
     } else {
