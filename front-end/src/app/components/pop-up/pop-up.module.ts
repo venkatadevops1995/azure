@@ -20,7 +20,7 @@ import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.modu
   exports: [PopUpComponent],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} },
   { provide: MatDialogRef, useValue: {} },
-  { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxWidth: '90vw', hasBackdrop: true } },
+  { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxWidth: '90vw', hasBackdrop: true, disableClose:true } },
   ]
 })
 export class PopUpModule { }

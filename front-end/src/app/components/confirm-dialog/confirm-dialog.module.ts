@@ -27,6 +27,7 @@ import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.modu
   ],
   exports: [
     ConfirmDialogComponent
-  ]
+  ],
+  providers: [{ provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {   hasBackdrop: true, disableClose: true } },]
 })
 export class ConfirmDialogModule { }
