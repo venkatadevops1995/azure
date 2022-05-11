@@ -234,20 +234,20 @@ DisableCheck:boolean=false;
           cnt += 1;
         }
         console.log("!!!!!!!!!!!!!!!!->count1", cnt)
-        if (cnt == 3) {
+        if (cnt == this.companyList.subtasks.length ) {
           this.DisableCheck = true;
         } else {
           this.DisableCheck = false;
         }
         console.log("###############->count2", cnt)
-      })
+         })
       cnt = 0;
-    } else {
+      } else {
       this.DisableCheck = false;
     }
-
     this.updateFilterData()
-
+    if(this.EMPLOYEE_FILTERED_DATA.length==0)
+    this.DisableCheck = true;
   }
 
 
