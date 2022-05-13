@@ -57,7 +57,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   @Input() disabled: boolean = false;
 
   // whether to allow same date to be selected as start and end date
-  @Input() allowSameDateRange: boolean = false;
+  @Input() allowSameDateRange: boolean = true;
 
   get empty() {
     let selection = this._model.selection;
