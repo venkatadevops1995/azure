@@ -66,7 +66,6 @@ export class AttendenceSheetComponent implements OnInit {
     // this.pickerDirective.open(e);
   }
   ngOnInit(): void {
-
     // this.option.setValue(this.user.getEmpId());
 
   }
@@ -84,7 +83,9 @@ export class AttendenceSheetComponent implements OnInit {
     // this.fromdate = val.start;
     this.fromdate = this.convertDatefmt(val.start)
     this.todate = this.convertDatefmt(val.end);
-    this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>',this.option.value)
+    this.getAttendenceData(this.fromdate, this.todate, this.selectEmp(this.option.value));
   }
 
   getAttendenceData(fromdate, todate, emp_id) {
@@ -98,6 +99,7 @@ export class AttendenceSheetComponent implements OnInit {
       //    })
       this.downloadable = true
     } else if (emp_id !== undefined) {
+      console.log(':::::::::::::::',emp_id)
       this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
         if (res.status == 200) {
           console.log(res.body['results'])
@@ -121,6 +123,7 @@ export class AttendenceSheetComponent implements OnInit {
   }
 
   selectEmp(value) {
+    if(this.EMPS){
     this.selectedEmpId = this.EMPS.filter(x => {
       if (x.emp_name == value) {
         return x['emp_id'];
@@ -128,6 +131,7 @@ export class AttendenceSheetComponent implements OnInit {
     });
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
+  }
   }
 
   clear() {

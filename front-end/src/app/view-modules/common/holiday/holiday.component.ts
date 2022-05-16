@@ -149,13 +149,13 @@ export class HolidayComponent implements OnInit {
   // subject to emit for clearing the subscriptions
   destroy$: Subject<any> = new Subject();
 
-  scrollXHolidayAffix:number = 0;
+  scrollXHolidayAffix: number = 0;
 
   // holiday template reference 
   @ViewChild('templateRefHolidayForm') templateHolidayForm: TemplateRef<any>;
 
 
-  get is_MD_LT(){
+  get is_MD_LT() {
     return this.ss.responsiveState[AtaiBreakPoints.MD_LT]
   }
 
@@ -256,7 +256,12 @@ export class HolidayComponent implements OnInit {
       if (classList.contains('holidays__remove')) {
         let indexOfHoliday = Number(tempTarget.getAttribute('data-index'));
         this.holidayList[indexOfHoliday].delete = true;
-        this.faHolidayList.controls[indexOfHoliday].get('delete').setValue(true)
+        let fc = this.faHolidayList.controls[indexOfHoliday];
+        fc.get('delete').setValue(true);
+        fc.get('date').clearValidators();
+        fc.get('description').clearValidators()
+        fc.get('date').updateValueAndValidity();
+        fc.get('description').updateValueAndValidity()
       }
 
       //  remove a row of holiday when the remove button is clicked
@@ -577,7 +582,7 @@ export class HolidayComponent implements OnInit {
         template: this.templateHolidayForm,
         maxWidth: '500px'
       },
-      restoreFocus:true
+      restoreFocus: true
     })
 
     dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
