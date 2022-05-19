@@ -118,7 +118,7 @@ export class HeaderSearchComponent implements OnInit {
         })
        dialogRef.afterClosed().subscribe(result => {
           this.searchForm.reset();
-          this.value = "";
+          this.value = ""; 
         });
       } else {
         console.log("INVALID")
