@@ -13,6 +13,7 @@ import { Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overla
 
 import { ComponentPortal } from '@angular/cdk/portal';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { UserService } from 'src/app/services/user.service';
 
 export interface Project {
   id: number,
@@ -69,7 +70,7 @@ get is_XMD_LT(){
     // Rahul change(making DialogRef as a global variable)for closing and opening the squre popup********
     public dialogRef: MatDialogRef<any>,
     //*****************************************************************************************
-
+    private user:UserService,
     // ***********************************************************************************************
     private fb: FormBuilder,
     private el: ElementRef) {
@@ -353,7 +354,7 @@ get is_XMD_LT(){
     let params = new HttpParams({
       fromObject: {
         type: 'hierarchy',
-        hierarchy_type: 'immediate'
+        hierarchy_type:this.user.getIsEmpAdmin()?'all':'immediate'
       }
     })
     this.http.request('get', 'users/', params).subscribe((res) => {
