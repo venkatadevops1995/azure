@@ -313,6 +313,7 @@ MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
 ADMINS_TO_ACCESS_REPORTS = ['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
+SUB_ADMINS_TO_ACCESS_REPORTS = ['trinath@atai.ai']
 STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
 MIS_REPORT_RECEIVER_EMAILS =['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
 CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','sabita.koganti@invecas.com']

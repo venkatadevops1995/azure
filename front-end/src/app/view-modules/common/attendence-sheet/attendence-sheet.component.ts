@@ -84,7 +84,6 @@ export class AttendenceSheetComponent implements OnInit {
     this.fromdate = this.convertDatefmt(val.start)
     this.todate = this.convertDatefmt(val.end);
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>',this.option.value)
     this.getAttendenceData(this.fromdate, this.todate, this.selectEmp(this.option.value));
   }
 

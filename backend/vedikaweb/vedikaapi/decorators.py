@@ -29,7 +29,7 @@ def is_manager(func):
     def check_is_manager(self,request,*args,**kwargs): 
         # print(request)
         auth_details = utils.validateJWTToken(request)
-        if auth_details['role_id'] == 1 and not auth_details['is_emp_admin']:
+        if ((auth_details['role_id'] == 1) and (not auth_details['is_emp_admin']) and (len(auth_details['sub_report_access']) == 0)):
             return Response({"message":'you are forbidden to make this request'},status=403)
         return func(self,request, *args,**kwargs)
     return check_is_manager

@@ -116,6 +116,10 @@ export class HeaderSearchComponent implements OnInit {
           data: this.employeeInput,
           maxWidth: '90vw'
         })
+       dialogRef.afterClosed().subscribe(result => {
+          this.searchForm.reset();
+          this.value = ""; 
+        });
       } else {
         console.log("INVALID")
       }
