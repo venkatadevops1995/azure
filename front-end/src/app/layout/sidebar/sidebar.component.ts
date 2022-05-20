@@ -87,6 +87,7 @@ export class SidebarComponent implements OnInit {
     this.ss.loggedIn$.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe(val => {
       if (val) {
         setTimeout(() => {
+          // this.isReportsAccessable = this.user.getReportAccess()
           this.getInitData(); 
         })
       }
@@ -175,10 +176,11 @@ export class SidebarComponent implements OnInit {
               this.ss.attendanceFlag = res.body.attendance_flag;
               // console.log("--------------------leave_res.body.leave_flag------------------",leave_res.body.leave_flag)
 
-              let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority')
+              let is_hr = this.user.getDataFromToken('is_emp_admin') && this.user.getDataFromToken('emp_admin_priority');
+              let sub_report_access = this.user.getSubReportAccess();
               if (res.body.attendance_flag == false) {
                 this.menu = this.menu.filter(item => item.link != "attendance");
-              } if (!is_hr && this.user.getDataFromToken('role_id') == 1) {
+              } if ((!is_hr && (this.user.getDataFromToken('role_id') == 1 ) && (sub_report_access.length == 0))) {
                 this.menu = this.menu.filter(item => item.text != "Employee Management");
               }
               if (!is_hr) {
@@ -195,13 +197,17 @@ export class SidebarComponent implements OnInit {
                 if (m.hasOwnProperty("submenu")) {
                   if (!is_hr) {
 
-                    m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")) && (item.link != "add-user") && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") && (item.link != "document-config") && (item.link != "document-list"));
+                    m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")) && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") && (item.link != "document-config") && (item.link != "document-list"));
                   }
                   if (!is_hr && this.user.getDataFromToken('role_id') == 1) {
-                    m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"))
+                    m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"));
+                    m["submenu"] = m["submenu"].filter(item => (item.link != "manage-project"))
                   }
                   if (res.body.attendance_flag == false) {
                     m["submenu"] = m["submenu"].filter(item => ((item.link != "report")))
+                  }
+                  if(!is_hr && (!sub_report_access.includes('add-user'))){
+                    m["submenu"] = m["submenu"].filter(item => (item.link != "add-user"))
                   }
                 }
 

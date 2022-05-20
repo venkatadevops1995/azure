@@ -82,6 +82,11 @@ export class UserService {
     return reportAccess
   }
 
+  getSubReportAccess(){
+    let subReportAccess = this.getTokenPayload()['sub_report_access'] ? this.getTokenPayload()['sub_report_access'] : [];
+    return subReportAccess
+  }
+
   isDemo() {
     return localStorage.getItem("isDemo") == "true";
   }
