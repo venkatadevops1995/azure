@@ -57,7 +57,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
   @Input() disabled: boolean = false;
 
   // whether to allow same date to be selected as start and end date
-  @Input() allowSameDateRange: boolean = false;
+  @Input() allowSameDateRange: boolean = true;
 
   get empty() {
     let selection = this._model.selection;
@@ -726,7 +726,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       let selection = this._model.selection
       this.dateMeta.selectedRange = new DateRange(selection.start, selection.end);
       this.dateMeta.dateString = this.nativeDateAdapter.format(selection.start, 'dd-mm-yyyy') + ' - ' + this.nativeDateAdapter.format(selection.end, 'dd-mm-yyyy')
-      // if format is satisfied then set the UI and model with the selected dates  
+      // if format is satisfied then set the UI and model with the selected dates
     } else {
       console.warn("THE DATE " + date + " IS NOT A VALID VALUE FOR THE DATE RANGE PICKER");
     }

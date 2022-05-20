@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   // apiUrl: 'http://10.60.62.69:8001/',
-  apiUrl: 'http://172.16.30.67:8000/',
+  // apiUrl: 'http://172.16.30.67:8000/',
   // apiUrl: 'http://localhost:8000/',
-  // apiUrl:'http://testvedika.atai.ai/'
+  apiUrl:'http://testvedika.atai.ai/'
 };
 
 /*

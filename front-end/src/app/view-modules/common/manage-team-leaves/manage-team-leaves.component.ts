@@ -402,11 +402,9 @@ setTimeout(()=>{
             params = params.append('sort_key', mapping[this.sortHistoricKey] || '')
             params = params.append('sort_dir', this.sortDirection || '')
         }
-        if (dp && dp.start && dp.end) {
-            let st_dt = dp.start;
-            let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
-            params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-            params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+        if (dp && dp.start && dp.end) { 
+            params = params.append('start_date', this.datepipe.transform(dp.start, 'yyyy-MM-ddT00:00:00'))
+            params = params.append('end_date', this.datepipe.transform(dp.end, 'yyyy-MM-ddT00:00:00'))
         }
         this.http.request('get', 'leave/request/', params).subscribe(res => {
             this.leaveReqErrMsg=true;
@@ -496,11 +494,9 @@ setTimeout(()=>{
         })
 
         // this.historyLeavesFiltersApplied =  true 
-        if (dp && dp.start && dp.end) {
-            let st_dt = dp.start;
-            let ed_dt = new Date(dp.end.getTime() + MILLISECONDS_DAY);
-            params = params.append('start_date', this.datepipe.transform(st_dt, 'yyyy-MM-ddT00:00:00'))
-            params = params.append('end_date', this.datepipe.transform(ed_dt, 'yyyy-MM-ddT00:00:00'))
+        if (dp && dp.start && dp.end) { 
+            params = params.append('start_date', this.datepipe.transform(dp.start, 'yyyy-MM-ddT00:00:00'))
+            params = params.append('end_date', this.datepipe.transform(dp.end, 'yyyy-MM-ddT00:00:00'))
         }
         this.http.noLoader(true).showProgress('download').request('get', 'leave/export-resolved/', params, "", {}, {
             responseType: 'blob',

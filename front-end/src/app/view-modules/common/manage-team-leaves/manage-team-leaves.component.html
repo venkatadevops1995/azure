@@ -287,7 +287,7 @@
       </div>
     </form>
     <mat-form-field appearance="legacy" style="min-width:225px" class="ml-md-15 mb-15 mb-md-0 no-pb atai-date-range">
-      <app-atai-date-range [maxDate]="maxDate" [allowSameDateRange]="false" [showInput]="true" [showPresets]="true"
+      <app-atai-date-range [maxDate]="maxDate"   [showInput]="true" [showPresets]="true"
         (dateSelected)="onDateSelect($event)"></app-atai-date-range>
     </mat-form-field>
 
@@ -313,8 +313,7 @@
     </ng-container>
 
     <div style="overflow: auto;max-height: 450px;" #refTableWrap class="mt-20">
-      <table mat-table [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0"
-        class="mat-elevation-z8 w-100">
+      <table mat-table [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0" class="mat-elevation-z8 w-100">
 
         <ng-container matColumnDef="serial">
           <th mat-header-cell *matHeaderCellDef> S.No.</th>
@@ -375,9 +374,9 @@
         </ng-container>
 
         <ng-container matColumnDef="view">
-          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Action</th>
+          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> <span class="pl-20">Action</span></th>
           <td mat-cell *matCellDef="let element;let i = index">
-            <div class="flex middle-xs center-xs">
+            <div class="flex middle-xs pl-20">
               <svg tabindex="0"  class="  view-leave-details-history use-svg" title="View Details"
                  [attr.data-id]="element.id"
                 [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
