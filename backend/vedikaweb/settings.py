@@ -313,6 +313,7 @@ MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
 ADMINS_TO_ACCESS_REPORTS = ['1moulali@atai.ai','1prerana@atai.ai']
+SUB_ADMINS_TO_ACCESS_REPORTS = ['1dipak@atai.ai','1moulali@atai.ai']
 STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
 MIS_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']
 CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']

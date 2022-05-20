@@ -58,6 +58,9 @@ class utils():
         payload['report_access'] = False
         if(email in settings.ADMINS_TO_ACCESS_REPORTS):
             payload['report_access'] = True
+        payload['sub_report_access'] = []
+        if(email in settings.SUB_ADMINS_TO_ACCESS_REPORTS):
+            payload['sub_report_access'] = ['add-user']
         payload['emp_name'] = employee.emp_name
         payload['emp_id'] = employee.emp_id
         payload['role_id'] = employee.role_id
@@ -98,6 +101,10 @@ class utils():
             payload_response['gender'] = decode_details['gender']
             payload_response['is_emp_admin'] = decode_details['is_emp_admin']
             payload_response['emp_admin_priority'] = decode_details['emp_admin_priority']
+            if('sub_report_access' not in decode_details):
+                payload_response['sub_report_access'] = []
+            else:
+                payload_response['sub_report_access'] = decode_details['sub_report_access']
             return payload_response
         else:
             return payload_response

@@ -109,7 +109,7 @@ class Users(APIView):
             emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
             emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
             return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)
-        elif(auth_details['role_id']>1 or auth_details['is_emp_admin']):
+        elif(auth_details['role_id']>1 or auth_details['is_emp_admin'] or len(auth_details['sub_report_access']) >0):
             user_id = auth_details['emp_id']
             is_emp_admin = auth_details['is_emp_admin']
             emp_type = request.query_params.get('type','employee')
@@ -158,9 +158,9 @@ class Users(APIView):
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
             else:
                 
-                return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
+                return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission1"))
         else:
-            return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
+            return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission2"))
 
 
     
@@ -182,7 +182,7 @@ class Users(APIView):
 
     @jwttokenvalidator
     @custom_exceptions
-    @is_admin
+    # @is_admin
     def post(self,request,*args,**kargs):
         # new_user_data = request.data
         auth_details = utils.validateJWTToken(request)
@@ -481,10 +481,11 @@ class EmpManagers(APIView):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         is_emp_admin = auth_details["is_emp_admin"]
+        is_sub_edmin = auth_details["sub_report_access"]
         emp_manager_list = []
         # emp_type = self.request.query_params.get('type',None)
         # if(emp_type == 'hr'):
-        if(is_emp_admin == True):
+        if(is_emp_admin == True or len(is_sub_edmin)>0):
             emp_list=Employee.objects.prefetch_related('emp','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'))
         else:
             # auth_details = utils.validateJWTToken(request)
