@@ -566,7 +566,6 @@ export class HolidayComponent implements OnInit {
     this.http.request('get', 'location-holiday-cal/', `year=${this.selectedYear-1}`).subscribe(res => {
       if (res.status == 200) {
         let response = res.body['results'];
-        console.log('::::::::::::::::::',res.body['results'])
         response['holidays'].forEach(ele=>{
           ele.editable=true;
         })
