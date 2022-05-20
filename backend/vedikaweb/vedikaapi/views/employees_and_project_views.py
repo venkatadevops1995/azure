@@ -158,9 +158,9 @@ class Users(APIView):
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
             else:
                 
-                return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission1"))
+                return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
         else:
-            return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission2"))
+            return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
 
 
     
