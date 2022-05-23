@@ -77,9 +77,12 @@ export class HrAttendanceReportComponent implements OnInit {
 
   ngAfterViewInit() {
     // this.checkHrAccessForreports();
-    if (this.dateRange) {
-      this.dateRange.setPresetValue('Last 30 Days');
-    }
+    setTimeout(()=>{
+      if (this.dateRange) {
+        this.dateRange.setPresetValue('Last 30 Days');
+      }
+    })
+   
   }
 
   // when a date is selected in the date range
