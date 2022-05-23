@@ -67,28 +67,32 @@ export class HrTimesheetReportComponent implements OnInit {
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
     this.getStatus();
+    this.isPageAccessable = this.user.getIsEmpAdmin();
+    if (this.dateRange) {
+      this.dateRange.setPresetValue('Last 30 Days');
+    }
 
   }
 
   ngAfterViewInit() {
-    this.checkHrAccessForreports();
+    // this.checkHrAccessForreports();
     if (this.dateRange) {
       this.dateRange.setPresetValue('Last 30 Days');
     }
   }
 
-  checkHrAccessForreports() {
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
-      if (res.status == 200) {
-        this.isPageAccessable = res.body;
-        this.cdRef.detectChanges()
-        if (this.isPageAccessable) {
-          this.dateRange.maxDate = this.maxDate;
-          this.dateRange.setPresetValue('Last 30 Days');
-        }
-      }
-    });
-  }
+  // checkHrAccessForreports() {
+  //   this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+  //     if (res.status == 200) {
+  //       this.isPageAccessable = res.body;
+  //       this.cdRef.detectChanges()
+  //       if (this.isPageAccessable) {
+  //         this.dateRange.maxDate = this.maxDate;
+  //         this.dateRange.setPresetValue('Last 30 Days');
+  //       }
+  //     }
+  //   });
+  // }
 
   getStatus() {
     this.http.request("get", 'reportdatesavailability/',).subscribe(res => {

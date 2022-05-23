@@ -15,6 +15,7 @@ import { MILLISECONDS_DAY } from 'src/app/constants/dashboard-routes';
 import { FileDownloadService } from 'src/app/directives/file-download/file-download.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
+import { UserService } from 'src/app/services/user.service';
 // import { MonthYearComponent } from '../month-year/month-year.component';
 @Component({
   selector: 'app-leave-history',
@@ -60,7 +61,8 @@ export class LeaveHistoryComponent implements OnInit {
     private http: HttpClientService,
     private datepipe: DatePipe,
     private fileDownload: FileDownloadService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private user: UserService
   ) {
 
     side: this.any;
@@ -95,7 +97,8 @@ export class LeaveHistoryComponent implements OnInit {
   Ischecked: boolean = false;
 
   ngOnInit(): void {
-    this.checkHrAccessForreports();
+    // this.checkHrAccessForreports();
+    this.isPageAccessable = this.user.getIsEmpAdmin();
     this.getEmployees();
     this.Ischecked = false;
   }
@@ -333,15 +336,15 @@ export class LeaveHistoryComponent implements OnInit {
     }
   }
 
-  checkHrAccessForreports() {
+  // checkHrAccessForreports() {
 
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
-      if (res.status == 200) {
-        this.isPageAccessable = res.body;
-      }
+  //   this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+  //     if (res.status == 200) {
+  //       this.isPageAccessable = res.body;
+  //     }
 
-    });
-  }
+  //   });
+  // }
 
   convertDatefmt(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');

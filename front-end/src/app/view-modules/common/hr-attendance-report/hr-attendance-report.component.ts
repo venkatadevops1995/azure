@@ -65,14 +65,18 @@ export class HrAttendanceReportComponent implements OnInit {
     let last30days = new Date(new Date().setDate(today.getDate() - 30));
     this.todate = last30days.getFullYear()+'-'+(last30days.getMonth()+1)+'-'+last30days.getDate();
     this.fromdate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    this.checkHrAccessForreports();
+    this.isPageAccessable = this.user.getIsEmpAdmin();
+    // this.checkHrAccessForreports();
+    // if (this.dateRange) {
+    //   this.dateRange.setPresetValue('Last 30 Days');
+    // }
     this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     console.log('##################1',this.ATTENDENCE_DATA.length);
     this.getReporters();
   }
 
   ngAfterViewInit() {
-    this.checkHrAccessForreports();
+    // this.checkHrAccessForreports();
     if (this.dateRange) {
       this.dateRange.setPresetValue('Last 30 Days');
     }
@@ -86,17 +90,17 @@ export class HrAttendanceReportComponent implements OnInit {
     console.log('##################2',this.ATTENDENCE_DATA.length)
   }
 
-  checkHrAccessForreports() {
+  // checkHrAccessForreports() {
 
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
-      if (res.status == 200) {
-        this.isPageAccessable = res.body;
-        if (this.dateRange) {
-          this.dateRange.setPresetValue('Last 30 Days');
-        }
-      }
-    });
-  }
+  //   this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+  //     if (res.status == 200) {
+  //       this.isPageAccessable = res.body;
+  //       if (this.dateRange) {
+  //         this.dateRange.setPresetValue('Last 30 Days');
+  //       }
+  //     }
+  //   });
+  // }
 
   getAttendenceData(fromdate, todate, emp_id) {
     if (emp_id === 'all') {
