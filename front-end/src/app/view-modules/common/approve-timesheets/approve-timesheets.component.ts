@@ -422,7 +422,7 @@ get is_XS(){
 
   onSubmitApprove(value) {
     this.dialogRef.close()
-    this.requestBody.rm_comments = value.comments;
+    this.requestBody.comments = value.comments;
     this.http.request("post", 'approve-emp-timesheet/', '', this.requestBody).subscribe(res => {
       if (res.status == 201) {
         this.ss.statusMessage.showStatusMessage(true, 'Status Updated Sucessfully');

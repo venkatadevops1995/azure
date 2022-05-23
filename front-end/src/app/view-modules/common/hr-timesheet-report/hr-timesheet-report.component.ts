@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 // import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
 import { Observable } from 'rxjs';
@@ -13,7 +13,8 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-hr-timesheet-report',
   templateUrl: './hr-timesheet-report.component.html',
-  styleUrls: ['./hr-timesheet-report.component.scss']
+  styleUrls: ['./hr-timesheet-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HrTimesheetReportComponent implements OnInit {
 
@@ -67,28 +68,36 @@ export class HrTimesheetReportComponent implements OnInit {
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
     this.getReporters();
     this.getStatus();
-
+    this.isPageAccessable = this.user.getIsEmpAdmin();
+    // if (this.dateRange) {
+    //   this.dateRange.setPresetValue('Last 30 Days');
+    // }
+    // console.log('&&&&&&&&&&&&&&&',this.dateRange)
   }
 
   ngAfterViewInit() {
-    this.checkHrAccessForreports();
-    if (this.dateRange) {
-      this.dateRange.setPresetValue('Last 30 Days');
-    }
+
+    // this.checkHrAccessForreports();
+    setTimeout(()=>{
+      if (this.dateRange) {
+        this.dateRange.setPresetValue('Last 30 Days');
+      }
+    })
   }
 
-  checkHrAccessForreports() {
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
-      if (res.status == 200) {
-        this.isPageAccessable = res.body;
-        this.cdRef.detectChanges()
-        if (this.isPageAccessable) {
-          this.dateRange.maxDate = this.maxDate;
-          this.dateRange.setPresetValue('Last 30 Days');
-        }
-      }
-    });
-  }
+  // checkHrAccessForreports() {
+  // this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(res => {
+  //   if (res.status == 200) {
+  //     this.isPageAccessable = res.body;
+  //     this.cdRef.detectChanges()
+  //     if (this.isPageAccessable) {
+  //       this.dateRange.maxDate = this.maxDate;
+  //       this.dateRange.setPresetValue('Last 30 Days');
+  //     }
+  //   }
+ // });
+
+  // }
 
   getStatus() {
     this.http.request("get", 'reportdatesavailability/',).subscribe(res => {

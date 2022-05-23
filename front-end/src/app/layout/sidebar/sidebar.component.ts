@@ -81,13 +81,13 @@ export class SidebarComponent implements OnInit {
       if(!this.is_LG_LT){ 
       }
     }
-    this.checkHrAccessForreports();
+    // this.checkHrAccessForreports();
     this.checkForRejectedTimesheet()
     // if not logged in subscribe so that on login we fetch the menu based on role
     this.ss.loggedIn$.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe(val => {
       if (val) {
         setTimeout(() => {
-          // this.isReportsAccessable = this.user.getReportAccess()
+          this.isReportsAccessable = this.user.getReportAccess()
           this.getInitData(); 
         })
       }
@@ -138,15 +138,15 @@ export class SidebarComponent implements OnInit {
     })
   }
 
-  checkHrAccessForreports() {
+  // checkHrAccessForreports() {
 
-    this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(async res => {
-      if (res.status == 200) {
+  //   this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(async res => {
+  //     if (res.status == 200) {
 
-        this.isReportsAccessable = await res.body;
-      }
-    })
-  }
+  //       this.isReportsAccessable = await res.body;
+  //     }
+  //   })
+  // }
 
   ngOnDestroy() {
     this.destroy$.next(null)
