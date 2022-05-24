@@ -168,7 +168,6 @@ export class HrTimesheetReportComponent implements OnInit {
     this.EMPS = [];
     this.http.request("get", 'users/?str=&type=hr&hierarchy_type=lower&search=all',).subscribe(res => {
       if (res.status == 200) {
-        console.log('@@@@@@@@@@@@@@@@2',res.status)
         this.EMPS.push({ emp_id: 'all', emp_name: 'ALL' })
         res.body['results'].forEach(element => {
           this.EMPS.push(element)
