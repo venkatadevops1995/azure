@@ -157,12 +157,15 @@ export class HrTimesheetReportComponent implements OnInit {
   }
 
   getReporters() {
-    let is_hr=this.user.getIsEmpAdmin();
-    if ((this.user.getRoleId() > 1)&& !is_hr) {
-      this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
-    } else {
-      this.EMPS = [];
-    }
+    // let is_hr=this.user.getIsEmpAdmin();
+    // console.log('>>>>>>>>>>>',is_hr)
+    // if (this.user.getRoleId() > 1) {
+    //   this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
+    //   console.log('***************', this.EMPS)
+    // } else {
+    //   this.EMPS = [];
+    // }
+    this.EMPS = [];
     this.http.request("get", 'users/?str=&type=hr&hierarchy_type=lower&search=all',).subscribe(res => {
       if (res.status == 200) {
         this.EMPS.push({ emp_id: 'all', emp_name: 'ALL' })
