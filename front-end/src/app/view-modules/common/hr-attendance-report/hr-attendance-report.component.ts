@@ -152,7 +152,8 @@ export class HrAttendanceReportComponent implements OnInit {
   }
   
   getReporters() {
-    if (this.user.getRoleId() > 1) {
+    let is_hr=this.user.getIsEmpAdmin();
+    if ((this.user.getRoleId() > 1) && !is_hr ) {
       this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
     } else {
       this.EMPS = [];
