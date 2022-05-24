@@ -71,7 +71,7 @@ export class HrAttendanceReportComponent implements OnInit {
     //   this.dateRange.setPresetValue('Last 30 Days');
     // }
     this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    console.log('##################1',this.ATTENDENCE_DATA.length);
+    console.log('##################1',this.ATTENDENCE_DATA.length,this.user.getEmpId());
     this.getReporters();
   }
 
@@ -89,8 +89,7 @@ export class HrAttendanceReportComponent implements OnInit {
   onDateSelection(data) {
     this.fromdate = this.convertDatefmt(data.start)
     this.todate = this.convertDatefmt(data.end)
-    this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    console.log('##################2',this.ATTENDENCE_DATA.length)
+      this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId);
   }
 
   // checkHrAccessForreports() {
@@ -153,7 +152,8 @@ export class HrAttendanceReportComponent implements OnInit {
   }
   
   getReporters() {
-    if (this.user.getRoleId() > 1) {
+    let is_hr=this.user.getIsEmpAdmin();
+    if ((this.user.getRoleId() > 1) && !is_hr ) {
       this.EMPS = [{ 'emp_id': 'all', 'emp_name': 'ALL' }];
     } else {
       this.EMPS = [];
