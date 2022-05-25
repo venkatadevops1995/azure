@@ -111,8 +111,8 @@ def get_leave_requests(qp, emp_id,is_hr=False):
         else:
             # self leave requests
             query_expression = Q(emp_id=emp_id)
-            today_minus_90 = today - timedelta(90)
-            query_expression = query_expression & Q(enddate__gte=today_minus_90)
+            # today_minus_90 = today - timedelta(90)
+            # query_expression = query_expression & Q(enddate__gte=today_minus_90)
             if qp.get('status'):
                 query_expression = Q(emp_id=emp_id) & Q(status=qp.get('status'))
 
