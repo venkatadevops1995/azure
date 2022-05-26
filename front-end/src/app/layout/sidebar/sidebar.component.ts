@@ -20,7 +20,7 @@ import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit { 
+export class SidebarComponent implements OnInit {
 
 
   isSidebarOpen: boolean = false;
@@ -50,26 +50,25 @@ export class SidebarComponent implements OnInit {
   toggle: boolean[];
   isReportsAccessable: Boolean = false;
 
-  is_LG_LT : boolean = false;
+  is_LG_LT: boolean = false;
 
   constructor(
     private ss: SingletonService,
     private user: UserService,
-    private http: HttpClientService, 
-    public el:ElementRef
+    private http: HttpClientService,
+    public el: ElementRef
   ) {
 
     this.toggle = this.menu.map(i => false);
-    this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val=>{ 
+    this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val => {
       this.is_LG_LT = val.matches
-      if(val.matches){ 
+      if (val.matches) {
         this.setSidebarStatus(false);
       }
-      console.log(this.is_LG_LT,this.isSidebarOpen)
     })
   }
 
-  setSidebarStatus(status){
+  setSidebarStatus(status) {
     this.isSidebarOpen = status;
     this.ss.sideBarToggle = status;
     this.ss.sideBarToggle$.next(status)
@@ -78,7 +77,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     if (this.ss.loggedIn) {
       this.getInitData();
-      if(!this.is_LG_LT){ 
+      if (!this.is_LG_LT) {
       }
     }
     // this.checkHrAccessForreports();
@@ -88,7 +87,7 @@ export class SidebarComponent implements OnInit {
       if (val) {
         setTimeout(() => {
           this.isReportsAccessable = this.user.getReportAccess()
-          this.getInitData(); 
+          this.getInitData();
         })
       }
     })
@@ -118,6 +117,15 @@ export class SidebarComponent implements OnInit {
     this.checkResolveTimesheet();
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.user.validateSession()) {
+        let is_LG_LT = this.ss.responsiveState[AtaiBreakPoints.LG_LT];
+        this.setSidebarStatus(is_LG_LT ? false : true)
+      }
+    })
+  }
+
   //check for reolve ResolveTimesheet
   checkResolveTimesheet() {
     this.http.noLoader(true).request("get", 'statuswisetimesheetcount/').subscribe(res => {
@@ -125,35 +133,17 @@ export class SidebarComponent implements OnInit {
         let timesheetsData = res.body;
         this.pendingApprovalCount = timesheetsData.pending_cnt + timesheetsData.entry_complaince_cnt;
         this.rejectedCount = timesheetsData.rejected_cnt;
-
-        // timesheetsData.forEach(element => {
-        //   if (element.status == 0 || element.status == 3) {
-        //     this.pendingApprovalCount = this.pendingApprovalCount + 1;
-        //   }
-        //   else if (element.status == 2) {
-        //     this.rejectedCount = this.rejectedCount + 1;
-        //   }
-        // });
       }
     })
   }
 
-  // checkHrAccessForreports() {
-
-  //   this.http.noLoader(true).request("get", 'reportsAccessableAdmins/').subscribe(async res => {
-  //     if (res.status == 200) {
-
-  //       this.isReportsAccessable = await res.body;
-  //     }
-  //   })
-  // }
 
   ngOnDestroy() {
     this.destroy$.next(null)
   }
 
   onClickMenuToggle() {
-    this.setSidebarStatus(!this.isSidebarOpen); 
+    this.setSidebarStatus(!this.isSidebarOpen);
   }
 
   // get the initial data once the login is confirmed
@@ -180,12 +170,11 @@ export class SidebarComponent implements OnInit {
               let sub_report_access = this.user.getSubReportAccess();
               if (res.body.attendance_flag == false) {
                 this.menu = this.menu.filter(item => item.link != "attendance");
-              } if ((!is_hr && (this.user.getDataFromToken('role_id') == 1 ) && (sub_report_access.length == 0))) {
+              } if ((!is_hr && (this.user.getDataFromToken('role_id') == 1) && (sub_report_access.length == 0))) {
                 this.menu = this.menu.filter(item => item.text != "Employee Management");
               }
               if (!is_hr) {
                 this.menu = this.menu.filter(item => item.text != "HR Reports");
-
               }
               if (!this.isReportsAccessable) {
 
@@ -206,7 +195,7 @@ export class SidebarComponent implements OnInit {
                   if (res.body.attendance_flag == false) {
                     m["submenu"] = m["submenu"].filter(item => ((item.link != "report")))
                   }
-                  if(!is_hr && (!sub_report_access.includes('add-user'))){
+                  if (!is_hr && (!sub_report_access.includes('add-user'))) {
                     m["submenu"] = m["submenu"].filter(item => (item.link != "add-user"))
                   }
                 }
@@ -228,17 +217,12 @@ export class SidebarComponent implements OnInit {
         this.checkResolveTimesheet();
       }
       this.menu.forEach(item => {
-        // if (item.link == 'approve-timesheets') {
-        //   item.showDot = (res.body.length > 0);
-        // }
-        // console.log("-----------------------",item);
 
         if (item.text == "Timesheet" && item.hasOwnProperty("submenu")) {
           // console.log("-----------------------",item);
           item["submenu"].forEach(e => {
             if (e.link == 'approve-timesheets') {
               e.showRedDot = true;
-              // console.log("---------------set red dot--------",item["submenu"]);
             }
 
           })

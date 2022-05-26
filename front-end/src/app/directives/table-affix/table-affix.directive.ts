@@ -94,11 +94,12 @@ export class TableAffixDirective {
     this.renderer.setStyle(this.wrapperDiv, 'width', width)
     let originalWidth = this.originalTable.getBoundingClientRect().width; 
     this.wrapperTable.style.width = originalWidth + 'px';
+    console.log(originalWidth,width)
   }
 
   ngAfterViewInit() { 
       this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
-        setTimeout(() => {
+        setTimeout(() => { 
           this.setCloneTableWidth()
         }, 450)
       })

@@ -46,6 +46,8 @@ export class LoginComponent implements OnInit {
     // if the user session is valid then redirect to respective dashboard pages
     if (this.user.validateSession()) {
       this.ss.loggedIn$.next(true);
+      // this.ss.sideBarToggle$.next(true)
+      this.ss.isPreSignIn$.next(false)
       let redirectRoute = this.user.getDashboardRoute();
       this.router.navigate([redirectRoute]);
     }
@@ -62,6 +64,8 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('token', token);
           setTimeout(() => {
             this.ss.loggedIn$.next(true);
+            // this.ss.sideBarToggle$.next(true)
+            this.ss.isPreSignIn$.next(false)
             let redirectRoute = this.user.getDashboardRoute();
             this.router.navigate([redirectRoute]);
           }, 1000);

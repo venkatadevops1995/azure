@@ -363,6 +363,20 @@
   }
 }
 
+@media screen and (max-width:768px) {
+  :host {
+    .timesheet__head-name {
+      grid-template-columns: 100%;
+      grid-template-rows: repeat(2, 1fr);
+      display: grid !important;
+      width:86vw;
+      .timesheet__name{
+        text-align: center;
+      }
+    }
+  }
+}
+
 @media screen and (max-width:550px) {
   :host {
     .timesheet__row {
@@ -379,6 +393,7 @@
     }
   }
 }
-.grey{
+
+.grey {
   background-color: var(--col-primary-200);
- }
+}
