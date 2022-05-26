@@ -68,7 +68,7 @@ export class ApproveTimesheetsComponent implements OnInit {
 
   // emp wsr data
   wsrData: Array<any> = [];
-
+  showMessage:boolean = false;
 
   // reference to the dialog component for wsr data viewing
   dialogRef: MatDialogRef<any> = null;
@@ -216,7 +216,8 @@ get is_XS(){
     this.http.request("get", 'employeeswstdata/', 'status=' + value + '&page=' + page + '&itms_per_page=' + this.paginator.pageSize).subscribe(res => {
       if (res.status == 200) {
         this.timesheetsData = res.body['results'];
-        // console.log(this.timesheetsData);
+        this.showMessage = true
+        console.log(':::::::::::::::',this.timesheetsData);
         for (let i = 0; i < this.timesheetsData.length; i++) {
 
           let totHoliHours = this.timesheetsData[i]['HOLIDAY'].work_hours.map(item => item.h).reduce((prev, next) => prev + next);

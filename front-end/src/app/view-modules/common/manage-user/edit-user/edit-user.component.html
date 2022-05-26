@@ -24,7 +24,17 @@
 
   <div class="w-100 of-x-auto" [tableAffix] *ngIf="USERS_DATA.length!=0">
 
-    <table style="min-width:800px;" mat-table [dataSource]="USERS_DATA" class="mat-elevation-z8 w-100">
+    <table style="min-width:1024px;" mat-table [dataSource]="USERS_DATA" class="mat-elevation-z8 w-100">
+      <colgroup>
+        <col width='70'/>
+        <col width='150'/>
+        <col width='250'/>
+        <col width="150"/>
+        <col width="250"/>
+        <col width="150"/>
+        <col width="50"/>
+        <col width="70"/>
+      </colgroup>
       <ng-container matColumnDef="serial_no">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
         <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"> {{i+1}} </td>

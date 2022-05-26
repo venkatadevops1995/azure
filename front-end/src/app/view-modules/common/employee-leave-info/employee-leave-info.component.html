@@ -37,7 +37,15 @@
 </div>
 
 <div class="w-100 of-auto" [tableAffix] *ngIf="EMP_LEAVE_FILTERED_DATA.length!=0">
-  <table mat-table [dataSource]="EMP_LEAVE_FILTERED_DATA" class="mat-elevation-z8 w-100">
+  <table mat-table style="min-width:980px;" [dataSource]="EMP_LEAVE_FILTERED_DATA" class="mat-elevation-z8 w-100">
+    <colgroup>
+      <col width='90'/>
+      <col width='150'/>
+      <col width='250'/>
+      <col width="150"/>
+      <col width="150"/>
+      <col width="60"/>
+    </colgroup>
 
 <!-- <table mat-table [dataSource]="EMP_LEAVE_FILTERED_DATA" *ngIf="EMP_LEAVE_FILTERED_DATA.length!=0" class="mat-elevation-z8"> -->
     <ng-container matColumnDef="serial_no">
