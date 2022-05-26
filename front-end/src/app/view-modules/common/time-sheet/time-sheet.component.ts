@@ -108,13 +108,16 @@ export class TimeSheetComponent implements OnInit {
 	// form controls count in  active projects
 	formControlsCount: number = 0;
 
+	get is_MD_LT(){
+		return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
+	}
+
 	constructor(
 		private ss: SingletonService,
 		private cd: ChangeDetectorRef,
 		private el: ElementRef,
 		private tsService: TimeSheetService,
-		private dialog: MatDialog,
-		private responsive: BreakpointObserver
+		private dialog: MatDialog 
 	) {
 		this.fgTimeFields = this.ss.fb.group({
 			active_projects: this.ss.fb.array([]),
@@ -126,6 +129,7 @@ export class TimeSheetComponent implements OnInit {
 		this.fgTotalTimeFields = this.ss.fb.group({
 			total: this.ss.fb.array([])
 		});
+		
 
 
 		let faTotal = (<FormArray>this.fgTimeFields.get("total"))

@@ -29,7 +29,17 @@
   **********************************************************************
   ************************************************************ -->
 <div style="overflow-x: auto;width: 100%;" [tableAffix] *ngIf="USERS_DATA.length!=0">
-  <table mat-table [dataSource]="USERS_DATA"  class="mat-elevation-z8 w-100">
+  <table mat-table style="min-width:1024px;" [dataSource]="USERS_DATA"  class="mat-elevation-z8 w-100">
+    <colgroup>
+      <col width='70'/>
+      <col width='150'/>
+      <col width='250'/>
+      <col width="150"/>
+      <col width="180"/>
+      <col width="180"/>
+      <col width="180"/>
+      <col width="50"/>
+    </colgroup>
     <ng-container matColumnDef="serial_no">
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
       <td class="p-table-5" mat-cell *matCellDef="let element;let i =index;"
@@ -90,8 +100,8 @@
 
 
     <ng-container matColumnDef="edit">
-      <th class="p-table-5" mat-header-cell *matHeaderCellDef> Edit</th>
-      <td class="p-table-5" mat-cell *matCellDef="let element;let i = index"
+      <th class="p-table-5 txt-center" mat-header-cell *matHeaderCellDef> Edit</th>
+      <td class="p-table-5 txt-center" mat-cell *matCellDef="let element;let i = index"
         [ngClass]="element.staging_status !== null ? 'disabled--emp':'' ">
         <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
         <!-- Previous code-->

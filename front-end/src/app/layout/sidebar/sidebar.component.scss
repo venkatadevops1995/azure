@@ -5,7 +5,7 @@
 
   .sidebar__toggle {
     position: fixed;
-    left: calc(var(--sidebar) - 20px);
+    left: -20px;
     top: 150px;
     width: 40px;
     height: 40px;
@@ -18,13 +18,13 @@
     transition: all 0.3s ease-in-out;
 
     >svg {
-      transform: rotate(-180deg)
+      transform: rotate(0deg) translateX(8px);
     }
 
     &.is-menu-open {
-      left: -20px;
+      left: calc(var(--sidebar) - 20px);
       >svg {
-        transform: rotate(0deg) translateX(8px);
+        transform: rotate(-180deg);
       }
     }
   }
@@ -159,7 +159,7 @@
   max-height: 100%;
   position: fixed;
   top: 0;
-  left: 0;
+  left: calc(-1 * var(--sidebar));
   z-index: 999;
   background: var(--col-primary-900);
   overflow-x: hidden;
@@ -176,7 +176,7 @@
   }
 
   &.is-menu-open {
-    left: -230px;
+    left: 0px;
   }
 }
 
