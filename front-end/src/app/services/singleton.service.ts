@@ -70,14 +70,12 @@ export class SingletonService {
   resTimeSheet$: Subject<{ rc: any, pac: any }> = new Subject();
 
   //attendance flag
-  attendanceFlag:boolean = false
+  attendanceFlag: boolean = false
 
-  leaveFlag:boolean = false;
-
-  isSidebarOpen:boolean = false;
+  leaveFlag: boolean = false;
 
   // reference to the breakpoint observer (like a global one)
-  responsive:BreakpointObserver;
+  responsive: BreakpointObserver;
 
   // responsive state to find out the current state of each break points
   responsiveState: any;
@@ -99,7 +97,7 @@ export class SingletonService {
       data: {
         confirmMessage: message
       },
-      restoreFocus:true
+      restoreFocus: true
     })
     if (callback) {
       dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {

@@ -112,8 +112,8 @@ class LeaveRequestView(APIView):
             return Response(auth_details, status=400)
         emp_id=auth_details['emp_id']
         qp = request.query_params
-        # is_hr = json.loads(qp.get('is_hr','false'))
-        is_hr = auth_details['is_emp_admin']
+        is_hr = json.loads(qp.get('is_hr','false'))
+        # is_hr = auth_details['is_emp_admin']
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
         if errors:
             # print('errors in get leave requests')

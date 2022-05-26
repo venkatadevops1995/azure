@@ -36,7 +36,7 @@ export class AppComponent {
   // ref to the global progress compoonent
   @ViewChild(SidebarComponent, /* TODO: add static flag */   { static: false }) sidebarComponent;
 
-  @ViewChild('layout') layoutEl:ElementRef;
+  @ViewChild('layout') layoutEl: ElementRef;
 
   // boolean to know whether it is pre sign in area
   isPreSignIn: boolean = true;
@@ -49,7 +49,7 @@ export class AppComponent {
 
   isSideBarOpen: boolean = false;
 
-  iconsPrefetched: boolean = false; 
+  iconsPrefetched: boolean = false;
 
   constructor(
     private ss: SingletonService,
@@ -67,10 +67,11 @@ export class AppComponent {
     this.ss.sideBarToggle$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
       this.ss.sideBarToggle = val;
       this.isSideBarOpen = this.ss.sideBarToggle
+      this.cdRef.detectChanges()
     })
     this.ss.responsive = this.responsive;
     this.ss.responsive.observe([..._.values(AtaiBreakPoints)]).pipe(takeUntil(this.destroy$)).subscribe(val => { 
-      this.ss.responsiveState = val.breakpoints; 
+      this.ss.responsiveState = val.breakpoints;
     })
   }
 
@@ -80,12 +81,24 @@ export class AppComponent {
     this.ss.progressBar = this.progressBar;
     this.ss.statusMessage = this.statusMessage;
     this.ss.svgComponent = this.svg;
+
+    // is user session is validated then set the pre sign in as false else set it as true and logout
+    // let validity = this.user.validateSession();
+    // this.isPreSignIn = !validity 
+    // this.cdRef.detectChanges()
+    // if(validity){
+    //   this.sidebarComponent.setSidebarStatus(true)
+    // }
+    this.layoutEl.nativeElement.style.transition = 'padding-left 0.3s ease-in-out'
+
+    
     this.ss.isPreSignIn$.pipe(takeUntil(this.destroy$), debounceTime(500)).subscribe(val => {
+      console.log(this.isPreSignIn)
       this.isPreSignIn = val;
       this.cdRef.detectChanges();
       this.redirectBasedOnSession();
-    })
-    this.layoutEl.nativeElement.style.transition ='padding-left 0.3s ease-in-out'
+    }) 
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy() {
@@ -107,7 +120,7 @@ export class AppComponent {
     this.redirectBasedOnSession();
     // close the sidebar menu if open for less than laptop resolutions
     if (this.ss.responsiveState[AtaiBreakPoints.LG_LT]) {
-      let target = e.target; 
+      let target = e.target;
       if (this.sidebarComponent && e.target != this.sidebarComponent.el.nativeElement && !isDescendant(this.sidebarComponent.el.nativeElement, target)) {
         this.sidebarComponent.setSidebarStatus(false)
       }
