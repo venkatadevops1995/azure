@@ -32,7 +32,16 @@
 
 <div *ngIf="ATTENDENCE_DATA.length!==0 && downloadable == false">
   <div [tableAffix] class="w-100 of-x-auto">
-    <table style="min-width: 800px;width:100%" mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100"> 
+    <table style="min-width: 800px;width:100%" mat-table [dataSource]="ATTENDENCE_DATA" class="mat-elevation-z8 w-100">
+      <colgroup>
+        <col width='150'/>
+        <col width='150'/>
+        <col width='150'/>
+        <col width="150"/>
+        <col width="150"/>
+        <col width="170"/>
+      </colgroup>
+
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let element"
@@ -69,7 +78,7 @@
       </ng-container>
 
       <ng-container matColumnDef="posted">
-        <th mat-header-cell *matHeaderCellDef> Timesheet <br /> Submitted <br />Hours </th>
+        <th mat-header-cell *matHeaderCellDef> Timesheet  Submitted <br />Hours </th>
         <td mat-cell *matCellDef="let element"
           [ngClass]="{'weekend_class' : element.WeekdayFlag,'holiday':element.HolidayFlag}">
           <div *ngIf="element.holiday_hours!=='00:00'">

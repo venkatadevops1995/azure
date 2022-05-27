@@ -176,6 +176,7 @@ th.mat-header-cell:first-of-type,
 td.mat-cell:first-of-type,
 td.mat-footer-cell:first-of-type {
   padding-left: 15px !important;
+  text-align: center !important;
 }
 
 //giving border radious to right side of last header cell
@@ -219,7 +220,11 @@ td.mat-footer-cell {
     max-width: 350px !important;
   }
 }
-
+// Rahul change(adding max-width classes for align table-colum)************
+  .txt-center{
+    text-align: center !important;
+  }
+// ************************************************************************
 .mat-calendar-body-selected {
   background-color: var(--col-accent-500) !important;
 }
@@ -435,7 +440,7 @@ mat-dialog-container.mat-dialog-container {
 // Rahulchange (adding font family for table universal)**********************
 
 .mat-table {
-  min-width: 800px;
+  min-width: 850px;
 
   &.modifier {
     min-width: unset !important;

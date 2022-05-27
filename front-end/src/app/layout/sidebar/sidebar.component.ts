@@ -13,6 +13,7 @@ import { ObjectToKVArrayPipe } from 'src/app/pipes/objectToArray.pipe'
 import { KeyValue } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
+import { NavigationEnd, Router } from '@angular/router';
 
 
 @Component({
@@ -51,12 +52,14 @@ export class SidebarComponent implements OnInit {
   isReportsAccessable: Boolean = false;
 
   is_LG_LT: boolean = false;
-
+  is_LessthenIpad:boolean = false;
+  is_Navigation_End:boolean=false;
   constructor(
     private ss: SingletonService,
     private user: UserService,
     private http: HttpClientService,
-    public el: ElementRef
+    public el: ElementRef,
+    private router:Router
   ) {
 
     this.toggle = this.menu.map(i => false);
@@ -118,6 +121,16 @@ export class SidebarComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+          this.ss.responsive.observe([AtaiBreakPoints.SM,AtaiBreakPoints.XS]).subscribe(val => {
+          this.is_LessthenIpad = val.matches;
+      })
+ 
+      this.router.events.subscribe(value => {
+          if(value instanceof NavigationEnd)    
+          if(this.is_LessthenIpad){
+          this.setSidebarStatus(false);
+            }
+        });
     setTimeout(() => {
       if (this.user.validateSession()) {
         let is_LG_LT = this.ss.responsiveState[AtaiBreakPoints.LG_LT];

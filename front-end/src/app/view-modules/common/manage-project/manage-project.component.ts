@@ -54,6 +54,7 @@ export class ManageProjectComponent implements OnInit {
   filteredOptions3: Observable<string[]>;
   filteredOptions4: Observable<string[]>;
   employees: any;
+  EmpName:string;
   filteredValues: any;
   value: any;
   filtervalue = new FormControl();
@@ -253,7 +254,7 @@ get is_XMD_LT(){
     //   // map(val => this._delete(val, this.editProjectForm.controls.proj3.value))
 
     // );
-
+    this.EmpName=this.EMP_PROJECTS_FILTERED_DATA[index]["emp_name"];
     this.editProjectForm.controls.emp_id.setValue(this.EMP_PROJECTS_FILTERED_DATA[index]["emp_id"]);
 
     this.editProjectForm.controls.proj1.setValue(this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj1"]["id"] !== "" ? this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj1"]["id"] == 0 ? "" : this.EMP_PROJECTS_FILTERED_DATA[index]["staged_proj1"] : this.EMP_PROJECTS_FILTERED_DATA[index]["proj1"]);
