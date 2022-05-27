@@ -90,7 +90,11 @@ app-atai-date-range {
   display: flex;
   flex-direction: column;
   max-width: 350px;
-
+  height: 435px;
+  // for mobile width adding 385px height in mat-calender to avoid extra space 
+  @media screen and (max-width:550px) {
+    height: 385px;
+  }
   .selection-presets {
     display: flex;
     // flex-direction: column;
