@@ -50,7 +50,7 @@ export class SidebarComponent implements OnInit {
   panelOpenState: boolean = false;
   toggle: boolean[];
   isReportsAccessable: Boolean = false;
-
+  is_LessThenTab:boolean = false;
   is_LG_LT: boolean = false;
   is_LessthenIpad:boolean = false;
   is_Navigation_End:boolean=false;
@@ -63,6 +63,9 @@ export class SidebarComponent implements OnInit {
   ) {
 
     this.toggle = this.menu.map(i => false);
+    this.ss.responsive.observe([AtaiBreakPoints.XS,AtaiBreakPoints.SM]).subscribe(val => {
+      this.is_LessThenTab = val.matches
+    })
     this.ss.responsive.observe(AtaiBreakPoints.LG_LT).subscribe(val => {
       this.is_LG_LT = val.matches
       if (val.matches) {
