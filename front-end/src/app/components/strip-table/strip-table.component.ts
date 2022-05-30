@@ -14,7 +14,7 @@ export class StripTableComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => {
-      console.log(this.data)
+      // console.log(this.data)
     }, 1000)
   }
 

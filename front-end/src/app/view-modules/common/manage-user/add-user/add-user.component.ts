@@ -368,7 +368,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     //   this.addUserForm.controls.rep_manager.setValue(0);
     //   // this.addUserForm.controls.rep_manager.setValue('Self (' + this.newUserFirstName + ' ' + this.newUserLastName + ')');
     // }
-    console.log(this.makeSelfRM, this.makeSelfMM, this.makeSelfFM)
+    // console.log(this.makeSelfRM, this.makeSelfMM, this.makeSelfFM)
 
 
 
@@ -541,7 +541,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
             emp_list.push(ele)
           }
         })
-        console.log("ChangeFM-------", emp_list)
+        // console.log("ChangeFM-------", emp_list)
         this.MM_DATA = emp_list;
       }
     })
@@ -609,7 +609,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
         restoreFocus: true
       })
       dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-        console.log('######################', data)
+        // console.log('######################', data)
         if (data) {
           // call addUser
           this.addUser();
@@ -632,7 +632,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   }
 
   onDate(event): void {
-    console.log("Date input:", event)
+    // console.log("Date input:", event)
 
   }
   // addUserForm = new FormGroup({},{updateOn: ‘submit’});

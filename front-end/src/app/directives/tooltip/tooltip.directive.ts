@@ -15,7 +15,7 @@ export class TooltipDirective {
   constructor(private el: ElementRef, private renderer: Renderer2) { }
 
   @HostListener('mouseenter') onMouseEnter() {
-    console.log('mousenter')
+    // console.log('mousenter')
     if (!this.tooltip) { this.show(); }
   }
 

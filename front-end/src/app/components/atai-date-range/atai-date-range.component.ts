@@ -287,7 +287,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       this.selectionPresets = this.defaultPresets.filter(item => {
         return presetInput.indexOf(item.str) != -1
       })
-      console.log(this.selectionPresets)
+      // console.log(this.selectionPresets)
     }
   }
 
@@ -296,7 +296,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
     if (this.ngControl) {
       this.ngControl.statusChanges.subscribe((status) => {
-        console.log(status);
+        // console.log(status);
         this.stateChanges.next()
       })
     }
@@ -428,7 +428,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
         }
         break;
       default:
-        console.log('default')
+        // console.log('default')
         break;
     }
   }
@@ -467,7 +467,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
 
   @HostListener('document:keydown.enter', ['$event'])
   onEnter(e) {
-    console.log(e.target, this.elIconRef)
+    // console.log(e.target, this.elIconRef)
     let target = e.target;
     if (target.classList.contains('atai-date-range__calendar-icon')) {
       this.openDateRangePicker()
@@ -490,7 +490,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       this.propagateChange(this._model.selection)
       // setTimeout(() => {
       // }, 2000)
-      console.log(this.elIconRef.nativeElement,this.dateFieldRef)
+      // console.log(this.elIconRef.nativeElement,this.dateFieldRef)
       // this.elIconRef.nativeElement.focus()
     }
   }
@@ -660,7 +660,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
             this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
             this.onClickApply();
           }
-          console.log("DATE SELECTED RANGE SELECTION", this._model.selection)
+          // console.log("DATE SELECTED RANGE SELECTION", this._model.selection)
           // this.selectedDate = value;
           // CHECK IF ANY DATE ALREADY EXISTS AND GET THE LIST OF DATES TO BE ADDED    
         }
@@ -671,7 +671,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       } else {
         if (value) {
           // this.clearSelection();
-          console.log("ADD DATE TO THE SELECTION AND ALSO LIST OF DATES ")
+          // console.log("ADD DATE TO THE SELECTION AND ALSO LIST OF DATES ")
           this._model.add(value);
           this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
         }

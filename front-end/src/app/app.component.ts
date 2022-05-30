@@ -93,7 +93,7 @@ export class AppComponent {
 
     
     this.ss.isPreSignIn$.pipe(takeUntil(this.destroy$), debounceTime(500)).subscribe(val => {
-      console.log(this.isPreSignIn)
+      // console.log(this.isPreSignIn)
       this.isPreSignIn = val;
       this.cdRef.detectChanges();
       this.redirectBasedOnSession();

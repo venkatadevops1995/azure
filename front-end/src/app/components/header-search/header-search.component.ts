@@ -121,7 +121,7 @@ export class HeaderSearchComponent implements OnInit {
           this.value = ""; 
         });
       } else {
-        console.log("INVALID")
+        // console.log("INVALID")
       }
     })
   }

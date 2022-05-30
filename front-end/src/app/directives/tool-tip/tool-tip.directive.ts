@@ -37,7 +37,7 @@ export class ToolTipDirective {
 
   ngOnChanges(changes: SimpleChanges) {
     let toolTip: SimpleChange = changes['toolTip']
-    console.log('directive', this.toolTip, this.elRef)
+    // console.log('directive', this.toolTip, this.elRef)
     // if (toolTip.previousValue != toolTip.currentValue) {
     //   if (this.overlayRef) {
 
@@ -60,7 +60,7 @@ export class ToolTipDirective {
     let target = e.target;
 
     if (target == this.elRef.nativeElement || isDescendant(this.elRef.nativeElement, target)) {
-      console.log(e,this.toolTip)
+      // console.log(e,this.toolTip)
 
       let positionStrategy = this.positionBuilder.flexibleConnectedTo(this.elRef)
         .withPositions(this.positions)
@@ -90,7 +90,7 @@ export class ToolTipDirective {
     let target = e.target;
 
     if (target == this.elRef.nativeElement) {
-      console.log(e)
+      // console.log(e)
 
       // this.overlayRef.dispose()
     }

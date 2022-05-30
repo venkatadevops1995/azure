@@ -115,7 +115,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
     // for mat
     get value(): any {
-        console.log("value get")
+        // console.log("value get")
         this.checkErrors();
         return this.fileArray;
     }
@@ -228,7 +228,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
         
         this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
             () => {
-                console.log("value changes")
+                // console.log("value changes")
                 // check condition if the form control is RESET
                 if (this.control.value === "" || this.control.value === null || this.control.value === undefined) {
 
@@ -250,7 +250,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     setErrors = (error) => {
 
         this.fileArray = (this.multiple || this.folderUpload) ? [] : [];
-        console.log(this.fileArray);
+        // console.log(this.fileArray);
         this.setFileSize();
         this.propagateChange(this.fileArray);
         this.control.setErrors(error);
@@ -278,7 +278,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                     }
                     if (file.type == "") {
                         var parser = new UAParser();
-                        console.log(parser.getBrowser().name)
+                        // console.log(parser.getBrowser().name)
                         if(parser.getBrowser().name == 'Firefox'){
                         let file_name = file.name;
                         let specialType = type.split("/")[1];
@@ -479,7 +479,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                     traverseFileTree(item);
                 }
 
-                console.log(directoriesFound)
+                // console.log(directoriesFound)
                 setTimeout(() => {
                     if (this.folderUpload) {
                         if (directoriesFound > 0) {
@@ -507,7 +507,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                 }else{
                     this.fileArray=[];
                 }
-                console.log(this.fileArray.length)
+                // console.log(this.fileArray.length)
                 this.setFileSize();
                 this.showLoader = false; 
             }, 400)
@@ -538,7 +538,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     }
     //function to check validation an formulate errors
     checkErrors() {
-        console.log(this.control.errors)
+        // console.log(this.control.errors)
         //reset and set, update errors
         this.errors = [];
         for (var key in this.control.errors) {
@@ -549,7 +549,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
         } else {
         }
         this.stateChanges.next();
-        console.log(this.control.errors);
+        // console.log(this.control.errors);
         setTimeout(() => {
             this.validity = Boolean(this.control && this.control.touched && !this.control.valid);
         }, 100);
@@ -666,7 +666,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
             size += file.size;
         });
         (<any>this.control).fileSize = size;
-        console.log(size,this.fileArray.length)
+        // console.log(size,this.fileArray.length)
     }
 
     @Input()
@@ -689,10 +689,10 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     // event fired when input value is changed . later propagated up to the form control using the custom value accessor interface
     onChange(e: Event, value: any) {
         //console.log(value[0]);
-        console.log("on change", value);
+        // console.log("on change", value);
         setTimeout(()=>{
             this.showLoader = true; 
-            console.log(this.showLoader);
+            // console.log(this.showLoader);
         })
         let shouldPropagate = true;
 
@@ -710,7 +710,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                             if (!check) {
                                 // dont known why from some other place the errors on this.control is set to null after setting this so using a set timeout to overcome this problem. looks mysterious why the errors on this.control is set to null
                                 setTimeout(() => {
-                                    console.log("unacceptabnle on change")
+                                    // console.log("unacceptabnle on change")
                                     this.setErrors({ unAcceptedFile: true });
                                 }, 350);
                                 shouldPropagate = false;
@@ -755,7 +755,7 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
                 this.checkErrors(); // update Errors
             setTimeout(() => {
                 this.showLoader = false;
-                console.log(this.control.errors);
+                // console.log(this.control.errors);
             })
         }
 

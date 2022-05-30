@@ -79,7 +79,7 @@ export class AttendenceSheetComponent implements OnInit {
   }
 
   onDateSelection(val: DateRange<any>) {
-    console.log(val)
+    // console.log(val)
     // this.fromdate = val.start;
     this.fromdate = this.convertDatefmt(val.start)
     this.todate = this.convertDatefmt(val.end);
@@ -98,10 +98,10 @@ export class AttendenceSheetComponent implements OnInit {
       //    })
       this.downloadable = true
     } else if (emp_id !== undefined) {
-      console.log(':::::::::::::::',emp_id)
+      // console.log(':::::::::::::::',emp_id)
       this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
         if (res.status == 200) {
-          console.log(res.body['results'])
+          // console.log(res.body['results'])
           this.ATTENDENCE_DATA = res.body['results'];
           this.downloadable = false;
           this.showMessage = true;
@@ -157,12 +157,12 @@ export class AttendenceSheetComponent implements OnInit {
           if (each['emp_id'] !== res.body['results']['emp_id']) {
             this.EMPS.push(each);
           }
-          console.log(this.EMPS, "-------------------------")
+          // console.log(this.EMPS, "-------------------------")
         })
         this.EMPS.forEach(element => {
           if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
-            console.log(emp_name);
+            // console.log(emp_name);
 
             this.selectEmp(emp_name);
             this.option.setValue(emp_name);

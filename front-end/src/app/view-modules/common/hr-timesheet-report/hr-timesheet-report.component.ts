@@ -54,7 +54,7 @@ export class HrTimesheetReportComponent implements OnInit {
 
   // when a date is selected in the date range
   onDateSelection(data) {
-    console.log(data)
+    // console.log(data)
     this.fromdate = this.convertDatefmt(data.start)
     this.todate = this.convertDatefmt(data.end)
   }
@@ -187,7 +187,7 @@ export class HrTimesheetReportComponent implements OnInit {
         this.EMPS.forEach(element => {
           if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
-            console.log(emp_name);
+            // console.log(emp_name);
 
             this.option.setValue(emp_name);
             this.selectEmp(emp_name)

@@ -65,7 +65,7 @@
           </app-button>
         </div>
         <div *ngIf="data.status == 2">
-          <app-button class="timesheet__approve  ml-15 pointer-none" theme="grey" size='small'>Rejected
+          <app-button class="timesheet__approve  mr-15 pointer-none" theme="grey" [size]="is_MD_LT ? 'extra-small' : 'small'">Rejected
           </app-button>
         </div>
         <div class="flex start-xs" *ngIf="data.status == 0 || data.status == 3">

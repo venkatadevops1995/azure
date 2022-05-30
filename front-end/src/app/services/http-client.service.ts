@@ -47,7 +47,7 @@ export class HttpClientService {
                 // this.
                 let percentageText = percentage + '%';
                 // this.ss.progressBar.setProgressWidth(percentage);
-                console.log(this.totalDownloadSize, e.loaded, percentage)
+                // console.log(this.totalDownloadSize, e.loaded, percentage)
                 // if (percentageText === "100%") {
                 //     this.ss.progressBar.showProgress = false;
                 //     this.totalDownloadSize = undefined;
@@ -62,7 +62,7 @@ export class HttpClientService {
                 }
                 let percentage = Math.floor((e.loaded / e.total) * 100) + '%';
                 this.ss.progressBar.setProgressWidth(percentage);
-                console.log(percentage)
+                // console.log(percentage)
                 if (percentage === "100%") {
                     this.ss.progressBar.showProgress = false;
                 }
@@ -213,7 +213,7 @@ export class HttpClientService {
                 case HttpEventType.UploadProgress:
                     // console.log("upload progress");
                     if (this.progressType === "upload") {
-                        console.log("******")
+                        // console.log("******")
                         let percentage = Math.floor((event.loaded / event.total) * 100);
                         if(extendedOptions.progressValue){
                             extendedOptions.progressValue.fn.call(extendedOptions.progressValue.this,[percentage])
@@ -246,7 +246,7 @@ export class HttpClientService {
             }
         }), catchError((err) => {
             
-            console.log(err);
+            // console.log(err);
 
             // remove the url from the list of requests in the loader component
             if(this.ss.loader){

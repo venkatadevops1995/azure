@@ -1,5 +1,6 @@
 <div class="dummy" appFocus></div>
 <div>
+  <form #searchForm="ngForm" [formGroup]="fgSearch" (ngSubmit)="Search(searchField.value)" >
   <div class="pb-20 flex flex-col-xs flex-row-xmd center-xs between-xs middle-xmd">
     <h2 class="heading fw-600">Edit Employee</h2>
     <div class="fs-12 fs-md-14 flex w-md-70 w-xmd-50 end-xmd middle-xs bottom-xmd mt-15 mt-xmd-0">
@@ -12,12 +13,13 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <app-button [disabled]="searchField.invalid" [size]="is_XMD_LT ? 'small' : 'default'" (click)="getAllReportes()">
+      <app-button [disabled]="searchField.invalid" [size]="is_XMD_LT ? 'small' : 'default'" >
         Submit
       </app-button>
 
     </div>
   </div>
+</form>
   <!-- Rahul change(adding a horizontal-scroll-bar for table)*****************************************
   **********************************************************************
   ************************************************************ -->

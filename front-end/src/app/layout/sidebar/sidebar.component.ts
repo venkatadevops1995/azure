@@ -243,7 +243,7 @@ export class SidebarComponent implements OnInit {
         }
 
       });
-      console.log(res);
+      // console.log(res);
     })
   }
 
@@ -275,7 +275,7 @@ export class SidebarComponent implements OnInit {
 
       }
       else if (res.status == 400) {
-        console.log(res.error.Message);
+        // console.log(res.error.Message);
         if (res.error.Message == 'token_expired') {
           this.user.logoutOnExpiry();
         }

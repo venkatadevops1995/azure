@@ -11,7 +11,7 @@ export class StylePaginatorDirective {
 
 
   ngAfterViewInit() {
-    console.log(this.el)
+    // console.log(this.el)
 
     // move the range and actions (page select) before the page size
     let rangeActionsElementRef  = <HTMLElement>this.el.nativeElement.querySelector('.mat-paginator-range-actions')
@@ -24,6 +24,6 @@ export class StylePaginatorDirective {
     let rangeText = this.el.nativeElement.querySelector('.mat-paginator-range-label')
     rangeActionsElementRef.insertBefore(prevButton,rangeText)
 
-    console.log(rangeActionsElementRef,pageSizeSelector)
+    // console.log(rangeActionsElementRef,pageSizeSelector)
   } 
 }

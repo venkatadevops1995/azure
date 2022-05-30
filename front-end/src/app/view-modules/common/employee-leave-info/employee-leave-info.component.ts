@@ -202,7 +202,7 @@ export class EmployeeLeaveInfoComponent implements OnInit {
   }
 
   updateLeave() {
-    console.log("update leave")
+    // console.log("update leave")
     var formData: any = {}
 
 

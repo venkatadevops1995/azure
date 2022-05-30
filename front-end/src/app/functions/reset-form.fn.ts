@@ -20,7 +20,7 @@ export const resetForm = (form: FormGroup | FormArray) => {
             });
         } else {
             for (var key in ctrls) {
-                console.log(ctrls)
+                // console.log(ctrls)
                 if (ctrls.hasOwnProperty(key)) {
                     let ctrl = ctrls[key];
                     ctrl.markAsPristine();

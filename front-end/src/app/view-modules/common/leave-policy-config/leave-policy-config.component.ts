@@ -174,7 +174,7 @@ export class LeavePolicyConfigComponent implements OnInit {
         this.http.request('get', 'leave/config/new-hire-month-time-periods/').subscribe(res => {
             if (res.status == 200) {
                 this.newHireTimePeriods = res.body["results"];
-                console.log(this.newHireTimePeriods)
+                // console.log(this.newHireTimePeriods)
             } else {
                 this.newHireTimePeriods = []
             }
@@ -194,7 +194,7 @@ export class LeavePolicyConfigComponent implements OnInit {
         this.http.request('get', endPoint).subscribe(res => {
             if (res.status == 200) {
                 let temp = res.body["results"];
-                console.log(temp);
+                // console.log(temp);
 
                 leaveCredit.response = temp;
                 let x = toArray(groupBy(temp, (item) => item.category.id));
@@ -311,7 +311,7 @@ export class LeavePolicyConfigComponent implements OnInit {
         if (leaveCreditsToUpdate.length > 0) {
             let endPoint = grid == "leave-credit-default" ? 'leave/config/leave-config/' : 'leave/config/new-hire-leave-config/'
             this.http.request('patch', endPoint, "", leaveCreditsToUpdate).subscribe((res) => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 200) {
                     // remove the leave credits from the leavecredits in edit and edit copy and show the success message
                     this.ss.statusMessage.showStatusMessage(true, 'Leave config saved successfully')

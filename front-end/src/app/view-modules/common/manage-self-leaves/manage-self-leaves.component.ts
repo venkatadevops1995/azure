@@ -273,7 +273,7 @@ export class ManageSelfLeavesComponent implements OnInit {
         this.http.request('get', 'leave/request/', params).subscribe(res => {
             this.leaveHistoryErrMsg=true;   
             if (res.status == 200) {
-                console.log("---------------------", res.body["results"]);
+                // console.log("---------------------", res.body["results"]);
                 res.body["results"].forEach(element => {
                     this.LEAVE_HISTORY_DATA.push(element)
                 })
@@ -294,7 +294,7 @@ export class ManageSelfLeavesComponent implements OnInit {
         params = params.append('filter', 'pending')
         this.http.request('get', "leave/request/", params).subscribe(res => {
             this.leaveErrMsg=true
-            console.log("applied leaves", res);
+            // console.log("applied leaves", res);
             if (res.status == 200) {
                 res.body["results"].forEach(element => {
                     // console.log("each ", element);
@@ -406,7 +406,7 @@ export class ManageSelfLeavesComponent implements OnInit {
             if (res.status == 200) {
                 let fileName = this.fileDownload.getFileName(res)
                 this.fileDownload.download(res.body, fileName, res.headers.get('Content-Type'))
-                console.log('exported')
+                // console.log('exported')
 
             } else if (res.status == 204) {
                 this.ss.statusMessage.showStatusMessage(false, 'No rows available for the current filter criteria')

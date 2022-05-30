@@ -110,7 +110,7 @@ export class HrAttendanceReportComponent implements OnInit {
     } else if (emp_id !== undefined) {
       this.http.request("get", 'attendance/?from=' + fromdate + '&to=' + todate + '&emp_id=' + emp_id,).subscribe(res => {
         if (res.status == 200) {
-          console.log(res.body['results'])
+          // console.log(res.body['results'])
           this.ATTENDENCE_DATA = res.body['results'];
           this.downloadable = false;
           setTimeout(()=>{
@@ -143,7 +143,7 @@ export class HrAttendanceReportComponent implements OnInit {
     });
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
-    console.log('##################3',this.ATTENDENCE_DATA.length)
+    // console.log('##################3',this.ATTENDENCE_DATA.length)
   }
 
   clear() {
@@ -169,7 +169,7 @@ export class HrAttendanceReportComponent implements OnInit {
         this.EMPS.forEach(element => {
           if (element.emp_id == this.user.getEmpId()) {
             let emp_name = element.emp_name;
-            console.log(emp_name);
+            // console.log(emp_name);
 
             this.selectEmp(emp_name);
             this.option.setValue(emp_name);

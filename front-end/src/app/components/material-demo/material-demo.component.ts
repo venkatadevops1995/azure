@@ -36,7 +36,7 @@ export class MaterialDemoComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateRange.valueChanges.subscribe((val) => {
-      console.log(val)
+      // console.log(val)
     })
 
     setTimeout(() => {
@@ -57,7 +57,7 @@ export class MaterialDemoComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogContentExampleComponent);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      // console.log(`Dialog result: ${result}`);
     });
   }
 }

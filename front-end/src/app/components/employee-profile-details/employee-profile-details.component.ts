@@ -23,7 +23,7 @@ export class EmployeeProfileDetailsComponent implements OnInit {
 
   onCopy() {
     this.showToolTip = true;
-    console.log(this.showToolTip)
+    // console.log(this.showToolTip)
     setTimeout(() => {
       this.showToolTip = false;
     }, 1000)
