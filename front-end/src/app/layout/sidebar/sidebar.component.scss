@@ -115,7 +115,7 @@
         }
 
         >ul {
-          // color: var(--col-primary-400);
+          color: var(--col-primary-400);
           font-size: 13px;
 
           li {
@@ -230,10 +230,7 @@
   padding-bottom: 10px;
 }
 
-.menu-col-ltt{
-  color: var(--on-primary-400);
-}
 
-.menu-col-gtt{
-  color: var(--col-primary-400);
+.heading{
+  color: var(--col-primary-50) !important;
 }
