@@ -20,9 +20,9 @@
                   {{item.text}}
                 </a>
               </ng-container>
-              <span *ngIf=" item.link=='' ">{{item.text}}</span>
-              <ul class="submenu" [ngClass]="is_LessThenTab?'menu-col-ltt':'menu-col-gtt'" *ngIf="item.submenu && item.submenu.length > 0">
-                <li *ngFor="let submenu of item.submenu">
+              <span *ngIf=" item.link=='' "[ngClass]="is_LessThenTab?'heading':''">{{item.text}}</span>
+              <ul class="submenu"  *ngIf="item.submenu && item.submenu.length > 0">
+                <li [ngClass]="is_LessThenTab?'col-primary-200':''" *ngFor="let submenu of item.submenu">
                   <a class="li-link" [routerLinkActive]="'active'" [routerLink]="routePrefix+'/'+submenu.link">
                     <span>{{submenu.text}} </span>
                     <ng-container *ngIf="submenu.showRedDot && submenu.link == 'approve-timesheets' ">

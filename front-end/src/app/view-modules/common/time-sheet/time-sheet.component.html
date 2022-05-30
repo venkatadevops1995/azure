@@ -142,7 +142,7 @@
 
   <div class="timesheet__row timesheet--misc">
     <div class="misc timesheet__row-title">
-      <span class="translate-title-text" [class.white]="is_LessThenTab">
+      <span class="translate-title-text" [ngClass]="is_LessThenTab?'col-primary-100':'col-primary-300'">
         Miscellaneous
       </span>
     </div>
@@ -160,7 +160,7 @@
 
   <div class="timesheet__row timesheet--holi">
     <div class="holi timesheet__row-title">
-      <span class="translate-title-text" [class.white]="is_LessThenTab">
+      <span class="translate-title-text" [ngClass]="is_LessThenTab?'col-primary-100':'col-primary-300'">
         Holiday
       </span>
     </div>
@@ -179,7 +179,7 @@
 
   <div class="timesheet__row  timesheet--vacation">
     <div class="vacation  timesheet__row-title">
-      <span class="translate-title-text" [class.white]="is_LessThenTab">
+      <span class="translate-title-text" [ngClass]="is_LessThenTab?'col-primary-100':'col-primary-300'">
         Vacation
       </span>
     </div>
