@@ -25,7 +25,7 @@ export class TimeSheetComponent implements OnInit {
 
 	// subject to emit for clearing the subscriptions
 	destroy$: Subject<any> = new Subject();
-
+    is_LessThenTab:boolean=false;
 	// the data passed (from backend)
 	@Input() data: any;
 
@@ -119,6 +119,9 @@ export class TimeSheetComponent implements OnInit {
 		private tsService: TimeSheetService,
 		private dialog: MatDialog
 	) {
+		this.ss.responsive.observe(AtaiBreakPoints.XS).subscribe(val => {
+			this.is_LessThenTab = val.matches
+		  })
 		this.fgTimeFields = this.ss.fb.group({
 			active_projects: this.ss.fb.array([]),
 			'VACATION': this.ss.fb.array([]),
