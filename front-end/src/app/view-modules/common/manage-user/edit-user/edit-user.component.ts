@@ -227,7 +227,7 @@ export class EditUserComponent implements OnInit {
   }
 
   Search(term:string){
-    if(!term || term == 'ALL'){
+    if(!term || term.trim().toLowerCase() == 'all'){
    this.getAllReportes()
     }else{
       this.USERS_DATA=this.employeeListSearch.filter(x =>
