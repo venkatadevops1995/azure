@@ -2,7 +2,7 @@
   *ngIf="showTimeSheet && isTimeSheetResolved;else noTimeSheetData">
   <div class="timesheet__overlay">
     <div class="timesheet__weekend-overlay">
-
+      
     </div>
   </div>
   <div [ataiAffix]="{top:0 ,referenceHierarchy:'p.p.p', disable:false }" [scrollX]="translateTitle" *ngIf="showHeader"
@@ -58,7 +58,8 @@
     <div class="timesheet__actions w-100 flex  end-md center-xs">
       <div *ngIf="!disableResolution" class="flex" [class.fg-1]="!is_MD_LT">
         <div *ngIf="data.status == 1" class="flex">
-          <app-button class="timesheet__approve  ml-15 pointer-none" theme="grey" [size]="is_MD_LT ? 'extra-small' : 'small'">Approved
+          <app-button class="timesheet__approve  ml-15 pointer-none" theme="grey"
+            [size]="is_MD_LT ? 'extra-small' : 'small'">Approved
           </app-button>
           <app-button class="timesheet__reject ml-15" [size]="is_MD_LT ? 'extra-small' : 'small'" theme="red"
             (click)="onClickResolveBtns('reject',{wkNo:data.week_number,empId:data.emp_id,year:data.year})">Reject
@@ -69,7 +70,8 @@
           </app-button>
         </div>
         <div class="flex start-xs" *ngIf="data.status == 0 || data.status == 3">
-          <app-button class="timesheet__approve pointer ml-15" theme="success" [size]="is_MD_LT ? 'extra-small' : 'small'"
+          <app-button class="timesheet__approve pointer ml-15" theme="success"
+            [size]="is_MD_LT ? 'extra-small' : 'small'"
             (click)="onClickResolveBtns('approve',{wkNo:data.week_number,empId:data.emp_id,year:data.year})">Approve
           </app-button>
           <app-button class="timesheet__reject ml-15" [size]="is_MD_LT ? 'extra-small' : 'small'" theme="red"

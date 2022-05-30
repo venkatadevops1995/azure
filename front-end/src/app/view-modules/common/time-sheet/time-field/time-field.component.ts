@@ -57,6 +57,8 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   // boolean template token to show or hide the error for total hours more than 24
   showErrorTotal: boolean = false;
 
+  showErrorWeekend: boolean = false;
+
   // errot type when the error is total error to show the arrow at the appropriate position
   errorTotalType: 'minutes' | 'hours';
 
@@ -77,7 +79,8 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     private cd: ChangeDetectorRef,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document,
-    private tsService: TimeSheetService
+    private tsService: TimeSheetService,
+    private el: ElementRef
   ) {
 
     if (ngControl) {
@@ -117,6 +120,25 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
   @HostListener("document:click", ['$event'])
   onClickDocument(e: Event) {
     let target: any = e.target;
+    let idx = this.index;
+    let isSunday = idx == 1;
+    let isSaturday = idx == 0;
+    let isTarget = target == this.elMinsActive.nativeElement || target == this.elInput.nativeElement;
+    if ((isSaturday || isSunday) && (isTarget) && !this.disabled) {
+      let dayTotalTime = this.tsService.totalArray[idx];
+      if ((isSaturday && !this.tsService.saturdayAlert)) {
+        if (dayTotalTime.h == 0 && dayTotalTime.m == 0) {
+          this.tsService.saturdayAlert = true;
+          this.showError('weekend')
+        }
+      }
+      if ((isSunday && !this.tsService.sundayAlert)) {
+        if (dayTotalTime.h == 0 && dayTotalTime.m == 0) {
+          this.tsService.sundayAlert = true;
+          this.showError('weekend')
+        }
+      }
+    }
     if (target == this.elMinsActive.nativeElement) {
       this.showDropDown = true;
     } else if (isDescendant(this.elMinsActive.nativeElement, target) && target.classList.contains('mins__item')) {
@@ -345,7 +367,7 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  showError(type: "hour" | "total" | "holiday" | "vacation" | "halfVacation") {
+  showError(type: "hour" | "total" | "holiday" | "vacation" | "halfVacation" | "weekend") {
     if (type == "hour") {
       this.showErrorHours = true;
       setTimeout(() => {
@@ -358,6 +380,13 @@ export class TimeFieldComponent implements OnInit, ControlValueAccessor {
         this.showErrorTotal = false;
         this.cd.detectChanges();
       }, 3000)
+    } else if (type == "weekend") {
+      this.errorTotalType = "hours"
+      this.showErrorWeekend = true;
+      setTimeout(() => {
+        this.showErrorWeekend = false;
+        this.cd.detectChanges();
+      }, 1000)
     } else if (type == "holiday") {
       this.showErrorHoliday = true;
       setTimeout(() => {
