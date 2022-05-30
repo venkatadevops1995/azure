@@ -6,6 +6,7 @@
 <p *ngIf="showErrorVacation" class="{{errorTotalType}}">Hours filled for vacation</p>
 <p *ngIf="showErrorHalfVacation" class="{{errorTotalType}}">More than 5 hours filled for half day vacation</p>
 <p *ngIf="showErrorTotal" class="{{errorTotalType}}">Total hours for this day cannot be more than 24. Please re-enter.</p>
+<p *ngIf="showErrorWeekend" class="{{errorTotalType}} weekend">Its {{(index == 0) ? 'Sunday' : 'Saturday'}}</p>
 
 <div class="mins fw-600">
   <div #refMinsActive [attr.tabindex]="disabled ? -1 : 0"

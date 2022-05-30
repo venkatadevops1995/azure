@@ -44,8 +44,8 @@ export class TimeSheetComponent implements OnInit {
 	// the data passed (from backend)
 	@Input() translateTitle: number = 0;
 
-	@HostBinding('style.--translate-title') get translateTitleGet(){
-		return this.translateTitle+'px';
+	@HostBinding('style.--translate-title') get translateTitleGet() {
+		return this.translateTitle + 'px';
 	}
 
 	// out put event
@@ -108,7 +108,7 @@ export class TimeSheetComponent implements OnInit {
 	// form controls count in  active projects
 	formControlsCount: number = 0;
 
-	get is_MD_LT(){
+	get is_MD_LT() {
 		return this.ss.responsiveState[AtaiBreakPoints.MD_LT];
 	}
 
@@ -117,7 +117,7 @@ export class TimeSheetComponent implements OnInit {
 		private cd: ChangeDetectorRef,
 		private el: ElementRef,
 		private tsService: TimeSheetService,
-		private dialog: MatDialog 
+		private dialog: MatDialog
 	) {
 		this.fgTimeFields = this.ss.fb.group({
 			active_projects: this.ss.fb.array([]),
@@ -129,10 +129,10 @@ export class TimeSheetComponent implements OnInit {
 		this.fgTotalTimeFields = this.ss.fb.group({
 			total: this.ss.fb.array([])
 		});
-		
 
 
-		let faTotal = (<FormArray>this.fgTimeFields.get("total"))
+
+		// let faTotal = (<FormArray>this.fgTimeFields.get("total"))
 		for (let i = 0; i < 7; i++) {
 			(<FormArray>this.fgTotalTimeFields.get('total')).push(new FormControl({ h: 0, m: 0 }, []))
 		}
@@ -383,123 +383,122 @@ export class TimeSheetComponent implements OnInit {
 			})
 			// console.log(this.fgTotalTimeFields.value) 
 		})
- 
+
 	}
-  //Rahul changes(adding Tab nevigation)**********************************************
-  public currentIndex: number = 0;
-  list:number=0;
-  activeIndex;
-  elements;
-  @ViewChildren('select')select:QueryList<ElementRef>;
-  @ViewChildren('text') text:QueryList<ElementRef>
-  @ViewChildren('field')field:QueryList<ElementRef>
-  public key_pressed(event) {
-	// event.stopPropagation();
-	// event.preventDefault();
-    // this.list= Array.from(event.target.children).length;
-    this.list = this.select.toArray().length;
-    console.log('hello',this.list)
-    // this.users = this.keyboardEventsManager.activeItem.item.name;
-    if(event.keyCode==27)
-	this.showProjectList = false;
-    if (event.keyCode == 13) {
-      this.showProjectList = !this.showProjectList;
-     
-      this.select.toArray().forEach(element => {
-        console.log('----->',element.nativeElement.classList.value)
-        console.log('&&&&&&&&&&&&',this.currentIndex);
-     
-        if(element.nativeElement.classList.contains('grey'))
-        {
-          let i;
-          i= element.nativeElement.getAttribute('index');
-          console.log('!!!!!!!!!!!!!@@@@@@@@@',i)
-            if(i=== undefined ||i==NaN ){
-                return
-            }
-            else{
-            //   console.log("I from if ", i);
-            //   let projectToBeAdded = this.wsrActiveProjectsHidden[i];
-            //       this.wsrActiveProjectsVisible.push(projectToBeAdded);
-            //       this.wsrActiveProjectsHidden.splice(i, 1);
-            //       (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
-            //     this.cd.detectChanges();
-            //   this.textarea.get(this.wsrActiveProjectsVisible.length-1).nativeElement.focus();
-            //       this.showProjectList = false;
-			// let index = Number(event.target.getAttribute(i));
-			let projectToBeAdded = this.hiddenActiveProjects[i];
-			this.visibleActiveProjects.push(projectToBeAdded);
-			this.holderInitialdata.visibleActiveProjects.push(this.holderInitialdata.hiddenActiveProjects[i]);
-			projectToBeAdded.addedIntoForm = true;
-			this.hiddenActiveProjects.splice(i, 1);
-			this.holderInitialdata.hiddenActiveProjects.splice(i, 1);
-			let fa = this.ss.fb.array([]);
-				for (let i = 0; i < 7; i++) {
-					fa.push(new FormControl({ h: 0, m: 0 }, []))
-				
-					
+	//Rahul changes(adding Tab nevigation)**********************************************
+	public currentIndex: number = 0;
+	list: number = 0;
+	activeIndex;
+	elements;
+	@ViewChildren('select') select: QueryList<ElementRef>;
+	@ViewChildren('text') text: QueryList<ElementRef>
+	@ViewChildren('field') field: QueryList<ElementRef>
+	public key_pressed(event) {
+		// event.stopPropagation();
+		// event.preventDefault();
+		// this.list= Array.from(event.target.children).length;
+		this.list = this.select.toArray().length;
+		console.log('hello', this.list)
+		// this.users = this.keyboardEventsManager.activeItem.item.name;
+		if (event.keyCode == 27)
+			this.showProjectList = false;
+		if (event.keyCode == 13) {
+			this.showProjectList = !this.showProjectList;
+
+			this.select.toArray().forEach(element => {
+				console.log('----->', element.nativeElement.classList.value)
+				console.log('&&&&&&&&&&&&', this.currentIndex);
+
+				if (element.nativeElement.classList.contains('grey')) {
+					let i;
+					i = element.nativeElement.getAttribute('index');
+					console.log('!!!!!!!!!!!!!@@@@@@@@@', i)
+					if (i === undefined || i == NaN) {
+						return
+					}
+					else {
+						//   console.log("I from if ", i);
+						//   let projectToBeAdded = this.wsrActiveProjectsHidden[i];
+						//       this.wsrActiveProjectsVisible.push(projectToBeAdded);
+						//       this.wsrActiveProjectsHidden.splice(i, 1);
+						//       (<FormArray>this.fgWsrProjects.get('active_projects')).push(new FormControl(""));
+						//     this.cd.detectChanges();
+						//   this.textarea.get(this.wsrActiveProjectsVisible.length-1).nativeElement.focus();
+						//       this.showProjectList = false;
+						// let index = Number(event.target.getAttribute(i));
+						let projectToBeAdded = this.hiddenActiveProjects[i];
+						this.visibleActiveProjects.push(projectToBeAdded);
+						this.holderInitialdata.visibleActiveProjects.push(this.holderInitialdata.hiddenActiveProjects[i]);
+						projectToBeAdded.addedIntoForm = true;
+						this.hiddenActiveProjects.splice(i, 1);
+						this.holderInitialdata.hiddenActiveProjects.splice(i, 1);
+						let fa = this.ss.fb.array([]);
+						for (let i = 0; i < 7; i++) {
+							fa.push(new FormControl({ h: 0, m: 0 }, []))
+
+
+						}
+						(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
+
+						// this.cd.detectChanges();
+						// this.field.get(projectToBeAdded.work_hours).nativeElement.focus();
+
+						projectToBeAdded.work_hours.push({ date: 'Total', enable: true, h: 0, m: 0 })
+						this.showProjectList = false;
+						this.onProjectSelection.emit({ type: 'add', project: projectToBeAdded });
+					}
 				}
-				(<FormArray>this.fgTimeFields.get('active_projects')).push(fa);
 
-				// this.cd.detectChanges();
-				// this.field.get(projectToBeAdded.work_hours).nativeElement.focus();
+			});
 
-				projectToBeAdded.work_hours.push({ date: 'Total', enable: true, h: 0, m: 0 })
-				this.showProjectList = false;
-				this.onProjectSelection.emit({ type: 'add', project: projectToBeAdded });
-            }
-      }
-  
-      });
 
-     
 
-      
-    
-      // passing the event to key manager so we get a change fired
-   console.log('enter has been pressed')
-    }
 
-    switch(event.keyCode){ //13
-      case 38: //  arrow up
-      event.stopPropagation();
-      event.preventDefault();
-               if (this.currentIndex <= 0) 
-                  this.currentIndex = this.list - 1;
-                 else 
-                  this.currentIndex = (this.currentIndex - 1) % this.list;
-                
-                console.log('keyup', this.currentIndex);
-      break;
-      case 40: //  arrow down
-      event.stopPropagation();
-      event.preventDefault();
-             
-             this.currentIndex = (this.currentIndex + 1) % this.list;
-              console.log('keydown', this.currentIndex);
-      break;
-      default: this.currentIndex=0;
-  }
-  this.cd.detectChanges();
-  this.select.toArray().forEach((ele) => {
-    let i;
-    i = parseInt(ele.nativeElement.getAttribute('id'));
-    console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement,i);
-    if (this.currentIndex == i) {
-      console.log('currentIndex::::::',this.currentIndex);
-      ele.nativeElement.classList.add('grey');
-     
-    } else if(this.currentIndex !== i){
 
-      ele.nativeElement.classList.remove('grey');
-    }
-    console.log('hello i am true');
-  });
-  
-  
-}
+			// passing the event to key manager so we get a change fired
+			console.log('enter has been pressed')
+		}
 
-  //*************************************************************************************** 
+		switch (event.keyCode) { //13
+			case 38: //  arrow up
+				event.stopPropagation();
+				event.preventDefault();
+				if (this.currentIndex <= 0)
+					this.currentIndex = this.list - 1;
+				else
+					this.currentIndex = (this.currentIndex - 1) % this.list;
+
+				console.log('keyup', this.currentIndex);
+				break;
+			case 40: //  arrow down
+				event.stopPropagation();
+				event.preventDefault();
+
+				this.currentIndex = (this.currentIndex + 1) % this.list;
+				console.log('keydown', this.currentIndex);
+				break;
+			default: this.currentIndex = 0;
+		}
+		this.cd.detectChanges();
+		this.select.toArray().forEach((ele) => {
+			let i;
+			i = parseInt(ele.nativeElement.getAttribute('id'));
+			console.log('!!!!!!!!!!!!!!!!!!', ele.nativeElement, i);
+			if (this.currentIndex == i) {
+				console.log('currentIndex::::::', this.currentIndex);
+				ele.nativeElement.classList.add('grey');
+
+			} else if (this.currentIndex !== i) {
+
+				ele.nativeElement.classList.remove('grey');
+			}
+			console.log('hello i am true');
+		});
+
+
+	}
+
+	//*************************************************************************************** 
 	ngOnChanges(changes: SimpleChanges) {
 		let data = changes.data;
 		if (data && data.currentValue != data.previousValue) {
@@ -622,7 +621,7 @@ export class TimeSheetComponent implements OnInit {
 					data: {
 						confirmMessage: 'Are you sure you want to remove the project ? All entries will be lost.'
 					},
-					restoreFocus:true
+					restoreFocus: true
 				})
 				dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
 					// console.log(data)
