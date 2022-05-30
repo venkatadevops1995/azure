@@ -134,7 +134,7 @@ export class LeaveHistoryComponent implements OnInit {
       isFutureLeave = false
     }
     let fgValue: any = this.managerCtrl.value
-    console.log(fgValue, e);
+    // console.log(fgValue, e);
 
     this.getLeaveApplications(true, fgValue, isFutureLeave)
     // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
@@ -158,7 +158,7 @@ export class LeaveHistoryComponent implements OnInit {
           this.employeesOptions.push(element)
         });
         this.employeeList = [...this.employeesOptions]
-        console.log(this.employeesOptions);
+        // console.log(this.employeesOptions);
 
       }
     })
@@ -228,7 +228,7 @@ export class LeaveHistoryComponent implements OnInit {
       if (res.status == 200) {
         let fileName = this.fileDownload.getFileName(res)
         this.fileDownload.download(res.body, fileName, res.headers.get('Content-Type'))
-        console.log('exported')
+        // console.log('exported')
 
       } else if (res.status == 204) {
         this.ss.statusMessage.showStatusMessage(false, 'No rows available for the current filter criteria')
@@ -269,7 +269,7 @@ export class LeaveHistoryComponent implements OnInit {
     params = params.append('filter', (!isHistory) ? 'pending' : 'history')
 
     if (isHistory) {
-      console.log(emp_name);
+      // console.log(emp_name);
 
       // this.historyLeavesFiltersApplied =  true
 
@@ -388,7 +388,7 @@ export class LeaveHistoryComponent implements OnInit {
 
   onFutureLeaveClick(event) {
 
-    console.log("Ischecked is ::::", event);
+    // console.log("Ischecked is ::::", event);
     this.Ischecked = event.checked;
     this.fromdate = this.convertDatefmt('');
     this.todate = this.convertDatefmt('');

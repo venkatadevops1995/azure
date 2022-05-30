@@ -122,6 +122,12 @@ app-atai-date-range {
   }
 }
 
+@-moz-document url-prefix() { 
+.mat-calendar-body-label{
+  padding-top:10px !important;
+  padding-bottom:12px !important;
+      }
+}
 .mat-menu-panel.atai-calendar {
   max-width: 500px;
   width: 100%;

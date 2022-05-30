@@ -144,7 +144,7 @@ export class AuthGuardSecurityService_HR_OR_SUB_Report_Access implements CanActi
       let is_hr =  this.user.getIsEmpAdmin()
       let sub_report_access = this.user.getSubReportAccess()
       let dashbaord_route = this.user.getDashboardRoute()
-      console.log("Sub hr list:",sub_report_access)
+      // console.log("Sub hr list:",sub_report_access)
       if (is_hr ||sub_report_access.includes('add-user')) {
           return true;
       } else {

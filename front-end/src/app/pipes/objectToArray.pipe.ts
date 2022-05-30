@@ -18,7 +18,7 @@ export class ObjectToKVArrayPipe implements PipeTransform {
 
             }
         }
-        console.log(returnArray);
+        // console.log(returnArray);
         
         return returnArray;
     }

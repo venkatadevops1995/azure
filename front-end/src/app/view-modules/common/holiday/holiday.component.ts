@@ -18,7 +18,7 @@ import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
 export function YearVd(year: String): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     var res = false;
-    console.log(control.value)
+    // console.log(control.value)
     if ((control.value['start_date'] != null) && (control.value['start_date'] != undefined) && (control.value['end_date'] != null) && (control.value['end_date'] != undefined)) {
       var start_yr = control.value['start_date'].split("-").reverse().join("-").split('-')[2];
       var end_yr = control.value['end_date'].split("-").reverse().join("-").split('-')[2];
@@ -62,7 +62,7 @@ export function UniqueText(fa: FormArray, selected_index: number): ValidatorFn {
     var res = false;
     for (let i = 0; i < fa['controls'].length; i++) {
       if (i != selected_index) {
-        console.log("-------------showOptionIndex ", selected_index)
+        // console.log("-------------showOptionIndex ", selected_index)
         console.log("--------", i, selected_index, fa['controls'][i]['controls'].des.value)
       }
     };
@@ -277,7 +277,7 @@ export class HolidayComponent implements OnInit {
 
   @HostListener("input", ['$event'])
   onInputDescriptionInput(e: Event) {
-    console.log('input')
+    // console.log('input')
     let target: HTMLElement = <HTMLElement>e.target;
     if (target.classList.contains('holidays__description')) {
       let index = Number(target.getAttribute('data-index'));
@@ -650,7 +650,7 @@ export class HolidayComponent implements OnInit {
     this.http.request('get', 'location-holiday-cal/', 'year=' + (year || "")).subscribe(res => {
       if (res.status == 200) {
         let response = res.body['results'];
-        console.log(response)
+        // console.log(response)
         this.showNextYear = response["is_next_year_visible"]
         this.notifiedEmployees = response["is_confirmed"]
 
@@ -667,7 +667,7 @@ export class HolidayComponent implements OnInit {
   async getLocation() {
     var res = await this.http.request('get', 'location/').toPromise();
     if (res.status == 200) {
-      console.log("res.body['results']", res.body['results'])
+      // console.log("res.body['results']", res.body['results'])
       // this.headerLocation = res.body['results'] 
       this.locations = res.body['results']
     }
@@ -679,7 +679,7 @@ export class HolidayComponent implements OnInit {
 
     this.http.request('get', 'default-holiday-list/').subscribe(res => {
       if (res.status == 200) {
-        console.log("res.body['results']", res.body['results'])
+        // console.log("res.body['results']", res.body['results'])
         this.defaultHolidayList = res.body['results']
       }
     })

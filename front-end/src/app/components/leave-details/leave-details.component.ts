@@ -57,7 +57,7 @@ export class LeaveDetailsComponent {
     ) { }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('CHANGES', changes)
+        // console.log('CHANGES', changes)
         this.leavesInLastNDays.leaveCount = 'NA'
         this.leaveBalance = null;
         this.lastNDaysValue = 60;

@@ -53,11 +53,11 @@ export class EmpPolicyListComponent implements OnInit {
   ngOnInit(): void {
 
     this.getPolicies();
-    console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
+    // console.log("=========================================",this.EMPLOYEE_FILTERED_DATA);
   }
   loader(){
     this.isLoaderVisible = false
-    console.log("Pdf is after load complete")
+    // console.log("Pdf is after load complete")
     }
   getPolicies(){
     this.EMPLOYEE_FILTERED_DATA = []
@@ -102,7 +102,7 @@ export class EmpPolicyListComponent implements OnInit {
     this.isLoaderVisible = true
     this.bearToken = this.user.getToken();
     this.filepathUrl =this.ss.baseUrl + "policy/upload?policy_id="+id+"&btoken="+this.bearToken;
-    console.log('!!!!!!!!!!!!!!!!!!!!!!##########################################',this.filepathUrl)
+    // console.log('!!!!!!!!!!!!!!!!!!!!!!##########################################',this.filepathUrl)
     this.isLoaderVisible = false
 
   }

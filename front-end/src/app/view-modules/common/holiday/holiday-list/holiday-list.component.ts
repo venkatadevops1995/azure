@@ -60,7 +60,7 @@ export class HolidayListComponent implements OnInit {
 	onClickHost(e) {
 		let target: any = e.target;
     let tempTarget = target;
-    console.log("--------------click");
+    // console.log("--------------click");
 		while (tempTarget != this.el.nativeElement) {
 			// found remove row 
 			if (tempTarget.classList.contains('timesheet__row-remove')) {
@@ -83,7 +83,7 @@ export class HolidayListComponent implements OnInit {
   }
   	// remove a project from timesheet                                                                                              
 	removeProjectFromTimeSheet() {
-    console.log("-------------------")
+    // console.log("-------------------")
     this.holidayList.splice(this.holidayIndexToRemove, 1)
     // remove the row from the list 
     

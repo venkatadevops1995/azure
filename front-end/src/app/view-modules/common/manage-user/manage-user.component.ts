@@ -154,7 +154,7 @@ export class ManageUserComponent implements OnInit {
   onClickHost(e) {
     let target: any = e.target;
     let tempTarget = target;
-    console.log("--------------click");
+    // console.log("--------------click");
     // if(e.target.classList.contains('edit')){
     //   let index=e.target.getAttribute("index");
     //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
@@ -163,7 +163,7 @@ export class ManageUserComponent implements OnInit {
 
     while (tempTarget != this.el.nativeElement) {
       if (tempTarget.classList.contains('edit')) {
-        console.log('::::::::::::::clicked on the edit icon');
+        // console.log('::::::::::::::clicked on the edit icon');
         let index = tempTarget.getAttribute("index");
         this.editManagers(index);
         break;
@@ -196,12 +196,12 @@ export class ManageUserComponent implements OnInit {
 
   // on submitting the search by filter form
   onSubmitSearch(value?) {
-    console.log(value);
-    console.log(this.USERS_DATA);
+    // console.log(value);
+    // console.log(this.USERS_DATA);
     if (value != "ALL") {
       const filterValue = value.toLowerCase();
       this.USERS_DATA = this.employeeList.filter(option => option.emp_name.toLowerCase().includes(filterValue))
-      console.log(this.USERS_DATA);
+      // console.log(this.USERS_DATA);
     }
     else {
       this.USERS_DATA = this.employeeList;
@@ -265,7 +265,7 @@ export class ManageUserComponent implements OnInit {
     this.user_role_id = this.user.getRoleId();
     this.is_emp_admin = this.user.getIsEmpAdmin();
     this.getAllReportes();
-    console.log('::::::::::::::', this.filteredManagers)
+    // console.log('::::::::::::::', this.filteredManagers)
   }
 
   ngOnDestroy() {
@@ -292,7 +292,7 @@ export class ManageUserComponent implements OnInit {
         let employeeList = [...this.USERS_DATA];
         this.employeeListSearch.push({ emp_id: -1, emp_name: 'ALL' });
 
-        console.log('>>>>>>>>>>>>>>>>>>>>>Userdata', this.employeeListSearch)
+        // console.log('>>>>>>>>>>>>>>>>>>>>>Userdata', this.employeeListSearch)
 
         employeeList.forEach(element => {
           this.employeeListSearch.push(element);
@@ -632,7 +632,7 @@ export class ManageUserComponent implements OnInit {
     // } else {
     this.editManagerForm.controls.rep_manager.setValue(this.USERS_DATA[i].managers['1'].emp_id);
     // }
-    console.log("---------edit value----------", this.editManagerForm.value)
+    // console.log("---------edit value----------", this.editManagerForm.value)
 
 
 
@@ -685,7 +685,7 @@ export class ManageUserComponent implements OnInit {
             emp_list.push(ele)
           }
         })
-        console.log("ChangeFM-------", emp_list)
+        // console.log("ChangeFM-------", emp_list)
         this.MM_DATA = emp_list;
       }
     })
@@ -738,7 +738,7 @@ export class ManageUserComponent implements OnInit {
     this.transferEmpPopUp.open();
   }
   transferEmp() {
-    console.log("===========", this.transferEmpForm.value)
+    // console.log("===========", this.transferEmpForm.value)
     this.http.request('post', 'transfer-emp/', '', this.transferEmpForm.value).subscribe(res => {
 
       if (res.status == 200) {
@@ -752,7 +752,7 @@ export class ManageUserComponent implements OnInit {
   }
   changeRole() {
     this.changeRoleForm.controls.role_id.setValue(this.selectedRoleValue);
-    console.log(this.changeRoleForm.value)
+    // console.log(this.changeRoleForm.value)
     console.log("----------role---change", this.changeRoleForm.value, this.addUserForm.controls.role)
 
     this.http.request('post', 'change-role/', '', this.changeRoleForm.value).subscribe(res => {
@@ -766,7 +766,7 @@ export class ManageUserComponent implements OnInit {
         // Rahul change (closing the EditManagerDialog when employee role changed successfully)***************************************
         this.dialogRef.close()
         //*************************************************************************** 
-        console.log('@@@@@@!!!!!!!!!$$$$$$$$$$$ edit manager popup close successfully');
+        // console.log('@@@@@@!!!!!!!!!$$$$$$$$$$$ edit manager popup close successfully');
         this.getAllReportes();
       } else {
         this.ss.statusMessage.showStatusMessage(false, "Issue while changing the role");

@@ -94,7 +94,7 @@ export class TableAffixDirective {
     this.renderer.setStyle(this.wrapperDiv, 'width', width)
     let originalWidth = this.originalTable.getBoundingClientRect().width; 
     this.wrapperTable.style.width = originalWidth + 'px';
-    console.log(originalWidth,width)
+    // console.log(originalWidth,width)
   }
 
   ngAfterViewInit() { 
@@ -133,7 +133,7 @@ export class TableAffixDirective {
       fromEvent(this.wrapperDiv, 'click').pipe(takeUntil(this.destroy$)).subscribe((e) => {
         if (this.settings.sort) {
           this.handleSortChangeEvent = false;
-          console.log(e)
+          // console.log(e)
           let target = <HTMLElement>e.target;
           let tempTarget: HTMLElement = target;
           while (tempTarget != this.wrapperDiv) {
@@ -160,7 +160,7 @@ export class TableAffixDirective {
       })
 
       fromEvent(this.el.nativeElement, 'scroll').pipe(takeUntil(this.destroy$)).subscribe(e => {
-        console.log('scrolling')
+        // console.log('scrolling')
         this.wrapperDiv.scrollLeft = this.el.nativeElement.scrollLeft;
         // if the table implementation is having a scroller of its own and needs to have the header to be affixed wrt the scrolling element
         if (this.settings.affixReference == 'this') {
@@ -206,7 +206,7 @@ export class TableAffixDirective {
         } else if (this.settings.affixReference == 'this') {
           let el = this.el.nativeElement
           let elRect = el.getBoundingClientRect();
-          console.log(document.documentElement.scrollTop, elRect.top)
+          // console.log(document.documentElement.scrollTop, elRect.top)
           this.wrapperDiv.style.top = elRect.top + 'px'
         }
 

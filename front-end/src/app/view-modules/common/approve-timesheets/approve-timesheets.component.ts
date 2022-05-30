@@ -182,7 +182,7 @@ export class ApproveTimesheetsComponent implements OnInit {
     fromEvent(this.elTimesheetWrap.nativeElement,'scroll').pipe(takeUntil(this.destroy$)).subscribe((e)=>{
       let target:HTMLElement = e['target'];
       this.translateTimesheetTitle = target.scrollLeft
-      console.log(target.scrollLeft,target.scrollWidth)
+      // console.log(target.scrollLeft,target.scrollWidth)
     })
   }
   // onclicking the host
@@ -192,10 +192,10 @@ export class ApproveTimesheetsComponent implements OnInit {
     let tempTarget: any = target;
     while (tempTarget != this.el.nativeElement) {
       if (tempTarget.classList.contains('timesheet__approve')) {
-        console.log("approve")
+        // console.log("approve")
         break;
       } else if (tempTarget.classList.contains('timesheet__reject')) {
-        console.log("reject")
+        // console.log("reject")
         // this.modalRejectComments.open();
         break;
       }
@@ -217,7 +217,7 @@ get is_XS(){
       if (res.status == 200) {
         this.timesheetsData = res.body['results'];
         this.showMessage = true
-        console.log(':::::::::::::::',this.timesheetsData);
+        // console.log(':::::::::::::::',this.timesheetsData);
         for (let i = 0; i < this.timesheetsData.length; i++) {
 
           let totHoliHours = this.timesheetsData[i]['HOLIDAY'].work_hours.map(item => item.h).reduce((prev, next) => prev + next);
@@ -246,7 +246,7 @@ get is_XS(){
               proj_work_hours.push(element1);
             });
           });
-          console.log("---------", proj_work_hours, i);
+          // console.log("---------", proj_work_hours, i);
 
           let projects_total_hours = [[], [], [], [], [], [], []]
           this.timesheetsData[i]['active_projects'].forEach(element => {
@@ -357,7 +357,7 @@ get is_XS(){
 
   // on page change of the pagination for the timesheets
   onChangePage(e: PageEvent) {
-    console.log(e);
+    // console.log(e);
 
     this.page = this.page + e.pageIndex - e.previousPageIndex;
     this.paginator.pageSize = e.pageSize;
@@ -374,7 +374,7 @@ get is_XS(){
     this.requestBody.year = year;
     this.requestBody.attendance_ts_approved_dates = []
     this.requestBody.attendance_ts_work_minutes = []
-    console.log(this.requestBody);
+    // console.log(this.requestBody);
     var attendance_data_confict = false
     if (i != undefined) {
       for (let j = 0; j < this.timesheetsData[i]['total_project_work_mins'].length; j++) {
@@ -440,7 +440,7 @@ get is_XS(){
 
   //Modal comments reject submisson
   onModalCommentSubmit(value) {
-    console.log(value);
+    // console.log(value);
 
     if (this.fgRejectionComments.valid) {
       this.requestBody.comments = value.comments;
@@ -535,7 +535,7 @@ get is_XS(){
 
   getColor(active, vacation, mis, holi, index, gross_working_hours) {
     let hours = this.getTotal(active, vacation, mis, holi, index)
-    console.log("=================", hours, gross_working_hours[index])
+    // console.log("=================", hours, gross_working_hours[index])
     return { 'red_total': false }
   }
 

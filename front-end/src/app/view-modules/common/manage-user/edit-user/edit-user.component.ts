@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 import { HttpParams } from '@angular/common/http';
@@ -64,7 +64,7 @@ export class EditUserComponent implements OnInit {
   //*******************************************************************************************
 
 
-
+  fgSearch: FormGroup;
   displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   IS_mobile:boolean=false;
@@ -81,6 +81,9 @@ export class EditUserComponent implements OnInit {
     //*****************************************************************************************
     // ***********************************************************************************************
   ) {
+    this.fgSearch = this.ss.fb.group({
+      filtervalue: ["", [Validators.required]],
+    }),
     this.filteredManagers = this.searchField.valueChanges
       .pipe(
         startWith(''),
@@ -222,6 +225,17 @@ export class EditUserComponent implements OnInit {
 
 
   }
+
+  Search(term:string){
+    if(!term || term == 'ALL'){
+   this.getAllReportes()
+    }else{
+      this.USERS_DATA=this.employeeListSearch.filter(x =>
+        x.emp_name.trim().toLowerCase().includes(term.trim().toLowerCase())
+      );
+    }
+  }
+
   getCompanies() {
     this.http.request("get", "all-company/",).subscribe(res => {
       let COMPANY = []

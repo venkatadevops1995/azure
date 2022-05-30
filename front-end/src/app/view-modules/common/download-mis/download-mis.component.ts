@@ -43,7 +43,7 @@ export class DownloadMisComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('This month')
+    // console.log('This month')
     setTimeout(() => {
       this.setThisMonth()
     })
@@ -63,7 +63,7 @@ export class DownloadMisComponent implements OnInit {
   }
 
   onIsDisableClick(event) {
-    console.log("Ischecked is ::::", event.checked);
+    // console.log("Ischecked is ::::", event.checked);
     this.Ischecked = event.checked;
     if (event.checked) {
       // this.dateRangePicker.resetRange()

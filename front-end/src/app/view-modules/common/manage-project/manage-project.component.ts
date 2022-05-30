@@ -132,7 +132,7 @@ get is_XMD_LT(){
   onClickHost(e) {
     let target: any = e.target;
     let tempTarget = target;
-    console.log("--------------click");
+    // console.log("--------------click");
     // if(e.target.classList.contains('edit')){
     //   let index=e.target.getAttribute("index");
     //   console.log('$$$$$$$$$$$$$$$$$$$$$$$',index);
@@ -141,7 +141,7 @@ get is_XMD_LT(){
 
     while (tempTarget != this.el.nativeElement) {
       if (tempTarget.classList.contains('edit')) {
-        console.log('::::::::::::::clicked on the edit icon');
+        // console.log('::::::::::::::clicked on the edit icon');
         let index = tempTarget.getAttribute("index");
         this.openEditDialog(index);
         break;

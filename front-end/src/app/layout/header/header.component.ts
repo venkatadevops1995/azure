@@ -89,7 +89,7 @@ export class HeaderComponent implements OnInit {
       this.getEmailToggleStatus();
     }
     this.getCompliance();
-    console.log("---------------------------leaveFlag", this.leaveFlag)
+    // console.log("---------------------------leaveFlag", this.leaveFlag)
     this.http.noLoader(true).request("get", 'leavestatus/').subscribe(leave_res => {
       this.leaveFlag = leave_res.body.leave_flag;
     })
@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit {
 
   getEmailToggleStatus() {
     this.http.request('get', 'leave/mail-opted/', "",).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       if (res.status == 200) {
         this.isEmailEnabled = res.body.results['email-opted'].toLowerCase() == 'true' ? true : false;
       }
@@ -127,7 +127,7 @@ export class HeaderComponent implements OnInit {
 
   getCompliance() {
     this.http.request('get', 'compliance/', "",).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       if (res.status == 200) {
         this.compliances = res.body.results;
       }

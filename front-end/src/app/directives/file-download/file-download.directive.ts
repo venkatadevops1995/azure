@@ -321,7 +321,7 @@ export class FileDownloadDirective {
                     fileName = element.split('=');
                 }
             });
-            console.log(fileName);
+            // console.log(fileName);
 
             // as we are splitting the array twice we get the " " wrapping twice so we strip them before return to get the file name xyz.ext and not "xyz.ext" 
             //console.log(fileName[1].replace(/\"/g, ''));

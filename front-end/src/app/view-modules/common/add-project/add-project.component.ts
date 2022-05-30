@@ -47,9 +47,9 @@ export class AddProjectComponent implements OnInit {
           this.filterAllActiveInactiveProject = project     
           // console.log("####5678",this.projectInputField.value.length);
           let inputvalue = this.projectInputField?.value?.trim();
-          console.log("Input value after trim:",inputvalue?.length);
+          // console.log("Input value after trim:",inputvalue?.length);
           this.isDisabledSave = project.some( p =>  p.name === inputvalue);
-          console.log(" isDisabledSave value from input chnaged: ", this.isDisabledSave);
+          // console.log(" isDisabledSave value from input chnaged: ", this.isDisabledSave);
 
           // this.isDisabledSave = project.map(p=> p.name.includes(inputvalue))
 
@@ -104,17 +104,17 @@ export class AddProjectComponent implements OnInit {
 
   //  on option seletcted change 
   optionSelectChange(proj_name){
-    console.log("Project name in option selection:",proj_name)
+    // console.log("Project name in option selection:",proj_name)
     this.isDisabledSave = this.allProjects.some(p =>p.name === proj_name);
-    console.log("isDisbaleSave value from option select:",this.isDisabledSave)
+    // console.log("isDisbaleSave value from option select:",this.isDisabledSave)
 
   }
 
 
   //  save the project 
   saveProject(){ 
-    console.log("Save project......");
-    console.log(this.projectInputField.value);
+    // console.log("Save project......");
+    // console.log(this.projectInputField.value);
     let formData = {name : this.projectInputField.value.trim()}
     this.http.request('post', 'save-project/', '', formData).subscribe(res => {
       if (res.status == 201) {
@@ -122,11 +122,11 @@ export class AddProjectComponent implements OnInit {
         this.getAllActiveInActiveProjects();  
         this.ss.statusMessage.showStatusMessage(true, "Project has been created successfully")
       } else if (res.status == 400) {
-        console.log("400 error:",res.error.message)
+        // console.log("400 error:",res.error.message)
         this.ss.statusMessage.showStatusMessage(false, res.error.message);
 
       } else if (res.status == 406) {
-        console.log("400 error:",res.error.message.name[0])
+        // console.log("400 error:",res.error.message.name[0])
         this.ss.statusMessage.showStatusMessage(false, res.error.message.name[0]);
       }
     })

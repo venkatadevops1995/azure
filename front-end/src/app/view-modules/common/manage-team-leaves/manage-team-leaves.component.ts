@@ -153,7 +153,7 @@ setTimeout(()=>{
     }
 
     clear() {
-        console.log('::::::::::',this.employeesOptions)
+        // console.log('::::::::::',this.employeesOptions)
         this.managerCtrl.reset();
         this.managerCtrl.setValue('');
     }
@@ -186,7 +186,7 @@ setTimeout(()=>{
         this.fromdate = date.start
         this.todate = date.start
         let fgValue: any = this.managerCtrl.value
-        console.log(fgValue);
+        // console.log(fgValue);
         if (fgValue == 'ALL' || fgValue) {
             this.getLeaveApplications(true, fgValue)
             this.showMessage = true
@@ -231,7 +231,7 @@ setTimeout(()=>{
     // on submitting the resolved leaves filter form
     onSubmitResolvedLeaveFilter(e) {
         let fgValue: any = this.managerCtrl.value
-        console.log(fgValue, e);
+        // console.log(fgValue, e);
 
         // let isRangeSelected = (this.pickerDirective.value.startDate && this.pickerDirective.value.endDate)
         if (fgValue == 'ALL' || fgValue) {
@@ -261,7 +261,7 @@ setTimeout(()=>{
                     this.employeesOptions.push(element)
                 });
                 this.employeeList = [...this.employeesOptions]
-                console.log(this.employeesOptions);
+                // console.log(this.employeesOptions);
 
             }
         })
@@ -388,7 +388,7 @@ setTimeout(()=>{
         params = params.append('filter', (!isHistory) ? 'pending' : 'history')
 
         if (isHistory) {
-            console.log(emp_name);
+            // console.log(emp_name);
 
             // this.historyLeavesFiltersApplied =  true
 
@@ -429,7 +429,7 @@ setTimeout(()=>{
         this.http.request('get', 'leave/discrepancy/').subscribe((res) => {
             this.leavecorrErrMsg=true;
             if (res.status == 200) {
-                console.log(res.body)
+                // console.log(res.body)
                 this.LEAVE_DATA_DISCREPANCY = res.body['results']
             } else if (res.status == 204) {
                 this.LEAVE_DATA_DISCREPANCY = []
@@ -448,10 +448,10 @@ setTimeout(()=>{
             manager_comments: manager_comments,
             is_discrepancy: !!is_discrepancy + ''
         }
-        console.log(requestBody)
+        // console.log(requestBody)
         this.http.request('post', 'leave/resolve/', "", requestBody).subscribe((res) => {
             if (res.status == 200) {
-                console.log(res)
+                // console.log(res)
                 this.ss.statusMessage.showStatusMessage(true, "Leave resolved successfully")
                 if (!is_discrepancy) {
                     this.getLeaveApplications()
@@ -505,7 +505,7 @@ setTimeout(()=>{
             if (res.status == 200) {
                 let fileName = this.fileDownload.getFileName(res)
                 this.fileDownload.download(res.body, fileName, res.headers.get('Content-Type'))
-                console.log('exported')
+                // console.log('exported')
 
             } else if (res.status == 204) {
                 this.ss.statusMessage.showStatusMessage(false, 'No rows available for the current filter criteria')
@@ -517,7 +517,7 @@ setTimeout(()=>{
         this.http.request('get', 'timesheet-discrepancy/').subscribe((res) => {
             this.timesheetErrMsg=true
             if (res.status == 200) {
-                console.log(res.body)
+                // console.log(res.body)
                 this.TIMESHEET_DISCREPANCY = res.body['results']
             } else if (res.status == 204) {
                 this.TIMESHEET_DISCREPANCY = []
@@ -532,12 +532,12 @@ setTimeout(()=>{
     timesheetDiscrepancyColumns: string[] = ['date', 'project', 'posted_hours', 'modified_hours']
     timesheetDiscrepancyId = ""
     getResTimesheetDiscrepancies(id) {
-        console.log('-------------->>>>>>>>>',id);
-        console.log('@@@@@@@@@@@@@@@',this.LEAVE_DATA_HISTORY);
+        // console.log('-------------->>>>>>>>>',id);
+        // console.log('@@@@@@@@@@@@@@@',this.LEAVE_DATA_HISTORY);
         this.timesheetDiscrepancyId = id
         this.http.request('get', 'timesheet-discrepancy/' + id + "/").subscribe((res) => {
             if (res.status == 200) {
-                console.log(res.body)
+                // console.log(res.body)
                 this.LEAVE_REQ_TIMESHEET_DISCREPANCY = res.body['results']
                 // this.timesheetDiscrepancyPopup.open()
                 this.dialogRefTimesheetDiscrepancy = this.dialog.open(PopUpComponent, {
@@ -562,7 +562,7 @@ setTimeout(()=>{
     approveTimesheetDiscrepancies(id) {
         this.http.request('put', 'timesheet-discrepancy/' + id + "/").subscribe((res) => {
             if (res.status == 201) {
-                console.log(res.body)
+                // console.log(res.body)
                 this.ss.statusMessage.showStatusMessage(true, "Successfully approved timesheet discrepancy")
                 this.timesheetDiscrepancyId = ""
                 // this.timesheetDiscrepancyPopup.close()

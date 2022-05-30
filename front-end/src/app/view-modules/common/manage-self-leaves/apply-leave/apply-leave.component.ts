@@ -325,7 +325,7 @@ export class ApplyLeaveComponent implements OnInit {
 
     this.http.request('get', 'holiday/', params).subscribe((res) => {
       if (res.status == 200) {
-        console.log(res)
+        // console.log(res)
         res.body.forEach(element => {
           let d = new Date(element.holiday_date)
           d.setHours(0, 0, 0, 0);
@@ -382,7 +382,7 @@ export class ApplyLeaveComponent implements OnInit {
       if (f.category == 'Multiple Days') {
         param = param.append("start_date", this.datepipe.transform(f.startDate, 'yyyy-MM-dd'));
         param = param.append("end_date", this.datepipe.transform(f.endDate, 'yyyy-MM-dd'));
-        console.log(f.category)
+        // console.log(f.category)
 
 
         param = param.append("start_date_second_half", f.startDateSecondHalf || "");
@@ -403,7 +403,7 @@ export class ApplyLeaveComponent implements OnInit {
         if (res.status == 200) {
 
           if (res.body["results"].length > 0) {
-            console.log("-----------ts dis----------------", res.body["results"])
+            // console.log("-----------ts dis----------------", res.body["results"])
             this.TIMESHEET_DISCREPANCY_DATA = res.body["results"]
             // this.timesheetDiscrepancyPopup.open()
             this.dialogRefDiscrepancyData = this.dialog.open(PopUpComponent, {
@@ -431,7 +431,7 @@ export class ApplyLeaveComponent implements OnInit {
       (<any>Object).values(this.applyForm.controls).forEach(e => {
         e.markAsTouched();
 
-        console.log("================================================", e);
+        // console.log("================================================", e);
 
       })
 
@@ -524,7 +524,7 @@ export class ApplyLeaveComponent implements OnInit {
 
     this.http.request('get', 'leave/config/category/', params).subscribe((res) => {
       if (res.status == 200) {
-        console.log(res)
+        // console.log(res)
         let leaveCredits = res.body['results']
         let obj = {}
         leaveCredits.forEach(item => {
@@ -611,7 +611,7 @@ export class ApplyLeaveComponent implements OnInit {
 
   // set the opened date for start date in leave application
   onOpenStartDateDatePicker() {
-    console.log('on open start date')
+    // console.log('on open start date')
     // this.datePickerStartDate.startAt = this.applyForm.value.endDate || new Date()
   }
 
@@ -625,7 +625,7 @@ export class ApplyLeaveComponent implements OnInit {
     this.http.request('get', 'leave/special-leave-requests-available/').subscribe((res) => {
       if (res.status == 200) {
         this.specialLeaveTypeRequestsAvailable = res.body['results']
-        console.log(this.specialLeaveTypeRequestsAvailable);
+        // console.log(this.specialLeaveTypeRequestsAvailable);
 
       } else {
         this.specialLeaveTypeRequestsAvailable = []
@@ -666,7 +666,7 @@ export class ApplyLeaveComponent implements OnInit {
       fd.append("emp_comments", f.comment);
       fd.append("start_date_second_half", f.startDateSecondHalf || "");
       fd.append("end_date_first_half", f.endDateFirstHalf || "");
-      console.log("----------------------ffffffffff-------------------");
+      // console.log("----------------------ffffffffff-------------------");
       this.TIMESHEET_DISCREPANCY_DATA.forEach(el => {
         fd.append("time_tracker_id", el.id);
         fd.append('modified_work_minutes', (parseInt(el.modified_work_minutes.split(":")[0], 10) * 60 + parseInt(el.modified_work_minutes.split(":")[1], 10)).toString());
