@@ -100,7 +100,7 @@ CRONJOBS = [
     ('5 0 * * 0', 'vedikaweb.vedikaapi.cron.employee_time_entry_complaince'),
     ('5 0 * * 3', 'vedikaweb.vedikaapi.cron.employee_approval_complaince'),
     ('5 0 * * 2', 'vedikaweb.vedikaapi.cron.ManagerNotificationThree'),#EVERY TUESDAY MANAGER MAIL
-    ('5 0 * * 5', 'vedikaweb.vedikaapi.cron.EmployeeNotificationOne'),#EVERY FRIDAY EMPLOYEE MAIL
+    ('5 15 * * 5', 'vedikaweb.vedikaapi.cron.EmployeeNotificationOne'),#EVERY FRIDAY EMPLOYEE MAIL
     ('5 0 * * 6', 'vedikaweb.vedikaapi.cron.EmployeeNotificationTwo'),#EVERY SATURDAY EMPLOYEE REMAINDER MAIL
     ('5 1 * * 6', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SATURDAY MANAGER MAIL
     ('5 1 * * 0', 'vedikaweb.vedikaapi.cron.ManagerNotificationOneTwo'),#EVERY SUNDAY MANAGER MAIL
