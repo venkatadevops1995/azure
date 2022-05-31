@@ -70,6 +70,9 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickDocument(e: Event) {
+    if(!this.ss.loader.gethideLoader()){
+      return;
+    }   
     let target = e.target;
     let cond1 = this.elHeaderSearchMobile ? target != this.elHeaderSearchMobile.nativeElement : true;
     let cond2 = this.elHeaderSearchMobile ? !isDescendant(this.elHeaderSearchMobile, target) : true;

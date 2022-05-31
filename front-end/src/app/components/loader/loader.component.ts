@@ -65,5 +65,7 @@ export class LoaderComponent {
             }
         }
     }
-
+    gethideLoader():boolean{
+        return this.hideLoader
+    }
 }
