@@ -50,7 +50,7 @@
       <th class="p-table-5" mat-header-cell *matHeaderCellDef> Name </th>
       <td class="p-table-5" mat-cell *matCellDef="let element"
         [style.cursor]="element.staging_status !== null ? 'pointer': ' '"
-        title="{{element.staging_status !== null ? 'Employee will be disbled on'+ ' '+element.staging_relieved : ''}}"
+        title="{{element.staging_status !== null ? 'Employee will be disabled on'+ ' '+element.staging_relieved : ''}}"
         [ngClass]="element.staging_status !== null ? 'disabled--emp':'' "> {{element.emp_name}} </td>
     </ng-container>
 

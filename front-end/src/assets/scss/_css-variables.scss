@@ -107,6 +107,7 @@ body {
     // --col-accent: #039be5;
     --col-success: #{map-get($md-misc, 'success')};
     --col-info:#{map-get($md-misc, 'info')};
+    --col-warning:#{map-get($md-misc,'warning')};
     --col-error: #{map-get($md-warn, 900)};
     --col-warn: #{map-get($md-warn, A100)};
     --bg-body: #f5f5f5;
