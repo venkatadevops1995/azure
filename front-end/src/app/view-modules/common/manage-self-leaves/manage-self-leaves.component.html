@@ -122,16 +122,16 @@
       No leave history available
     </div>
     <div class="mt-20 w-100 of-auto" >
-      <table mat-table [dataSource]="LEAVE_HISTORY_DATA" *ngIf="LEAVE_HISTORY_DATA.length!=0"
+      <table mat-table style="min-width:1000px;" [dataSource]="LEAVE_HISTORY_DATA" *ngIf="LEAVE_HISTORY_DATA.length!=0"
         class="mat-elevation-z8 w-100">
         <colgroup>
           <col width='100'/>
           <col width='180'/>
           <col width='180'/>
           <col width="100"/>
-          <col width="150"/>
-          <col width="150"/>
-          <col width="150"/>
+          <col width="120"/>
+          <col width="200"/>
+          <col width="200"/>
           <col width="100"/>
         </colgroup>
         <ng-container matColumnDef="serial">
@@ -176,11 +176,15 @@
           <th mat-header-cell *matHeaderCellDef> Action</th>
           <td mat-cell *matCellDef="let element;let i = index">
             <div class="flex middle-xs start-xs  ">
+              <button title="View" class="rem-def-btn-style">
               <svg tabindex="0" (keydown.enter)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true};openLeaveDetails()" class="use-svg "
                 (click)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true}; openLeaveDetails()"
-                title="View Details" symbol="view-details" w="20"></svg>
+                color="var(--col-primary-100)" title="View Details" symbol="view-details" w="20"></svg>
+              </button>
+              <button title="Edit" class="rem-def-btn-style">
               <svg *ngIf="element.discrepancy_status == null" tabindex="0" (keydown.enter)="onClickRaiseDiscrepancy($event,element)" class="use-svg ml-20 " (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
-                symbol="edit" w="20"></svg>
+              color="var(--col-primary-100)" symbol="edit" w="20"></svg>
+              </button>
             </div>
           </td>
         </ng-container>
