@@ -7,7 +7,7 @@
     </div>
     <div style="overflow: auto;max-height: 450px;" #refTableWrap>
       <div>
-        <table mat-table style="min-width:980px;" [dataSource]="LEAVE_DATA_PENDING" *ngIf="LEAVE_DATA_PENDING.length!=0"
+        <table mat-table style="min-width:1000px;" [dataSource]="LEAVE_DATA_PENDING" *ngIf="LEAVE_DATA_PENDING.length!=0"
           class="mat-elevation-z8 w-100">
           <colgroup>
             <col width='120'/>
@@ -16,9 +16,9 @@
             <col width="130"/>
             <col width="180"/>
             <col width="180"/>
-            <col width="180"/>
-            <col width="180"/>
-            <col width="120"/>
+            <col width="150"/>
+            <col width="220"/>
+            <col width="150"/>
           </colgroup>
           <ng-container matColumnDef="serial">
             <th mat-header-cell *matHeaderCellDef> S.No. </th>
@@ -64,7 +64,7 @@
           </ng-container>
 
           <ng-container matColumnDef="view">
-            <th mat-header-cell *matHeaderCellDef style="min-width: 80px;"> Action</th>
+            <th mat-header-cell *matHeaderCellDef style="min-width: 120px;"> Action</th>
             <td mat-cell *matCellDef="let element;let i = index">
               <div class="flex middle-xs ">
                 <!-- <app-button class=" view-leave-details mr-5" title="View Details" type="button" theme="blue-lite"
@@ -72,21 +72,24 @@
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">
                   View
                 </app-button> -->
-                <svg tabindex="0"  class=" mr-10 view-leave-details  use-svg" title="View Details"
+                <button title="View" class="rem-def-btn-style">
+                <svg tabindex="0"  class="view-leave-details  use-svg" title="View Details"
                   symbol="view-details" w="20" [attr.data-id]="element.id"
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
-                  svg-fill="currentColor"></svg>
-
-
-                <svg class=" mr-10 approve-request  use-svg" *ngIf="element.status == leaveApplcnStatus.Pending"
-                  symbol="tick-circle" w="17" [attr.data-request-id]="element.id"></svg>
-
-
+                  color="var(--col-primary-100)" svg-fill="currentColor"></svg>
+                </button>
+                 <div style="width:15px;" ></div>
+                 <button title="Approve" class="rem-def-btn-style">
+                <svg class="approve-request  use-svg" *ngIf="element.status == leaveApplcnStatus.Pending"
+                color="var(--col-primary-100)" symbol="tick-circle" w="20" [attr.data-request-id]="element.id"></svg>
+                </button>
+                  <div style="width:15px;"></div>
+                  <button title="Reject" class="rem-def-btn-style">
                 <svg class="reject-request  use-svg" *ngIf="element.status == leaveApplcnStatus.Pending"
-                  symbol="circle-close-red" w="20" [attr.data-request-id]="element.id"
+                  symbol="circle-close-red" w="27" [attr.data-request-id]="element.id"
                   [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">
                 </svg>
-
+              </button>
 
               </div>
             </td>
@@ -109,7 +112,7 @@
       </div>
       <div style="overflow: auto;max-height: 450px;" #refTableWrap>
         <div>
-          <table style="min-width:980px;" mat-table [dataSource]="LEAVE_DATA_DISCREPANCY" *ngIf="LEAVE_DATA_DISCREPANCY.length!=0"
+          <table style="min-width:1000px;" mat-table [dataSource]="LEAVE_DATA_DISCREPANCY" *ngIf="LEAVE_DATA_DISCREPANCY.length!=0"
             class="mat-elevation-z8 w-100">
             <colgroup>
               <col width='120'/>
@@ -118,9 +121,9 @@
               <col width="130"/>
               <col width="180"/>
               <col width="180"/>
-              <col width="180"/>
-              <col width="180"/>
-              <col width="120"/>
+              <col width="150"/>
+              <col width="220"/>
+              <col width="150"/>
             </colgroup>
             <ng-container matColumnDef="serial">
               <th mat-header-cell *matHeaderCellDef> S.No. </th>
@@ -167,26 +170,29 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width: 120px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs ">
-
-                  <svg class=" mr-10 view-leave-discrepancy-details   use-svg" title="View Details"
+                  <button title="View" class="rem-def-btn-style">
+                  <svg class="view-leave-discrepancy-details   use-svg" title="View Details"
                     symbol="view-details" w="20" [attr.data-id]="element.id"
-                    [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
+                    color="var(--col-primary-100)" [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
                     svg-fill="currentColor"></svg>
-
-
-                  <svg class=" mr-10 approve-request discrepancy   use-svg"
-                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="tick-circle" w="17"
-                    [attr.data-request-id]="element.id"></svg>
-
-
+                  </button>
+                    <div style="width:15px;"></div>
+                  <button title="Approve" class="rem-def-btn-style">
+                  <svg class="approve-request discrepancy   use-svg"
+                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="tick-circle" w="20"
+                    color="var(--col-primary-100)" [attr.data-request-id]="element.id"></svg>
+                  </button>
+                    <div style="width:15px;"></div>
+                  <button title="Reject" class="rem-def-btn-style">
                   <svg class="reject-request discrepancy   use-svg"
-                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="circle-close-red" w="20"
+                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="circle-close-red" w="27"
                     [attr.data-request-id]="element.id"
                     [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)">
                   </svg>
+                </button>
                 </div>
               </td>
             </ng-container>
@@ -208,7 +214,7 @@
       </div>
       <div style="overflow: auto;max-height: 450px;" #refTableWrap>
         <div>
-          <table mat-table style="min-width:980px;" [dataSource]="TIMESHEET_DISCREPANCY" *ngIf="TIMESHEET_DISCREPANCY.length!=0"
+          <table mat-table style="min-width:1000px;" [dataSource]="TIMESHEET_DISCREPANCY" *ngIf="TIMESHEET_DISCREPANCY.length!=0"
             class="mat-elevation-z8 w-100">
             <colgroup>
               <col width='120'/>
@@ -217,9 +223,9 @@
               <col width="130"/>
               <col width="180"/>
               <col width="180"/>
-              <col width="180"/>
-              <col width="180"/>
-              <col width="120"/>
+              <col width="150"/>
+              <col width="220"/>
+              <col width="150"/>
             </colgroup>
             <ng-container matColumnDef="serial">
               <th mat-header-cell *matHeaderCellDef> S.No. </th>
@@ -266,24 +272,27 @@
             </ng-container>
 
             <ng-container matColumnDef="view">
-              <th mat-header-cell *matHeaderCellDef style="min-width:100px;"> Action</th>
+              <th mat-header-cell *matHeaderCellDef style="min-width: 120px;"> Action</th>
               <td mat-cell *matCellDef="let element;let i = index">
                 <div class="flex middle-xs ">
-
-                  <svg class=" mr-15    use-svg" title="View Details"
+                <button title="View" class="rem-def-btn-style">
+                  <svg class=" use-svg" title="View Details"
                     (click)="getResTimesheetDiscrepancies(element.leave_request_id)" symbol="view-details" w="20"
-                    svg-fill="currentColor"></svg>
-
-
-                  <svg title="Approve" class=" mr-15 approve-request discrepancy   use-svg"
+                    color="var(--col-primary-100)" svg-fill="currentColor"></svg>
+                </button>
+                    <div style="width:15px;"></div>
+                <button title="Approve" class="rem-def-btn-style">
+                  <svg title="Approve" class=" approve-request discrepancy   use-svg"
                     *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="tick-circle" w="17"
-                    [attr.data-request-id]="element.id"></svg>
-
-
+                    color="var(--col-primary-100)" [attr.data-request-id]="element.id"></svg>
+                </button>
+                    <div style="width:15px;"></div>
+                <button title="Reject" class="rem-def-btn-style">
                   <svg class="reject-request discrepancy    use-svg"
-                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="circle-close-red" w="20"
+                    *ngIf="element.status_discrepancy == leaveApplcnStatus.Pending" symbol="circle-close-red" w="27"
                     [attr.data-request-id]="element.id">
                   </svg>
+                </button>
                 </div>
               </td>
             </ng-container>
@@ -344,7 +353,7 @@
     </ng-container>
 
     <div style="overflow: auto;max-height: 450px;" #refTableWrap class="mt-20">
-      <table mat-table style="min-width:980px;" [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0" class="mat-elevation-z8 w-100">
+      <table mat-table style="min-width:1000px;" [dataSource]="LEAVE_DATA_HISTORY" *ngIf="LEAVE_DATA_HISTORY.length!=0" class="mat-elevation-z8 w-100">
         <colgroup>
           <col width='120'/>
           <col width='120'/>
@@ -352,9 +361,9 @@
           <col width="130"/>
           <col width="180"/>
           <col width="180"/>
-          <col width="180"/>
-          <col width="180"/>
-          <col width="70"/>
+          <col width="150"/>
+          <col width="220"/>
+          <col width="150"/>
         </colgroup>
         <ng-container matColumnDef="serial">
           <th mat-header-cell *matHeaderCellDef> S.No.</th>
@@ -415,13 +424,15 @@
         </ng-container>
 
         <ng-container matColumnDef="view">
-          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> <span class="pl-20">Action</span></th>
+          <th mat-header-cell *matHeaderCellDef style="min-width: 120px;"> <span >Action</span></th>
           <td mat-cell *matCellDef="let element;let i = index">
-            <div class="flex middle-xs pl-20">
+            <div class="flex middle-xs ">
+              <button title="View" class="rem-def-btn-style">
               <svg tabindex="0"  class="  view-leave-details-history use-svg" title="View Details"
                  [attr.data-id]="element.id"
                 [attr.data-start-date]="convertDatefmt(element.startdate)+ ' to ' +convertDatefmt(element.enddate)"
-                symbol="view-details" w="20"></svg>
+                color="var(--col-primary-100)" symbol="view-details" w="20"></svg>
+              </button>
             </div>
           </td>
         </ng-container>
