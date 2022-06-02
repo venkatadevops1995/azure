@@ -184,7 +184,7 @@
                 (click)="leaveDetailsRequestId={request_id:element.id,get_discrepancy:true}; openLeaveDetails()"
                 color="var(--col-primary-100)" title="View Details" symbol="view-details" w="20"></svg>
               </button>
-              <button title="Edit" class="rem-def-btn-style">
+              <button title="Correction" class="rem-def-btn-style">
               <svg *ngIf="element.discrepancy_status == null" tabindex="0" (keydown.enter)="onClickRaiseDiscrepancy($event,element)" class="use-svg ml-20 " (click)="onClickRaiseDiscrepancy($event,element)" title="Correction"
               color="var(--col-primary-100)" symbol="edit" w="20"></svg>
               </button>
