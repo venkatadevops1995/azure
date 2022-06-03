@@ -518,12 +518,13 @@ export class TimesheetViewComponent implements OnInit {
     dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
       console.log(result)
       if (!result) {
-        // on click cancel 
+        // on click cancel
       } else {
-        // on click proceed  
+        // on click proceed
         this.disableSaveSubmit = true;
         this.submitTypeWhileConfirmingAllZeros = 'save-submit';
         this.onSubmitWsr('save-submit');
+        this.onSubmitTimeSheet('save-submit'); // Moulali -added this to fix post issues
       }
     })
   }
@@ -602,6 +603,7 @@ export class TimesheetViewComponent implements OnInit {
       } else {
         if (type == 'save-submit') {
           this.proceedWithAllZerosInProject = true;
+          sendRequest(type); // Moulali -added this to fix post issues
         }
         else {
           // this.modalProjectAllZeros.open();
@@ -714,7 +716,7 @@ export class TimesheetViewComponent implements OnInit {
       if (this.timeSheetType == 'rejected') {
         params = params.append('previousweek', "1")
       }
-      // if atleast one wsr is finished  
+      // if atleast one wsr is finished
       // build the request body
       let requestBody: any = {};
       requestBody.wsr_date = this.weeklyTimeSheetData.days[6]
@@ -768,7 +770,7 @@ export class TimesheetViewComponent implements OnInit {
           this.onSubmitTimeSheet('save-submit');
           sendRequest();
         } else {
-          // this.modalProjectAllZeros.open();          
+          // this.modalProjectAllZeros.open();
           this.confirmSubmit();
         }
       } else {
