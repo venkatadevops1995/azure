@@ -688,13 +688,19 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
 
     // event fired when input value is changed . later propagated up to the form control using the custom value accessor interface
     onChange(e: Event, value: any) {
-        //console.log(value[0]);
+        // console.log(value[0]);
         // console.log("on change", value);
+        let oneMegaByte = 1024 * 1024
         setTimeout(()=>{
             this.showLoader = true; 
             // console.log(this.showLoader);
         })
         let shouldPropagate = true;
+        if(value[0].size >= oneMegaByte){
+            console.log("please use image less than 1 mb");
+            this.setErrors({ maxSize: true });
+            return 
+        }
 
         // reset & update file array with new selected files if multiple
         if (value.length) {
