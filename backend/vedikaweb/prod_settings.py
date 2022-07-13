@@ -304,7 +304,7 @@ LOGGING = {
 ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
 
-IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','sabita.koganti@invecas.com','PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com','gd@invecas.com']
+IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com','gd@invecas.com']
 SENDEMAILTOALL=True
 CUSTOM_EMAILS = []
 
@@ -312,8 +312,8 @@ CUSTOM_EMAILS = []
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
-ADMINS_TO_ACCESS_REPORTS = ['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
+ADMINS_TO_ACCESS_REPORTS = ['sabita.koganti@soctronics.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com']
 SUB_ADMINS_TO_ACCESS_REPORTS = ['trinath@atai.ai']
 STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
-MIS_REPORT_RECEIVER_EMAILS =['sabita.koganti@invecas.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@invecas.com']
-CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','sabita.koganti@invecas.com']
+MIS_REPORT_RECEIVER_EMAILS =['sabita.koganti@soctronics.com', 'moulali@atai.ai','srinivas.mallipudi@soctronics.com', 'PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com']
+CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','sabita.koganti@soctronics.com']

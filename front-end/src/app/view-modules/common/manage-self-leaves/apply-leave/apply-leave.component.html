@@ -171,6 +171,10 @@
         *ngIf="applyForm.controls.invitationUpload.touched && applyForm.controls.invitationUpload.hasError('unAcceptedFile')">
         Only jpg, jpeg format files allowed
       </mat-error>
+      <mat-error class="fs-12"
+        *ngIf="applyForm.controls.invitationUpload.touched && applyForm.controls.invitationUpload.hasError('maxSize')">
+        Maximum size limit is 1MB
+      </mat-error>
     </div>
 
     <div style=" grid-column: 1/span 2;">
