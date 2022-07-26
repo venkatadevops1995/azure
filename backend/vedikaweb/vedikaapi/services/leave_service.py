@@ -249,15 +249,47 @@ def getLeaveperiod(req_id,startdate,enddate):
 
     return leave_period
 
-def get_leave_added_by_hr(year,emp_id):
+def get_leave_added_by_hr(year,emp_id_list):
     all_emp_leaves_balance = []
-    emp_leaves_balance = Employee.objects.filter(emp_id = emp_id).prefetch_related(Prefetch(
+    
+    emp_leaves_balance = Employee.objects.filter(emp_id__in = emp_id_list).prefetch_related(Prefetch(
                 "leavebalance_set",
                 queryset=LeaveBalance.objects.filter(Q(year=year) &  Q(acted_by = 'hr')) 
             )).filter(leavebalance__year = year, leavebalance__acted_by = 'hr').annotate(total_leave_bal = Coalesce(Sum(Case(When(Q(leavebalance__year=year),then=F'leavebalance__leave_credits'),default=0.0)),V(0)), comments = F('leavebalance__comments') , month = F('leavebalance__month'),createddate = F('leavebalance__created'))
     
     for each_emp_leave_bal in emp_leaves_balance.values('staff_no','emp_name', 'total_leave_bal', 'comments', 'month', 'createddate'):
         each_emp_leave_bal.update({'year':year})
-        all_emp_leaves_balance.append(each_emp_leave_bal)    
-
+        all_emp_leaves_balance.append(each_emp_leave_bal) 
+    
+    print("emp_leaves_balance:",emp_leaves_balance)   
+    print("emp_id_list:",emp_id_list,"all_emp_leaves_balance",all_emp_leaves_balance)
     return all_emp_leaves_balance
+
+
+def get_emp_id_list(qp,emp_id,is_hr=False):  
+     
+    qp_serializer = LeaveRequestQpSerializer(data=qp)
+    employees = []
+    print("qp_serializer.is_valid()",qp_serializer.is_valid())
+    if qp_serializer.is_valid():
+        is_manager = json.loads(qp.get('is_manager','false'))
+        today = datetime.today()
+        today = today.replace(hour=0,minute=0,second=0,microsecond=0)
+        
+        if is_hr:
+            employees = Employee.objects.filter(status=1).distinct().values_list('emp_id',flat=True)
+        elif is_manager:
+            manager_id=emp_id
+            if qp.get('emp_name'):
+                if(qp.get('emp_name')!='ALL'):
+                     employees = EmployeeHierarchy.objects.filter(emp__emp_name__icontains=qp.get('emp_name'),status=1,priority=1).distinct().values_list('emp_id',flat=True)
+                # get all the employees in employee hierarchy under the manager with status 1
+                else:
+                    employees = EmployeeHierarchy.objects.filter(manager=manager_id,status=1,priority=1).distinct().values_list('emp_id',flat=True)
+        else:
+            employees = [emp_id]     
+    emp_id_list = employees    
+    # print("emp_list:",emp_id_list )
+    return emp_id_list   
+                              
+       

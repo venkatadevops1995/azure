@@ -690,14 +690,14 @@ export class FileUploadComponent extends _MatFileMixinBase implements ControlVal
     onChange(e: Event, value: any) {
         // console.log(value[0]);
         // console.log("on change", value);
-        let oneMegaByte = 1024 * 1024
+        let twoMegaByte = 2 * 1024 * 1024
         setTimeout(()=>{
             this.showLoader = true; 
             // console.log(this.showLoader);
         })
         let shouldPropagate = true;
-        if(value[0].size >= oneMegaByte){
-            console.log("please use image less than 1 mb");
+        if(value[0].size >= twoMegaByte){
+            console.log("please use file less than 2 mb");
             this.setErrors({ maxSize: true });
             return 
         }

@@ -765,7 +765,8 @@ class ExportResolvedLeaves(APIView):
         leave_requests,errors = leave_service.get_leave_requests(qp,emp_id,is_hr)
         year = date.today().year 
         is_download = True
-        leave_balances = leave_service.get_leave_added_by_hr(year, emp_id) #leave_service.get_leave_balance(year,emp_id,is_hr, is_download)
+        emp_id_list = leave_service.get_emp_id_list(qp,emp_id,is_hr)
+        leave_balances = leave_service.get_leave_added_by_hr(year, emp_id_list) #leave_service.get_leave_balance(year,emp_id,is_hr, is_download)
         # print("Leave blance:",leave_balances)
         if errors:
             return Response(utils.StyleRes(False,"Invalid parameters",errors),status=StatusCode.HTTP_OK)
