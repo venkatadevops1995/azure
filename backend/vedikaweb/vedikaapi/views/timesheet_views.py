@@ -187,7 +187,7 @@ class WeeklyStatus(APIView):
                 else:
                     week_status_post_serializer.save()
                 return Response(utils.StyleRes(True,'Success fully retrive data',week_status_post_serializer.data),status=StatusCode.HTTP_CREATED)
-            return Response(utils.StyleRes(False,'week status serializer raised this exception abcde',week_status_post_serializer.errors), status=StatusCode.HTTP_EXPECTATION_FAILED)
+            return Response(utils.StyleRes(False,'week status serializer raised this exception',week_status_post_serializer.errors), status=StatusCode.HTTP_EXPECTATION_FAILED)
         return Response(utils.StyleRes(False,'request serializer raised this exception',req_serializer.errors), status=StatusCode.HTTP_EXPECTATION_FAILED)
 
 class StatusBasedTimeSheets(APIView):
