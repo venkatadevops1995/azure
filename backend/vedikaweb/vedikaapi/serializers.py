@@ -88,7 +88,7 @@ class EmployeeProjectTimeTrackerSerializer(serializers.ModelSerializer):
     
     def create(self,validated_data):
         obj,created=EmployeeProjectTimeTracker.objects.update_or_create(
-            employee_project=validated_data['employee_project'],work_date=validated_data['work_date'],
+            employee_project=validated_data['employee_project'],work_date=validated_data['work_date'],work_year=validated_data['work_year'],
             defaults=validated_data
         )
         return obj,created
@@ -184,11 +184,12 @@ class WeeklyStatusReqSerializer(serializers.Serializer):
 
 ##MODEL SERIALIZER TO POST/UPDATE WSR##
 class WeeklyStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.IntegerField()
+    # year=serializers.IntegerField()
     def create(self,validated_data):
         obj,created=EmployeeWeeklyStatusTracker.objects.update_or_create(
-            employee_project=validated_data['employee_project'],wsr_week=validated_data['wsr_week'],wsr_date__year=validated_data['year'],
-            defaults=utils.removekey(validated_data,"year")
+            employee_project=validated_data['employee_project'],wsr_week=validated_data['wsr_week'],wsr_year=validated_data['wsr_year'],
+            defaults=validated_data
+            # defaults=utils.removekey(validated_data,"year")
         )
         return validated_data
     class Meta:
@@ -197,36 +198,39 @@ class WeeklyStatusPostSerializer(serializers.ModelSerializer):
 
 ##MODEL SERIALIZER TO POST/UPDATE WORKAPPROVALSTATUS##
 class EmployeeWorkApproveStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.IntegerField()
+    # year=serializers.IntegerField()
     
     def create(self,validated_data):
         obj,created=EmployeeWorkApproveStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year=validated_data['year'],
-            defaults=utils.removekey(validated_data,"year")
+            emp=validated_data['emp'],work_week=validated_data['work_week'],work_year=validated_data['work_year'],
+            defaults=validated_data
+            # defaults=utils.removekey(validated_data,"year")
         )
         return validated_data
     class Meta:
         model=EmployeeWorkApproveStatus
         fields='__all__'
-class EmployeeWorkApproveStatusMultipleYearsPostSerializer(serializers.ModelSerializer):
-    year=serializers.ListField(child=serializers.CharField())
+# CODE OPT
+# class EmployeeWorkApproveStatusMultipleYearsPostSerializer(serializers.ModelSerializer):
+#     year=serializers.ListField(child=serializers.CharField())
     
-    def create(self,validated_data):
-        obj,created=EmployeeWorkApproveStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
-            defaults=utils.removekey(validated_data,"year")
-        )
-        return validated_data
-    class Meta:
-        model=EmployeeWorkApproveStatus
-        fields='__all__'
+#     def create(self,validated_data):
+#         obj,created=EmployeeWorkApproveStatus.objects.update_or_create(
+#             emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
+#             defaults=utils.removekey(validated_data,"year")
+#         )
+#         return validated_data
+#     class Meta:
+#         model=EmployeeWorkApproveStatus
+#         fields='__all__'
 
 class EmployeeEntryCompStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.ListField(child=serializers.CharField())
+    # year=serializers.ListField(child=serializers.CharField())
+    # year=serializers.IntegerField()
     def create(self,validated_data):
         obj,created=EmployeeEntryCompStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
-            defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'cnt':validated_data['cnt']}
+            emp=validated_data['emp'],work_week=validated_data['work_week'],work_year=validated_data['work_year'],
+            defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'work_year':validated_data['work_year'],'cnt':validated_data['cnt']}
         )
         return obj
     class Meta:
@@ -234,14 +238,15 @@ class EmployeeEntryCompStatusPostSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 class EmployeeApprovalCompStatusPostSerializer(serializers.ModelSerializer):
-    year=serializers.ListField(child=serializers.CharField())
+    # year=serializers.ListField(child=serializers.CharField())
+    year=serializers.IntegerField()
     def create(self,validated_data):
-        emp_comp=EmployeeApprovalCompStatus.objects.filter(emp_id=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'])
+        emp_comp=EmployeeApprovalCompStatus.objects.filter(emp_id=validated_data['emp'],work_week=validated_data['work_week'],work_year=validated_data['year'])
         if(len(emp_comp)>0):
             validated_data['cnt']=emp_comp[0].cnt+validated_data['cnt']
         obj,created=EmployeeApprovalCompStatus.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year__in=validated_data['year'],
-            defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'cnt':validated_data['cnt']}
+            emp=validated_data['emp'],work_week=validated_data['work_week'],work_year=validated_data['year'],
+            defaults={'emp':validated_data['emp'],'work_week':validated_data['work_week'],'work_year':validated_data['year'],'cnt':validated_data['cnt']}
         )
         return obj
     class Meta:
@@ -249,7 +254,7 @@ class EmployeeApprovalCompStatusPostSerializer(serializers.ModelSerializer):
         fields='__all__'
 class ManagerWorkHistoryPostSerializer(serializers.ModelSerializer):
     #No need to pass years  only pass year
-    year=serializers.IntegerField()
+    # year=serializers.IntegerField()
     def removekey(self,d,key):
         r=dict(d)
         del r[key]
@@ -258,8 +263,9 @@ class ManagerWorkHistoryPostSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         
         obj,created=ManagerWorkHistory.objects.update_or_create(
-            emp=validated_data['emp'],work_week=validated_data['work_week'],created__year=validated_data['year'],
-            defaults=self.removekey(validated_data,"year")
+            emp=validated_data['emp'],work_week=validated_data['work_week'],work_year=validated_data['work_week'],
+            defaults=validated_data
+            # defaults=self.removekey(validated_data,"year")
         )
         return obj
     class Meta:

@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.template.loader import get_template
 from datetime import datetime, timedelta
 import logging
+import time
 from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
 
 log = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class CommonFunctions:
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         weeknumber=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
-        years = [year, str(int(year) + 1)] 
+        # years = [year, str(int(year) + 1)] 
         emp_cnt=0
         holiday_list=list(HolidayCalendar.objects.prefetch_related('locationholidaycalendar_set').filter(Q(holiday_date__in=weekdatesList)&Q(status=1)).annotate(location=F('locationholidaycalendar__location'),location_status=F('locationholidaycalendar__status')).values())
         empObj = Employee.objects.prefetch_related('profile').filter(emp_id__in=employeeList)
@@ -45,7 +46,7 @@ class CommonFunctions:
         for each in empObj:
             empObj_dict[each.emp_id]=each
 
-        submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndMultipleYears(employeeList,weekdatesList,weeknumber,years)
+        submitted_projs=EmployeeProjectTimeTracker.objects.findByEmplistAndWeekdateslistAndWeeknumberAndYear(employeeList,weekdatesList,weeknumber,year)
         submitted_projs_dict={}
         submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
         for eachemployee in employeeList:
@@ -61,12 +62,12 @@ class CommonFunctions:
                 if(each.emp_id==eachemployee):
                     emp_proj_dict[eachemployee].append(each)
         emp_work_approvestatus_dict = {}
-        emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndMultipleYears(employeeList,weeknumber,years)
+        emp_work_approvestatus_=EmployeeWorkApproveStatus.objects.findByEmplistAndWeekAndYear(employeeList,weeknumber,year)
         for eachemployee in employeeList:
             emp_work_approvestatus_dict[eachemployee]=[]
             for each in emp_work_approvestatus_:
                 if(each.emp_id==eachemployee):
-                    emp_work_approvestatus_dict[eachemployee].append(each)        
+                    emp_work_approvestatus_dict[eachemployee].append(each) 
         fms_of_emps = EmployeeHierarchy.objects.filter(emp_id__in = employeeList,priority=3 ).values('emp_id','manager_id')
         emp_leave_access_flags = {}
 
@@ -243,6 +244,7 @@ class CommonFunctions:
             emp_cnt=emp_cnt+1
         return resp
 
+    # CODE OPT -- Need more overview on this
     def get_employees_daterangedata(self,employeeList,start_date,last_date,statusFlag=False):
         '''
             1.Function to get employee weekly time sheet for list of employees.
@@ -410,6 +412,7 @@ class CommonFunctions:
             emp_cnt=emp_cnt+1
         return resp
 
+    # CODE OPT -- Need more overview on this
     def get_weekly_statuses(self,employeeList,prev_week=0,statusFlag=False):
         '''
             1.Function to get weekly status of list of employees.
@@ -422,21 +425,21 @@ class CommonFunctions:
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         weeknumber=weekdatesList[-1].isocalendar()[1]
         year=str(weekdatesList[-1]).split('-')[0]
-        years = [year, str(int(year)+1)]
+        # years = [year, str(int(year)+1)]
         emp_cnt=0
         for emp_id in employeeList:
             resp.append([])
             empObj=Employee.objects.get(emp_id=emp_id)
             #2. Query to get EmployeeProject data
             # empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & Q(project__status=1) & Q(status=1))
-            submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects_multiple_years(emp_id=emp_id,work_week=weeknumber,years=years).filter(sum_output_count__gt=0)
+            submitted_projs=EmployeeProjectTimeTracker.objects.get_submitted_projects(emp_id=emp_id,work_week=weeknumber,year=year).filter(sum_output_count__gt=0)
             submitted_projs_list=list(map(lambda x:x['project_id'],submitted_projs))
             empproj_obj=EmployeeProject.objects.select_related('project').order_by('priority').filter(Q(emp__emp_id=emp_id) & (Q(status=1) | Q(project_id__in=submitted_projs_list)))
             resp[emp_cnt]={'emp_id':emp_id,'staff_no':empObj.staff_no,'emp_name':empObj.emp_name,'week_number':weekdatesList[-1].isocalendar()[1],'active_projects':[]}
 
 
             if(statusFlag):
-                emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,created__year__in=years)
+                emp_work_approvestatus=EmployeeWorkApproveStatus.objects.filter(emp_id=emp_id,work_week=weeknumber,work_year=year)
                 if(len(emp_work_approvestatus)>0):
                     resp[emp_cnt]['status']=emp_work_approvestatus[0].status
 
@@ -507,6 +510,7 @@ class CommonFunctions:
     def get_post_request_for_timesheet(self,emp_id,serialized_data,prev_week=0):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         week_number=weekdatesList[-1].isocalendar()[1]
+        year=str(weekdatesList[-1]).split('-')[0]
         data=json.loads(json.dumps(serialized_data))
         inputdata=[]
         for each in data:
@@ -516,7 +520,7 @@ class CommonFunctions:
                 for eachday in eachproj['work_hours']:
                     eachdate=datetime.strptime(eachday['date'], "%Y-%m-%d").date()
                     if(eachdate in weekdatesList and eachdate<=datetime.now().date()):
-                        inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
+                        inputdata.append({'work_date':eachdate,'work_week':week_number,'work_year':year,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
                                 'employee_project':empproj.id,'status':1})
 
 
@@ -524,14 +528,14 @@ class CommonFunctions:
             for eachday in each[DefaultProjects.Vacation.value]['work_hours']:
                 eachdate=datetime.strptime(eachday['date'], "%Y-%m-%d").date()
                 empproj=EmployeeProject.objects.get(project__name=DefaultProjects.Vacation.value,emp_id=emp_id,status=1)
-                inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
+                inputdata.append({'work_date':eachdate,'work_week':week_number,'work_year':year,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
                                 'employee_project':empproj.id,'status':1})
             ##Loop Through MISCELLANEOUS PROJECT##
             for eachday in each[DefaultProjects.Mis.value]['work_hours']:
                 eachdate=datetime.strptime(eachday['date'], "%Y-%m-%d").date()
                 empproj=EmployeeProject.objects.get(project__name=DefaultProjects.Mis.value,emp_id=emp_id,status=1)
                 if(eachdate in weekdatesList and eachdate<=datetime.now().date()):
-                    inputdata.append({'work_date':eachdate,'work_week':week_number,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
+                    inputdata.append({'work_date':eachdate,'work_week':week_number,'work_year':year,'work_minutes':60*int(eachday['h'])+int(eachday['m']),
                                     'employee_project':empproj.id,'status':1})
         return inputdata
 
@@ -544,7 +548,7 @@ class CommonFunctions:
         week_number=weekdatesList[-1].isocalendar()[1]
         for each in data['weekly_status']:
             empproj=EmployeeProject.objects.get(project_id=each['project_id'],emp_id=emp_id,status=1)
-            inputdata.append({'wsr_date':data['wsr_date'],'year':int(year),'wsr_week':week_number,'work_report':each['report'],
+            inputdata.append({'wsr_date':data['wsr_date'],'wsr_year':int(year),'wsr_week':week_number,'work_report':each['report'],
                     'employee_project':empproj.id,'status':1})
         return inputdata
 

@@ -14,7 +14,7 @@ from .models import Employee,EmployeeProject,EmployeeWeeklyStatusTracker,Employe
 from .models import EmployeeHierarchy,EmployeeEntryCompStatus,EmployeeApprovalCompStatus,AttendanceAccessGroup,EmailAccessGroup,GlobalAccessFlag, ManagerWorkHistory, LeaveRequest, LeaveConfig, LeaveBalance
 
 # Serialisers
-from .serializers import EmployeeWorkApproveStatusSerializer,EmployeeApprovalCompStatusPostSerializer,EmployeeEntryCompStatusPostSerializer, EmployeeWorkApproveStatusMultipleYearsPostSerializer
+from .serializers import EmployeeWorkApproveStatusSerializer,EmployeeApprovalCompStatusPostSerializer,EmployeeEntryCompStatusPostSerializer
 
 from .serializers import EmployeeProjectTimeTrackerReqSerializer, EmployeeProjectTimeTrackerSerializer, WeeklyStatusReqSerializer, WeeklyStatusPostSerializer, EmployeeWorkApproveStatusPostSerializer,ManagerWorkHistoryPostSerializer
 from .serializers import EmployeeManagerSerializer, PunchLogsSerializer
@@ -33,6 +33,7 @@ from django.template.loader import get_template,render_to_string
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.db.models import When, Case 
+from itertools import chain
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ def employee_time_entry_complaince(prev_week=1):
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
     work_week=weekdatesList[-1].isocalendar()[1]
     year=str(weekdatesList[-1]).split('-')[0]
-    years = [year, str(int(year) + 1)] 
+    # years = [year, str(int(year) + 1)] 
     employee_objs=Employee.objects.filter(status=1)
     work_approval_data=[]
     entry_complaince_data=[]
@@ -58,10 +59,10 @@ def employee_time_entry_complaince(prev_week=1):
     for each in employee_objs:
         ## If the employee dont have wsrapproval data or it is in rejected state then it is employee_entry_complaince
         if(dayid==6):
-            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & ~Q(status=2) & Q(created__year__in=years))
+            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & ~Q(status=2) & Q(work_year=year))
 
         elif(dayid==2):
-            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(created__year__in=years))
+            eas=EmployeeWorkApproveStatus.objects.select_related('emp').filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(work_year=year))
 
         
         if((len(eas)==0 and dayid==2) or (len(eas)>0 and dayid==6)):
@@ -70,8 +71,8 @@ def employee_time_entry_complaince(prev_week=1):
         elif((len(eas)>0 and dayid==2) or (len(eas)==0 and dayid==6)):
             log.info("EMPLOYEE ID {} has not submitted the status for the week{}".format(each.emp_id,work_week))
 
-            emp_proj_time_track=EmployeeProjectTimeTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,work_week=work_week,created__year__in=years)
-            emp_wsr=EmployeeWeeklyStatusTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,wsr_week=work_week,created__year__in=years)
+            emp_proj_time_track=EmployeeProjectTimeTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,work_week=work_week,work_year=year)
+            emp_wsr=EmployeeWeeklyStatusTracker.objects.filter(employee_project__emp__emp_id=each.emp_id,wsr_week=work_week,wsr_year=year)
             weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
 
             if(len(emp_proj_time_track)<=0):
@@ -99,8 +100,8 @@ def employee_time_entry_complaince(prev_week=1):
                     wsr_post_serializer.save()
                     log.info("WSR ADDED FOR EMPID {}".format(each.emp_id))
             # we need to pass years to handing if the week data fall in between two years
-            work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'status':WorkApprovalStatuses.EntryComplaince.value})
-            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'year':years,'cnt':1,'weekdatesList':weekdatesList})
+            work_approval_data.append({'emp':each.emp_id,'work_week':work_week,'work_year':year,'status':WorkApprovalStatuses.EntryComplaince.value})
+            entry_complaince_data.append({'emp':each.emp_id,'work_week':work_week,'work_year':year,'cnt':1,'weekdatesList':weekdatesList})
             complaince_cnt=complaince_cnt+1
         i=i+1
     final_nc_list = []
@@ -144,7 +145,7 @@ def employee_time_entry_complaince(prev_week=1):
                 final_nc_list.append(eachdata)
                 final_work_approval_data.append(work_approval_data[i])
 
-    work_approval_serializer=EmployeeWorkApproveStatusMultipleYearsPostSerializer(data=final_work_approval_data,many=True)
+    work_approval_serializer=EmployeeWorkApproveStatusPostSerializer(data=final_work_approval_data,many=True)
     if(work_approval_serializer.is_valid()):
         entry_comp_ser=EmployeeEntryCompStatusPostSerializer(data=final_nc_list,many=True)
         if(entry_comp_ser.is_valid()):
@@ -162,11 +163,11 @@ def update_total_time(prev_week=1):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=int(str(weekdatesList[-1]).split('-')[0])
-        years = [year, str(int(year) + 1)] 
+        # years = [year, str(int(year) + 1)] 
         employee_objs=Employee.objects.filter(status=1)
         i=1
         for each in employee_objs:
-            empproj_time_track = EmployeeProjectTimeTracker.objects.get_cumulative_of_week_multiple_years(emp_id=each.emp_id,work_week=work_week,years=years)
+            empproj_time_track = EmployeeProjectTimeTracker.objects.get_cumulative_of_week(emp_id=each.emp_id,work_week=work_week,year=year)
             for eachempproj in empproj_time_track:
                 EmployeeProject.objects.filter(id=eachempproj['employee_project']).update(total_work_minutes=F('total_work_minutes')+eachempproj['sum_output_count'])
 
@@ -179,7 +180,7 @@ def manager_work_history_mapping(prev_week=1):
         weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(1)))
         work_week=weekdatesList[-1].isocalendar()[1]
         year=int(str(weekdatesList[-1]).split('-')[0])
-        years = [year, str(int(year) + 1)] 
+        # years = [year, str(int(year) + 1)] 
         managers=Employee.objects.allmanagers()
         final_list=[]
         for each in managers:
@@ -193,29 +194,29 @@ def manager_work_history_mapping(prev_week=1):
             
             #For all Employees
             for eachemp in eh:
-                entry_comp=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp['emp_id']) & Q(work_week=work_week) & Q(created__year__in=years)).aggregate(total_cnt=Coalesce(Sum('cnt'),0))
+                entry_comp=EmployeeEntryCompStatus.objects.filter(Q(emp_id=eachemp['emp_id']) & Q(work_week=work_week) & Q(work_year=year)).aggregate(total_cnt=Coalesce(Sum('cnt'),0))
                 if(entry_comp['total_cnt']>0):
                     entry_comp_emp_list.append(eachemp['emp_id'])
-                empproj_time_track=EmployeeProjectTimeTracker.objects.get_cumulative_of_week_without_vacation_holiday_multiple_years(emp_id=eachemp['emp_id'],work_week=work_week,years=years)
+                empproj_time_track=EmployeeProjectTimeTracker.objects.get_cumulative_of_week_without_vacation_holiday(emp_id=eachemp['emp_id'],work_week=work_week,year=year)
                 for eachproj in empproj_time_track:
                     total_work_minutes=total_work_minutes+int(eachproj['sum_output_count'])
                 entry_comp_cnt=entry_comp_cnt+entry_comp['total_cnt']
                 
             # For Functional & ManagersManagers
             for eachmanager in ehd:
-                approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachmanager['emp_id']) & Q(work_week=work_week) & Q(created__year__in=years))
+                approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=eachmanager['emp_id']) & Q(work_week=work_week) & Q(work_year=year))
                 if(len(approval_comp)>0 and eachmanager['emp_id']!=each.emp_id):
                     approve_comp_emp_list.append(eachmanager['emp_id'])
                     approval_comp_cnt=approval_comp_cnt+int(approval_comp[0].cnt)
                     
-            approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(created__year__in=years))
+            approval_comp=EmployeeApprovalCompStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(work_year=year))
             if(len(approval_comp)>0):
                 approve_comp_emp_list.append(each.emp_id)
                 approval_comp_cnt=approval_comp_cnt+int(approval_comp[0].cnt)
             
             
             #No need to pass years  only pass year
-            final_list.append({'emp':each.emp_id,'work_week':work_week,'entry_comp_cnt':entry_comp_cnt,'approval_comp_cnt':approval_comp_cnt,'emp_cnt':len(eh),'emp_list':str(list(map(lambda x:x['emp_id'],eh))),'entry_comp_list':str(entry_comp_emp_list),'approval_comp_list':str(approve_comp_emp_list),'total_work_minutes':total_work_minutes,'year':year})
+            final_list.append({'emp':each.emp_id,'work_week':work_week,'entry_comp_cnt':entry_comp_cnt,'approval_comp_cnt':approval_comp_cnt,'emp_cnt':len(eh),'emp_list':str(list(map(lambda x:x['emp_id'],eh))),'entry_comp_list':str(entry_comp_emp_list),'approval_comp_list':str(approve_comp_emp_list),'total_work_minutes':total_work_minutes,'work_year':year})
         
 
         #print(json.dumps(final_list))
@@ -240,15 +241,14 @@ def employee_approval_complaince(prev_week=1):
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(prev_week)))
     work_week=weekdatesList[-1].isocalendar()[1]
     year=int(str(weekdatesList[-1]).split('-')[0])
-    years = [year, str(int(year) + 1)]
+    # years = [year, str(int(year) + 1)]
     employee_objs=Employee.objects.filter(status=1)
     approval_complaince_data=[]
     approval_complaince_cnt=0
     i=1
 
     for each in employee_objs:
-        # eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & Q(status=2) & Q(created__year=year))
-        eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & (Q(status=0) | Q(status=3)) & Q(created__year__in=years))
+        eas=EmployeeWorkApproveStatus.objects.filter(Q(emp_id=each.emp_id) & Q(work_week=work_week) & (Q(status=0) | Q(status=3)) & Q(work_year=year))
         if(len(eas)==0):
             pass
         else:
@@ -256,7 +256,7 @@ def employee_approval_complaince(prev_week=1):
             if(len(eh)==0):
                 log.error("Employee Id {} has no P1 manager".format(str(each.emp_id)))
             else:
-                approval_complaince_data.append({'emp':eh[0].manager_id,'work_week':work_week,'year':years,'cnt':1})
+                approval_complaince_data.append({'emp':eh[0].manager_id,'work_week':work_week,'year':year,'cnt':1})
                 approval_complaince_cnt=approval_complaince_cnt+1
         i=i+1
     
@@ -301,84 +301,18 @@ def sync_timetracker():
 
 # THIS CRON WILL RUNS ONLY ON FRIDAY AND SEND NOTIFICATION MAIL TO ALL EMPLOYEES
 def EmployeeNotificationOne():
-    dayid,dayname=utils.findDay(datetime.now().date())
-    if(dayid!=4):
-        log.error("THIS CRON WILL RUNS ONLY ON FRIDAY")
-        return
-
-    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
-    global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-    individual_email_access_emps=[]
-    if(len(global_email_access)>0):
-        accessed_managers = list(map(lambda x:x.emp_id,emp_obj.filter(role_id=4)))
-    else:
-        accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
-
-    weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
-    weeknumber=weekdatesList[-1].isocalendar()[1]
+    # dayid,dayname=utils.findDay(datetime.now().date())
+    # if(dayid!=4):
+    #     log.error("THIS CRON WILL RUNS ONLY ON FRIDAY")
+    #     return
+    accessed_managers,individual_email_access_emps = email_service.getEmailAccessFlag()
     template = get_template('emp.html')
-    last5Weeks=[]
-    
-    for  i in range(1,6):
-        n=weeknumber-i
-        weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
-        weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1] 
-        week_year = str(weekend).split('-')[0]
-        if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
-            week_year = str(weekstart).split('-')[0]
-        week_years= [week_year, str(int(week_year)+1)]
-        
-        if(n<=0):
-            lastyear_last_week_=weekend.isocalendar()[1]
-            n=lastyear_last_week_
-
-        last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
-    
+    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
     for eachemp in emp_obj:
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
             if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ],created__year__in=week_years).values().annotate(
-                    cnt = Count('cnt'),
-                    week_and_year = Concat(
-                            'work_week', V('_'),ExtractYear('created'),
-                            output_field=CharField()
-                        )
-                )
-                resp=[]
-                weekFound=False
-                cnt=0
-                
-                for k,eachweek in enumerate(last5Weeks):
-                    joinedWeek = eachemp.created.isocalendar()[1]
-                    joinedYear = str(eachemp.created).split('-')[0]
-                    validweek = False
-                    
-                    if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
-                        validweek=True
-                    
-                    if(int(joinedYear) < int(eachweek['year'])):
-                        if(joinedWeek > int(eachweek['week'])):
-                            validweek=True
-                    
-                    for each_compliance in entry_complaince_statues:
-                        # TODO: temp fix by adding new condition with OR statement
-                        # TODO: (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1))
-                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
-                            weekFound=True
-                            cnt=each_compliance['cnt']
-                       
-                    if(weekFound):
-                        resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']}) 
-                    else:
-                        resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
-                    
-                
-                    weekFound=False
-                    validweek=False
-                    cnt=0
-                
+                resp = email_service.getEmployeeEntryCompliance(emp_id=eachemp.emp_id)
                 ctx={
                     "data":resp,
                     "name":eachemp.emp_name,
@@ -387,18 +321,20 @@ def EmployeeNotificationOne():
                 mail_content = template.render(ctx)
                 emailList = [eachemp.email]
                 try:
-                    
-                    if(settings.SENDEMAILTOALL):
+                    if(settings.SENDEMAILTOALL or eachemp.email in settings.CUSTOM_EMAILS):
                         ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
                         log.info("MAIL SENT TO {}".format(emailList))
-                        
                     else:
-                        if(eachemp.email in settings.CUSTOM_EMAILS):
-                            ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
-                            
-                            log.info("MAIL SENT TO {}".format(emailList))
+                        log.info("MAIL NOT SENT TO {}".format(emailList))
+                        
+                    # else:
+                    #     if(eachemp.email in settings.CUSTOM_EMAILS):
+                    #         ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
+                    #         log.info("MAIL SENT TO {}".format(emailList))
                 except Exception as e:
                     log.error(traceback.format_exc())
+            else:
+                log.error("NO MANAGER ACCESS to {}".format(eachemp.emp_id))
         except Exception as e:
             log.error("Failed to Send mail to ",eachemp.emp_id)
             log.error(traceback.format_exc())
@@ -411,79 +347,15 @@ def ManagerNotificationThree():
         return
 
     emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
-    global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-    individual_email_access_emps = []
-    if(len(global_email_access)>0):
-        accessed_managers = list(map(lambda x:x.emp_id,emp_obj))
-        
-    else:
-        accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
-    # emp_obj = AttendanceAccessGroup.objects.select_related('emp').filter(status=1)
-    weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
-    weeknumber=weekdatesList[-1].isocalendar()[1]
+    accessed_managers,individual_email_access_emps = email_service.getEmailAccessFlag()
     template = get_template('manager.html')
-    last5Weeks=[]
-    for  i in range(2,7):
-        n=weeknumber-i
-        weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
-        weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1]
-        week_year = str(weekend).split('-')[0]
-
-        if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
-            week_year = str(weekstart).split('-')[0]
-        week_years = [week_year, str(int(week_year)+1)]
-
-        if(n<=0):
-            lastyear_last_week_=weekend.isocalendar()[1]      
-            n=lastyear_last_week_
-        last5Weeks.append({'week':n,'year':week_year,'weekstart':weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
     
     for count,eachemp in enumerate(emp_obj):
         try:
             managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
             if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
-                    approval_comp_cnt = F('cnt'),
-                    week_and_year = Concat(
-                            'work_week', V('_'),ExtractYear('created'),
-                            output_field=CharField()
-                        )
-                )
-                # manager_history_obj = ManagerWorkHistory.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ]).values().annotate(
-                #     cnt = Count('approval_comp_cnt'),
-                #     week_and_year = Concat(
-                #             'work_week', V('_'),ExtractYear('created'),
-                #             output_field=CharField()
-                #         )
-                # )
-                resp=[]
-                weekFound=False
-                cnt=0
-                for k,eachweek in enumerate(last5Weeks):
-                    joinedWeek = eachemp.created.isocalendar()[1]
-                    joinedYear = str(eachemp.created).split('-')[0]
-                    validweek = False
-                    if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
-                        validweek=True
-                    
-                    if(int(joinedYear) < int(eachweek['year'])):
-                        if(joinedWeek > int(eachweek['week'])):
-                            validweek=True
-
-                    for each_compliance in manager_history_obj:
-                        # TODO: temp fix by adding new condition with OR statement
-                        # TODO: | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1))
-                        if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
-                            weekFound=True
-                            cnt=each_compliance['approval_comp_cnt']
-
-                    if(weekFound):
-                        resp.append({"week":eachweek['week'],"year":eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
-                        weekFound=False
-                        cnt=0
-                    else:
-                        resp.append({"week":eachweek['week'],"year":eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
+                resp = email_service.getManagerApprovalCompliance(emp_id=eachemp.emp_id)
+                
                 ctx={
                     "data":resp,
                     "name":eachemp.emp_name,
@@ -492,13 +364,14 @@ def ManagerNotificationThree():
                 mail_content    = template.render(ctx)
                 emailList = [eachemp.email]
                 try:
-                    if(settings.SENDEMAILTOALL):
+                    if(settings.SENDEMAILTOALL or eachemp.email in settings.CUSTOM_EMAILS):
                         ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
                         log.info("MAIL SEND TO MANAGERS {}".format(emailList))
                     else:
-                        if(eachemp.email in settings.CUSTOM_EMAILS):
-                            ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
-                            log.info("MAIL SEND TO MANAGERS {}".format(emailList))
+                        log.info("MAIL NOT SEND TO MANAGERS {}".format(emailList))
+                        # if(eachemp.email in settings.CUSTOM_EMAILS):
+                        #     ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
+                        #     log.info("MAIL SEND TO MANAGERS {}".format(emailList))
                     
                 except Exception as e:
                     log.error(traceback.format_exc())
@@ -513,95 +386,27 @@ def EmployeeNotificationTwo():
     if(dayid!=5):
         log.error("THIS CRON RUNS ONLY ON SATURDAY")
         return
-    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
-    emp_list = list(map(lambda x:x.emp_id,emp_obj))
-    global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-    individual_email_access_emps=[]
-    if(len(global_email_access)>0):
-        accessed_managers = list(map(lambda x:x.emp_id,Employee.objects.filter(role_id=4,status=1)))
-    else:
-        accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
+    accessed_managers,individual_email_access_emps = email_service.getEmailAccessFlag()
     weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
     weeknumber=weekdatesList[-1].isocalendar()[1]
     weekyear = str(weekdatesList[-1]).split('-')[0]
-    weeekyears = [str(weekyear), str(int(weekyear)+1)]
 
     ###TO GET EMPLOYEES WHO HAS SUBMITTED THIS WEEK TIME SHEET####
-    
-    time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year__in=weeekyears)).values('emp_id')
-
-    
+    time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(work_year=weekyear)).values('emp_id')
     time_submitted_employees_list = list(map(lambda x:x['emp_id'],time_submitted_employees_obj))
-    ###################################################################
-    
     # print(time_submitted_employees_list)
+    ###################################################################
 
+    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1)
+    emp_list = list(map(lambda x:x.emp_id,emp_obj))
     template = get_template('emp_saturday.html')
-    last5Weeks=[]
-    
-    for  i in range(1,6):
-        n=weeknumber-i
-        weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
-        weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1] 
-        week_year = str(weekend).split('-')[0]
-
-        if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
-            week_year = str(weekstart).split('-')[0]
-        week_years= [week_year, str(int(week_year)+1)]
-            
-        if(n<=0):
-            lastyear_last_week_=weekend.isocalendar()[1]
-            n=lastyear_last_week_
-
-        last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
-        
-        
     for eachemp in emp_obj:
         try:
             if(eachemp.emp_id not in time_submitted_employees_list):
                 managers_list=list(map(lambda x:x.manager_id,eachemp.emp.filter(status=1,priority=3)))
                 if(any(item in accessed_managers for item in managers_list) or eachemp.emp_id in individual_email_access_emps):
-                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=eachemp.emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ],created__year__in=week_years).values().annotate(
-                        cnt = Count('cnt'),
-                        week_and_year = Concat(
-                                'work_week', V('_'),ExtractYear('created'),
-                                output_field=CharField()
-                            )
-                    )
-                    resp=[]
-                    weekFound=False
-                    cnt=0
-                    
-                    for k,eachweek in enumerate(last5Weeks):
-                        joinedWeek = eachemp.created.isocalendar()[1]
-                        joinedYear = str(eachemp.created).split('-')[0]
-                        validweek = False
-                        
-                        if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
-                            validweek=True
-                        
-                        if(int(joinedYear) < int(eachweek['year'])):
-                            if(joinedWeek > int(eachweek['week'])):
-                                validweek=True
 
-                        for each_compliance in entry_complaince_statues:
-                            # TODO: temp fix by adding new condition with OR statement
-                            # TODO: | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year']+1)))
-                            if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
-                                weekFound=True
-                                cnt=each_compliance['cnt']
-
-                        if(weekFound):
-                            resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']}) 
-                        else:
-                            resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
-                        
-                    
-                        weekFound=False
-                        validweek=False
-                        cnt=0
-                        
+                    resp = email_service.getEmployeeEntryCompliance(emp_id=eachemp.emp_id)
                     ctx={
                         "data":resp,
                         "name":eachemp.emp_name,
@@ -610,16 +415,9 @@ def EmployeeNotificationTwo():
                     mail_content = template.render(ctx)
                     emailList = [eachemp.email]
                     try:
-                        
-                        if(settings.SENDEMAILTOALL):
+                        if(settings.SENDEMAILTOALL or eachemp.email in settings.CUSTOM_EMAILS):
                             ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
                             log.info("MAIL SENT TO {}".format(emailList))
-                            
-                        else:
-                            
-                            if(eachemp.email in settings.CUSTOM_EMAILS):
-                                ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
-                                log.info("MAIL SENT TO {}".format(emailList))
                     except Exception as e:
                         log.error(traceback.format_exc())
             else:
@@ -632,47 +430,36 @@ def EmployeeNotificationTwo():
 
 #THIS CRON WILL RUN ONLY ON SATURDAY/SUNDAY. SATURDAY IT WILL SEND THE LIST OF EMPLOYEES LIST WHO HAS NOT SUBMITTED WORK STATUS BEFORE SATURDAY. SUNDAY IT WILL SEND THE LIST OF EMPLOYEES LIST WHO HAS NC's FOR THAT WEEK
 def ManagerNotificationOneTwo():
+    
     dayid,dayname=utils.findDay(datetime.now().date())
     if(dayid not in [5,6]):
         log.error("THIS CRON WILL RUN ONLY ON SATURDAY/SUNDAY")
         return
 
-    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
-    global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
-    individual_email_access_emps=[]
-    if(len(global_email_access)>0):
-        accessed_managers = list(map(lambda x:x.emp_id,emp_obj))
-        
-    else:
-        accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
-        individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
-
-    # emp_obj = AttendanceAccessGroup.objects.select_related('emp').filter(status=1)
-    weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
-    weeknumber=weekdatesList[-1].isocalendar()[1]
-    weekyear = str(weekdatesList[-1]).split('-')[0]
-    weekyears = [str(weekyear), str(int(weekyear)+1)]
-    template = get_template('manager_saturday.html')
-    last5Weeks=[]
-
-
-    ###TO GET EMPLOYEES WHO HAS SUBMITTED PREVIOUS WEEK TIME SHEET####
-    previous_weekdatesList = list(utils.get_previous_week(datetime.now().date(),int(1)))
-    previous_weeknumber = previous_weekdatesList[-1].isocalendar()[1]
-    previous_week_year = str(previous_weekdatesList[-1]).split('-')[0]
-
     if(dayid==5):
-        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(created__year__in=weekyears)).values('emp_id')
+        weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
+        weeknumber=weekdatesList[-1].isocalendar()[1]
+        weekyear = str(weekdatesList[-1]).split('-')[0]
+        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(work_year=weekyear)).values('emp_id')
         condition = lambda emp,list_emp: True if emp not in list_emp else False
         
     if(dayid==6):
-        # Moulali-- Just hoding to consider the previous_week_year to previous_week_year+1
-        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=previous_weeknumber) & Q(created__year=previous_week_year) & Q(status=3)).values('emp_id')
+        ###TO GET EMPLOYEES WHO HAS SUBMITTED PREVIOUS WEEK TIME SHEET####
+        weekdatesList = list(utils.get_previous_week(datetime.now().date(),int(1)))
+        weeknumber = weekdatesList[-1].isocalendar()[1]
+        weekyear = str(weekdatesList[-1]).split('-')[0]
+        time_submitted_employees_obj = EmployeeWorkApproveStatus.objects.filter(Q(work_week=weeknumber) & Q(work_year=weekyear) & Q(status=3)).values('emp_id')
         condition = lambda emp,list_emp: True if emp in list_emp else False
-
     time_submitted_employees_list = list(map(lambda x:x['emp_id'],time_submitted_employees_obj))
     ###################################################################
 
+    accessed_managers,individual_email_access_emps = email_service.getEmailAccessFlag()
+    emp_obj = Employee.objects.prefetch_related('emp').filter(status=1,role_id__gt=1)
+    
+    template = get_template('manager_saturday.html')
+    lastYearWeeks = []
+    currentYearWeeks = []
+    last5Weeks=[]
     for  i in range(1,6):
         n=weeknumber-i
         weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
@@ -680,13 +467,17 @@ def ManagerNotificationOneTwo():
         week_year = str(weekend).split('-')[0]
         if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
             week_year = str(weekstart).split('-')[0]
-        week_years = [week_year, str(int(week_year)+1)]
+        # week_years = [week_year, str(int(week_year)+1)]
 
         if(n<=0):
             lastyear_last_week_=weekend.isocalendar()[1]      
             n=lastyear_last_week_
+            lastYearWeeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+        else:
+            currentYearWeeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
         last5Weeks.append({'week':n,'year':week_year,'weekstart':weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
     
+    # Looping through each manager
     for count,eachemp in enumerate(emp_obj):
         try:
             
@@ -696,38 +487,49 @@ def ManagerNotificationOneTwo():
                 employees_under_manager_list=list(map(lambda  x: {"emp_id":x.emp_id,"name":x.emp.emp_name,"staff_no":x.emp.staff_no,'created':x.emp.created},employees_under_manager_obj))
                 
                 not_submitted_employees = [{"name":each_employee['name'],"staff_no":each_employee['staff_no'],'created':each_employee['created'],"emp_id":each_employee['emp_id']} for each_employee in employees_under_manager_list if condition(each_employee['emp_id'],time_submitted_employees_list)]
-
-
-
                 
                 resp_comp=[]
                 weekFound=False
                 cnt=0
                 # for each_emp_comp in entry_complaince_statues:
                 emp_count = 1
+                # Looping trough each employee under manager
                 for each_emp in not_submitted_employees:
                     
                     resp = []
                     each_emp_comp = []
-                    entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=each_emp['emp_id'],work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
-                        cnt = Count('cnt'),
-                        week_and_year = Concat(
-                                'work_week', V('_'),ExtractYear('created'),
-                                output_field=CharField()
-                            ),
-                        emp_created = F('emp__created'),
-                        name = F('emp__emp_name'),
-                        staff_no = F('emp__staff_no')
-                    )
+                    last_year_entry_complaince_statues = EmployeeEntryCompStatus.objects.none()
+                    current_year_entry_complaince_statues = EmployeeEntryCompStatus.objects.none()
+
+                    if(len(lastYearWeeks)>0):
+                        last_year_entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=each_emp['emp_id'],work_week__in=[ sub['week'] for sub in lastYearWeeks ], work_year=lastYearWeeks[0]['year']).values().annotate(
+                            cnt = Count('cnt'),
+                            week_and_year = Concat(
+                                    'work_week', V('_'),'work_year',
+                                    output_field=CharField()
+                                ),
+                            emp_created = F('emp__created'),
+                            name = F('emp__emp_name'),
+                            staff_no = F('emp__staff_no')
+                        )
+                    if(len(currentYearWeeks)>0):
+                        last_year_entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=each_emp['emp_id'],work_week__in=[ sub['week'] for sub in currentYearWeeks ], work_year=currentYearWeeks[0]['year']).values().annotate(
+                            cnt = Count('cnt'),
+                            week_and_year = Concat(
+                                    'work_week', V('_'),'work_year',
+                                    output_field=CharField()
+                                ),
+                            emp_created = F('emp__created'),
+                            name = F('emp__emp_name'),
+                            staff_no = F('emp__staff_no')
+                        )
+                    entry_complaince_statues =  list(chain(last_year_entry_complaince_statues , current_year_entry_complaince_statues))
+
                     if(len(entry_complaince_statues)>0):
                         each_emp_comp = entry_complaince_statues[0]
                     else:
                         each_emp_comp = {'emp_created':each_emp['created'],'name':each_emp['name'],'staff_no':each_emp['staff_no']}
                     
-
-
-
-
                     for k,eachweek in enumerate(last5Weeks):
                         joinedWeek = each_emp_comp['emp_created'].isocalendar()[1]
                         joinedYear = str(each_emp_comp['emp_created']).split('-')[0]
@@ -767,13 +569,14 @@ def ManagerNotificationOneTwo():
                 emailList = [eachemp.email]
                 try:
                     if(len(not_submitted_employees)>0):
-                        if(settings.SENDEMAILTOALL):
+                        if(settings.SENDEMAILTOALL or eachemp.email in settings.CUSTOM_EMAILS):
                             ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
-                            log.info("MAIL SEND TO MANAGERS {}".format(emailList))
+                            log.info("MAIL SEND TO MANAGERS----------- {}".format(emailList))
                         else:
-                            if(eachemp.email in settings.CUSTOM_EMAILS):
-                                ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
-                                log.info("MAIL SEND TO MANAGERS {}".format(emailList))
+                            log.info("MAIL NOT SEND TO MANAGERS {}".format(emailList))
+                            # if(eachemp.email in settings.CUSTOM_EMAILS):
+                            #     ret_val = send_mail(MailConfigurations.RemainderSubject.value, mail_content, settings.EMAIL_FROM, emailList, html_message=mail_content)
+                            #     log.info("MAIL SEND TO MANAGERS {}".format(emailList))
                     else:
                         log.info("ALL EMPLOYEES UNDER {} ARE SUBMITTED WORK STATUS".format(emailList))
                     
