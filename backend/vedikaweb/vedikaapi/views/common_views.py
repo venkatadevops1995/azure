@@ -9,7 +9,7 @@ from vedikaweb.vedikaapi.serializers import EmailOptedSerializer, FaceAppLogsSer
 from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, WorkApprovalStatuses, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
 from django.conf import settings
-from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator
+from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator, is_admin
 from django.db.models import Q,F,Value as V
 
 import traceback, json
@@ -20,6 +20,7 @@ from datetime import datetime, timedelta
 import logging
 import time
 from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+import uuid
 
 log = logging.getLogger(__name__)
 
@@ -755,3 +756,28 @@ class ReportCheckINOutIssue(APIView):
     def post(self,request):
         print("post Check in out issue Data ",request.data)
         return Response(utils.StyleRes(True,"POST Check in out issue Data",request.data),200)
+
+class ProfilePicUpload(APIView):
+    @jwttokenvalidator
+    @is_admin
+    @custom_exceptions
+    def post(self,request,*args,**kwargs):
+        try:
+            auth_details = utils.validateJWTToken(request)
+            if(auth_details['email']==""):
+                return Response(auth_details, status=400) 
+            if request.FILES and 'file' in request.FILES:
+                file_obj = request.FILES['file']
+                file_ext=str(file_obj).split('.')[-1]
+                filename=str(uuid.uuid1())+ '.'+ file_ext
+                with open(settings.UPLOAD_PROFILE_PIC_PATH+filename, 'wb') as f:
+                    f.write(file_obj.read())
+                return Response(utils.StyleRes(True,"Profile pic uploaded successfully", str(filename)), status=StatusCode.HTTP_OK)
+            else:
+                return Response(utils.StyleRes(False,"Fail to upload profile pic", "expecting `file` object"), status=StatusCode.HTTP_EXPECTATION_FAILED)
+        except Exception as e:
+            log.error(traceback.format_exc())
+            return Response(utils.StyleRes(False,settings.VALID_ERROR_MESSAGES['something_went_wrong'],{}), status=StatusCode.HTTP_UNPROCESSABLE_ENTITY)
+
+
+        

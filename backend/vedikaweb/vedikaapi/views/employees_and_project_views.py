@@ -173,7 +173,7 @@ class Users(APIView):
             return Response(auth_details, status=400)
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
-            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
+            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"))
         else:
             return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
 
@@ -243,7 +243,7 @@ class Users(APIView):
 
                 # EmployeeDesignation(emp_id = emp_id,designation_id = data["designation"].value ).save()
                 # setting is_married=False, patentry_maternity_cnt=0 as those fields are removed in serializer
-                EmployeeProfile(emp_id = emp_id,category_id = data["category"].value, date_of_join = data["doj"].value, is_married=False, patentry_maternity_cnt=0, gender_id = data["gender"].value,location_id=data["location"].value ).save()
+                EmployeeProfile(emp_id = emp_id,category_id = data["category"].value, date_of_join = data["doj"].value, is_married=False, patentry_maternity_cnt=0, gender_id = data["gender"].value,location_id=data["location"].value, picture=data['user_pic'].value ).save()
 
                 global_leave_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='LEAVE')
                 leave_access_grp_list = []

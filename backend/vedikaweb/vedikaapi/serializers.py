@@ -351,6 +351,7 @@ class NewEmpSerializer(serializers.Serializer):
     # is_married = serializers.BooleanField()
     # patentry_maternity_cnt = serializers.IntegerField()
     gender = serializers.IntegerField()
+    user_pic = serializers.CharField(allow_null=True, default=None)
     
     def validate_email(self, data):
         emp =Employee.objects.filter(email=data)
@@ -769,6 +770,7 @@ class EmployeeDetailsSerializer(serializers.Serializer):
     # is_married = serializers.BooleanField()
     # patentry_maternity_cnt = serializers.IntegerField()
     gender = serializers.IntegerField()
+    user_pic = serializers.CharField(allow_blank=True, default=None)
     def validate_company(self,data):
         company_list = Company.objects.filter(name=data)
         if(len(company_list)==0):

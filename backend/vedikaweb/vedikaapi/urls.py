@@ -60,6 +60,7 @@ urlpatterns = [
     url(r'^users/', employees_and_project_views.Users.as_view(), name='Users'),
     url(r'^all-projects/$', employees_and_project_views.AllProjects.as_view(), name='AllProjects'),
     path('delete/', employees_and_project_views.Usersdelete.as_view(), name='Usersdel'),
+    path('upload-profile-pic/',common_views.ProfilePicUpload.as_view(),name='ProfilePicUpload'),
 
     url(r'^emp-projects/$', employees_and_project_views.EmployeeProjects.as_view(), name='EmployeeProjects'),
 
