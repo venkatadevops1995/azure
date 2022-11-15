@@ -896,7 +896,7 @@ class EmployeeDetails(APIView):
                 day_leave_type = each.day_leave_type
         if(startdate!=enddate):
             multi_leave = True
-        if(response[0]['image_name']!=None):
+        if(response[0]['image_name']!=None and response[0]['image_name']!=""):
             response[0]['image_name'] = os.path.join(settings.PROFILE_IMAGE_URL,response[0]['image_name'])
         response[0]['leave_flag']=leave_flag
         response[0]['startdate']=startdate
