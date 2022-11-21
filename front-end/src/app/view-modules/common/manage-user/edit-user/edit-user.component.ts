@@ -302,7 +302,6 @@ export class EditUserComponent implements OnInit{
       restoreFocus:true
     })
     this.dialogRef.afterClosed().subscribe(result => {
-      console.log('hjjhfjhdgfj',result)
       if(!result){
         this.SupportImageType = false;
         this.SupportImageSize = false;
@@ -353,7 +352,6 @@ export class EditUserComponent implements OnInit{
   validateAndUploadImageFile(flag: boolean, file: any, formData: FormData) {
     formData.append("file", file);
     this.setImageHeightIsValid = !flag;
-   console.log('jfkgjdfljgljdfg',formData)
     if (file &&  !this.SupportImageType &&!this.SupportImageSize&& flag) {
       this.http.request('post', 'upload-profile-pic/', '', formData).subscribe(res => {
         if (res.status === 200) {
