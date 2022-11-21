@@ -2,7 +2,9 @@
   display: grid;
   grid-template-rows: minmax(250px, 300px) 1fr;
   position: relative;
-
+  &:not(.is-menu-open) {
+    left: calc(-1 * var(--sidebar));
+  }
   .sidebar__toggle {
     position: fixed;
     left: -20px;

@@ -209,3 +209,18 @@ input::placeholder {
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+
+//removing the default styling of the button
+.remove-btn-style{
+  border:none;
+  outline:none;
+  background:transparent;
+  color:inherit;
+  cursor: pointer;
+  padding-left: 0;
+}
+
+.danger{
+  color:red
+}

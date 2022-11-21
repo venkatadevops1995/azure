@@ -6,7 +6,7 @@
   <div class="emp-profile__head pt-20 pt-md-0">
     <div class="emp-profile__photo">
       <div>
-        <img src="/assets/images/avatar-profile.png" alt="">
+        <img [src]="data?.emp_details?.image_name ? data?.emp_details?.image_name : '/assets/images/avatar-profile.png'" alt="">
       </div>
     </div>
     <div class="emp-profile__name">
