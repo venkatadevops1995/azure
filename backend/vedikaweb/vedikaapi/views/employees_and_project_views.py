@@ -106,7 +106,7 @@ class Users(APIView):
         hierarchy_type = request.query_params.get('hierarchy_type','immediate')
         search = request.query_params.get('search',False)
         if(hierarchy_type=='all'):
-            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
             emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
             return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)
         elif(auth_details['role_id']>1 or auth_details['is_emp_admin'] or len(auth_details['sub_report_access']) >0):
@@ -150,9 +150,9 @@ class Users(APIView):
                     return Response(utils.StyleRes(True,"All employee list",employees), status=StatusCode.HTTP_OK)
             elif is_emp_admin == True and emp_type == "hr":
                 if(search.lower()=="all"):
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
                 else:
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
                 # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
                 emp_serial_data = emp_data.values()
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
