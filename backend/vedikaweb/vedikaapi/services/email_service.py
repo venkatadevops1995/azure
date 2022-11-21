@@ -2,11 +2,11 @@ from django.conf import settings
 import traceback, json
 
 from django.db.models.fields import FloatField
-from vedikaweb.vedikaapi.models import Employee, EmployeeAdmin, EmployeeHierarchy, GlobalAccessFlag, EmailAccessGroup, WelcomeEmailNotification, ManagerEmailOpted, LeaveRequest, EmailQueue, LocationHolidayCalendar, Leave
+from vedikaweb.vedikaapi.models import Employee, EmployeeAdmin, EmployeeHierarchy, GlobalAccessFlag, EmailAccessGroup, WelcomeEmailNotification, ManagerEmailOpted, LeaveRequest, EmailQueue, LocationHolidayCalendar, Leave, EmployeeEntryCompStatus, EmployeeApprovalCompStatus
 from vedikaweb.vedikaapi.serializers import EmailQueueSerializer
 from datetime import datetime, timedelta, date
 import calendar
-from django.db.models import Q,F,Sum,Value, Case, When, CharField, Value as V, Prefetch, Func, DurationField
+from django.db.models import Q,F,Sum,Value, Case, When, CharField, Value as V, Prefetch, Func, DurationField, Count
 # from django.db.models.fields import DurationField 
 from django.db.models.functions import Concat
 from django.core.mail import send_mail
@@ -16,6 +16,7 @@ from vedikaweb.vedikaapi.utils  import utils
 from vedikaweb.vedikaapi.constants import MailConfigurations, LeaveMailTypes
 from vedikaweb.vedikaapi.services import leave_service
 import unicodedata
+from itertools import chain
 
 log = logging.getLogger(__name__)
 
@@ -526,4 +527,188 @@ class email_service():
                     else:
                         log.info(emp_queue_ser_obj.errors)
                 else:
-                    log.info("No access to send mail to {}".format(mgr_email))    
+                    log.info("No access to send mail to {}".format(mgr_email))
+
+
+    def getEmailAccessFlag():
+        emp_obj = Employee.objects.filter(status=1)
+        global_email_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='EMAIL')
+        individual_email_access_emps=[]
+        if(len(global_email_access)>0):
+            accessed_managers = list(map(lambda x:x.emp_id,emp_obj.filter(role_id=4)))
+        else:
+            accessed_managers = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=1)))
+            individual_email_access_emps = list(map(lambda x:x.emp_id,EmailAccessGroup.objects.filter(status=2)))
+        return accessed_managers,individual_email_access_emps
+
+    def getEmployeeEntryCompliance(emp_id):
+        resp=[]
+        weekdatesList=list(utils.get_previous_week(datetime.now().date(),0))
+        weeknumber=weekdatesList[-1].isocalendar()[1]
+        # print("weekdatesList",weekdatesList)
+        # print("weeknumber",weeknumber)
+        # if(datetime.now().weekday() >5):
+        #     weeknumber = weeknumber -1
+        lastYearWeeks = []
+        currentYearWeeks = []
+        last5Weeks=[]
+        for  i in range(1,6):
+            n=weeknumber-i
+            weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
+            weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1]
+            week_year = str(weekend).split('-')[0]
+            
+            # print("old....",i,weekstart,weekend,week_year)
+            # if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
+            #     week_year = str(weekstart).split('-')[0]
+            # print("mod....",i,weekstart,weekend,week_year)
+            week_years = [week_year, str(int(week_year)+1)]
+            # if(n>=0):
+            #     n=n+1
+            if(n<=0):
+                lastyear_last_week_=weekend.isocalendar()[1]
+                n=lastyear_last_week_
+                lastYearWeeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+            else:
+                currentYearWeeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+            
+            last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+        eachemp=Employee.objects.filter(emp_id=emp_id,status=1)[0]
+        # entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
+        #     cnt = Count('cnt'),
+        #     week_and_year = Concat(
+        #             'work_week', V('_'),ExtractYear('created'),
+        #             output_field=CharField()
+        #         )
+        # )
+        last_year_entry_complaince_statues = EmployeeEntryCompStatus.objects.none()
+        current_year_entry_complaince_statues = EmployeeEntryCompStatus.objects.none()
+    
+        if(len(lastYearWeeks)>0):
+            last_year_entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=emp_id,work_week__in=[ sub['week'] for sub in lastYearWeeks ], work_year=lastYearWeeks[0]['year']).values().annotate(
+                cnt = Count('cnt'),
+                week_and_year = Concat(
+                        'work_week', V('_'),'work_year',
+                        output_field=CharField()
+                    )
+            )
+
+        if(len(currentYearWeeks)>0):
+            current_year_entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=emp_id,work_week__in=[ sub['week'] for sub in currentYearWeeks ], work_year=currentYearWeeks[0]['year']).values().annotate(
+                cnt = Count('cnt'),
+                week_and_year = Concat(
+                        'work_week', V('_'),'work_year',
+                        output_field=CharField()
+                    )
+            )
+        entry_complaince_statues = last_year_entry_complaince_statues | current_year_entry_complaince_statues
+        weekFound=False
+        cnt=0
+        for _, eachweek in enumerate(last5Weeks):
+            joinedWeek = eachemp.created.isocalendar()[1]
+            joinedYear = str(eachemp.created).split('-')[0]
+            validweek = False
+            if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
+                validweek=True
+            if(int(joinedYear) < int(eachweek['year'])):
+                if(joinedWeek > int(eachweek['week'])):
+                    validweek=True
+            for each_compliance in entry_complaince_statues:
+                # TODO: temp fix by adding new condition with OR statement
+                # TODO: (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year']))
+                if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
+                    weekFound=True
+                    cnt=each_compliance['cnt']
+            if(weekFound):
+                resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
+            else:
+                resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
+            weekFound=False
+            validweek=False
+            cnt=0
+        return resp
+
+    def getManagerApprovalCompliance(emp_id):
+        eachemp=Employee.objects.filter(emp_id=emp_id,status=1)[0]
+        weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
+        weeknumber=weekdatesList[-1].isocalendar()[1]
+        lastYearWeeks=[]
+        currentYearWeeks=[]
+        last5Weeks=[]
+        for  i in range(2,7):
+            n=weeknumber-i
+            weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
+            weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1]
+            week_year = str(weekend).split('-')[0]
+
+            if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
+                week_year = str(weekstart).split('-')[0]
+            week_years = [week_year, str(int(week_year)+1)]
+
+            if(n<=0):
+                lastyear_last_week_=weekend.isocalendar()[1]      
+                n=lastyear_last_week_
+                lastYearWeeks.append({'week':n,'year':week_year,'weekstart':weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+            else:
+                currentYearWeeks.append({'week':n,'year':week_year,'weekstart':weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+
+            last5Weeks.append({'week':n,'year':week_year,'weekstart':weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
+
+        # manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
+        #             approval_comp_cnt = F('cnt'),
+        #             week_and_year = Concat(
+        #                     'work_week', V('_'),'work_year',
+        #                     output_field=CharField()
+        #                 )
+        #         )
+        last_year_manager_history_obj = EmployeeApprovalCompStatus.objects.none()
+        current_year_manager_history_obj = EmployeeApprovalCompStatus.objects.none()
+
+        if(len(lastYearWeeks)>0):
+            last_year_manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in lastYearWeeks ], work_year=lastYearWeeks[0]['year']).values().annotate(
+                        approval_comp_cnt = F('cnt'),
+                        week_and_year = Concat(
+                                'work_week', V('_'),'work_year',
+                                output_field=CharField()
+                            )
+                    )
+        if(len(currentYearWeeks)>0):
+            current_year_manager_history_obj = EmployeeApprovalCompStatus.objects.filter(emp_id=eachemp.emp_id,emp__status=1,work_week__in=[ sub['week'] for sub in currentYearWeeks ], work_year=currentYearWeeks[0]['year']).values().annotate(
+                        approval_comp_cnt = F('cnt'),
+                        week_and_year = Concat(
+                                'work_week', V('_'),'work_year',
+                                output_field=CharField()
+                            )
+                    )
+        manager_history_obj = list(chain(last_year_manager_history_obj, current_year_manager_history_obj))
+        
+
+        resp=[]
+        weekFound=False
+        cnt=0
+        for k,eachweek in enumerate(last5Weeks):
+            joinedWeek = eachemp.created.isocalendar()[1]
+            joinedYear = str(eachemp.created).split('-')[0]
+            validweek = False
+            if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
+                validweek=True
+            
+            if(int(joinedYear) < int(eachweek['year'])):
+                if(joinedWeek > int(eachweek['week'])):
+                    validweek=True
+
+            for each_compliance in manager_history_obj:
+                # TODO: temp fix by adding new condition with OR statement
+                # TODO: | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1))
+                if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
+                    weekFound=True
+                    cnt=each_compliance['approval_comp_cnt']
+
+            if(weekFound):
+                resp.append({"week":eachweek['week'],"year":eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
+                weekFound=False
+                cnt=0
+            else:
+                resp.append({"week":eachweek['week'],"year":eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
+        return resp
+    

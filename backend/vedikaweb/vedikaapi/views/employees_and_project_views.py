@@ -106,7 +106,7 @@ class Users(APIView):
         hierarchy_type = request.query_params.get('hierarchy_type','immediate')
         search = request.query_params.get('search',False)
         if(hierarchy_type=='all'):
-            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
             emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
             return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)
         elif(auth_details['role_id']>1 or auth_details['is_emp_admin'] or len(auth_details['sub_report_access']) >0):
@@ -150,9 +150,9 @@ class Users(APIView):
                     return Response(utils.StyleRes(True,"All employee list",employees), status=StatusCode.HTTP_OK)
             elif is_emp_admin == True and emp_type == "hr":
                 if(search.lower()=="all"):
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
                 else:
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
                 # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
                 emp_serial_data = emp_data.values()
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
@@ -173,7 +173,7 @@ class Users(APIView):
             return Response(auth_details, status=400)
         serial_data = EmployeeDetailsSerializer(data=request.data)
         if(serial_data.is_valid()):
-            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"))
+            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"))
         else:
             return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
 
@@ -243,7 +243,7 @@ class Users(APIView):
 
                 # EmployeeDesignation(emp_id = emp_id,designation_id = data["designation"].value ).save()
                 # setting is_married=False, patentry_maternity_cnt=0 as those fields are removed in serializer
-                EmployeeProfile(emp_id = emp_id,category_id = data["category"].value, date_of_join = data["doj"].value, is_married=False, patentry_maternity_cnt=0, gender_id = data["gender"].value,location_id=data["location"].value ).save()
+                EmployeeProfile(emp_id = emp_id,category_id = data["category"].value, date_of_join = data["doj"].value, is_married=False, patentry_maternity_cnt=0, gender_id = data["gender"].value,location_id=data["location"].value, picture=data['user_pic'].value ).save()
 
                 global_leave_access = GlobalAccessFlag.objects.filter(status=1,access_type__iexact='LEAVE')
                 leave_access_grp_list = []
@@ -714,58 +714,9 @@ class EmployeeEntryComplianceStatus(APIView):
         if(auth_details['email']==""):
             return Response(auth_details, status=400)
         emp_id = auth_details['emp_id']
-        resp=[]
-        weekdatesList=list(utils.get_previous_week(datetime.now().date(),int(0)))
-        weeknumber=weekdatesList[-1].isocalendar()[1]
-        # if(datetime.now().weekday() >5):
-        #     weeknumber = weeknumber -1
-        last5Weeks=[]
-        for  i in range(1,6):
-            n=weeknumber-i
-            weekstart = list(utils.get_previous_week(datetime.now().date(),int(i)))[0]
-            weekend = list(utils.get_previous_week(datetime.now().date(),int(i)))[-1]
-            week_year = str(weekend).split('-')[0]
-            if(str(weekstart).split('-')[0] != str(weekend).split('-')[0]):
-                week_year = str(weekstart).split('-')[0]
-            week_years = [week_year, str(int(week_year)+1)]
-            # if(n>=0):
-            #     n=n+1
-            if(n<=0):
-                lastyear_last_week_=weekend.isocalendar()[1]
-                n=lastyear_last_week_
-            last5Weeks.append({'week':n,'year':week_year,"weekstart":weekstart.strftime('%b %d'),'weekend':weekend.strftime('%b %d')})
-        eachemp=Employee.objects.filter(emp_id=emp_id,status=1)[0]
-        entry_complaince_statues=EmployeeEntryCompStatus.objects.filter(emp_id=emp_id,work_week__in=[ sub['week'] for sub in last5Weeks ], created__year__in=week_years).values().annotate(
-            cnt = Count('cnt'),
-            week_and_year = Concat(
-                    'work_week', V('_'),ExtractYear('created'),
-                    output_field=CharField()
-                )
-        )
-        weekFound=False
-        cnt=0
-        for _, eachweek in enumerate(last5Weeks):
-            joinedWeek = eachemp.created.isocalendar()[1]
-            joinedYear = str(eachemp.created).split('-')[0]
-            validweek = False
-            if(joinedWeek <= int(eachweek['week']) and int(joinedYear) <= int(eachweek['year'])):
-                validweek=True
-            if(int(joinedYear) < int(eachweek['year'])):
-                if(joinedWeek > int(eachweek['week'])):
-                    validweek=True
-            for each_compliance in entry_complaince_statues:
-                # TODO: temp fix by adding new condition with OR statement
-                # TODO: (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year']))
-                if(each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(eachweek['year'])) | (each_compliance['week_and_year']==str(eachweek['week'])+"_"+str(int(eachweek['year'])+1)):
-                    weekFound=True
-                    cnt=each_compliance['cnt']
-            if(weekFound):
-                resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
-            else:
-                resp.append({"week":eachweek['week'],'year':eachweek['year'],"cnt":cnt,"valid":validweek,'weekstart':eachweek['weekstart'],'weekend':eachweek['weekend']})
-            weekFound=False
-            validweek=False
-            cnt=0
+        # print("emp_id",emp_id)
+        # resp=[]
+        resp = email_service.getEmployeeEntryCompliance(emp_id)
         return Response(utils.StyleRes(True,"Employee entry compliance status for last 5 weeks",resp), status=StatusCode.HTTP_OK)
 
 class ChangeRole(APIView):
@@ -945,7 +896,7 @@ class EmployeeDetails(APIView):
                 day_leave_type = each.day_leave_type
         if(startdate!=enddate):
             multi_leave = True
-        if(response[0]['image_name']!=None):
+        if(response[0]['image_name']!=None and response[0]['image_name']!=""):
             response[0]['image_name'] = os.path.join(settings.PROFILE_IMAGE_URL,response[0]['image_name'])
         response[0]['leave_flag']=leave_flag
         response[0]['startdate']=startdate
