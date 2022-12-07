@@ -40,18 +40,18 @@
       <!-- {{addUserForm.controls.email.touched}} {{addUserForm.controls.email.hasError('required')}} -->
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Staff No.</mat-label>
-      <input autocomplete="off"  matInput formControlName="staff_no">
-      <mat-error *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
-        Please enter Staff No.
-      </mat-error>
-      <mat-error
-        *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('is_duplicated')">
-        Entered Staff No. already exists
-      </mat-error>
-    </mat-form-field>
-
+          <mat-form-field>
+            <mat-label>Staff No.</mat-label>
+            <input autocomplete="off"  matInput formControlName="staff_no">
+            <mat-error *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
+              Please enter Staff No.
+            </mat-error>
+            <mat-error
+              *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('is_duplicated')">
+              Entered Staff No. already exists
+            </mat-error>
+          </mat-form-field>
+   
     <mat-form-field>
       <mat-label>Location</mat-label>
       <mat-select formControlName="location">
@@ -173,6 +173,19 @@
         </mat-error>
       </mat-form-field>
     </ng-container> 
+     <!-- upload image formcontroller ----> 
+     <!-- <div class="flex col flex-row-md fs-14  mb-xmd-0  start-xs ">
+        <input style="display: none" type="file" autocomplete="off" (click)="reSetInput($event)" (change)="onFileChanged($event)" formControlName="user_pic" #fileInput>
+          <button type="button" class="flex flex-row-md   mb-xmd-0  middle-xs remove-btn-style" (click)="fileInput.click()">
+            <svg class="ml-5 mr-5 use-svg col-accent-500"  symbol="user"  w="24" svg-fill="currentColor">
+            </svg>
+            Upload Image
+          </button>
+            <p class="danger" *ngIf="SupportImageType">Only jpg/png/jpeg images allowed</p>
+            <p class="danger" *ngIf="SupportImageSize">Image size shuold be less then 200kb</p>
+            <p class="danger" *ngIf="getImageHeightIsValid" >Image height and width should be 200X200 px </p>
+    </div> -->
+<!-- ************************* -->
   </div> 
   <div class="flex no-lg-wrap center-xs mt-xmd-30 mt-20 " mat-dialog-actions>
     <div class="pr-20" style="display: inline-block;padding-bottom: 10px;">

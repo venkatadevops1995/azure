@@ -138,6 +138,20 @@
           Please Select Category
         </mat-error>
       </mat-form-field>
+        <!-- upload image formcontroller ----> 
+      <!-- <div class="flex col flex-row-md fs-14  mb-xmd-0  start-xs ">
+          <input style="display: none" type="file" id="file-id"  autocomplete="off" (click)="reSetInput($event)" (change)="onFileChanged($event)"  #fileInput>
+        
+            <button type="button" class="flex flex-row-md   mb-xmd-0  start-xs bottom-md remove-btn-style" (click)="fileInput.click()">
+              <svg class=" mr-5 use-svg col-accent-500"  symbol="user"  w="20" svg-fill="currentColor">
+              </svg>
+             Upload Image 
+            </button>
+            <p class="danger" *ngIf="SupportImageType">Only jpg/png/jpeg images allowed</p>
+            <p class="danger" *ngIf="SupportImageSize">Image size shuold be less then 200kb</p>
+            <p class="danger" *ngIf="getImageHeightIsValid" >Image height and width should be 200X200 px </p>
+      </div> -->
+           <!-- ************************* -->
       <div class="center-xs  mt-20 pb-20" mat-dialog-actions >
         <!-- <div style="display: inline-block; text-align: center;padding-left: 10px;">
             <app-button size='small' theme="grey" type="button" (click)="close()">Close</app-button>

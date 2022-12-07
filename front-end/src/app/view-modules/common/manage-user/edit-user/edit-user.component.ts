@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Renderer2,TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { SingletonService } from 'src/app/services/singleton.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -35,7 +35,21 @@ export interface UserData {
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss']
 })
-export class EditUserComponent implements OnInit {
+export class EditUserComponent implements OnInit{
+  //variable for holding image in image upload
+  selectedFile:string = ''
+  SupportImageType: boolean = false;
+  SupportImageSize: boolean = false;
+  SupportImageDimension: boolean = false
+  heightandwidth: boolean = false
+  get getImageHeightIsValid(): boolean {
+    return this.heightandwidth;
+  }
+
+  set setImageHeightIsValid(flag: boolean) {
+
+    this.heightandwidth = flag;
+  }
 
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
@@ -171,6 +185,7 @@ export class EditUserComponent implements OnInit {
     'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
+    'user_pic': ['']
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -271,6 +286,9 @@ export class EditUserComponent implements OnInit {
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
+    //setting the value of image formcontrol 
+    this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
+    this.selectedFile = this.USERS_DATA[i]["user_pic"]
     // Rahul change(opening modal popup)******************************
     // this.editUserPopup.open() 
     this.dialogRef = this.dialog.open(PopUpComponent, {
@@ -284,12 +302,22 @@ export class EditUserComponent implements OnInit {
       autoFocus: false,
       restoreFocus:true
     })
+    this.dialogRef.afterClosed().subscribe(result => {
+      if(!result){
+        //image support variable setting into default
+        this.SupportImageType = false;
+        this.SupportImageSize = false;
+        this.setImageHeightIsValid = false;
+      }
+    })
     // calling setId() for getting userName corresponding to click index
     this.setId(i)
     // ******************************************************************
     console.log(i,)
     this
   }
+ 
+  
 
   close() {
     this.editUserForm.reset()
@@ -297,9 +325,78 @@ export class EditUserComponent implements OnInit {
     // this.dialog.closeAll()
     console.log("$$$$$  Close cl")
     this.dialogRef.close()
-
+    this.SupportImageType = false;
+    this.SupportImageSize = false;
+    this.setImageHeightIsValid = false;
   }
 
+  reSetInput(event){
+    event.target.value = '';
+  }
+
+    // function for image upload
+// function for image upload
+  onFileChanged(event) {
+    this.selectedFile=''
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    let filetype = ['image/jpeg', 'image/png', 'image/jpg']
+      this.SupportImageType = !filetype.includes(file.type)
+      this.SupportImageSize = this.filesize(file)
+    this.imageHeightAndWidthChecking(file).then((flag) => {
+      this.validateAndUploadImageFile(flag, file, formData)
+    }).catch((flag) => {
+      this.validateAndUploadImageFile(flag, file, formData)
+    })
+  }
+
+  validateAndUploadImageFile(flag: boolean, file: any, formData: FormData) {
+    formData.append("file", file);
+    this.setImageHeightIsValid = !flag;
+    if (file &&  !this.SupportImageType &&!this.SupportImageSize&& flag) {
+      this.http.request('post', 'upload-profile-pic/', '', formData).subscribe(res => {
+        if (res.status === 200) {
+          this.ss.statusMessage.showStatusMessage(true, "image uploaded successfully");
+          this.selectedFile = res.body.results
+          this.editUserForm.controls['user_pic'].setValue(this.selectedFile)
+        }
+        else {
+          this.ss.statusMessage.showStatusMessage(false, "something went wrong with image upload");
+        }
+
+      })
+    }
+  }
+
+filesize(file):boolean{
+  if(Math.floor(file.size / 1000)<= 200){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+  imageHeightAndWidthChecking(file): Promise<boolean> {
+console.log(file)
+    return new Promise((resolved, rejected) => {
+      var url = URL.createObjectURL(file);
+      var img = new Image;
+      img.onload = async () => {
+        URL.revokeObjectURL(img.src);
+        console.log('width', img.width, 'height', img.height)
+        if ((img.width === 200) && (img.height === 200)&&img) {
+          resolved(true)
+        }else {
+          rejected(false)
+        }
+      }
+      img.src = url;
+    })
+  }
+///////////
+  
   updateEmp() {
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
@@ -310,7 +407,8 @@ export class EditUserComponent implements OnInit {
         this
       }
     })
-
+    //clear image form control
+    this.editUserForm.controls['user_pic'].setValue('')
   }
   // disable user 
 

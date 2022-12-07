@@ -90,7 +90,12 @@ export class PickDateAdapter extends NativeDateAdapter {
   // ******************************************************
 })
 export class AddUserComponent implements OnInit, AfterViewInit {
-
+  //valriable to holed the image file
+  selectedFile: File | string = ''
+  SupportImageType: boolean = false;
+  SupportImageSize: boolean = false;
+  SupportImageDimension: boolean = false
+  heightandwidth: boolean = false
   // @ViewChild('confirmationRef') confirmationModal: ModalPopupComponent;
   @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
 
@@ -115,6 +120,15 @@ export class AddUserComponent implements OnInit, AfterViewInit {
   //Rahul change(adding variable for use breakpoint observer api using singlton service)************ 
   get is_XMD_LT() {
     return this.ss.responsive.isMatched(AtaiBreakPoints.XMD_LT)
+  }
+
+  get getImageHeightIsValid(): boolean {
+    return this.heightandwidth;
+  }
+
+  set setImageHeightIsValid(flag: boolean) {
+
+    this.heightandwidth = flag;
   }
 
   //*******************************************************************************************
@@ -167,6 +181,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     'category': ['', Validators.required],
     'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
+    'user_pic': [null]
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -388,6 +403,78 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     this.ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }];
     this.ATWORK_ROLES = [{ name: 'L0', selected: true, value: 1 }, { name: 'L1', selected: false, value: 2, disabled: false }, { name: 'L2', selected: false, value: 3, disabled: false }, { name: 'L3', selected: false, value: 4, disabled: false }];
   }
+
+
+
+  reSetInput(event){
+    event.target.value = '';
+  }
+
+  // function for image upload
+  onFileChanged(event) {
+    this.selectedFile=''
+    const file = event.target.files[0];
+    const formData = new FormData();
+    let filetype = ['image/jpeg', 'image/png', 'image/jpg']
+      this.SupportImageType = !filetype.includes(file.type)
+      this.SupportImageSize = this.filesize(file)
+    this.imageHeightAndWidthChecking(file).then((flag) => {
+      this.validateAndUploadImageFile(flag, file, formData)
+    }).catch((flag) => {
+      this.validateAndUploadImageFile(flag, file, formData)
+    })
+
+
+
+  }
+
+  validateAndUploadImageFile(flag: boolean, file: any, formData: FormData) {
+    formData.append("file", file);
+    this.setImageHeightIsValid = !flag;
+   
+    if (file &&  !this.SupportImageType &&!this.SupportImageSize&& flag) {
+      this.http.request('post', 'upload-profile-pic/', '', formData).subscribe(res => {
+        if (res.status === 200) {
+          this.ss.statusMessage.showStatusMessage(true, "image uploaded successfully");
+          this.selectedFile = res.body.results
+        }
+        else {
+          this.ss.statusMessage.showStatusMessage(false, "something went wrong with image upload");
+        }
+
+      })
+    }
+  }
+
+filesize(file):boolean{
+  if(Math.floor(file.size / 1000)<= 200){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+  imageHeightAndWidthChecking(file): Promise<boolean> {
+console.log(file)
+    return new Promise((resolved, rejected) => {
+      var url = URL.createObjectURL(file);
+      var img = new Image;
+      img.onload = async () => {
+        URL.revokeObjectURL(img.src);
+        console.log('width', img.width, 'height', img.height)
+        if ((img.width === 200) && (img.height === 200)&&img) {
+          resolved(true)
+        }else {
+          rejected(false)
+        }
+      }
+
+      img.src = url;
+    })
+  }
+
+
   addUser() {
     let error_message = '';
 
@@ -415,7 +502,7 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     // Rahul changes ************************************************
     formData.append('doj', this.datepipe.transform(this.addUserForm.controls.doj.value, 'yyyy-MM-dd'));
     // ****************************************************************
-
+    formData.append('user_pic', this.selectedFile);
     // formData.append('is_married', this.addUserForm.controls.is_married.value);
     // formData.append('patentry_maternity_cnt', this.addUserForm.controls.patentry_maternity_cnt.value);
     // ******************************************************
@@ -447,11 +534,11 @@ export class AddUserComponent implements OnInit, AfterViewInit {
       } else if (res.error) {
 
         Object.keys(res.error["results"][0]).forEach(ele => {
-          if(ele == 'non_field_errors' ){
+          if (ele == 'non_field_errors') {
             error_message = res.error["results"][0][ele];
             this.addUserForm.controls['firstName'].setErrors({ 'is_duplicated': true });
             this.addUserForm.controls['lastName'].setErrors({ 'is_duplicated': true });
-          }else{
+          } else {
             error_message += " " + ele;
             this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true })
           }
@@ -459,8 +546,9 @@ export class AddUserComponent implements OnInit, AfterViewInit {
 
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
 
-      }else if(res.status == 409){
-        error_message +=  res['results'][0]['non_field_errors'];
+      } else if (res.status == 409) {
+        error_message += res['results'][0]['non_field_errors'];
+        console.log('error message--->',error_message)
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
       }
       // this.confirmationModal.close()
