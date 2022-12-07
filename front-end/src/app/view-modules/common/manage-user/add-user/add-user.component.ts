@@ -548,6 +548,7 @@ console.log(file)
 
       } else if (res.status == 409) {
         error_message += res['results'][0]['non_field_errors'];
+        console.log('error message--->',error_message)
         this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
       }
       // this.confirmationModal.close()

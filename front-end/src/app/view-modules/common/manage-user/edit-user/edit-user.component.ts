@@ -286,6 +286,7 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
+    //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
     this.selectedFile = this.USERS_DATA[i]["user_pic"]
     // Rahul change(opening modal popup)******************************
@@ -303,6 +304,7 @@ export class EditUserComponent implements OnInit{
     })
     this.dialogRef.afterClosed().subscribe(result => {
       if(!result){
+        //image support variable setting into default
         this.SupportImageType = false;
         this.SupportImageSize = false;
         this.setImageHeightIsValid = false;
@@ -393,7 +395,7 @@ console.log(file)
       img.src = url;
     })
   }
-
+///////////
   
   updateEmp() {
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
@@ -405,6 +407,7 @@ console.log(file)
         this
       }
     })
+    //clear image form control
     this.editUserForm.controls['user_pic'].setValue('')
   }
   // disable user 
