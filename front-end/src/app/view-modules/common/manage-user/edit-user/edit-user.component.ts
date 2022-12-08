@@ -41,7 +41,9 @@ export class EditUserComponent implements OnInit{
   SupportImageType: boolean = false;
   SupportImageSize: boolean = false;
   SupportImageDimension: boolean = false
-  heightandwidth: boolean = false
+  heightandwidth: boolean = false;
+  //variable for holding the previous image 
+  previousVal:any
   get getImageHeightIsValid(): boolean {
     return this.heightandwidth;
   }
@@ -288,7 +290,9 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
     //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
-    this.selectedFile = this.USERS_DATA[i]["user_pic"]
+    this.previousVal= this.USERS_DATA[i]["user_pic"];
+    this.selectedFile = this.USERS_DATA[i]["user_pic"];
+    
     // Rahul change(opening modal popup)******************************
     // this.editUserPopup.open() 
     this.dialogRef = this.dialog.open(PopUpComponent, {
@@ -343,7 +347,7 @@ export class EditUserComponent implements OnInit{
     formData.append("file", file);
     let filetype = ['image/jpeg', 'image/png', 'image/jpg']
       this.SupportImageType = !filetype.includes(file.type)
-      this.SupportImageSize = this.filesize(file)
+      this.SupportImageSize = !this.SupportImageType?this.filesize(file):false
     this.imageHeightAndWidthChecking(file).then((flag) => {
       this.validateAndUploadImageFile(flag, file, formData)
     }).catch((flag) => {
@@ -366,6 +370,9 @@ export class EditUserComponent implements OnInit{
         }
 
       })
+    }else{
+      // for invalid image setting previous image value 
+      this.editUserForm.controls['user_pic'].setValue(this.previousVal)
     }
   }
 
@@ -380,6 +387,11 @@ filesize(file):boolean{
 
   imageHeightAndWidthChecking(file): Promise<boolean> {
 console.log(file)
+  //for invalid type of image ie file resolve the promise
+  if(this.SupportImageType){
+    return Promise.resolve(true)
+  }
+  ///////
     return new Promise((resolved, rejected) => {
       var url = URL.createObjectURL(file);
       var img = new Image;
