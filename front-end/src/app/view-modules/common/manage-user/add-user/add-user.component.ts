@@ -434,7 +434,6 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     this.setImageHeightIsValid = !flag;
    
     if (file &&  !this.SupportImageType &&!this.SupportImageSize&& flag) {
-      console.log('image uploaded successfully...')
       this.http.request('post', 'upload-profile-pic/', '', formData).subscribe(res => {
         if (res.status === 200) {
           this.ss.statusMessage.showStatusMessage(true, "image uploaded successfully");
@@ -458,7 +457,6 @@ filesize(file):boolean{
 }
 
   imageHeightAndWidthChecking(file): Promise<boolean> {
-console.log(file)
 if(this.SupportImageType){
   return Promise.resolve(true)
 }

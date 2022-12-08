@@ -386,7 +386,6 @@ filesize(file):boolean{
 }
 
   imageHeightAndWidthChecking(file): Promise<boolean> {
-console.log(file)
   //for invalid type of image ie file resolve the promise
   if(this.SupportImageType){
     return Promise.resolve(true)
