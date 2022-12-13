@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from datetime import date
 from itertools import groupby
 
-from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded
+from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded, leaveRequestDisable
 # Serialisers
 from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireLeaveConfigSerializer, LeaveConfigSerializer,  LeaveBalanceSerializer, LeaveRequestSerializer, LeaveDetailsSerializer, LeaveTypeSerializer, UpdateLeaveConfigSerializer,  IdOnlySerializer, EmployeeProjectTimeTrackerSerializer, LeaveBalanceUploadedSerializer
 
@@ -135,7 +135,14 @@ class LeaveRequestView(APIView):
         emp_id=auth_details['emp_id']
         gender=auth_details['gender']
 
-        req_data = request.data.copy() 
+        req_data = request.data.copy()
+        # checking the start date and end date in-between 27th December to 31th December
+        currenDate = date.today()
+        restrict_apply_leave  = leaveRequestDisable.objects.filter(startdate__lte = currenDate, enddate__gte= currenDate) 
+        
+        # User can't able to apply leave beacuse date is in-between 27th December to 31th December
+        if(len(restrict_apply_leave) >0):
+            return Response(utils.StyleRes(False,"Not allowed to apply leave"), status=StatusCode.HTTP_NOT_ACCEPTABLE) 
         # test request script 
         # emp_id=req_data.get('emp_id')
         # gender= EmployeeProfile.objects.get(emp_id=emp_id).gender_id
