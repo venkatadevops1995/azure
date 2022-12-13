@@ -993,3 +993,11 @@ class StageEmpolyee(models.Model):
     class Meta:
         managed = False
         db_table = 'stage_employee'
+
+class leaveRequestRestrict(models.Model):
+    startdate = models.DateTimeField()
+    enddate = models.DateTimeField()
+    class Meta:
+        managed = False
+        db_table = 'leave_request_restrict'
+
