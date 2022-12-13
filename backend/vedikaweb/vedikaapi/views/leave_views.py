@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from datetime import date
 from itertools import groupby
 
-from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded, leaveRequestDisabled
+from vedikaweb.vedikaapi.models import EmployeeHierarchy,LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig, Category ,  LeaveBalance, Leave , LeaveRequest,LeaveAccessGroup,Employee,EmployeeProject,EmployeeProjectTimeTracker, LeaveDiscrepancy,Project, LocationHolidayCalendar,TimesheetDiscrepancy, GlobalAccessFlag, EmployeeProfile, LeaveBalanceUploaded, leaveRequestDisable
 # Serialisers
 from vedikaweb.vedikaapi.serializers import  LeaveDiscrepancySerializer,NewHireLeaveConfigSerializer, LeaveConfigSerializer,  LeaveBalanceSerializer, LeaveRequestSerializer, LeaveDetailsSerializer, LeaveTypeSerializer, UpdateLeaveConfigSerializer,  IdOnlySerializer, EmployeeProjectTimeTrackerSerializer, LeaveBalanceUploadedSerializer
 
@@ -138,7 +138,7 @@ class LeaveRequestView(APIView):
         req_data = request.data.copy()
         # checking the start date and end date in-between 27th December to 31th December
         currenDate = date.today()
-        restrict_apply_leave  = leaveRequestDisabled.objects.filter(startdate__lte = currenDate, enddate__gte= currenDate) 
+        restrict_apply_leave  = leaveRequestDisable.objects.filter(startdate__lte = currenDate, enddate__gte= currenDate) 
         
         # User can't able to apply leave beacuse date is in-between 27th December to 31th December
         if(len(restrict_apply_leave) >0):
