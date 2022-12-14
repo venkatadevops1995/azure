@@ -326,8 +326,7 @@ class LeaveRequestView(APIView):
                         else:
                             day_leave_type = 'FULL'
                     # new
-                    emptt_data.append({'employee_project':emp_vacation_project_id,'work_minutes':(480 if day_leave_type=="FULL" else 300),'work_date':start_date.date(),'work_week':start_date.isocalendar()[1],'status':1})
-
+                    emptt_data.append({'employee_project':emp_vacation_project_id,'work_minutes':(480 if day_leave_type=="FULL" else 300),'work_date':start_date.date(),'work_week':start_date.isocalendar()[1],'work_year':start_date.isocalendar()[0],'status':1})
                     leave_obj.append(Leave(leave_request_id = serial_leave_request.data["id"],leave_on=start_date,day_leave_type=day_leave_type,status=LeaveDayStatus.Pending.value))
                 start_date = start_date + timedelta(days=1)
             Leave.objects.bulk_create(leave_obj)
