@@ -34,6 +34,7 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.db.models import When, Case 
 from itertools import chain
+import operator
 
 log = logging.getLogger(__name__)
 
@@ -761,11 +762,54 @@ def sendMisMail():
         location=F('profile__location__name'),
         doj=F('profile__date_of_join'),).order_by('-status')
         resp=[columns]
+        project_style_format_list = {}
         for each in emp_data:
             managers = {str(empl.priority):empl.manager.emp_name for empl in each.emp.all()}
             projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
+
+            ''' If the project count is less than 3 then checking the inactive projcet for date range for each employee  and pull the data'''           
+            startdate = '2022-06-01'
+            project_style_format= [False, False, False]
+            if(len(projects) < 3):
+                emp_proj_ids = { emp_proj.id for emp_proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=0))}
+                if(len(emp_proj_ids) > 0):
+                    time_tracker_data_list = []
+                    ''' filter the data based on emp_proj_id from employee_time_tracker '''
+
+                    for emp_proj_id in emp_proj_ids:
+                        
+                        time_tracker_data = EmployeeProjectTimeTracker.objects.filter(employee_project_id = emp_proj_id, work_date__gte = startdate, work_date__lte = enddate).aggregate(total_minutes=Coalesce(Sum('work_minutes'),0))
+                    
+                        if(time_tracker_data['total_minutes'] > 0):
+                            project_data = EmployeeProject.objects.filter(id = emp_proj_id).values('project').annotate(project_name = F('project__name'))
+                            
+                            project_name = project_data[0]['project_name']
+                            time_tracker_data['project_name'] = project_name
+                            time_tracker_data_list.append(time_tracker_data)
+                            
+                        else:
+                            continue
+                    if(len(time_tracker_data_list) >0):
+                        sorted_list = []
+                        for sorted_data in sorted(time_tracker_data_list, key=operator.itemgetter("total_minutes"), reverse=True):
+                            sorted_list.append(sorted_data)
+                        sorted_list = sorted_list[:3]
+                        project_len = len(projects)
+                        for i in range(len(sorted_list)):
+                            if(project_len > 0):
+                                for key in projects.copy():
+                                    projects[str(int(key)+1)] = sorted_list[i]['project_name']
+                                    if(int(key) < 4):
+                                        project_style_format[int(key)-1] = True
+                                pass
+                            else:
+                                projects[str(i +1)] = sorted_list[i]['project_name']
+                                project_style_format[i] = True
+
+            project_style_format_list[each.staff_no] = project_style_format
             resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])
-        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'})          
+
+        e.writeExcel(resp,row_start=0,datetimeColList=[8],customFormat={'num_format':'yyyy-mm-dd','align':'center'},is_inactive_project_exit = project_style_format_list)         
 
         for i in range(len(mail_List)):
             try:
