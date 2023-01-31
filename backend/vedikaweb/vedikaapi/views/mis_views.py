@@ -830,12 +830,10 @@ class DownloadMIS(APIView):
             projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
 
             ''' If the project count is less than 3 then checking the inactive projcet for date range for each employee  and pull the data'''           
-            startdate = '2022-06-01'
+
             project_style_format= [False, False, False]
-            # print("each.staff_no:", each.staff_no)
             if(len(projects) < 3):
                 emp_proj_ids = { emp_proj.id for emp_proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=0))}
-                # print('emp_proj_ids:',emp_proj_ids, "each.emp_name",each.emp_name)
                 if(len(emp_proj_ids) > 0):
                     time_tracker_data_list = []
                     ''' filter the data based on emp_proj_id from employee_time_tracker '''
@@ -864,12 +862,11 @@ class DownloadMIS(APIView):
                                 for key in projects.copy():
                                     projects[str(int(key)+1)] = sorted_list[i]['project_name']
                                     if(int(key) < 4):
-                                        project_style_format[int(key)-1] = True
+                                        project_style_format[int(key)] = True
                                 pass
                             else:
                                 projects[str(i +1)] = sorted_list[i]['project_name']
                                 project_style_format[i] = True
-                        # print("after modification staff_no :",each.staff_no , projects)
 
             project_style_format_list[each.staff_no] = project_style_format
             resp.append([each.category,each.company,"",each.location,each.staff_no,each.emp_name,"","",each.doj,each.marital_status,each.gender,projects['1'] if '1' in projects.keys() else "", "",projects['2'] if '2' in projects.keys() else "","",projects['3'] if '3' in projects.keys() else "","","","","","",each.company,"",managers['3'] if '3' in managers.keys() else "",managers['2'] if '2' in managers.keys() else "", managers['1'] if '1' in managers.keys() else "", each.email, each.relieved.strftime('%Y-%m-%d') if each.status == 0 and isdisable == True and  each.relieved != None else "", each.status])

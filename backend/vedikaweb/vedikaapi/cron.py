@@ -768,7 +768,6 @@ def sendMisMail():
             projects = {str(proj.priority):proj.project.name for proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=1))}
 
             ''' If the project count is less than 3 then checking the inactive projcet for date range for each employee  and pull the data'''           
-            startdate = '2022-06-01'
             project_style_format= [False, False, False]
             if(len(projects) < 3):
                 emp_proj_ids = { emp_proj.id for emp_proj in each.employeeproject_set.filter(~Q(project__name__in = DefaultProjects.list()),Q(status=0))}
@@ -800,7 +799,7 @@ def sendMisMail():
                                 for key in projects.copy():
                                     projects[str(int(key)+1)] = sorted_list[i]['project_name']
                                     if(int(key) < 4):
-                                        project_style_format[int(key)-1] = True
+                                        project_style_format[int(key)] = True
                                 pass
                             else:
                                 projects[str(i +1)] = sorted_list[i]['project_name']
