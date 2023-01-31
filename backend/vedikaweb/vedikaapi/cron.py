@@ -795,12 +795,12 @@ def sendMisMail():
                         sorted_list = sorted_list[:3]
                         project_len = len(projects)
                         for i in range(len(sorted_list)):
-                            if(project_len > 0):
-                                for key in projects.copy():
-                                    projects[str(int(key)+1)] = sorted_list[i]['project_name']
-                                    if(int(key) < 4):
-                                        project_style_format[int(key)] = True
-                                pass
+                            if(project_len > 0 and project_len <2):
+                                    projects[str(2)] = sorted_list[i]['project_name']
+                                    project_style_format[1] = True
+                            elif(project_len > 1 and project_len <3):
+                                projects[str(3)] = sorted_list[i]['project_name']
+                                project_style_format[2] = True
                             else:
                                 projects[str(i +1)] = sorted_list[i]['project_name']
                                 project_style_format[i] = True
