@@ -186,10 +186,10 @@ export class SidebarComponent implements OnInit {
               let sub_report_access = this.user.getSubReportAccess();
               if (res.body.attendance_flag == false) {
                 this.menu = this.menu.filter(item => item.link != "attendance");
-              } if ((!is_hr && (this.user.getDataFromToken('role_id') == 1) && (sub_report_access.length == 0))) {
+              } if ((!is_hr && (this.user.getDataFromToken('role_id') == 1) && (!sub_report_access.includes('add-user')))) {
                 this.menu = this.menu.filter(item => item.text != "Employee Management");
               }
-              if (!is_hr) {
+              if (!is_hr  && (!sub_report_access.includes('hr-attendance-reports'))) {
                 this.menu = this.menu.filter(item => item.text != "HR Reports");
               }
               if (!this.isReportsAccessable) {
@@ -202,7 +202,7 @@ export class SidebarComponent implements OnInit {
                 if (m.hasOwnProperty("submenu")) {
                   if (!is_hr) {
 
-                    m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")) && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") && (item.link != "document-config") && (item.link != "document-list"));
+                    m["submenu"] = m["submenu"].filter(item => ((item.link != "leave-policy-config") && (item.link != "edit-user")) && (item.link != "import-export-leave") && (item.link != "employee-leave-info") && (item.link != "leave-history") && (item.link != "document-config") && (item.link != "document-list") && (item.link != "hr-timesheet-reports"));
                   }
                   if (!is_hr && this.user.getDataFromToken('role_id') == 1) {
                     m["submenu"] = m["submenu"].filter(item => (item.link != "manage-user"));
@@ -213,6 +213,9 @@ export class SidebarComponent implements OnInit {
                   }
                   if (!is_hr && (!sub_report_access.includes('add-user'))) {
                     m["submenu"] = m["submenu"].filter(item => (item.link != "add-user"))
+                  }
+                  if (!is_hr && (!sub_report_access.includes('hr-attendance-reports'))) {
+                    m["submenu"] = m["submenu"].filter(item => (item.link != "hr-attendance-reports"))
                   }
                 }
 

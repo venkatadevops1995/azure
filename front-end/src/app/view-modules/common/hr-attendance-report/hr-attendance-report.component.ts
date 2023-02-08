@@ -65,7 +65,7 @@ export class HrAttendanceReportComponent implements OnInit {
     let last30days = new Date(new Date().setDate(today.getDate() - 30));
     this.todate = last30days.getFullYear()+'-'+(last30days.getMonth()+1)+'-'+last30days.getDate();
     this.fromdate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    this.isPageAccessable = this.user.getIsEmpAdmin();
+    this.isPageAccessable = this.user.getIsEmpAdmin() || this.user.getSubReportAccess().includes('hr-attendance-reports');
     // this.checkHrAccessForreports();
     // if (this.dateRange) {
     //   this.dateRange.setPresetValue('Last 30 Days');
@@ -161,6 +161,7 @@ export class HrAttendanceReportComponent implements OnInit {
     this.EMPS = [];
     this.http.request("get", 'users/?str=&type=hr&hierarchy_type=lower&search=all',).subscribe(res => {
       if (res.status == 200) {
+        console.log("res.body:",res.body)
         this.EMPS.push({ emp_id: 'all', emp_name: 'ALL' })
         res.body['results'].forEach(element => {
           this.EMPS.push(element)

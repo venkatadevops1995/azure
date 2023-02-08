@@ -11,7 +11,7 @@ import json
 from django.db import connection
 from cryptography.fernet import Fernet
 import base64
-from .models import Employee
+from .models import Employee, SubAdminAccess
 import re # regular expresson
 import os
 import string
@@ -59,8 +59,16 @@ class utils():
         if(email in settings.ADMINS_TO_ACCESS_REPORTS):
             payload['report_access'] = True
         payload['sub_report_access'] = []
-        if(email in settings.SUB_ADMINS_TO_ACCESS_REPORTS):
-            payload['sub_report_access'] = ['add-user']
+
+        ''' now getting the employee sub admin access list from database and inserting in the list'''
+        accessList = SubAdminAccess.objects.filter(emp_id=employee.emp_id, status =1).values('module')
+        subAdminAccessList = []
+        for item in accessList:
+            subAdminAccessList.append(item['module'])
+        payload['sub_report_access'] = subAdminAccessList #['add-user']
+
+        # if(email in settings.SUB_ADMINS_TO_ACCESS_REPORTS):
+        #     payload['sub_report_access'] = ['add-user']
         payload['emp_name'] = employee.emp_name
         payload['emp_id'] = employee.emp_id
         payload['role_id'] = employee.role_id

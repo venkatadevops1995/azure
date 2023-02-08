@@ -1001,3 +1001,11 @@ class leaveRequestDisable(models.Model):
         managed = False
         db_table = 'leave_request_disable'
 
+
+class SubAdminAccess(models.Model):
+    emp_id = models.IntegerField()
+    module = models.CharField(max_length=255)
+    status = models.IntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = 'sub_admin_access'
