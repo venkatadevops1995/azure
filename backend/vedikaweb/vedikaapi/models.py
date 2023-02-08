@@ -1003,7 +1003,7 @@ class leaveRequestDisable(models.Model):
 
 
 class SubAdminAccess(models.Model):
-    emp_id = models.IntegerField()
+    emp = models.ForeignKey('Employee', models.DO_NOTHING)
     module = models.CharField(max_length=255)
     status = models.IntegerField(default=0)
     class Meta:
