@@ -108,14 +108,14 @@ class Users(APIView):
         if(hierarchy_type=='all'):
             emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
             emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
-            return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)
+            return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)  
         elif(auth_details['role_id']>1 or auth_details['is_emp_admin'] or len(auth_details['sub_report_access']) >0):
             user_id = auth_details['emp_id']
             is_emp_admin = auth_details['is_emp_admin']
             emp_type = request.query_params.get('type','employee')
             # hierarchy type can be immediate, lower or higher
             
-            
+
             
             role = request.query_params.getlist('role',[2,3,4])
             if(emp_type=='manager'):
@@ -148,7 +148,7 @@ class Users(APIView):
                         filter_criteria = filter_criteria & Q(manager_name__icontains=search)
                     employees = EmployeeHierarchy.objects.prefetch_related('manager').annotate(manager_name=F('manager__emp_name')).filter(filter_criteria).values('manager_id','manager_name').distinct()
                     return Response(utils.StyleRes(True,"All employee list",employees), status=StatusCode.HTTP_OK)
-            elif is_emp_admin == True and emp_type == "hr":
+            elif (is_emp_admin == True or 'hr-attendance-reports' in auth_details['sub_report_access']) and emp_type == "hr":
                 if(search.lower()=="all"):
                     emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
                 else:

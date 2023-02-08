@@ -156,3 +156,30 @@ export class AuthGuardSecurityService_HR_OR_SUB_Report_Access implements CanActi
 }
 
 // getSubHRAccess
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuardSecurityService_HR_OR_SUB_HR_Access implements CanActivate {
+
+  constructor(
+    private ss: SingletonService,
+    private router: Router,
+    private user: UserService,
+    private http: HttpClientService
+  ) { }
+  canActivate (
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+      let is_hr =  this.user.getIsEmpAdmin()
+      let sub_report_access = this.user.getSubReportAccess()
+      let dashbaord_route = this.user.getDashboardRoute()
+      if (is_hr || sub_report_access.includes('hr-attendance-reports')) {
+          return true;
+      } else {
+          this.router.navigate([dashbaord_route], {
+          });
+          return false;
+      }
+  }
+}

@@ -24,6 +24,7 @@ import { HrTimesheetReportComponent } from '../common/hr-timesheet-report/hr-tim
 import { AddProjectComponent } from '../common/add-project/add-project.component';
 import { DownloadMisComponent } from '../common/download-mis/download-mis.component';
 import {AuthGuardSecurityService_HR,
+  AuthGuardSecurityService_HR_OR_SUB_HR_Access,
   AuthGuardSecurityService_HR_OR_SUB_Report_Access,
   AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
 
@@ -49,7 +50,7 @@ const routes: Routes = [
   {path:"document-config",component:PolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-list",component:PolicyListComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"emp-document-list",component:EmpPolicyListComponent},
-  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_HR_Access]},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},

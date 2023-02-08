@@ -601,7 +601,7 @@ class email_service():
                         output_field=CharField()
                     )
             )
-        entry_complaince_statues = last_year_entry_complaince_statues | current_year_entry_complaince_statues
+        entry_complaince_statues = list(chain(last_year_entry_complaince_statues, current_year_entry_complaince_statues))
         weekFound=False
         cnt=0
         for _, eachweek in enumerate(last5Weeks):

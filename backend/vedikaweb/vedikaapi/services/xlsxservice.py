@@ -5,6 +5,8 @@ header_format = {'font_size': 10,'bold':True,'font_name':'Arial','align':'center
 disable_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'center','bg_color':'red','border':1,'num_format': 'yyyy-mm-dd'}
 
 cell_format = {'font_size': 10,'font_name':'Arial','align':'center'}
+project_cell_format = {'font_size': 10,'font_name':'Arial','align':'center','font_color':'cc5803'}
+
 merge_format = {
     'bold': 1,
     'border': 1,
@@ -16,7 +18,7 @@ cust_cell_special_format = {'fg_color':'gray','border':1,'text_wrap':True}
 # here is one extra column for checking status = 0 or one at last 
 class ExcelServices:
     def __init__(self,filename,workSheetName='MainWorksheet',in_memory=False,header_format=header_format,cell_format=cell_format,merge_rane=None
-                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format):
+                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format, project_cell_format = project_cell_format):
         self.filenameWithExt = filename
         self.workSheetName = workSheetName
         if in_memory:
@@ -27,6 +29,7 @@ class ExcelServices:
         
         self.header_format=self.workbook.add_format(header_format)
         self.disable_format=self.workbook.add_format(disable_format)
+        self.project_cell_format=self.workbook.add_format(project_cell_format)
         self.cell_format=self.workbook.add_format(cell_format)
         self.cust_cell_special_format=self.workbook.add_format(cust_cell_special_format)
         self.merge_format=self.workbook.add_format(merge_format)
@@ -59,7 +62,7 @@ class ExcelServices:
                 self.writeExcel(dataList[i],worksheet=self.multiWorksheet[i],row_start=0,datetimeColList=[5,6],customFormat={'num_format':'[HH]:MM'},closeFlag=False)
         self.workbook.close()
 
-    def writeExcel(self,regras,worksheet=None,row_start=0,col_start=0,colListForCellFormat=[],long_column_list=[],datetimeColList=[],customFormat={'align':'left'},closeFlag=True,formulaColms=[]):
+    def writeExcel(self,regras,worksheet=None,row_start=0,col_start=0,colListForCellFormat=[],long_column_list=[],datetimeColList=[],customFormat={'align':'left'},closeFlag=True,formulaColms=[],is_inactive_project_exit = {}):
         customFormat=self.workbook.add_format(customFormat)
         if worksheet is None:
             worksheet=self.worksheet
@@ -95,7 +98,20 @@ class ExcelServices:
                             customFormat.__dict__['font_size'] = 10
                             worksheet.write_datetime(row_nums, col , regra[each],customFormat)
                         else:
-                            worksheet.write(row_nums, col , regra[each],self.cell_format)
+                            if(row_nums != (len(is_inactive_project_exit) -1)):
+                                if(each == 11 and is_inactive_project_exit[regra[4]][0] == True):
+                                    worksheet.write(row_nums,col,regra[11],self.project_cell_format)
+
+                                elif(each == 13 and is_inactive_project_exit[regra[4]][1] == True):
+                                    worksheet.write(row_nums,col,regra[13],self.project_cell_format)
+
+                                elif(each == 15 and is_inactive_project_exit[regra[4]][2] == True):
+                                    worksheet.write(row_nums,col,regra[15],self.project_cell_format)
+                                else:
+                                    worksheet.write(row_nums, col , regra[each],self.cell_format)
+                            else:
+                                worksheet.write(row_nums, col , regra[each],self.cell_format)
+
                     elif(len(formulaColms)>0):
 
                         if col in formulaColms:
