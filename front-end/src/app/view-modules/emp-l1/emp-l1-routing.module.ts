@@ -27,7 +27,9 @@ import { ManageTeamLeavesComponent } from '../common/manage-team-leaves/manage-t
 import {AuthGuardSecurityService_HR,
   AuthGuardSecurityService_Manager,
   AuthGuardSecurityService_HR_OR_Manager,
-  AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
+  AuthGuardSecurityService_Report_Access,
+  AuthGuardSecurityService_HR_OR_SUB_HR_Access,
+  AuthGuardSecurityService_HR_OR_SUB_Report_Access} from '../../services/auth-guard-security.service';
 
 
 const routes: Routes = [
@@ -49,12 +51,12 @@ const routes: Routes = [
   {path:"employee-leave-info",component:EmployeeLeaveInfoComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"import-export-leave",component:ImportExportLeaveComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"leave-history",component:LeaveHistoryComponent,canActivate:[AuthGuardSecurityService_HR]},
-  {path:"add-user",component: AddUserComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"add-user",component: AddUserComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_Report_Access]},
   {path:"edit-user",component: EditUserComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-config",component:PolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-list",component:PolicyListComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"emp-document-list",component:EmpPolicyListComponent},
-  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_HR_Access]},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
