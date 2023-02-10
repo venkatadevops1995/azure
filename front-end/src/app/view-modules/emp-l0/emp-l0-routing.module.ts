@@ -24,8 +24,8 @@ import { HrTimesheetReportComponent } from '../common/hr-timesheet-report/hr-tim
 import { AddProjectComponent } from '../common/add-project/add-project.component';
 import { DownloadMisComponent } from '../common/download-mis/download-mis.component';
 import {AuthGuardSecurityService_HR,
-  AuthGuardSecurityService_HR_OR_SUB_HR_Access,
-  AuthGuardSecurityService_HR_OR_SUB_Report_Access,
+  AuthGuardSecurityService_HR_OR_SUB_Attendance,
+  AuthGuardSecurityService_HR_OR_SUB_Add_User,
   AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
 
 
@@ -44,13 +44,13 @@ const routes: Routes = [
   {path:"import-export-leave",component:ImportExportLeaveComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"leave-history",component:LeaveHistoryComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"manage-user",component: ManageUserComponent,canActivate:[AuthGuardSecurityService_HR]},
-  {path:"add-user",component: AddUserComponent, canActivate:[AuthGuardSecurityService_HR_OR_SUB_Report_Access]},
+  {path:"add-user",component: AddUserComponent, canActivate:[AuthGuardSecurityService_HR_OR_SUB_Add_User]},
   {path:"edit-user",component: EditUserComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"manage-project",component: ManageProjectComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-config",component:PolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-list",component:PolicyListComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"emp-document-list",component:EmpPolicyListComponent},
-  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_HR_Access]},
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_Attendance]},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},

@@ -129,7 +129,7 @@ export class AuthGuardSecurityService_Report_Access implements CanActivate {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardSecurityService_HR_OR_SUB_Report_Access implements CanActivate {
+export class AuthGuardSecurityService_HR_OR_SUB_Add_User implements CanActivate {
 
   constructor(
     private ss: SingletonService,
@@ -159,7 +159,7 @@ export class AuthGuardSecurityService_HR_OR_SUB_Report_Access implements CanActi
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardSecurityService_HR_OR_SUB_HR_Access implements CanActivate {
+export class AuthGuardSecurityService_HR_OR_SUB_Attendance implements CanActivate {
 
   constructor(
     private ss: SingletonService,

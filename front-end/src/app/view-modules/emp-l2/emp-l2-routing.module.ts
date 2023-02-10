@@ -27,7 +27,9 @@ import { DownloadMisComponent } from '../common/download-mis/download-mis.compon
 import {AuthGuardSecurityService_HR,
   AuthGuardSecurityService_Manager,
   AuthGuardSecurityService_HR_OR_Manager,
-  AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
+  AuthGuardSecurityService_Report_Access,
+  AuthGuardSecurityService_HR_OR_SUB_Attendance,
+  AuthGuardSecurityService_HR_OR_SUB_Add_User} from '../../services/auth-guard-security.service';
 
 const routes: Routes = [
   // { path: '', component: EmpL2Component },
@@ -47,13 +49,13 @@ const routes: Routes = [
   {path:"holiday",component:HolidayComponent},
   {path:"report",component:ReportComponent},
   {path:"leave-history",component:LeaveHistoryComponent,canActivate:[AuthGuardSecurityService_HR]},
-  {path:"add-user",component: AddUserComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"add-user",component: AddUserComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_Add_User]},
   {path:"edit-user",component: EditUserComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-config",component:PolicyConfigComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"document-list",component:PolicyListComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"emp-document-list",component:EmpPolicyListComponent},
   { path: "dashboard", redirectTo: "history-dashboard", pathMatch: 'full' },
-  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"hr-attendance-reports",component:HrAttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR_OR_SUB_Attendance]},
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
