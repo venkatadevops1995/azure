@@ -3,6 +3,7 @@ import itertools
 from datetime import datetime, timedelta, date
 from django.db.models import Q,F
 from vedikaweb.vedikaapi.constants import DefaultProjects
+from django.conf import settings
 
 class AttendenceService():
     def getFirstOccurence(self,list_,value):
@@ -185,8 +186,10 @@ class AttendenceService():
             each['holiday_hours'] = self.minutes_to_hm_format_conversion(each['holiday_hours'])
             each['project_hours'] = self.minutes_to_hm_format_conversion(each['project_hours'])
         
+
+        ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
         if(len(emp_obj)>0):
-            qs=PunchLogs.objects.using('attendance').filter(DeviceID=emp_obj.last().DeviceId,LogDate__gte=from_date,LogDate__lte=to_date).order_by('LogDate')
+            qs=PunchLogs.objects.using('attendance').filter(Q(DeviceID=emp_obj.last().DeviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
             grouped = itertools.groupby(qs, lambda record: record.LogDate.strftime("%Y-%m-%d"))
             jobs_by_day = [{"Date":day,"result": [{'Direction':each.Direction,'Time':each.LogDate} for each in list(jobs_this_day)]} for day, jobs_this_day in grouped]
             present_dates_list = list(map(lambda x:x['Date'],jobs_by_day))
