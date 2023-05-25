@@ -23,6 +23,7 @@ export interface UserData {
   company: string;
   role: number,
   email: string,
+  device_id:number
   // managers: {
   //   'emp_id': number;
   //   'emp_name': string;
@@ -52,7 +53,8 @@ export class EditUserComponent implements OnInit{
 
     this.heightandwidth = flag;
   }
-
+ //template ref for edit hid 
+ @ViewChild("editHidTemplate") editHidTemplate: TemplateRef<any>;
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
   @ViewChild("table") table: ElementRef;
@@ -81,7 +83,7 @@ export class EditUserComponent implements OnInit{
 
 
   fgSearch: FormGroup;
-  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit','device_id', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   IS_mobile:boolean=false;
   constructor(public dialog: MatDialog,
@@ -122,8 +124,10 @@ export class EditUserComponent implements OnInit{
   show_message = false;
   filteredManagers: Observable<any>;
   errorMessage: string = "";
-  disableEmpName: string = '';
-  editAbleEmpName: string = '';
+  userName: string = '';
+/*variable empId will hold the value of employee id while sending payload to API--> update_device_id/
+*/
+  empId:Number
   delete_emp_success_msg: string = '';
   ngOnInit(): void {
     this.getAllReportes();
@@ -166,6 +170,12 @@ export class EditUserComponent implements OnInit{
         this.disableEmppopupopen()
         break;
       }
+      if (tempTarget.classList.contains('hid')) {
+        let index = tempTarget.getAttribute("index");
+        this.setId(index);
+        this.editHid(index);
+        break;
+      }
       tempTarget = tempTarget.parentNode;
     }
 
@@ -191,7 +201,9 @@ export class EditUserComponent implements OnInit{
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
-
+  editUserHid = this.fb.group({
+    'device_id':['',Validators.required]
+  })
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {
@@ -321,8 +333,38 @@ export class EditUserComponent implements OnInit{
     this
   }
  
-  
+  /*function for open edit hid popup
+  */
+    editHid(i){
+      
+      this.editUserHid.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
+      this.empId = this.USERS_DATA[i]["emp_id"]
+      this.dialogRef = this.dialog.open(PopUpComponent, {
+        data: {
+          heading: 'Edit HID',
+          template: this.editHidTemplate,
+          maxWidth: '420px',
+          hideFooterButtons: true,
+          showCloseButton: true,
+        },
+        autoFocus:false,
+        restoreFocus:true
+      })
+      this.dialogRef.afterClosed().subscribe(data=>{
+        if(!data){
+          this.resetEditHidForm()
+        }
+      })
+    }
 
+  /**
+   * resetting the editHidform
+   */
+  resetEditHidForm(){
+    this.editUserHid.reset();
+    this.editUserHid.markAsPristine();
+    this.editUserHid.markAsUntouched();
+  }
   close() {
     this.editUserForm.reset()
     // this.editUserPopup.close()
@@ -420,6 +462,41 @@ filesize(file):boolean{
     })
     //clear image form control
     this.editUserForm.controls['user_pic'].setValue('')
+  }
+
+ /*
+ *update hid for employee 
+ */
+
+  updateHid(){
+    
+    const empId = this.empId
+    const deviceId = this.editUserHid?.get('device_id').value;
+    const url = 'update_device_id/';
+
+      let payload={
+        emp_id:empId,
+        device_id:deviceId
+      }
+
+      this.http.request("post", url, '',payload).subscribe(res => {
+        if(res.status == 200) {
+          this.ss.statusMessage.showStatusMessage(true,res?.body?.message);
+          this.dialogRef.close();
+          this.resetEditHidForm();
+          this.getAllReportes();
+        }else if(res.status == 406){
+          let errorKey =Object.keys(res?.error?.results[0])[0];
+         if(errorKey==='non_field_errors'){
+           this.ss.statusMessage.showStatusMessage(false,res?.error?.results[0]?.non_field_errors[0])
+         }
+         if(errorKey==='device_id'){
+          this.ss.statusMessage.showStatusMessage(false,res?.error?.results[0]?.device_id[0])
+        }
+        }else if(res.status == 400){
+          this.ss.statusMessage.showStatusMessage(false,res?.error?.message)
+        }
+      })
   }
   // disable user 
 
@@ -528,10 +605,9 @@ filesize(file):boolean{
   }
   setId(i: number) {
     this.index = i;
-    this.disableEmpName = this.USERS_DATA[i]["emp_name"]
+    this.userName = this.USERS_DATA[i]["emp_name"]
     //Rahul change(assigning employee name after calling setId() from editUser() by passing the index number*****
     //********************************************************************************************* 
-    this.editAbleEmpName = this.USERS_DATA[i]["emp_name"]
     //**********************************************************************
   }
 

@@ -181,7 +181,8 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     'category': ['', Validators.required],
     'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
-    'user_pic': [null]
+    'user_pic': [null],
+    'device_id': [null]
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -486,6 +487,7 @@ if(this.SupportImageType){
     formData.append('firstName', this.addUserForm.controls.firstName.value);
     formData.append('lastName', this.addUserForm.controls.lastName.value);
     formData.append('staff_no', this.addUserForm.controls.staff_no.value);
+    formData.append('device_id', this.addUserForm.controls.device_id.value ?? 0);
     formData.append('company', this.addUserForm.controls.company.value);
 
 

@@ -32,10 +32,11 @@
         <col width='150'/>
         <col width='250'/>
         <col width="150"/>
-        <col width="250"/>
+        <col width="300"/>
         <col width="150"/>
-        <col width="50"/>
-        <col width="70"/>
+        <col width="90"/>
+        <col width="90"/>
+        <col width="100"/>
       </colgroup>
       <ng-container matColumnDef="serial_no">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
@@ -85,9 +86,21 @@
           <!-- ****************************************************** -->
         </td>
       </ng-container>
+
+      <ng-container matColumnDef="device_id">
+        <th class="p-table-5 " mat-header-cell *matHeaderCellDef>Hid</th>
+        <td class="p-table-5 align-center" mat-cell *matCellDef="let element;let i = index">
+          <span class="flex middle-xs between-xs" style="max-width:70px;">
+          <span>{{element.device_id? element.device_id : '--'}}</span>
+            <svg tabindex="0" (keydown.enter)="onClickHost($event)" [attr.index]='i' class="use-svg hid " symbol="pen"  [w]="15"
+            ></svg>
+          </span>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="disable">
-        <th class="p-table-5" mat-header-cell *matHeaderCellDef> Disable</th>
-        <td class="p-table-5" mat-cell *matCellDef="let element;let i = index">
+        <th class="p-table-5 align-center" mat-header-cell *matHeaderCellDef> Disable</th>
+        <td class="p-table-5 align-center" mat-cell *matCellDef="let element;let i = index">
           <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
           <!-- Previous code-->
           <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
@@ -126,7 +139,7 @@
   <ng-template #editEmppopup>
     <form class="fs-14 flex col nowrap center-xs" [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
       <p class="col-primary-400">Select Category for</p>
-      <div class="fs-18 mb-30"> {{ editAbleEmpName  | titlecase }} </div>
+      <div class="fs-18 mb-30"> {{ userName  | titlecase }} </div>
 
       <mat-form-field>
         <mat-label>Category</mat-label>
@@ -166,6 +179,25 @@
   </ng-template>
   <!-- **************************************************************
 ************************************************************ -->
+<!-- popup for  edit hid -->
+<ng-template #editHidTemplate>
+  <form class="fs-14 flex col nowrap center-xs" [formGroup]="editUserHid" (ngSubmit)="updateHid()">
+    <div class="fs-18 mb-30"> {{ userName  | titlecase }} </div>
+    <mat-form-field>
+      <mat-label>Hid</mat-label>
+      <input autocomplete="off"  matInput formControlName="device_id">
+      <mat-error *ngIf="editUserHid.controls.device_id.touched || editUserHid.controls.device_id.touched ">
+        Please enter HID
+      </mat-error>
+    </mat-form-field>
+    <div class="center-xs  mt-20 pb-20" mat-dialog-actions >
+      <div style="display: inline-block; text-align: center;">
+        <app-button size='small' theme="success" type="submit" [disabled]="!editUserHid.valid" >Update</app-button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+<!-- --------------------------- -->
   <!-- rahul change added custom date(disable-employee popup) *****************************
             ******************************************************************* -->
   <ng-template #disableEmppopup>
@@ -174,7 +206,7 @@
         You want to disable :
       </p>
       <div class="fs-18 mb-30 delete__emp">
-        {{ disableEmpName ? disableEmpName : '' }}
+        {{ userName ? userName : '' }}
       </div>
       <!-- <div class="delete__emp">
             <p> <span> </span> </p>
