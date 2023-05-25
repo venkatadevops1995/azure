@@ -185,9 +185,14 @@
     <div class="fs-18 mb-30"> {{ userName  | titlecase }} </div>
     <mat-form-field>
       <mat-label>Hid</mat-label>
-      <input autocomplete="off"  matInput formControlName="device_id">
-      <mat-error *ngIf="editUserHid.controls.device_id.touched || editUserHid.controls.device_id.touched ">
-        Please enter HID
+      <input autocomplete="off" matInput formControlName="device_id">
+      <mat-error *ngIf="editUserHid.controls.device_id.touched || editUserHid.controls.device_id.invalid">
+        <div [hidden]="!editUserHid.controls.device_id.hasError('required')">
+          Please enter HID
+        </div>
+        <div [hidden]="!editUserHid.controls.device_id.hasError('pattern')">
+          Allowed Number Only
+        </div>
       </mat-error>
     </mat-form-field>
     <div class="center-xs  mt-20 pb-20" mat-dialog-actions >
