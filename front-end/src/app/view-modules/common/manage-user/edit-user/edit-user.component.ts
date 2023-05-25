@@ -336,8 +336,8 @@ export class EditUserComponent implements OnInit{
   /*function for open edit hid popup
   */
     editHid(i){
-      
-      this.editUserHid.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
+      let deviceId = this.USERS_DATA[i]["device_id"] ? this.USERS_DATA[i]["device_id"]:null
+      this.editUserHid.controls.device_id.setValue(deviceId);
       this.empId = this.USERS_DATA[i]["emp_id"]
       this.dialogRef = this.dialog.open(PopUpComponent, {
         data: {
