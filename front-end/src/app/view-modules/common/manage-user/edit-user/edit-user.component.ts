@@ -202,7 +202,7 @@ export class EditUserComponent implements OnInit{
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
   editUserHid = this.fb.group({
-    'device_id':['',Validators.required]
+    'device_id':['',[Validators.required,Validators.pattern("^[0-9]*$"),]]
   })
   getCategories() {
     let category = []
