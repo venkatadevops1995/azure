@@ -410,7 +410,7 @@ filesize(file):boolean{
 ///////////
   
   updateEmp() {
-    if(this.editUserForm.get('device_id').value==''){
+    if(this.editUserForm.get('device_id').value===''){
      _.set(this.editUserForm.value,'device_id',null)
     }
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
