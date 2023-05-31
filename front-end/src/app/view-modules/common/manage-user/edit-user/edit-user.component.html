@@ -86,16 +86,6 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="device_id">
-        <th class="p-table-5 " mat-header-cell *matHeaderCellDef>Hid</th>
-        <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
-          <span class="flex middle-xs between-xs" style="max-width:70px;">
-          <span>{{element.device_id? element.device_id : '--'}}</span>
-            <svg tabindex="0" (keydown.enter)="onClickHost($event)" [attr.index]='i' class="use-svg hid " symbol="pen"  [w]="15"
-            ></svg>
-          </span>
-        </td>
-      </ng-container>
 
       <ng-container matColumnDef="disable">
         <th class="p-table-5 " mat-header-cell *matHeaderCellDef> Disable</th>
