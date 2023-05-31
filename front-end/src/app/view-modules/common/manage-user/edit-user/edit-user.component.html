@@ -28,15 +28,14 @@
 
     <table style="min-width:1024px;" mat-table [dataSource]="USERS_DATA" class="mat-elevation-z8 w-100">
       <colgroup>
-        <col width='70'/>
-        <col width='150'/>
-        <col width='250'/>
-        <col width="150"/>
-        <col width="300"/>
-        <col width="150"/>
-        <col width="90"/>
-        <col width="90"/>
-        <col width="100"/>
+        <col  width="70">
+        <col  width="150">
+        <col  width="250">
+        <col  width="150">
+        <col  width="250">
+        <col  width="150">
+        <col  width="50">
+        <col  width="70">
       </colgroup>
       <ng-container matColumnDef="serial_no">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef> S.NO </th>
@@ -89,7 +88,7 @@
 
       <ng-container matColumnDef="device_id">
         <th class="p-table-5 " mat-header-cell *matHeaderCellDef>Hid</th>
-        <td class="p-table-5 align-center" mat-cell *matCellDef="let element;let i = index">
+        <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
           <span class="flex middle-xs between-xs" style="max-width:70px;">
           <span>{{element.device_id? element.device_id : '--'}}</span>
             <svg tabindex="0" (keydown.enter)="onClickHost($event)" [attr.index]='i' class="use-svg hid " symbol="pen"  [w]="15"
@@ -99,8 +98,8 @@
       </ng-container>
 
       <ng-container matColumnDef="disable">
-        <th class="p-table-5 align-center" mat-header-cell *matHeaderCellDef> Disable</th>
-        <td class="p-table-5 align-center" mat-cell *matCellDef="let element;let i = index">
+        <th class="p-table-5 " mat-header-cell *matHeaderCellDef> Disable</th>
+        <td class="p-table-5 " mat-cell *matCellDef="let element;let i = index">
           <!-- Rahul change(Using Event delegation for optimising ) the app performance ******************* -->
           <!-- Previous code-->
           <!-- <button class="action--btn "  (click)="setId(i); disableEmppopupopen()"
@@ -138,9 +137,28 @@
  ************************************************* -->
   <ng-template #editEmppopup>
     <form class="fs-14 flex col nowrap center-xs" [formGroup]="editUserForm" (ngSubmit)="updateEmp()">
-      <p class="col-primary-400">Select Category for</p>
-      <div class="fs-18 mb-30"> {{ userName  | titlecase }} </div>
 
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input autocomplete="off" matInput formControlName="emp_name">
+        <mat-error *ngIf="editUserForm.controls.emp_name.touched && editUserForm.controls.emp_name.hasError('required')">
+          Email is required
+         </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input autocomplete="off" matInput formControlName="email">
+        <mat-error *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.hasError('required')">
+         Email is required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>HID</mat-label>
+        <input autocomplete="off" matInput formControlName="device_id">
+        <mat-error *ngIf="editUserForm.controls.device_id.touched && editUserForm.controls.device_id.hasError('pattern')">
+          Allowed Number Only
+        </mat-error>
+      </mat-form-field>
       <mat-form-field>
         <mat-label>Category</mat-label>
         <mat-select formControlName="category">
@@ -179,29 +197,6 @@
   </ng-template>
   <!-- **************************************************************
 ************************************************************ -->
-<!-- popup for  edit hid -->
-<ng-template #editHidTemplate>
-  <form class="fs-14 flex col nowrap center-xs" [formGroup]="editUserHid" (ngSubmit)="updateHid()">
-    <div class="fs-18 mb-30"> {{ userName  | titlecase }} </div>
-    <mat-form-field>
-      <mat-label>Hid</mat-label>
-      <input autocomplete="off" matInput formControlName="device_id">
-      <mat-error *ngIf="editUserHid.controls.device_id.touched || editUserHid.controls.device_id.invalid">
-        <div [hidden]="!editUserHid.controls.device_id.hasError('required')">
-          Please enter HID
-        </div>
-        <div [hidden]="!editUserHid.controls.device_id.hasError('pattern')">
-          Allowed Number Only
-        </div>
-      </mat-error>
-    </mat-form-field>
-    <div class="center-xs  mt-20 pb-20" mat-dialog-actions >
-      <div style="display: inline-block; text-align: center;">
-        <app-button size='small' theme="success" type="submit" [disabled]="!editUserHid.valid" >Update</app-button>
-      </div>
-    </div>
-  </form>
-</ng-template>
 <!-- --------------------------- -->
   <!-- rahul change added custom date(disable-employee popup) *****************************
             ******************************************************************* -->

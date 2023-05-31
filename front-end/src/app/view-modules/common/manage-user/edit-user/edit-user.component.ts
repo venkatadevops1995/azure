@@ -15,7 +15,7 @@ import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
-
+import * as _ from 'lodash';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -23,7 +23,6 @@ export interface UserData {
   company: string;
   role: number,
   email: string,
-  device_id:number
   // managers: {
   //   'emp_id': number;
   //   'emp_name': string;
@@ -53,8 +52,6 @@ export class EditUserComponent implements OnInit{
 
     this.heightandwidth = flag;
   }
- //template ref for edit hid 
- @ViewChild("editHidTemplate") editHidTemplate: TemplateRef<any>;
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
   @ViewChild("table") table: ElementRef;
@@ -83,7 +80,7 @@ export class EditUserComponent implements OnInit{
 
 
   fgSearch: FormGroup;
-  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit','device_id', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   IS_mobile:boolean=false;
   constructor(public dialog: MatDialog,
@@ -170,12 +167,6 @@ export class EditUserComponent implements OnInit{
         this.disableEmppopupopen()
         break;
       }
-      if (tempTarget.classList.contains('hid')) {
-        let index = tempTarget.getAttribute("index");
-        this.setId(index);
-        this.editHid(index);
-        break;
-      }
       tempTarget = tempTarget.parentNode;
     }
 
@@ -197,12 +188,10 @@ export class EditUserComponent implements OnInit{
     'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
+    'device_id':[null,Validators.pattern("^[0-9]*$")],
     'user_pic': ['']
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
-  })
-  editUserHid = this.fb.group({
-    'device_id':['',[Validators.required,Validators.pattern("^[0-9]*$"),]]
   })
   getCategories() {
     let category = []
@@ -228,7 +217,7 @@ export class EditUserComponent implements OnInit{
     console.log("-----------------", this.searchField.value)
     this.http.request("get", "users/", params).subscribe(res => {
 
-      if (res.body["success"] == true) {
+      if (res?.body["success"] == true) {
         this.show_message = true
         let emp_list = []
         res.body["results"].forEach(ele => {
@@ -302,6 +291,7 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
     //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
+    this.editUserForm.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
     this.previousVal= this.USERS_DATA[i]["user_pic"];
     this.selectedFile = this.USERS_DATA[i]["user_pic"];
     
@@ -333,38 +323,7 @@ export class EditUserComponent implements OnInit{
     this
   }
  
-  /*function for open edit hid popup
-  */
-    editHid(i){
-      let deviceId = this.USERS_DATA[i]["device_id"] ? this.USERS_DATA[i]["device_id"]:null
-      this.editUserHid.controls.device_id.setValue(deviceId);
-      this.empId = this.USERS_DATA[i]["emp_id"]
-      this.dialogRef = this.dialog.open(PopUpComponent, {
-        data: {
-          heading: 'Edit HID',
-          template: this.editHidTemplate,
-          maxWidth: '420px',
-          hideFooterButtons: true,
-          showCloseButton: true,
-        },
-        autoFocus:false,
-        restoreFocus:true
-      })
-      this.dialogRef.afterClosed().subscribe(data=>{
-        if(!data){
-          this.resetEditHidForm()
-        }
-      })
-    }
 
-  /**
-   * resetting the editHidform
-   */
-  resetEditHidForm(){
-    this.editUserHid.reset();
-    this.editUserHid.markAsPristine();
-    this.editUserHid.markAsUntouched();
-  }
   close() {
     this.editUserForm.reset()
     // this.editUserPopup.close()
@@ -451,53 +410,37 @@ filesize(file):boolean{
 ///////////
   
   updateEmp() {
+    if(this.editUserForm.get('device_id').value==''){
+     _.set(this.editUserForm.value,'device_id',null)
+    }
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
-      if (res.body["success"] == true) {
-        console.log("-------------------------")
+      if (res.status == 200) {
+        console.log("-------------------------");
+        this.ss.statusMessage.showStatusMessage(true,res?.body?.results);
         this.close()
         this.getAllReportes()
         this
+      }else if(res.status == 400){
+        const deviceIdErrorkey = res?.error?.results[0]?.device_id?.[0];
+        if(deviceIdErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,deviceIdErrorkey);
+        }
+        const empNameErrorkey = res?.error?.results[0]?.emp_name;
+        if(empNameErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empNameErrorkey);
+        }
+        const empEmailErrorkey = res?.error?.results[0]?.email;
+        if(empEmailErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empEmailErrorkey);
+        }
       }
     })
     //clear image form control
     this.editUserForm.controls['user_pic'].setValue('')
   }
 
- /*
- *update hid for employee 
- */
 
-  updateHid(){
-    
-    const empId = this.empId
-    const deviceId = this.editUserHid?.get('device_id').value;
-    const url = 'update_device_id/';
-
-      let payload={
-        emp_id:empId,
-        device_id:deviceId
-      }
-
-      this.http.request("post", url, '',payload).subscribe(res => {
-        if(res.status == 200) {
-          this.ss.statusMessage.showStatusMessage(true,res?.body?.message);
-          this.dialogRef.close();
-          this.resetEditHidForm();
-          this.getAllReportes();
-        }else if(res.status == 406){
-          let errorKey =Object.keys(res?.error?.results[0])[0];
-         if(errorKey==='non_field_errors'){
-           this.ss.statusMessage.showStatusMessage(false,res?.error?.results[0]?.non_field_errors[0])
-         }
-         if(errorKey==='device_id'){
-          this.ss.statusMessage.showStatusMessage(false,res?.error?.results[0]?.device_id[0])
-        }
-        }else if(res.status == 400){
-          this.ss.statusMessage.showStatusMessage(false,res?.error?.message)
-        }
-      })
-  }
   // disable user 
 
   disableUser(i) {
