@@ -15,7 +15,7 @@
         </mat-autocomplete>
       </mat-form-field>
       <mat-form-field appearance="legacy" class="no-pb atai-date-range mb-15 mb-md-0  top-form-field">
-        <app-atai-date-range [maxDate]="maxDate" (dateSelected)="onDateSelection($event)"></app-atai-date-range>
+        <app-atai-date-range [maxDate]="maxDate" [minDate]="minDate" (dateSelected)="onDateSelection($event)" (cancel)="onCancelDateSelection()"></app-atai-date-range>
       </mat-form-field>
       <svg class="export_icon ml-md-30 use-svg" [dbdFileDownload]="{endPoint:getDownloadEndPoint(),responseType:'blob'}"
         symbol="excel-green" w="25">

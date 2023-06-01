@@ -25,6 +25,7 @@ import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesh
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
 import { TimeSheetModule } from '../common/time-sheet/time-sheet.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
+import { VedaModule } from '../common/veda/veda.module';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
     EmpPolicyListModule,
     HrAttendenceReportModule,
     HrTimesheetReportModule,
-    DownloadMisModule
+    DownloadMisModule,
+    VedaModule
   ]
 })
 export class EmpL0Module { }
