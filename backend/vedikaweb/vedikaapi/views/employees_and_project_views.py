@@ -3,7 +3,7 @@ from django.db.models.query import Prefetch
 from vedikaweb.vedikaapi.services.email_service import email_service
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from vedikaweb.vedikaapi.models import Employee,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup, StageEmpolyee
+from vedikaweb.vedikaapi.models import Employee, EmployeeMaster,EmployeeProject, LeaveRequest,Project,Project,EmployeeHierarchy,EmployeeEntryCompStatus,StageEmployeeProject, NewHireLeaveConfig, LeaveBalance, EmployeeProfile, Leave, GlobalAccessFlag, LeaveAccessGroup, StageEmpolyee
 
 from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
 
@@ -22,12 +22,13 @@ import traceback, json
 from datetime import datetime, timedelta
 import ast
 import logging
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 from vedikaweb.vedikaapi.services.email_service import email_service 
 from django.db.models import When, Case
 log = logging.getLogger(__name__)
 from vedikaweb.vedikaapi.views.common_views import CommonFunctions
 import os
+import decimal
 attendance_ = attendance()
 
 class EmpProjects(APIView):
@@ -106,7 +107,7 @@ class Users(APIView):
         hierarchy_type = request.query_params.get('hierarchy_type','immediate')
         search = request.query_params.get('search',False)
         if(hierarchy_type=='all'):
-            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
+            emp_data=Employee.objects.prefetch_related('profile').filter(Q(status=1)).annotate(gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture'),location=F('profile__location_id__name')).order_by("staff_no")
             emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
             return Response(utils.StyleRes(True,"All employee list",emp_serial_data.data), status=StatusCode.HTTP_OK)  
         elif(auth_details['role_id']>1 or auth_details['is_emp_admin'] or len(auth_details['sub_report_access']) >0):
@@ -150,11 +151,33 @@ class Users(APIView):
                     return Response(utils.StyleRes(True,"All employee list",employees), status=StatusCode.HTTP_OK)
             elif (is_emp_admin == True or 'hr-attendance-reports' in auth_details['sub_report_access']) and emp_type == "hr":
                 if(search.lower()=="all"):
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture'),location=F('profile__location_id__name')).order_by("staff_no")
+
+                    final_data = list(emp_data.values())
+                    emp_staff_no_list = []
+                    emp_device_id_dict = {}  # example: {staff_no: {device_id:12345, amd_id:456788}}
+                    for each_emp in emp_data:
+                        emp_staff_no_list.append(each_emp.staff_no)
+                    emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId__in = emp_staff_no_list).order_by('Id') 
+                    for each_master_data in emp_master_data:
+                        obj = {}
+                        obj["device_id"] = each_master_data.DeviceId
+                        obj["amd_id"] = int(each_master_data.AmdId)
+                        emp_device_id_dict[str(each_master_data.EmpId)] = obj
+                    for each_emp in final_data:
+                        if each_emp['staff_no'] in emp_device_id_dict:
+                            each_emp['device_id'] = emp_device_id_dict[each_emp['staff_no']]['device_id']
+                            each_emp['amd_id'] = emp_device_id_dict[each_emp['staff_no']]['amd_id']
+                        else:
+                            each_emp['device_id'] = None
+                            each_emp['amd_id'] = None
+                                                                   
                 else:
-                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture')).order_by("staff_no")
+                    emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture'), location=F('profile__location_id__name')).order_by("staff_no")
                 # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
                 emp_serial_data = emp_data.values()
+                if search.lower()=="all":
+                    emp_serial_data = final_data
                 return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
             else:
                 
@@ -172,13 +195,40 @@ class Users(APIView):
         if(auth_details['email']==""):
             return Response(auth_details, status=400)
         serial_data = EmployeeDetailsSerializer(data=request.data)
-        if(serial_data.is_valid()):
-            EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"))
-        else:
-            return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
+        try:
+            if(serial_data.is_valid(raise_exception=True)):
+                
+                emp_id = serial_data.data["emp_id"]
+                email = serial_data.data["email"]
+                emp_name = serial_data.data["emp_name"]
+                # checking the name and email are  exist for another employee or not 
+                if(Employee.objects.filter(Q(email = email) & ~(Q(emp_id = emp_id))).exists()):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'email':"employee already exists with email {}".format(email)}]), status=StatusCode.HTTP_BAD_REQUEST)
+                
+                if(Employee.objects.filter(Q(emp_name = emp_name) & ~(Q(emp_id = emp_id))).exists()):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'emp_name':"employee name {} already exists for another employee.".format(emp_name)}]), status=StatusCode.HTTP_BAD_REQUEST)
+                
+                EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"),location_id=serial_data.validated_data.get("location"))
+                Employee.objects.filter(emp_id = emp_id).update(emp_name =emp_name,email=email)
 
-        return Response(utils.StyleRes(True,"Employee update","updated profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
+                staff_no = serial_data.data["staff_no"]
+                device_id = serial_data.data["device_id"]
+                amd_id =  decimal.Decimal(serial_data.data["amd_id"])
+                if(device_id == None):
+                    device_id = 0
+                emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).order_by('-Id')
+                print ("emp_master_data:", emp_master_data.values())
+                if(len(emp_master_data) == 0):
+                    new_emp_mastser_data = EmployeeMaster.objects.using('attendance').create(EmpId=staff_no, DeviceId=device_id,AmdId=amd_id)
+                else:
+                    updated_data = EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).update(DeviceId=device_id,AmdId=amd_id)
+            
+            return Response(utils.StyleRes(True,"Employee update","updated profile for {}".format(serial_data.validated_data.get("emp_name"))), status=StatusCode.HTTP_OK)
 
+        except Exception as e:
+            log.error(traceback.format_exc())
+            return Response(utils.StyleRes(False,"Employee update failed",e.args), status=StatusCode.HTTP_BAD_REQUEST)
+            
 
     @jwttokenvalidator
     @custom_exceptions
@@ -283,6 +333,13 @@ class Users(APIView):
                 else:
                      log.info("Leave balance is not added for emp_id {} as Leave access is not enabled".format(emp_id))
                 
+
+                # If device_id  and amd_id is available in request body then adding those to Employee Master
+
+                device_id = data['device_id'].value
+                amd_id =  decimal.Decimal(data['amd_id'].value)
+                emp_master_data = EmployeeMaster.objects.using('attendance').create(EmpId=data["staff_no"].value,DeviceId=device_id,AmdId=amd_id,EmpName=emp_name)
+
                 # new employee email with reset password link
                 email_service.sendWelcomeMail(emp_id)
 

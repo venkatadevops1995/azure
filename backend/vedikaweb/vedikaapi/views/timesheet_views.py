@@ -29,7 +29,7 @@ import calendar
 import ast
 import logging
 from django.utils.encoding import smart_str
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 from hashlib import md5
 from django.core.mail import send_mail
 from django.template.loader import get_template 

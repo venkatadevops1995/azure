@@ -43,6 +43,10 @@ urlpatterns = [
     #Attendance
     path('attendance/', attendance_views.AttendanceApi.as_view(), name='AttendanceApi'),
     path('attendancestatus/', attendance_views.AttendanceStatusAPI.as_view(), name='AttendanceStatusAPI'),
+    path('student/attendance/', attendance_views.VedaStudentAttendanceApi.as_view(), name='VedaStudentAttendanceApi'),
+    path('student/batch/', attendance_views.VedaStudentBatchAPI.as_view(), name='VedaStudentBatchAPI'),
+    path('student/', attendance_views.VedaStudentAPI.as_view(), name='VedaStudentAPI'),
+    path('export_student/<batch_id>', attendance_views.ExportVedaStudentApi.as_view(), name='VedaStudentAPI'),
 
     #service account apis
     path('service/apikey/', third_party_views.ServiceLoginView.as_view(), name='ServiceLoginViewAPI'),

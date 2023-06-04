@@ -1,9 +1,14 @@
 from vedikaweb.vedikaapi.models import Employee, AttendanceAccessGroup, EmployeeHierarchy, EmployeeProfile, GlobalAccessFlag,EmployeeMaster, PunchLogs,  EmployeeProjectTimeTracker, HolidayCalendar
+
 import itertools
+import logging
+log = logging.getLogger(__name__)
+
 from datetime import datetime, timedelta, date
 from django.db.models import Q,F
 from vedikaweb.vedikaapi.constants import DefaultProjects
 from django.conf import settings
+
 
 class AttendenceService():
     def getFirstOccurence(self,list_,value):
@@ -260,3 +265,99 @@ class AttendenceService():
                 final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":eachday,"FirstInTime":"--:--:--","LastOutTime":"--:--:--","GrossWorkingHours":"00:00:00","NetWorkingHours":"00:00:00","WeekdayFlag":weekdayFlag,"punchdata":[], 'timesheet_total_working_hours':final_data[k]['total_hours'], 'vacation_hours':final_data[k]['vacation_hours'], 'holiday_hours':final_data[k]['holiday_hours'], 'project_hours':final_data[k]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False})
                 k=k+1
         return final_datastructure, attendance_flag, present_dates_list
+    
+    def get_student__final_datastructure(self,deviceId,from_date,to_date):
+        final_datastructure = []
+        isHoliday = False
+        k=0
+        k2=0
+        present_dates_list = []
+        format = "%Y-%m-%d"
+        if(type(from_date)==str):
+            from_date = datetime.strptime(from_date,format)
+        if(type(to_date)==str):
+            to_date = datetime.strptime(to_date,format)
+        to_date = datetime.combine(to_date, datetime.min.time())+timedelta(hours=23,minutes=59,seconds=59)
+        total_dates_list =[]
+        if((type(from_date) is datetime) and (type(to_date) is date)):
+            delta = to_date - from_date.date()
+        elif((type(from_date) is date) and (type(to_date) is datetime)):
+            delta = to_date.date() - from_date
+        elif((type(from_date) is datetime) and (type(to_date) is datetime)):
+            delta = to_date.date() - from_date.date()
+        else:
+            delta = to_date - from_date
+
+        for i in range(delta.days + 1):
+            day = from_date + timedelta(days=i)
+            if(type(day) is datetime):
+                total_dates_list.append(str(day.date()))
+            else:
+                total_dates_list.append(str(day))
+
+        datesList = []
+        for i in range(delta.days + 1):
+            day = from_date + timedelta(days=i)
+            datesList.append(day)
+        final_data = []
+
+        ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
+        qs=PunchLogs.objects.using('attendance').filter(Q(DeviceID=deviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
+        grouped = itertools.groupby(qs, lambda record: record.LogDate.strftime("%Y-%m-%d"))
+        jobs_by_day = [{"Date":day,"result": [{'Direction':each.Direction,'Time':each.LogDate} for each in list(jobs_this_day)]} for day, jobs_this_day in grouped]
+        present_dates_list = list(map(lambda x:x['Date'],jobs_by_day))
+        if isinstance(from_date, datetime):
+            from_date = from_date.date()
+        else:
+            from_date = from_date
+        if isinstance(to_date, datetime):
+            to_date = to_date.date()
+        else:
+            to_date = to_date
+        
+        for eachday in total_dates_list:
+            punchdata=[]
+            weekdayFlag=False
+            if(datetime.strptime(eachday, '%Y-%m-%d').weekday()==5 or datetime.strptime(eachday, '%Y-%m-%d').weekday()==6):
+                weekdayFlag=True
+            for eachdate in datesList:
+                if eachdate.strftime("%Y-%m-%d") not in [eachjob['Date'] for eachjob in jobs_by_day]:
+                    jobs_by_day.append({"Date":eachdate.strftime("%Y-%m-%d"),"result": [{'Direction':"--",'Time':"--:--:--"}]})
+
+            if(str(eachday) in present_dates_list):
+                FirstIn = self.getFirstOccurence(jobs_by_day[k]['result'],"In")
+                LastOut = self.getLastOccurence(jobs_by_day[k]['result'],"Out")
+                getTime = lambda x : str(jobs_by_day[k]['result'][x]['Time'].strftime('%H:%M:%S')) if x is not None else '--:--:--'
+                FirstInTime = getTime(FirstIn)
+                LastOutTime = getTime(LastOut)
+                punchdata = self.getpunchdata(jobs_by_day[k]['result'])
+                if(FirstIn is None or LastOut is None):
+                    Grossworking_hours = '00:00:00'
+                    Networking_hours = '00:00:00'
+                else:
+                    if(jobs_by_day[k]['result'][LastOut]['Time'] < jobs_by_day[k]['result'][FirstIn]['Time']):
+                        Grossworking_hours = '00:00'
+                        Networking_hours = '00:00'
+                    else:
+                        Grossworking_hours = str(jobs_by_day[k]['result'][LastOut]['Time'] - jobs_by_day[k]['result'][FirstIn]['Time'])
+                        if(len(Grossworking_hours.split(':')[0])==1):
+                            Grossworking_hours = "0"+Grossworking_hours
+                        punchPairs = self.getPunchPairs(jobs_by_day[k]['result'])
+                        Networking_hours = self.getNetworkingHours(punchPairs,jobs_by_day[k]['result'])
+
+                final_datastructure.append({"deviceId":deviceId,"Date":jobs_by_day[k]['Date'],"FirstInTime":FirstInTime,"LastOutTime":LastOutTime,"GrossWorkingHours":Grossworking_hours,"NetWorkingHours":Networking_hours,"punchdata":punchdata,"attendance":'Present',"isHoliday":False})
+                k=k+1
+            else:
+                day_name= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday']
+                day = datetime.strptime(eachday, "%Y-%m-%d").weekday()
+                current_day = day_name[day]
+                if(day == 5 or day == 6):
+                    isHoliday = True
+                else:
+                    isHoliday = False
+                final_datastructure.append({"deviceId":deviceId,"Date":eachday,"FirstInTime":'00:00',"LastOutTime":'00:00',"GrossWorkingHours":'00:00',"NetWorkingHours":'00:00',"punchdata":{},"attendance":current_day if (day == 5 or day == 6) else 'Absent',"isHoliday":isHoliday})
+            k2=k2+1
+                # k=k+1
+            # print(final_datastructure)
+        return final_datastructure
+    
