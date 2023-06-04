@@ -266,7 +266,7 @@ class AttendenceService():
                 k=k+1
         return final_datastructure, attendance_flag, present_dates_list
     
-    def get_student__final_datastructure(self,deviceId,from_date,to_date):
+    def get_student_final_datastructure(self,deviceId,from_date,to_date):
         final_datastructure = []
         isHoliday = False
         k=0

@@ -454,7 +454,7 @@ class VedaStudentAttendanceApi(APIView):
         for student in all_student_data:
             deviceIDList.append(student['device_id'])
         for deviceId in deviceIDList:
-            final_datastructure = attendance_.get_student__final_datastructure(deviceId,from_date,to_date)
+            final_datastructure = attendance_.get_student_final_datastructure(deviceId,from_date,to_date)
             final_dict['final_datastructure'].append(final_datastructure)
         columns=['DeviceId','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours','Attendance','isHoliday']
 

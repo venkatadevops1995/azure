@@ -953,12 +953,3 @@ class VedaStudentExportsSerializer(serializers.ModelSerializer):
         model= VedaStudent
         fields='__all__'
 
-class UpdateDeviceIdSerializer(serializers.Serializer):
-    emp_id = serializers.IntegerField(required=True)
-    device_id = serializers.IntegerField(required=True)
-
-    def validate(self,data):
-        device_id =  data['device_id']
-        if device_id > 1000000:
-            raise serializers.ValidationError("device_id maximum value  is 999999")
-        return data
