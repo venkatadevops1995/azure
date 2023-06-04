@@ -47,7 +47,7 @@ export class AttendenceSheetComponent implements OnInit {
   filteredManagers: Observable<any>;
   minDateChecker= 0;
   minDate!:any;
-  isSelectedEmpAll!:boolean;
+  isSelectedEmpAll:boolean = false;
   constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
     this.filteredManagers = this.option.valueChanges
   
@@ -100,7 +100,8 @@ export class AttendenceSheetComponent implements OnInit {
     // checking if the selected employee is all then giving access to download report range betweeen 30 days
     if(this.isSelectedEmpAll == true){
       let next30Days = new Date(new Date(this.fromdate).setDate(val.start.getDate() + 30));
-      if(val.start.getMonth() == new Date().getMonth()-1){
+      
+      if(next30Days > new Date()){
         next30Days = new Date();
       }
       if(this.minDateChecker==1){

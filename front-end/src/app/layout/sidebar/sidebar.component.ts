@@ -192,9 +192,6 @@ export class SidebarComponent implements OnInit {
               if (!is_hr  && (!sub_report_access.includes('hr-attendance-reports'))) {
                 this.menu = this.menu.filter(item => item.text != "HR Reports");
               }
-              if (!is_hr) {
-                this.menu = this.menu.filter(item => item.text != "Veda Report Management");
-              }
               if (!this.isReportsAccessable) {
 
                 this.menu = this.menu.filter(item => item.text != "MIS");
