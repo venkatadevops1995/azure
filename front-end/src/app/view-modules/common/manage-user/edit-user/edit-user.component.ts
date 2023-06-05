@@ -29,7 +29,11 @@ export interface UserData {
   // }[]
 
 }
-
+export interface ILocation{
+  id: number,
+  name: string,
+  status: number
+}
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
@@ -117,7 +121,8 @@ export class EditUserComponent implements OnInit{
   index: number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
-  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }]
+  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }];
+  ALL_LOCATIONS:Array<ILocation> = [];
   show_message = false;
   filteredManagers: Observable<any>;
   errorMessage: string = "";
@@ -130,6 +135,7 @@ export class EditUserComponent implements OnInit{
     this.getAllReportes();
     this.getCompanies()
     this.getCategories();
+    this.getLocations();
     // this.renderer.listen(this.table?.nativeElement,'click',(evt)=>{
     //   console.log('hello u clicked on the table!!!')
     // })
@@ -184,11 +190,12 @@ export class EditUserComponent implements OnInit{
     // 'fun_own': ['', [Validators.required, NotNull()]],
     'email': ['', [Validators.required, ValidateEmail]],
     // 'role': [1, Validators.required],
-
+    'location':['', Validators.required],
     'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
     'device_id':[null,Validators.pattern("^[0-9]*$")],
+    'amd_id':[null,Validators.pattern("^[0-9]*$")],
     'user_pic': ['']
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
@@ -201,6 +208,18 @@ export class EditUserComponent implements OnInit{
           category.push(ele);
         })
         this.ALL_CATEGORIES = category;
+      }
+    })
+  }
+
+  getLocations() {
+    let location = []
+    this.http.request('get', 'location/').subscribe(res => {
+      if (res.status == 200) {
+        res.body["results"].forEach(ele => {
+          location.push(ele);
+        })
+        this.ALL_LOCATIONS = location;
       }
     })
   }
@@ -289,9 +308,11 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
+    this.editUserForm.controls.location.setValue(this.getLocationId(this.USERS_DATA[i]["location"]));
     //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
     this.editUserForm.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
+    this.editUserForm.controls.amd_id.setValue(this.USERS_DATA[i]["amd_id"])
     this.previousVal= this.USERS_DATA[i]["user_pic"];
     this.selectedFile = this.USERS_DATA[i]["user_pic"];
     
@@ -323,6 +344,9 @@ export class EditUserComponent implements OnInit{
     this
   }
  
+  getLocationId(location:string){
+    return this.ALL_LOCATIONS.filter(loc=>loc.name.toLowerCase()===location.toLowerCase())[0]?.id
+  }
 
   close() {
     this.editUserForm.reset()
@@ -413,6 +437,9 @@ filesize(file):boolean{
     if(this.editUserForm.get('device_id').value===''){
      _.set(this.editUserForm.value,'device_id',null)
     }
+     if(this.editUserForm.get('amd_id').value===''){
+     _.set(this.editUserForm.value,'amd_id',0)
+    }
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
       if (res.status == 200) {
@@ -433,6 +460,10 @@ filesize(file):boolean{
         const empEmailErrorkey = res?.error?.results[0]?.email;
         if(empEmailErrorkey){
           this.ss.statusMessage.showStatusMessage(false,empEmailErrorkey);
+        }
+        const empAmdIdErrorkey = res?.error?.results[0]?.amd_id?.[0];
+        if(empAmdIdErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empAmdIdErrorkey);
         }
       }
     })

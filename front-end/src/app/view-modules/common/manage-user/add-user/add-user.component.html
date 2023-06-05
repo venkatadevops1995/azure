@@ -40,7 +40,7 @@
       <!-- {{addUserForm.controls.email.touched}} {{addUserForm.controls.email.hasError('required')}} -->
     </mat-form-field>
      <div class="w-100">
-       <mat-form-field class="w-50 ">
+       <mat-form-field class="w-100 ">
          <mat-label>Staff No.</mat-label>
          <input autocomplete="off"  matInput formControlName="staff_no">
          <mat-error *ngIf="addUserForm.controls.staff_no.touched && addUserForm.controls.staff_no.hasError('required')">
@@ -51,13 +51,6 @@
           Entered Staff No. already exists
         </mat-error>
       </mat-form-field>
-      <mat-form-field class="w-50 ">
-        <mat-label>HID</mat-label>
-        <input autocomplete="off"  matInput formControlName="device_id">
-        <mat-error *ngIf="addUserForm.controls.device_id.touched && addUserForm.controls.device_id.hasError('pattern')">
-          Allowed Number Only
-        </mat-error>
-      </mat-form-field> 
         </div>
     <mat-form-field>
       <mat-label>Location</mat-label>
@@ -193,6 +186,26 @@
             <p class="danger" *ngIf="getImageHeightIsValid" >Image height and width should be 200X200 px </p>
     </div> -->
 <!-- ************************* -->
+  <mat-form-field>
+    <mat-label>HID</mat-label>
+    <input autocomplete="off"  matInput formControlName="device_id">
+    <mat-error *ngIf="addUserForm.controls.device_id.touched && addUserForm.controls.device_id.hasError('pattern')">
+      Allowed Number Only
+    </mat-error>
+    <mat-error *ngIf="addUserForm.controls.device_id.touched && addUserForm.controls.device_id.hasError('max_length')">
+      max allowed Integer length exceeded
+    </mat-error>
+  </mat-form-field> 
+  <mat-form-field>
+    <mat-label>AID</mat-label>
+    <input autocomplete="off"  matInput formControlName="amd_id">
+    <mat-error *ngIf="addUserForm.controls.amd_id.touched && addUserForm.controls.amd_id.hasError('pattern')">
+      Allowed Number Only
+    </mat-error>
+    <mat-error *ngIf="addUserForm.controls.amd_id.touched && addUserForm.controls.amd_id.hasError('max_length')">
+      max allowed Integer length exceeded
+    </mat-error>
+  </mat-form-field> 
   </div> 
   <div class="flex no-lg-wrap center-xs mt-xmd-30 mt-20 " mat-dialog-actions>
     <div class="pr-20" style="display: inline-block;padding-bottom: 10px;">

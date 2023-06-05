@@ -150,6 +150,13 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field>
+        <mat-label>AID</mat-label>
+        <input autocomplete="off" matInput formControlName="amd_id">
+        <mat-error *ngIf="editUserForm.controls.amd_id.touched && editUserForm.controls.amd_id.hasError('pattern')">
+          Allowed Number Only
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
         <mat-label>Category</mat-label>
         <mat-select formControlName="category">
           <mat-option [value]="category['id']" *ngFor="let category of ALL_CATEGORIES">{{category['name']}}</mat-option>
@@ -159,6 +166,32 @@
           Please Select Category
         </mat-error>
       </mat-form-field>
+      <mat-form-field>
+        <mat-label>Group</mat-label>
+        <mat-select formControlName="company">
+          <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="editUserForm.controls.company.touched && editUserForm.controls.company.hasError('required')">
+          Please select Group
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Location</mat-label>
+        <mat-select formControlName="location">
+          <mat-option [value]="location.id" *ngFor="let location of ALL_LOCATIONS">{{location.name}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="editUserForm.controls.location.touched && editUserForm.controls.location.hasError('required')">
+          Please select Location
+        </mat-error>
+      </mat-form-field>
+      <mat-label class="mb-10 " style="display:block;color: var(--col-primary-300);">Gender</mat-label>
+      <mat-radio-group formControlName="gender">
+        <mat-radio-button class="mr-10 mb-5 ml-5" style="color: var(--col-primary-300);" [value]="gender['id']"
+          *ngFor="let gender of ALL_GENDERS">{{gender['name']}}</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="editUserForm.controls.gender.touched && editUserForm.controls.gender.hasError('required')">
+        Please select Gender
+      </mat-error>
         <!-- upload image formcontroller ----> 
       <!-- <div class="flex col flex-row-md fs-14  mb-xmd-0  start-xs ">
           <input style="display: none" type="file" id="file-id"  autocomplete="off" (click)="reSetInput($event)" (change)="onFileChanged($event)"  #fileInput>
