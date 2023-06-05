@@ -27,6 +27,8 @@ import {MatRadioModule} from '@angular/material/radio';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { TableAffixModule } from 'src/app/directives/table-affix/table-affix.module';
 import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
+import { NumericModule } from 'src/app/directives/numeric/numeric.module';
+
   // If required extend other NativeDateAdapter methods.
 @NgModule({
   declarations: [ManageUserComponent, AddUserComponent, EditUserComponent,],
@@ -54,7 +56,8 @@ import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.modu
     ConfirmDialogModule,
     MatRadioModule,
     TableAffixModule,
-    FocusModule
+    FocusModule,
+    NumericModule
     // NgxDaterangepickerMd.forRoot()
   ]
 })

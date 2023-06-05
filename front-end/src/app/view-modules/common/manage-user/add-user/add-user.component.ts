@@ -181,7 +181,9 @@ export class AddUserComponent implements OnInit, AfterViewInit {
     'category': ['', Validators.required],
     'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
-    'user_pic': [null]
+    'user_pic': [null],
+    'device_id': [null,Validators.pattern("^[0-9]*$")],
+    'amd_id':[null,Validators.pattern("^[0-9]*$")]
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
@@ -483,9 +485,13 @@ if(this.SupportImageType){
 
 
     let formData = new FormData();
+    let deviceId = this.addUserForm.controls.device_id.value;
+    let alternativeId = this.addUserForm.controls.amd_id.value
     formData.append('firstName', this.addUserForm.controls.firstName.value);
     formData.append('lastName', this.addUserForm.controls.lastName.value);
     formData.append('staff_no', this.addUserForm.controls.staff_no.value);
+    formData.append('device_id', deviceId ==''||deviceId==null? 0 : deviceId);
+    formData.append('amd_id', alternativeId ==''||alternativeId==null? 0 : alternativeId);
     formData.append('company', this.addUserForm.controls.company.value);
 
 
@@ -543,13 +549,21 @@ if(this.SupportImageType){
             error_message = res.error["results"][0][ele];
             this.addUserForm.controls['firstName'].setErrors({ 'is_duplicated': true });
             this.addUserForm.controls['lastName'].setErrors({ 'is_duplicated': true });
-          } else {
+            this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
+          }else if(ele=='device_id'){
+             error_message = res.error["results"][0][ele][0];
+             this.ss.statusMessage.showStatusMessage(false,error_message);
+             this.addUserForm.controls['device_id'].setErrors({ 'max_length': true });
+          }else if(ele=='amd_id'){
+            error_message = res.error["results"][0][ele][0];
+            this.ss.statusMessage.showStatusMessage(false,error_message);
+            this.addUserForm.controls['amd_id'].setErrors({ 'max_length': true });
+         } else {
             error_message += " " + ele;
-            this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true })
+            this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true });
+            this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
           }
         })
-
-        this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
 
       } else if (res.status == 409) {
         error_message += res['results'][0]['non_field_errors'];

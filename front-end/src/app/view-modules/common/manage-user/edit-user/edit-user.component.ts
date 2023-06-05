@@ -15,7 +15,7 @@ import { PopUpComponent } from 'src/app/components/pop-up/pop-up.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { AtaiBreakPoints } from 'src/app/constants/atai-breakpoints';
-
+import * as _ from 'lodash';
 export interface UserData {
   emp_id: number;
   name: string;
@@ -29,7 +29,11 @@ export interface UserData {
   // }[]
 
 }
-
+export interface ILocation{
+  id: number,
+  name: string,
+  status: number
+}
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
@@ -52,7 +56,6 @@ export class EditUserComponent implements OnInit{
 
     this.heightandwidth = flag;
   }
-
   //  Rahul change(using Viewchild for modalPopup)**************************
   @ViewChild("editEmppopup") editEmppopup: TemplateRef<any>;
   @ViewChild("table") table: ElementRef;
@@ -118,17 +121,21 @@ export class EditUserComponent implements OnInit{
   index: number = -1;
   employeeListSearch: any = [];
   employeeList: any = [];
-  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }]
+  ALL_GENDERS = [{ name: "Male", id: 1 }, { name: "Female", id: 2 }, { name: "Other", id: 0 }];
+  ALL_LOCATIONS:Array<ILocation> = [];
   show_message = false;
   filteredManagers: Observable<any>;
   errorMessage: string = "";
-  disableEmpName: string = '';
-  editAbleEmpName: string = '';
+  userName: string = '';
+/*variable empId will hold the value of employee id while sending payload to API--> update_device_id/
+*/
+  empId:Number
   delete_emp_success_msg: string = '';
   ngOnInit(): void {
     this.getAllReportes();
     this.getCompanies()
     this.getCategories();
+    this.getLocations();
     // this.renderer.listen(this.table?.nativeElement,'click',(evt)=>{
     //   console.log('hello u clicked on the table!!!')
     // })
@@ -183,15 +190,16 @@ export class EditUserComponent implements OnInit{
     // 'fun_own': ['', [Validators.required, NotNull()]],
     'email': ['', [Validators.required, ValidateEmail]],
     // 'role': [1, Validators.required],
-
+    'location':['', Validators.required],
     'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
+    'device_id':[null,Validators.pattern("^[0-9]*$")],
+    'amd_id':[null,Validators.pattern("^[0-9]*$")],
     'user_pic': ['']
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
   })
-
   getCategories() {
     let category = []
     this.http.request('get', 'employee-type/').subscribe(res => {
@@ -200,6 +208,18 @@ export class EditUserComponent implements OnInit{
           category.push(ele);
         })
         this.ALL_CATEGORIES = category;
+      }
+    })
+  }
+
+  getLocations() {
+    let location = []
+    this.http.request('get', 'location/').subscribe(res => {
+      if (res.status == 200) {
+        res.body["results"].forEach(ele => {
+          location.push(ele);
+        })
+        this.ALL_LOCATIONS = location;
       }
     })
   }
@@ -216,7 +236,7 @@ export class EditUserComponent implements OnInit{
     console.log("-----------------", this.searchField.value)
     this.http.request("get", "users/", params).subscribe(res => {
 
-      if (res.body["success"] == true) {
+      if (res?.body["success"] == true) {
         this.show_message = true
         let emp_list = []
         res.body["results"].forEach(ele => {
@@ -288,8 +308,11 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.email.setValue(this.USERS_DATA[i]["email"]);
     this.editUserForm.controls.category.setValue(this.USERS_DATA[i]["category"]);
     this.editUserForm.controls.gender.setValue(this.USERS_DATA[i]["gender"]);
+    this.editUserForm.controls.location.setValue(this.getLocationId(this.USERS_DATA[i]["location"]));
     //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
+    this.editUserForm.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
+    this.editUserForm.controls.amd_id.setValue(this.USERS_DATA[i]["amd_id"])
     this.previousVal= this.USERS_DATA[i]["user_pic"];
     this.selectedFile = this.USERS_DATA[i]["user_pic"];
     
@@ -321,7 +344,9 @@ export class EditUserComponent implements OnInit{
     this
   }
  
-  
+  getLocationId(location:string){
+    return this.ALL_LOCATIONS.filter(loc=>loc.name.toLowerCase()===location.toLowerCase())[0]?.id
+  }
 
   close() {
     this.editUserForm.reset()
@@ -409,18 +434,44 @@ filesize(file):boolean{
 ///////////
   
   updateEmp() {
+    if(this.editUserForm.get('device_id').value===''){
+     _.set(this.editUserForm.value,'device_id',null)
+    }
+     if(this.editUserForm.get('amd_id').value===''){
+     _.set(this.editUserForm.value,'amd_id',0)
+    }
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
-      if (res.body["success"] == true) {
-        console.log("-------------------------")
+      if (res.status == 200) {
+        console.log("-------------------------");
+        this.ss.statusMessage.showStatusMessage(true,res?.body?.results);
         this.close()
         this.getAllReportes()
         this
+      }else if(res.status == 400){
+        const deviceIdErrorkey = res?.error?.results[0]?.device_id?.[0];
+        if(deviceIdErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,deviceIdErrorkey);
+        }
+        const empNameErrorkey = res?.error?.results[0]?.emp_name;
+        if(empNameErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empNameErrorkey);
+        }
+        const empEmailErrorkey = res?.error?.results[0]?.email;
+        if(empEmailErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empEmailErrorkey);
+        }
+        const empAmdIdErrorkey = res?.error?.results[0]?.amd_id?.[0];
+        if(empAmdIdErrorkey){
+          this.ss.statusMessage.showStatusMessage(false,empAmdIdErrorkey);
+        }
       }
     })
     //clear image form control
     this.editUserForm.controls['user_pic'].setValue('')
   }
+
+
   // disable user 
 
   disableUser(i) {
@@ -528,10 +579,9 @@ filesize(file):boolean{
   }
   setId(i: number) {
     this.index = i;
-    this.disableEmpName = this.USERS_DATA[i]["emp_name"]
+    this.userName = this.USERS_DATA[i]["emp_name"]
     //Rahul change(assigning employee name after calling setId() from editUser() by passing the index number*****
     //********************************************************************************************* 
-    this.editAbleEmpName = this.USERS_DATA[i]["emp_name"]
     //**********************************************************************
   }
 
