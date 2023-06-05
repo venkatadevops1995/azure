@@ -45,7 +45,9 @@ export class HrAttendanceReportComponent implements OnInit {
   value: any;
   filteredManagers: Observable<any>;
   isPageAccessable: Boolean = false;
-
+  minDateChecker= 0;
+  minDate!:any;
+  isSelectedEmpAll:boolean = false;
   constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
 
     this.filteredManagers = this.option.valueChanges
@@ -84,12 +86,50 @@ export class HrAttendanceReportComponent implements OnInit {
     })
    
   }
-
+  // When date range selection has canceled
+  onCancelDateSelection(){
+    this.minDate = undefined;
+    this.maxDate = new Date();
+    setTimeout(()=>{
+      if (this.dateRange) {
+        this.dateRange.setPresetValue('Last 30 Days');
+      }
+    })
+    this.minDateChecker = 0;
+  }
   // when a date is selected in the date range
   onDateSelection(data) {
     this.fromdate = this.convertDatefmt(data.start)
     this.todate = this.convertDatefmt(data.end)
+       
+    // checking if the selected employee is all then giving access to download report range betweeen 30 days
+    if(this.isSelectedEmpAll == true){
+      let next30Days = new Date(new Date(this.fromdate).setDate(data.start.getDate() + 30));
+      if(next30Days > new Date()){
+        next30Days = new Date();
+      }
+      if(this.minDateChecker==1){
+        this.maxDate = next30Days
+        this.minDate = data.start;
+        this.minDateChecker+=1;
+
+      }else if(this.minDateChecker>1){
+        this.minDate = undefined;
+        this.maxDate = new Date();
+        this.minDateChecker = 1;
+
+      }else{
+        if(this.minDateChecker!=0){
+          this.maxDate = next30Days
+          this.minDate = data.start;
+        }
+        this.minDateChecker+=1;
+      }
+    } 
+    
+    if(this.todate){
       this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId);
+    }
   }
 
   // checkHrAccessForreports() {
@@ -142,6 +182,12 @@ export class HrAttendanceReportComponent implements OnInit {
       }
     });
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
+    if(this.selectedEmpId === 'all'){
+      this.isSelectedEmpAll = true;
+      this.onCancelDateSelection();
+    }else{
+      this.isSelectedEmpAll = false;
+    }
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
     // console.log('##################3',this.ATTENDENCE_DATA.length)
   }

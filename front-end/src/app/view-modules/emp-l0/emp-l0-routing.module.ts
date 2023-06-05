@@ -27,6 +27,8 @@ import {AuthGuardSecurityService_HR,
   AuthGuardSecurityService_HR_OR_SUB_Attendance,
   AuthGuardSecurityService_HR_OR_SUB_Add_User,
   AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
+import { BatchListsComponent } from '../common/veda/batch-lists/batch-lists.component';
+import { AttendanceReportComponent } from '../common/veda/attendance-report/attendance-report.component';
 
 
 const routes: Routes = [
@@ -54,6 +56,8 @@ const routes: Routes = [
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
+  {path:"veda-batch-list", component:BatchListsComponent,canActivate:[AuthGuardSecurityService_HR]},
+  {path:"veda-attendance-report", component:AttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},   
   {path:"**",redirectTo:"timesheet",pathMatch:'full'}
 ];
 

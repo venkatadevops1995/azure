@@ -609,7 +609,8 @@ class EmployeeMaster(ExportModelOperationsMixin('EmployeeMaster'), models.Model)
     EmpId = models.CharField(unique=True, max_length=50)
     DeviceId = models.IntegerField()
     ManagerId = models.CharField(max_length=50)
-    
+    EmpName = models.CharField(max_length=50)
+    AmdId = models.DecimalField(default=0,blank=True,max_digits=18 ,decimal_places=0)
     class Meta:
         managed = False
         db_table = 'EmployeeMaster'
@@ -1009,3 +1010,25 @@ class SubAdminAccess(models.Model):
     class Meta:
         managed = False
         db_table = 'sub_admin_access'
+
+
+class VedaBatch(ExportModelOperationsMixin('veda_batch'), models.Model):
+    id = models.AutoField(primary_key=True)
+    batch_name = models.CharField(max_length=255, unique=True, null=False)
+    status = models.IntegerField(default=1)    
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'veda_batch'
+        managed = False
+class VedaStudent(ExportModelOperationsMixin('veda_student'), models.Model):
+    id = models.AutoField(primary_key=True)
+    batch = models.ForeignKey('VedaBatch', models.DO_NOTHING)
+    student_name = models.CharField(max_length=255, null=False)
+    device_id = models.IntegerField(null=False)    
+    status = models.IntegerField(default=1)    
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'veda_student'
+        managed = False

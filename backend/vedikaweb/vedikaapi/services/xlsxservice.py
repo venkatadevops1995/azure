@@ -6,6 +6,8 @@ disable_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'cent
 
 cell_format = {'font_size': 10,'font_name':'Arial','align':'center'}
 project_cell_format = {'font_size': 10,'font_name':'Arial','align':'center','font_color':'cc5803'}
+absent_cell_format = {'font_size': 10,'font_name':'Arial','align':'left','font_color':'red'}
+student_holiday_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'left','bg_color':'red','border':1}
 
 merge_format = {
     'bold': 1,
@@ -18,7 +20,7 @@ cust_cell_special_format = {'fg_color':'gray','border':1,'text_wrap':True}
 # here is one extra column for checking status = 0 or one at last 
 class ExcelServices:
     def __init__(self,filename,workSheetName='MainWorksheet',in_memory=False,header_format=header_format,cell_format=cell_format,merge_rane=None
-                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format, project_cell_format = project_cell_format):
+                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format, project_cell_format = project_cell_format, absent_cell_format=absent_cell_format,student_holiday_format=student_holiday_format):
         self.filenameWithExt = filename
         self.workSheetName = workSheetName
         if in_memory:
@@ -29,7 +31,9 @@ class ExcelServices:
         
         self.header_format=self.workbook.add_format(header_format)
         self.disable_format=self.workbook.add_format(disable_format)
+        self.student_holiday_format=self.workbook.add_format(student_holiday_format)
         self.project_cell_format=self.workbook.add_format(project_cell_format)
+        self.absent_cell_format=self.workbook.add_format(absent_cell_format)
         self.cell_format=self.workbook.add_format(cell_format)
         self.cust_cell_special_format=self.workbook.add_format(cust_cell_special_format)
         self.merge_format=self.workbook.add_format(merge_format)
@@ -80,6 +84,8 @@ class ExcelServices:
                 if(regra[len(regra) - 1] == 0 and regra[each] != "Isdisable" and self.workSheetName == 'MIS'):
                     if (each != len(regra) - 1):
                         worksheet.write(row_nums,col,regra[each],self.disable_format)
+                elif(regra[len(regra) - 1] == 'Yes' and regra[each] != "Isdisable"  and self.workSheetName == 'Student Attendance Report'):
+                    worksheet.write(row_nums,col,regra[each],self.student_holiday_format)
                 elif(row_nums==row_start):
                     if(regra[each] != "Isdisable"):
                         worksheet.write(row_nums,col,regra[each],self.header_format)
@@ -119,7 +125,10 @@ class ExcelServices:
                         else:
                             worksheet.write(row_nums, col , regra[each],self.cell_format)
                     else:
-                        worksheet.write(row_nums, col , regra[each],self.cell_format)
+                        if(regra[each]== 'Absent'):
+                            worksheet.write(row_nums, col , regra[each],self.absent_cell_format)
+                        else:
+                            worksheet.write(row_nums, col , regra[each],self.cell_format)
                 col=col+1
         if(closeFlag):
             self.workbook.close()

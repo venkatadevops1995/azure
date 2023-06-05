@@ -1,17 +1,19 @@
+from vedikaweb.vedikaapi.serializers import BatchNameSerializer, VedaStudentExportsSerializer, VedaStudentSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.conf import settings
+from openpyxl import load_workbook
+from itertools import groupby
 # Modles
-from vedikaweb.vedikaapi.models import Employee,EmployeeHierarchy, AttendanceAccessGroup, GlobalAccessFlag
+from vedikaweb.vedikaapi.models import VedaBatch, Employee,EmployeeHierarchy, AttendanceAccessGroup, GlobalAccessFlag,VedaStudent
 
-
-from vedikaweb.vedikaapi.constants import StatusCode
+from vedikaweb.vedikaapi.constants import StatusCode, StudentDetailsHeadings
 from vedikaweb.vedikaapi.utils import utils
-from vedikaweb.vedikaapi.decorators import custom_exceptions,jwttokenvalidator
+from vedikaweb.vedikaapi.decorators import custom_exceptions, is_admin,jwttokenvalidator
 from vedikaweb.vedikaapi.services.xlsxservice import ExcelServices
 
 import logging
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 from django.utils import timezone
 from django.db.models import When, Case, Value as V
 log = logging.getLogger(__name__)
@@ -36,6 +38,16 @@ class AttendanceApi(APIView):
         empid=auth_details['emp_id']
         attendance_for_all = self.request.query_params.get('all_emp', False)
         is_hr = self.request.query_params.get('is_hr', False)
+        if(attendance_for_all):
+            from datetime import date,datetime
+            d1 = datetime.strptime(from_date , "%Y-%m-%d")
+            d2 = datetime.strptime(to_date, "%Y-%m-%d")
+            date_range = ((d2 - d1).days)
+
+            if(date_range > 31):
+                return Response(utils.StyleRes(False,'failure',{'date_range':'For All employee date range must me below 31 days'}), status=StatusCode.HTTP_BAD_REQUEST)
+
+
         # final_datastructure,attendance_flag,present_dates_list=attendance_.get_tt_final_datastructure(emp_id,from_date,to_date)
         final_dict = {'final_datastructure': [],'attendance_flag':[],'present_dates_list':[]}
 
@@ -79,10 +91,10 @@ class AttendanceApi(APIView):
             for each_data in final_dict['final_datastructure']:
                 for each in each_data:
                     data.append([each['staff_no'],each['emp_name'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3], each['timesheet_total_working_hours']])
-                    # for i,eachpunch in enumerate(each['punchdata']):
-                    #     if('P'+str(i) not in data[0]):
-                    #         data[0].append('P'+str(i))
-                    #     data[-1].append(str(eachpunch['In'])+'|'+str(eachpunch['Out'])+'|'+str(eachpunch['Net']))
+                    for i,eachpunch in enumerate(each['punchdata']):
+                        if('P'+str(i) not in data[0]):
+                            data[0].append('P'+str(i))
+                        data[-1].append(str(eachpunch['In'])+'|'+str(eachpunch['Out'])+'|'+str(eachpunch['Net']))
             e.writeExcel(data,row_start=0,long_column_list=[2])
             del e
             return response
@@ -126,3 +138,334 @@ class AttendanceStatusAPI(APIView):
         if(len(emp_hierarchy_obj)>0 or len(individual_att_access_list)>0):
             attendance_flag = True
         return Response({'attendance_flag':attendance_flag})
+
+
+
+class VedaStudentBatchAPI(APIView):
+    ''' Get All batch list'''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def get(self,request):
+        status = request.GET.get('status','')
+        if(status):
+            all_batch = VedaBatch.objects.filter(status=status).order_by('-id')
+        else:
+            all_batch = VedaBatch.objects.order_by('-id')
+
+        if(len(all_batch) == 0):
+            return Response(utils.StyleRes(True,'No data available',{}), status=StatusCode.HTTP_NO_CONTENT)
+        
+        return Response(utils.StyleRes(True,'success',{'batches':all_batch.values()}), status=StatusCode.HTTP_OK)
+    
+    ''' Create a new batch'''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        data = BatchNameSerializer(data=request.data)
+        
+        try:
+            if(data.is_valid(raise_exception=True)):
+                batch_name = data["batch_name"].value.strip()
+                if VedaBatch.objects.filter(batch_name = batch_name).exists():
+                    return Response(utils.StyleRes(False,"Batch Name already exist",{'data':batch_name}), status= StatusCode.HTTP_NOT_ACCEPTABLE)   
+                batch_details = VedaBatch.objects.create(batch_name = batch_name ,status = 1)
+                return Response(utils.StyleRes(True,'batch Created successfully',{'data':data.data}), status=StatusCode.HTTP_CREATED)
+        except Exception as e:
+            return Response(utils.StyleRes(False,"new batch creation failed",e.args), status=409)
+        
+
+    ''' Activate or deactivate a batch'''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def put(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        
+        data = BatchNameSerializer(data=request.data)
+        try:
+            if(data.is_valid(raise_exception=True)):
+                batch_name = data["batch_name"].value.strip()
+                status = data["status"].value
+
+                if not VedaBatch.objects.filter(batch_name = batch_name).exists():
+                    return Response(utils.StyleRes(False,"Batch Name not exist",{'data':batch_name}), status= StatusCode.HTTP_NOT_ACCEPTABLE)
+                
+                VedaBatch.objects.filter(batch_name = batch_name).update(status = status)
+                updated_data = VedaBatch.objects.filter(batch_name = batch_name).values()[0]
+                return Response(utils.StyleRes(True,'batch status updated successfully',updated_data), status=StatusCode.HTTP_OK)
+        except Exception as e:
+            return Response(utils.StyleRes(False,"batch updation failed",e.args), status= StatusCode.HTTP_NOT_ACCEPTABLE)
+
+class VedaStudentAPI(APIView):
+    ''' Get All student for a specific batch '''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def get(self,request):
+        batch_name = request.GET.get('batch_name','')
+        try:
+
+            if(batch_name == '' or batch_name == None):
+               return Response(utils.StyleRes(False,'batch_name is required'), status=StatusCode.HTTP_BAD_REQUEST) 
+            
+            if not VedaBatch.objects.filter(status=1,batch_name=batch_name).exists():
+                return Response(utils.StyleRes(False,'batch_name is not exist / batch_name is inactive',{'batch_name':batch_name}), status=StatusCode.HTTP_BAD_REQUEST)
+            
+            batch_details = VedaBatch.objects.filter(status=1,batch_name=batch_name)
+            batch_id = batch_details[0].id
+
+            student_data = VedaStudent.objects.filter(status=1, batch_id=batch_id).order_by('-id')
+            if(len(student_data) == 0):
+                return Response(utils.StyleRes(True,'Data is not available',{}), status=StatusCode.HTTP_NO_CONTENT)
+            final_data = student_data.values()
+            return Response(utils.StyleRes(True,'success',final_data), status=StatusCode.HTTP_OK)
+        except Exception as e:
+            return Response(utils.StyleRes(False,"Error while try to fetch student data",e.args), status=409)
+        
+
+    ''' Create a student into the batch'''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def post(self,request):
+        auth_details = utils.validateJWTToken(request)
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        data = VedaStudentSerializer(data=request.data)
+        
+        try:
+            if(data.is_valid(raise_exception=True)):
+                batch_name = data["batch_name"].value.strip()
+                student_name = data["student_name"].value.strip()
+                device_id = data["device_id"].value
+
+                if not VedaBatch.objects.filter(batch_name = batch_name,status=1).exists():
+                    return Response(utils.StyleRes(False,"Batch Name is not exist / Batch is inactive",{'data':data.data}), status= StatusCode.HTTP_BAD_REQUEST)   
+                
+                batch_details = VedaBatch.objects.filter(batch_name = batch_name ,status = 1)
+                batch_id = batch_details[0].id
+
+                if VedaStudent.objects.filter(batch_id = batch_id,student_name =student_name,status =1).exists():
+                    return Response(utils.StyleRes(False,"Student name is already exist",{'data':data.data}), status= StatusCode.HTTP_BAD_REQUEST)   
+                
+                new_student = VedaStudent.objects.create(batch_id = batch_id,student_name =student_name, device_id =device_id,status =1)
+
+                return Response(utils.StyleRes(True,'New student creation successfully',{'data':data.data}), status=StatusCode.HTTP_CREATED)
+        except Exception as e:
+            return Response(utils.StyleRes(False,"student creation failed",e.args), status=409)
+        
+
+class ExportVedaStudentApi(APIView):
+
+
+    ''' Get the excel template to upload bulk student details'''
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def get(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request) 
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        emp_id=auth_details['emp_id']
+
+        batch_id = kwargs['batch_id']
+        print("batch_id",batch_id)
+
+        if(not VedaBatch.objects.filter(id=batch_id,status=1).exists()):
+            return Response(utils.StyleRes(False,"Batch is not exist/inactive",
+        ),status=StatusCode.HTTP_BAD_REQUEST)
+        batch_details = VedaBatch.objects.filter(id=batch_id).values()[0]
+        batch_name = batch_details['batch_name']
+        excel_file = utils.contentTypesResponce('xl',batch_name+"_"+"students_details"+".xlsx")
+        excel = ExcelServices(excel_file,in_memory=True,workSheetName='students_details')
+        columns = []
+        for each in StudentDetailsHeadings:
+            columns.append(utils.strip_value(each.value))
+        excel_data= [columns]
+        excel.writeExcel(excel_data,row_start=0)
+        excel.terminateExcelService()
+        del excel
+        return excel_file
+           
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def post(self,request,*args,**kwargs):
+        auth_details = utils.validateJWTToken(request) 
+        if(auth_details['email']==""):
+            return Response(auth_details, status=400)
+        is_emp_admin = auth_details["is_emp_admin"]
+        if(is_emp_admin == False):
+            return Response(utils.StyleRes(False,"Student Bulk upload error", "user is not admin"),status=StatusCode.HTTP_UNAUTHORIZED)
+        batch_id = kwargs['batch_id']
+        print("batch_id",batch_id)
+
+        if(not VedaBatch.objects.filter(id=batch_id,status=1).exists()):
+            return Response(utils.StyleRes(False,"Batch is inactive /not exist",
+        ),status=StatusCode.HTTP_BAD_REQUEST)
+
+        try:
+            excel_name = request.data
+            excel_file_name = excel_name['file']
+            uploadedfilename = str(excel_file_name).split('.')[0]
+            uploadedfileext=str(excel_file_name).split('.')[-1]
+            filename=uploadedfilename+"_"+utils.getUniqueId() + '.'+ uploadedfileext
+            utils.createDirIfNotExists(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH)
+            with open(settings.UPLOAD_ADMIN_EMAIL_ATTACHMENT_PATH+filename, 'wb') as f:
+                f.write(excel_file_name.read())
+            #Getting the sheet names from excel
+            wb = load_workbook(excel_name['file'])
+            sheet_names = wb.sheetnames
+            #taking the first sheet in excel
+            worksheet = wb[sheet_names[0]]
+            empty_rows = []
+            #getting empty rows deleting from worksheet
+            for idx, row in enumerate(worksheet.iter_rows(max_col=worksheet.max_column), start=1):
+                empty = not any((utils.strip_value(cell.value) for cell in row))
+                if empty:
+                    empty_rows.append(idx)
+            for row_idx in reversed(empty_rows):
+                worksheet.delete_rows(row_idx, 1)
+
+            #case insensitive for the headings
+            for each in worksheet[1]:
+                if each.value != None and type(each.value) != int:
+                    each.value = each.value.lower()
+                else:
+                    each.value
+            #needed columns form excel
+            need_columns =[]
+            for each in StudentDetailsHeadings:
+                need_columns.append(utils.strip_value(each.value))
+
+            #taking all excel columns
+            excel_columns=[]
+            for cell in worksheet[1]:
+                if utils.strip_value(cell.value) != None:
+                    excel_columns.append(cell.value)
+                else:
+                    excel_columns.append(cell.value)
+            log.debug('excel_columns: '+",".join(map(str,excel_columns)))
+
+            row_count = worksheet.max_row #max_row count from excel
+            #checking all needed columns are present in excel
+            main_list = list(set(need_columns) - set(excel_columns))
+            #is headings unique
+            is_column_headings_unique  = False
+            is_column_headings_unique = (len(set(excel_columns)) == len(excel_columns))
+
+            if(len(main_list)>0 or is_column_headings_unique==False):
+                return Response(utils.StyleRes(False,"Student Bulk upload error", {'missing_columns':main_list,'unique_columns':is_column_headings_unique}
+            ),status=StatusCode.HTTP_BAD_REQUEST)
+            #taking all the student names from excel Student Name  row columns and validating all the student names
+            valid_studentnames = []
+            valid_device_ids = []
+            invalid_studentnames =[]
+            invalid_device_ids=[]
+            duplicated_studentnames = []
+            duplicated_device_ids = []
+            student_data = []
+            uploaded_student_list = []
+            if len(main_list) == 0:
+                elem = {k: i for i, k in enumerate(excel_columns)}
+                output = list(map(elem.get, need_columns))
+                row_count = worksheet.max_row
+                for i in range(row_count + 1):
+                    if i > 1:
+                        column_details = [cell.value for cell in worksheet[i]]
+                        # print('email',column_details)
+                        student_name = utils.strip_value(column_details[output[0]])
+                        device_id = utils.strip_value(column_details[output[1]])
+                        
+                        if(VedaStudent.objects.filter(batch_id=batch_id,student_name=student_name,status=1).exists()):
+                            print("duplicate student ...",student_name)
+                            err = []
+                            err_obj={}
+                            err_obj['student_name']= '{} ,student name is already exist'.format(student_name)
+                            err.append(err_obj)                           
+                            return Response(utils.StyleRes(False,"Student Bulk upload error", err ),status=StatusCode.HTTP_BAD_REQUEST)
+                        
+                        if(student_name not in valid_studentnames):
+                            valid_studentnames.append(student_name)
+                        else:
+                            duplicated_studentnames.append(student_name)
+
+                        if(device_id not in valid_device_ids):
+                            valid_device_ids.append(device_id)
+                        else:
+                            duplicated_device_ids.append(device_id)
+                        
+                        if(student_name == ''):
+                            invalid_studentnames.append(student_name)
+
+                        if(device_id == ''):
+                            invalid_device_ids.append(device_id)
+
+                        student_data.append({'student_name':student_name,'device_id':device_id,'batch':batch_id,'status':1})
+                        uploaded_student_list.append(student_name)
+                res = {'duplicated_studentnames':duplicated_studentnames,'invalid_studentnames':invalid_studentnames,
+                    'duplicated_device_ids':duplicated_device_ids, 'invalid_device_ids':invalid_device_ids,
+                }
+
+                if(len(invalid_studentnames)>0 or len(duplicated_studentnames)>0 or len(invalid_device_ids)>0 or len(duplicated_device_ids)>0):
+                    return Response(utils.StyleRes(False,"Student Bulk upload error", res),status=StatusCode.HTTP_BAD_REQUEST)
+                
+                serial_student_data = VedaStudentExportsSerializer(data=student_data,many=True)
+                if(serial_student_data.is_valid()):
+                    serial_student_data.save()
+                    res.update({'uploaded_student_list':uploaded_student_list})
+                    return Response(utils.StyleRes(True,"Student data uploaded successfully", res),status=StatusCode.HTTP_CREATED)
+                else:
+                    return Response(utils.StyleRes(False,"Student Bulk upload error", serial_student_data.errors),status=StatusCode.HTTP_BAD_REQUEST)
+        except Exception as e:
+            print("e.........", e)
+            return Response(utils.StyleRes(False,"Student Bulk upload error",e.args), status=409)
+
+
+class VedaStudentAttendanceApi(APIView):
+    @jwttokenvalidator
+    @custom_exceptions
+    @is_admin
+    def get(self,request):
+        batch_name = request.GET.get('batch_name','')
+        from_date =  request.GET.get('start_date','')
+        to_date = request.GET.get('end_date','')
+
+        if(batch_name == '' or from_date == '' or to_date == ''):
+            return Response(utils.StyleRes(False,'failure',{'msg':'batch_name, start date and end date  is required '}), status=StatusCode.HTTP_NOT_ACCEPTABLE)
+        
+        batchDetails = VedaBatch.objects.filter(status=1,batch_name=batch_name)
+ 
+        if(len(batchDetails) == 0):
+            return Response(utils.StyleRes(False,'No content',{'msg':'no content '}), status=StatusCode.HTTP_NO_CONTENT)
+        
+        batch_id = batchDetails[0].id
+        all_student_data = VedaStudent.objects.filter(batch_id=batch_id,status=1).values()
+        deviceIDList = []
+        final_dict = {'final_datastructure': []}
+
+        for student in all_student_data:
+            deviceIDList.append(student['device_id'])
+        for deviceId in deviceIDList:
+            final_datastructure = attendance_.get_student_final_datastructure(deviceId,from_date,to_date)
+            final_dict['final_datastructure'].append(final_datastructure)
+        columns=['DeviceId','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours','Attendance','isHoliday']
+
+        file_name=batchDetails[0].batch_name+"_Student_Attendance_"+str(from_date)+'_'+str(to_date)+'.xlsx'
+        response=utils.contentTypesResponce('xl',file_name)
+        e=ExcelServices(response,in_memory=True,workSheetName="Student Attendance Report",cell_format={'font_size': 10,'font_name':'Arial','align':'left'})
+        data=[columns]
+        
+        for each_data in final_dict['final_datastructure']:
+            for each in each_data:
+                data.append([each['deviceId'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3],each['attendance'], 'Yes'  if each['isHoliday'] == True else 'No'])
+        e.writeExcel(data,row_start=0,long_column_list=[2])
+        del e
+        return response

@@ -45,7 +45,9 @@ export class AttendenceSheetComponent implements OnInit {
   selectedEmpId: any;
   value: any;
   filteredManagers: Observable<any>;
-
+  minDateChecker= 0;
+  minDate!:any;
+  isSelectedEmpAll:boolean = false;
   constructor(private http: HttpClientService, public datepipe: DatePipe, private user: UserService, private ss: SingletonService) {
     this.filteredManagers = this.option.valueChanges
   
@@ -78,13 +80,52 @@ export class AttendenceSheetComponent implements OnInit {
     },100)
   }
 
+   // When date range selection has canceled
+   onCancelDateSelection(){
+    this.minDate = undefined;
+    this.maxDate = new Date();
+    setTimeout(()=>{
+      if (this.dateRangePicker) {
+        this.dateRangePicker.setPresetValue('Last 30 Days');
+      }
+    })
+    this.minDateChecker = 0;
+  }
   onDateSelection(val: DateRange<any>) {
     // console.log(val)
     // this.fromdate = val.start;
     this.fromdate = this.convertDatefmt(val.start)
     this.todate = this.convertDatefmt(val.end);
     // this.getAttendenceData(this.fromdate, this.todate, this.user.getEmpId());
-    this.getAttendenceData(this.fromdate, this.todate, this.selectEmp(this.option.value));
+    // checking if the selected employee is all then giving access to download report range betweeen 30 days
+    if(this.isSelectedEmpAll == true){
+      let next30Days = new Date(new Date(this.fromdate).setDate(val.start.getDate() + 30));
+      
+      if(next30Days > new Date()){
+        next30Days = new Date();
+      }
+      if(this.minDateChecker==1){
+        this.maxDate = next30Days
+        this.minDate = val.start;
+        this.minDateChecker+=1;
+
+      }else if(this.minDateChecker>1){
+        this.minDate = undefined;
+        this.maxDate = new Date();
+        this.minDateChecker = 1;
+
+      }else{
+        if(this.minDateChecker!=0){
+          this.maxDate = next30Days
+          this.minDate = val.start;
+        }
+        this.minDateChecker+=1;
+      }
+    } 
+    
+    if(this.todate){
+      this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId);
+    }
   }
 
   getAttendenceData(fromdate, todate, emp_id) {
@@ -129,6 +170,12 @@ export class AttendenceSheetComponent implements OnInit {
       }
     });
     this.selectedEmpId = this.selectedEmpId[0]['emp_id']
+    if(this.selectedEmpId === 'all'){
+      this.isSelectedEmpAll = true;
+      this.onCancelDateSelection();
+    }else{
+      this.isSelectedEmpAll = false;
+    }
     this.getAttendenceData(this.fromdate, this.todate, this.selectedEmpId)
   }
   }

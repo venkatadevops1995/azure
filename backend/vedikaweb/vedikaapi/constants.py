@@ -122,6 +122,11 @@ class LeaveExcelHeadings(Enum):
     Leave_bal = 'leave balance'
     Modified_leave_bal = 'modified leave balance'
     Comments = 'comments'
+
+class StudentDetailsHeadings(Enum):
+    Student_name = 'student_name'
+    Device_Id = 'device id'
+    
 class GenderChoices(Enum):
     OTHER = 0
     MALE = 1

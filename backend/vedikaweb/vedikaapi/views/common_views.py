@@ -19,7 +19,7 @@ from django.template.loader import get_template
 from datetime import datetime, timedelta
 import logging
 import time
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 import uuid
 
 log = logging.getLogger(__name__)

@@ -8,7 +8,7 @@ import ast
 from django.db.models import Q, fields
 from django.core.validators import MaxValueValidator,MinValueValidator
 
-from vedikaweb.vedikaapi.models import Employee, EmployeeProject, EmployeeProjectTimeTracker, EmployeeWeeklyStatusTracker, Project, Role, EmployeeWorkApproveStatus,EmployeeApprovalCompStatus,EmployeeEntryCompStatus,ManagerWorkHistory,EmployeeMaster,PunchLogs, RejectedTimesheetEmailNotification,  EmployeeHierarchy, Category, LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig ,LeaveBalance, LeaveRequest, Leave , Company, LocationHolidayCalendar, HolidayCalendar, Holiday, Location, EmployeeProfile, EmailQueue, EmployeeTimesheetApprovedHistory, PolicyDocument, PolicyType, PolicyCompany, PolicyDocumentEmployeeAccessPermission, PolicyDocumentEmployeeAction
+from vedikaweb.vedikaapi.models import Employee, EmployeeProject, EmployeeProjectTimeTracker, EmployeeWeeklyStatusTracker, Project, Role, EmployeeWorkApproveStatus,EmployeeApprovalCompStatus,EmployeeEntryCompStatus,ManagerWorkHistory,EmployeeMaster,PunchLogs, RejectedTimesheetEmailNotification,  EmployeeHierarchy, Category, LeaveType, NewHireMonthTimePeriods, NewHireLeaveConfig, LeaveConfig ,LeaveBalance, LeaveRequest, Leave , Company, LocationHolidayCalendar, HolidayCalendar, Holiday, Location, EmployeeProfile, EmailQueue, EmployeeTimesheetApprovedHistory, PolicyDocument, PolicyType, PolicyCompany, PolicyDocumentEmployeeAccessPermission, PolicyDocumentEmployeeAction ,VedaBatch,VedaStudent
 
 from .utils import utils
 from datetime import datetime,timedelta
@@ -352,7 +352,8 @@ class NewEmpSerializer(serializers.Serializer):
     # patentry_maternity_cnt = serializers.IntegerField()
     gender = serializers.IntegerField()
     user_pic = serializers.CharField(allow_null=True, default=None, required=False, allow_blank=True)
-    
+    device_id = serializers.IntegerField(default=0)
+    amd_id = serializers.IntegerField(default=0)
     def validate_email(self, data):
         emp =Employee.objects.filter(email=data)
         if len(emp)>0:
@@ -400,6 +401,14 @@ class NewEmpSerializer(serializers.Serializer):
         emp_name = data["firstName"]+ " "+data["lastName"]
         if(Employee.objects.filter(emp_name = emp_name).exists()):
             raise serializers.ValidationError("Same Name employee already exists.",code=409)
+        return data
+    def validate_device_id(self,data):
+        if data !=None and  data > 1000000:
+            raise serializers.ValidationError("device_id maximum value is 999999")
+        return data
+    def validate_amd_id(self,data):
+        if data !=None and  data > 10000000000:
+            raise serializers.ValidationError("amd_id maximum value is 9999999999")
         return data
 
 class UpdateProjectSerializer(serializers.Serializer):
@@ -771,6 +780,17 @@ class EmployeeDetailsSerializer(serializers.Serializer):
     # patentry_maternity_cnt = serializers.IntegerField()
     gender = serializers.IntegerField()
     user_pic = serializers.CharField(allow_null=True, default=None, required=False, allow_blank=True)
+    location =  serializers.PrimaryKeyRelatedField(queryset=Location.objects.filter(status=1))
+    device_id = serializers.IntegerField(allow_null=True,default=0)
+    amd_id = serializers.IntegerField(allow_null=True,default=0)
+    def validate_device_id(self,data):
+        if data !=None and  data > 1000000:
+            raise serializers.ValidationError("device_id maximum value is 999999")
+        return data
+    def validate_amd_id(self,data):
+        if data !=None and  data > 10000000000:
+            raise serializers.ValidationError("amd_id maximum value is 9999999999")
+        return data
     def validate_company(self,data):
         company_list = Company.objects.filter(name=data)
         if(len(company_list)==0):
@@ -907,3 +927,29 @@ class FaceAppLogsSerializer(serializers.Serializer):
     class Meta:
         model=PunchLogs
         fields='__all__'
+
+class BatchNameSerializer(serializers.Serializer):
+    batch_name = serializers.CharField()
+    status = serializers.IntegerField(required=False, default=1)
+
+    def validate_batch_name(self,value):
+        if len(value) < 51:
+            return value
+        raise serializers.ValidationError("{} Batch Name should be maximum 50 character".format(value))
+    class Meta:
+        model= VedaBatch
+        fields='__all__'
+class VedaStudentSerializer(serializers.Serializer):
+    batch_name = serializers.CharField()
+    student_name = serializers.CharField()
+    device_id = serializers.IntegerField()   
+    status = serializers.IntegerField(required=False, default=1)
+    class Meta:
+        model= VedaStudent
+        fields='__all__'
+
+class VedaStudentExportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= VedaStudent
+        fields='__all__'
+

@@ -680,6 +680,7 @@ export class AtaiDateRangeComponent extends _MatDateRangeMixinBase implements On
       if (value) {
         this._model.add(value);
         this.dateMeta.selectedRange = new DateRange(this._model.selection.start, this._model.selection.end);
+        this.dateSelectedEvent.emit(this.dateMeta.selectedRange)
       }
     }
 

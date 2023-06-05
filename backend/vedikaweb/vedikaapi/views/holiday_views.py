@@ -15,7 +15,7 @@ from django.db.models import Q,F,Value as V
 import traceback, json
 from datetime import datetime, timedelta
 import logging
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from rest_framework import generics

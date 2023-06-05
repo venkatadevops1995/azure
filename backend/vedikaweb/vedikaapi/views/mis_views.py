@@ -23,7 +23,7 @@ from vedikaweb.vedikaapi.services.xlsxservice import ExcelServices
 import traceback, json
 from datetime import datetime, timedelta
 import logging
-from vedikaweb.vedikaapi.services.attendance_serices import AttendenceService as attendance
+from vedikaweb.vedikaapi.services.attendance_services import AttendenceService as attendance
 from hashlib import md5
 from django.core.mail import send_mail
 from django.template.loader import get_template
