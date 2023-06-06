@@ -404,11 +404,11 @@ class NewEmpSerializer(serializers.Serializer):
         return data
     def validate_device_id(self,data):
         if data !=None and  data > 1000000:
-            raise serializers.ValidationError("hid maximum value is 999999")
+            raise serializers.ValidationError("Hid maximum value is 999999")
         return data
     def validate_amd_id(self,data):
         if data !=None and  data > 10000000000:
-            raise serializers.ValidationError("aid maximum value is 9999999999")
+            raise serializers.ValidationError("AMD id maximum value is 9999999999")
         return data
 
 class UpdateProjectSerializer(serializers.Serializer):
@@ -785,11 +785,11 @@ class EmployeeDetailsSerializer(serializers.Serializer):
     amd_id = serializers.IntegerField(allow_null=True,default=0)
     def validate_device_id(self,data):
         if data !=None and  data > 1000000:
-            raise serializers.ValidationError("hid maximum value is 999999")
+            raise serializers.ValidationError("Hid maximum value is 999999")
         return data
     def validate_amd_id(self,data):
         if data !=None and  data > 10000000000:
-            raise serializers.ValidationError("aid maximum value is 9999999999")
+            raise serializers.ValidationError("AMD id maximum value is 9999999999")
         return data
     def validate_company(self,data):
         company_list = Company.objects.filter(name=data)
