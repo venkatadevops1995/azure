@@ -75,7 +75,7 @@
         <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.device_id}} </td>
       </ng-container>
       <ng-container matColumnDef="amd_id">
-        <th class="p-table-5" mat-header-cell *matHeaderCellDef>AMDID</th>
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>Alt.ID</th>
         <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.amd_id}} </td>
       </ng-container>
 
@@ -159,7 +159,7 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>AMDID</mat-label>
+        <mat-label>Alt.ID</mat-label>
         <input autocomplete="off" matInput formControlName="amd_id">
         <mat-error *ngIf="editUserForm.controls.amd_id.touched && editUserForm.controls.amd_id.hasError('pattern')">
           Allowed Number Only
