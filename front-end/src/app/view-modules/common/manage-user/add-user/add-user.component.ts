@@ -546,10 +546,10 @@ if(this.SupportImageType){
 
         Object.keys(res.error["results"][0]).forEach(ele => {
           if (ele == 'non_field_errors') {
-            error_message = res.error["results"][0][ele];
+            error_message = res.error["results"][0][ele][0];
             this.addUserForm.controls['firstName'].setErrors({ 'is_duplicated': true });
             this.addUserForm.controls['lastName'].setErrors({ 'is_duplicated': true });
-            this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
+            this.ss.statusMessage.showStatusMessage(false, error_message);
           }else if(ele=='device_id'){
              error_message = res.error["results"][0][ele][0];
              this.ss.statusMessage.showStatusMessage(false,error_message);
@@ -559,7 +559,7 @@ if(this.SupportImageType){
             this.ss.statusMessage.showStatusMessage(false,error_message);
             this.addUserForm.controls['amd_id'].setErrors({ 'max_length': true });
          } else {
-            error_message += " " + ele;
+            error_message = " " + ele;
             this.addUserForm.controls[ele].setErrors({ 'is_duplicated': true });
             this.ss.statusMessage.showStatusMessage(false, "duplicate or invalid data for " + error_message);
           }

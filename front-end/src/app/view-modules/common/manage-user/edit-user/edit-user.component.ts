@@ -84,7 +84,7 @@ export class EditUserComponent implements OnInit{
 
 
   fgSearch: FormGroup;
-  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
+  displayedColumns: string[] = ['serial_no', 'staff_no', 'name', 'company', 'email', 'category','device_id','amd_id', 'edit', 'disable'] // 'reporting_manager', 'managers_manager', 'functional_manager', ];
   GROUPS_DATA: any[];
   IS_mobile:boolean=false;
   constructor(public dialog: MatDialog,

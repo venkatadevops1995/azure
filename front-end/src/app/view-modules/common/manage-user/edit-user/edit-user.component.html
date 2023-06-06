@@ -31,9 +31,11 @@
         <col  width="70">
         <col  width="150">
         <col  width="250">
-        <col  width="150">
-        <col  width="250">
-        <col  width="150">
+        <col  width="100">
+        <col  width="300">
+        <col  width="110">
+        <col  width="120">
+        <col  width="120">
         <col  width="50">
         <col  width="70">
       </colgroup>
@@ -68,7 +70,14 @@
         <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.category_name}} </td>
       </ng-container>
 
-
+      <ng-container matColumnDef="device_id">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>HID</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.device_id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="amd_id">
+        <th class="p-table-5" mat-header-cell *matHeaderCellDef>AMDID</th>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.amd_id}} </td>
+      </ng-container>
 
 
       <ng-container matColumnDef="edit">
@@ -150,7 +159,7 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>AID</mat-label>
+        <mat-label>AMDID</mat-label>
         <input autocomplete="off" matInput formControlName="amd_id">
         <mat-error *ngIf="editUserForm.controls.amd_id.touched && editUserForm.controls.amd_id.hasError('pattern')">
           Allowed Number Only
@@ -166,7 +175,7 @@
           Please Select Category
         </mat-error>
       </mat-form-field>
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-label>Group</mat-label>
         <mat-select formControlName="company">
           <mat-option [value]="grp" *ngFor="let grp of GROUPS_DATA">{{grp}}</mat-option>
@@ -174,7 +183,7 @@
         <mat-error *ngIf="editUserForm.controls.company.touched && editUserForm.controls.company.hasError('required')">
           Please select Group
         </mat-error>
-      </mat-form-field>
+      </mat-form-field> -->
       <mat-form-field>
         <mat-label>Location</mat-label>
         <mat-select formControlName="location">
