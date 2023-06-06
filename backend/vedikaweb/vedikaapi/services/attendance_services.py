@@ -193,7 +193,11 @@ class AttendenceService():
         
 
         ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
+        device_id = 0
+        alternative_id = 0
         if(len(emp_obj)>0):
+            device_id = emp_obj.last().DeviceId
+            alternative_id = emp_obj.last().AmdId
             qs=PunchLogs.objects.using('attendance').filter(Q(DeviceID=emp_obj.last().DeviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
             grouped = itertools.groupby(qs, lambda record: record.LogDate.strftime("%Y-%m-%d"))
             jobs_by_day = [{"Date":day,"result": [{'Direction':each.Direction,'Time':each.LogDate} for each in list(jobs_this_day)]} for day, jobs_this_day in grouped]
@@ -247,12 +251,12 @@ class AttendenceService():
                             punchPairs = self.getPunchPairs(jobs_by_day[k]['result'])
                             Networking_hours = self.getNetworkingHours(punchPairs,jobs_by_day[k]['result'])
 
-                    final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":jobs_by_day[k]['Date'],"FirstInTime":FirstInTime,"LastOutTime":LastOutTime,"GrossWorkingHours":Grossworking_hours,"NetWorkingHours":Networking_hours,"WeekdayFlag":weekdayFlag,"punchdata":punchdata, 'timesheet_total_working_hours':final_data[k2]['project_hours'], 'vacation_hours':final_data[k2]['vacation_hours'], 'holiday_hours':final_data[k2]['holiday_hours'], 'project_hours':final_data[k2]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False})
+                    final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":jobs_by_day[k]['Date'],"FirstInTime":FirstInTime,"LastOutTime":LastOutTime,"GrossWorkingHours":Grossworking_hours,"NetWorkingHours":Networking_hours,"WeekdayFlag":weekdayFlag,"punchdata":punchdata, 'timesheet_total_working_hours':final_data[k2]['project_hours'], 'vacation_hours':final_data[k2]['vacation_hours'], 'holiday_hours':final_data[k2]['holiday_hours'], 'project_hours':final_data[k2]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False, "device_id":device_id,"alternative_id":alternative_id})
                     # ,'HolidayFlag':True if eachday in holiday_list else False
                     k=k+1
                 else:
 
-                    final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":eachday,"FirstInTime":"--:--:--","LastOutTime":"--:--:--","GrossWorkingHours":"00:00:00","NetWorkingHours":"00:00:00","WeekdayFlag":weekdayFlag,"punchdata":punchdata, 'timesheet_total_working_hours':final_data[k2]['project_hours'],'vacation_hours':final_data[k2]['vacation_hours'], 'holiday_hours':final_data[k2]['holiday_hours'], 'project_hours':final_data[k2]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False})
+                    final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":eachday,"FirstInTime":"--:--:--","LastOutTime":"--:--:--","GrossWorkingHours":"00:00:00","NetWorkingHours":"00:00:00","WeekdayFlag":weekdayFlag,"punchdata":punchdata, 'timesheet_total_working_hours':final_data[k2]['project_hours'],'vacation_hours':final_data[k2]['vacation_hours'], 'holiday_hours':final_data[k2]['holiday_hours'], 'project_hours':final_data[k2]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False,"device_id":device_id,"alternative_id":alternative_id})
                     
                 k2=k2+1
                     # k=k+1
@@ -262,7 +266,7 @@ class AttendenceService():
                 weekdayFlag=False
                 if(datetime.strptime(eachday, '%Y-%m-%d').weekday()==5 or datetime.strptime(eachday, '%Y-%m-%d').weekday()==6):
                     weekdayFlag=True
-                final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":eachday,"FirstInTime":"--:--:--","LastOutTime":"--:--:--","GrossWorkingHours":"00:00:00","NetWorkingHours":"00:00:00","WeekdayFlag":weekdayFlag,"punchdata":[], 'timesheet_total_working_hours':final_data[k]['total_hours'], 'vacation_hours':final_data[k]['vacation_hours'], 'holiday_hours':final_data[k]['holiday_hours'], 'project_hours':final_data[k]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False})
+                final_datastructure.append({"emp_name":Employee_name,'staff_no':staff_no,'emp_id':emp_id,"Date":eachday,"FirstInTime":"--:--:--","LastOutTime":"--:--:--","GrossWorkingHours":"00:00:00","NetWorkingHours":"00:00:00","WeekdayFlag":weekdayFlag,"punchdata":[], 'timesheet_total_working_hours':final_data[k]['total_hours'], 'vacation_hours':final_data[k]['vacation_hours'], 'holiday_hours':final_data[k]['holiday_hours'], 'project_hours':final_data[k]['project_hours'],'HolidayFlag':True if eachday in holiday_list else False,"device_id":device_id,"alternative_id":alternative_id})
                 k=k+1
         return final_datastructure, attendance_flag, present_dates_list
     

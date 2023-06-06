@@ -85,12 +85,12 @@ class AttendanceApi(APIView):
             basename=''+emp_name+"_Team_Attendance_"+str(from_date)+'_'+str(to_date)+'.xlsx'
             response=utils.contentTypesResponce('xl',basename)
             e=ExcelServices(response,in_memory=True,workSheetName="Attendance Report",cell_format={'font_size': 10,'font_name':'Arial','align':'left'})
-            columns=['Staff No','Name','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours', 'Timesheet Posted Hours']
+            columns=['Staff No','Name','Alternative Id','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours', 'Timesheet Posted Hours']
             data=[columns]
 
             for each_data in final_dict['final_datastructure']:
                 for each in each_data:
-                    data.append([each['staff_no'],each['emp_name'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3], each['timesheet_total_working_hours']])
+                    data.append([each['staff_no'],each['emp_name'],each['alternative_id'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3], each['timesheet_total_working_hours']])
                     for i,eachpunch in enumerate(each['punchdata']):
                         if('P'+str(i) not in data[0]):
                             data[0].append('P'+str(i))
@@ -102,10 +102,10 @@ class AttendanceApi(APIView):
             basename=final_datastructure[0]['emp_name']+"_Attendance_"+str(from_date)+'_'+str(to_date)+'.xlsx'
             response=utils.contentTypesResponce('xl',basename)
             e=ExcelServices(response,in_memory=True,workSheetName="Attendance Report",cell_format={'font_size': 10,'font_name':'Arial','align':'left'})
-            columns=['Staff No','Name','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours', 'Timesheet Posted Hours']
+            columns=['Staff No','Name','Alternative Id','Date','FirstInTime','LastOutTime','Gross Working Hours','Net Working Hours', 'Timesheet Posted Hours']
             data=[columns]
             for each in final_datastructure:
-                data.append([each['staff_no'],each['emp_name'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3], each['timesheet_total_working_hours']])
+                data.append([each['staff_no'],each['emp_name'],each['alternative_id'],each['Date'],each['FirstInTime'],each['LastOutTime'],each['GrossWorkingHours'][:-3],each['NetWorkingHours'][:-3], each['timesheet_total_working_hours']])
                 for i,eachpunch in enumerate(each['punchdata']):
                     if('P'+str(i) not in data[0]):
                         data[0].append('P'+str(i))
