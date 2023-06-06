@@ -208,7 +208,7 @@ class Users(APIView):
                 if(Employee.objects.filter(Q(emp_name = emp_name) & ~(Q(emp_id = emp_id))).exists()):
                     return Response(utils.StyleRes(False,"Employee update failed",[{'emp_name':"employee name {} already exists for another employee.".format(emp_name)}]), status=StatusCode.HTTP_BAD_REQUEST)
                 
-                EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"),location_id=serial_data.validated_data.get("location"))
+                EmployeeProfile.objects.filter(emp=serial_data.validated_data.get("emp_id")).update(category=serial_data.validated_data.get("category"),picture=serial_data.validated_data.get("user_pic"),location_id=serial_data.validated_data.get("location"),gender_id=serial_data.validated_data.get("gender"))
                 Employee.objects.filter(emp_id = emp_id).update(emp_name =emp_name,email=email)
 
                 staff_no = serial_data.data["staff_no"]
