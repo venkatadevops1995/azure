@@ -884,6 +884,7 @@ def relieveEmployee():
             obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
             role_id = obj.role_id
             emp_name = obj.emp_name
+            staff_no = obj.staff_no
             relieved = stg_emp['relieved']
 
             # ##checking that emplyoee is manager or not
@@ -903,12 +904,19 @@ def relieveEmployee():
                 else:
                     Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                     StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
+                    
+                    # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
+                    EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).update(DeviceId=0, AmdId=0)
+
                     log.info("Employee - " + str(emp_id) +" is disabled")
 
             # ##Employee is not any manager // so update him/her
             else:
                 Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
                 StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
+                    
+                # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
+                EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).update(DeviceId=0, AmdId=0)
                 log.info("Employee - " + str(emp_id) +" is disabled")
     else:
         log.info("There are no any stagged employees available for this date.")

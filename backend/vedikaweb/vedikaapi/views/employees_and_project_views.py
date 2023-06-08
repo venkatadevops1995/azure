@@ -67,6 +67,7 @@ class Usersdelete(APIView):
                 obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
                 role_id = obj.role_id
                 emp_name = obj.emp_name
+                staff_no = obj.staff_no
                 created = obj.created
                 current_date = datetime.now().date()
                 if (created.date() > relieved):
@@ -79,6 +80,10 @@ class Usersdelete(APIView):
                 
                 if((((relieved == current_date) and datetime.now().hour >= 21)) or( relieved < current_date)):
                     obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+
+                    # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
+                    EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).update(DeviceId=0, AmdId=0)
+                    
                     # adding email_details to EmailQueue 
                     email_service.informManagerEmpDisable(emp_id,relieved,stagging = False)
                     return Response(utils.StyleRes(True,"Employee disable","{} account disabled successfully.".format(emp_name)), status=StatusCode.HTTP_OK)
@@ -216,8 +221,16 @@ class Users(APIView):
                 amd_id =  decimal.Decimal(serial_data.data["amd_id"])
                 if(device_id == None):
                     device_id = 0
+                
+                # Checking Device ID and AMD ID is already exists for another employee or no 
+                if ((EmployeeMaster.objects.using('attendance').filter(Q(DeviceId=device_id) & ~Q(EmpId=staff_no) & ~Q(DeviceId=0)).exists())):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'device_id':["HID {} already exists for another employee.".format(device_id)]}]), status=StatusCode.HTTP_BAD_REQUEST)
+                
+                if ((EmployeeMaster.objects.using('attendance').filter(Q(AmdId=amd_id) & ~Q(EmpId=staff_no) & ~Q(AmdId=0)).exists())):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'amd_id':["Alternative id {} already exists for another employee.".format(amd_id)]}]), status=StatusCode.HTTP_BAD_REQUEST)
+                
                 emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).order_by('-Id')
-                print ("emp_master_data:", emp_master_data.values())
+                
                 if(len(emp_master_data) == 0):
                     new_emp_mastser_data = EmployeeMaster.objects.using('attendance').create(EmpId=staff_no, DeviceId=device_id,AmdId=amd_id)
                 else:
@@ -338,6 +351,12 @@ class Users(APIView):
 
                 device_id = data['device_id'].value
                 amd_id =  decimal.Decimal(data['amd_id'].value)
+                # Checking Device ID and AMD ID is already exists for another employee or no 
+                if ((EmployeeMaster.objects.using('attendance').filter(Q(DeviceId=device_id) & ~Q(EmpId=data["staff_no"].value) & ~Q(DeviceId=0)).exists())):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'device_id':["HID {} already exists for another employee.".format(device_id)]}]), status=StatusCode.HTTP_BAD_REQUEST)
+                
+                if ((EmployeeMaster.objects.using('attendance').filter(Q(AmdId=amd_id) & ~Q(EmpId=data["staff_no"].value) & ~Q(AmdId=0)).exists())):
+                    return Response(utils.StyleRes(False,"Employee update failed",[{'amd_id':["Alternative id {} already exists for another employee.".format(amd_id)]}]), status=StatusCode.HTTP_BAD_REQUEST)
                 emp_master_data = EmployeeMaster.objects.using('attendance').create(EmpId=data["staff_no"].value,DeviceId=device_id,AmdId=amd_id,EmpName=emp_name)
 
                 # new employee email with reset password link
