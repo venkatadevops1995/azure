@@ -7,8 +7,8 @@ export const environment = {
   // apiUrl: 'http://10.60.62.69:8001/',
   // apiUrl: 'http://172.16.30.70:8000/',
   // apiUrl: 'http://localhost:8000/',
-  // apiUrl:'http://testvedika.atai.ai/'
- apiUrl: 'http://172.16.120.39:8000/',
+  apiUrl:'http://testvedika.atai.ai/'
+//  apiUrl: 'http://172.16.120.39:8000/',
 };
 
 /*

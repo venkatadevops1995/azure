@@ -72,11 +72,11 @@
 
       <ng-container matColumnDef="device_id">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef>HID</th>
-        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.device_id}} </td>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.device_id!=null?element.device_id:'0'}} </td>
       </ng-container>
       <ng-container matColumnDef="amd_id">
         <th class="p-table-5" mat-header-cell *matHeaderCellDef>Alt.ID</th>
-        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.amd_id}} </td>
+        <td class="p-table-5" mat-cell *matCellDef="let element"> {{element.amd_id!=null?element.amd_id:'0'}} </td>
       </ng-container>
 
 
