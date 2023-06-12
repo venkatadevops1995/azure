@@ -194,8 +194,8 @@ export class EditUserComponent implements OnInit{
     'category': ['', Validators.required],
     // 'doj': ['', [Validators.required, NoDate()]],
     'gender': ['', Validators.required],
-    'device_id':[null,Validators.pattern("^[0-9]*$")],
-    'amd_id':[null,Validators.pattern("^[0-9]*$")],
+    'device_id':['0',[Validators.pattern("^[0-9]*$")]],
+    'amd_id':['0',[Validators.pattern("^[0-9]*$")]],
     'user_pic': ['']
     // 'is_married': ['',Validators.required],
     // 'patentry_maternity_cnt': [0,Validators.required],
@@ -311,8 +311,8 @@ export class EditUserComponent implements OnInit{
     this.editUserForm.controls.location.setValue(this.getLocationId(this.USERS_DATA[i]["location"]));
     //setting the value of image formcontrol 
     this.editUserForm.controls.user_pic.setValue(this.USERS_DATA[i]["user_pic"]);
-    this.editUserForm.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]);
-    this.editUserForm.controls.amd_id.setValue(this.USERS_DATA[i]["amd_id"])
+    this.editUserForm.controls.device_id.setValue(this.USERS_DATA[i]["device_id"]??'0');
+    this.editUserForm.controls.amd_id.setValue(this.USERS_DATA[i]["amd_id"]??'0')
     this.previousVal= this.USERS_DATA[i]["user_pic"];
     this.selectedFile = this.USERS_DATA[i]["user_pic"];
     
@@ -435,10 +435,10 @@ filesize(file):boolean{
   
   updateEmp() {
     if(this.editUserForm.get('device_id').value===''){
-     _.set(this.editUserForm.value,'device_id',null)
+     _.set(this.editUserForm.value,'device_id',"0")
     }
      if(this.editUserForm.get('amd_id').value===''){
-     _.set(this.editUserForm.value,'amd_id',0)
+     _.set(this.editUserForm.value,'amd_id',"0")
     }
     this.http.request("put", "users/", '', this.editUserForm.value).subscribe(res => {
 
