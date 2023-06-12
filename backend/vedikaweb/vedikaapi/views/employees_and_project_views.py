@@ -157,33 +157,31 @@ class Users(APIView):
             elif (is_emp_admin == True or 'hr-attendance-reports' in auth_details['sub_report_access']) and emp_type == "hr":
                 if(search.lower()=="all"):
                     emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture'),location=F('profile__location_id__name')).order_by("staff_no")
-
-                    final_data = list(emp_data.values())
-                    emp_staff_no_list = []
-                    emp_device_id_dict = {}  # example: {staff_no: {device_id:12345, amd_id:456788}}
-                    for each_emp in emp_data:
-                        emp_staff_no_list.append(each_emp.staff_no)
-                    emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId__in = emp_staff_no_list).order_by('Id') 
-                    for each_master_data in emp_master_data:
-                        obj = {}
-                        obj["device_id"] = each_master_data.DeviceId
-                        obj["amd_id"] = int(each_master_data.AmdId)
-                        emp_device_id_dict[str(each_master_data.EmpId)] = obj
-                    for each_emp in final_data:
-                        if each_emp['staff_no'] in emp_device_id_dict:
-                            each_emp['device_id'] = emp_device_id_dict[each_emp['staff_no']]['device_id']
-                            each_emp['amd_id'] = emp_device_id_dict[each_emp['staff_no']]['amd_id']
-                        else:
-                            each_emp['device_id'] = None
-                            each_emp['amd_id'] = None
                                                                    
                 else:
                     emp_data=Employee.objects.prefetch_related('profile','stage_employee').filter(Q(emp_name__icontains=search) & Q(status=1)).annotate(staging_status=F('stage_employee__status'), staging_relieved=F('stage_employee__relieved'),gender=F('profile__gender_id'),category=F('profile__category_id'),category_name=F('profile__category_id__name'),user_pic=F('profile__picture'), location=F('profile__location_id__name')).order_by("staff_no")
                 # emp_serial_data = EmployeeDetailsSerializer(emp_data, many=True)
-                emp_serial_data = emp_data.values()
-                if search.lower()=="all":
-                    emp_serial_data = final_data
-                return Response(utils.StyleRes(True,"All employee list",emp_serial_data), status=StatusCode.HTTP_OK)
+
+                final_data = list(emp_data.values())
+                emp_staff_no_list = []
+                emp_device_id_dict = {}  # example: {staff_no: {device_id:12345, amd_id:456788}}
+                for each_emp in emp_data:
+                    emp_staff_no_list.append(each_emp.staff_no)
+                emp_master_data = EmployeeMaster.objects.using('attendance').filter(EmpId__in = emp_staff_no_list).order_by('Id') 
+                for each_master_data in emp_master_data:
+                    obj = {}
+                    obj["device_id"] = each_master_data.DeviceId
+                    obj["amd_id"] = int(each_master_data.AmdId)
+                    emp_device_id_dict[str(each_master_data.EmpId)] = obj
+                for each_emp in final_data:
+                    if each_emp['staff_no'] in emp_device_id_dict:
+                        each_emp['device_id'] = emp_device_id_dict[each_emp['staff_no']]['device_id']
+                        each_emp['amd_id'] = emp_device_id_dict[each_emp['staff_no']]['amd_id']
+                    else:
+                        each_emp['device_id'] = None
+                        each_emp['amd_id'] = None
+
+                return Response(utils.StyleRes(True,"All employee list",final_data), status=StatusCode.HTTP_OK)
             else:
                 
                 return Response(utils.StyleRes(True,"All Managers list","Loggedin user do not have permission"))
