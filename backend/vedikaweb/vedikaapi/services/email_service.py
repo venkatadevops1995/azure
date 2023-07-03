@@ -328,14 +328,14 @@ class email_service():
             else:
                 log.info("Not sending {} Mail Send to {}".format(mail_type,emp))
 
-    def informManagerEmpDisable(emp_id, relieved=str(datetime.now().date()), stagging=False):
+    def informManagerEmpDisable(emp_id,emp_details, relieved=str(datetime.now().date()), stagging=False):
         '''
         Inform Managers about employee disable
         '''
         emp_list =  Employee.objects.filter(emp_id=emp_id)
-        staff_no = Employee.objects.only('staff_no'). get(emp_id=emp_id).staff_no
-        emp_name =unicodedata.normalize("NFKD", emp_list[0].emp_name)
-
+        staff_no = emp_details['staff_no'] #Employee.objects.only('staff_no'). get(emp_id=emp_id).staff_no
+        emp_name = emp_details['emp_name'] #unicodedata.normalize("NFKD", emp_list[0].emp_name)
+        email = emp_details['email']
         # print(emp_list.values())
         # print(emp_list[0].emp_name)
 
@@ -349,8 +349,8 @@ class email_service():
             subject = MailConfigurations.Sub_EmployeeDisabledPast.value + emp_name+"("+ str(staff_no)+")" 
         relieved = str(relieved)
         ctx={
-            "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
-            "email":emp_list[0].email,
+            "name":emp_name,#unicodedata.normalize("NFKD", emp_list[0].emp_name),
+            "email":email, #emp_list[0].email,
             "relieved":relieved,
             "staff_no":staff_no,
         }
@@ -381,8 +381,8 @@ class email_service():
                 mgr_name = Employee.objects.only('emp_name'). get(emp_id=mgr_id).emp_name                
                 
                 ctx2={
-                    "name":unicodedata.normalize("NFKD", emp_list[0].emp_name),
-                    "email":emp_list[0].email,
+                    "name":emp_name,#unicodedata.normalize("NFKD", emp_list[0].emp_name),
+                    "email":email, #emp_list[0].email,
                     "relieved":relieved,
                     "staff_no":staff_no,
                     "mgr_name":mgr_name,

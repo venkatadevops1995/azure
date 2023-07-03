@@ -7,7 +7,7 @@ from vedikaweb.vedikaapi.models import Employee, EmployeeMaster,EmployeeProject,
 
 from vedikaweb.vedikaapi.serializers import EmployeeDisableSerializer, EmployeeListSerializer, EmployeeSerializer, UpdateProjectSerializer, EmpManagersSerializer, EmployeeDetailsSerializer,ProjectSerializer, NewEmpSerializer, ChangeRoleSerializer
 
-from vedikaweb.vedikaapi.constants import StatusCode, DefaultProjects, MailConfigurations
+from vedikaweb.vedikaapi.constants import DeletedEmployeePrefix, StatusCode, DefaultProjects, MailConfigurations
 from vedikaweb.vedikaapi.utils import utils
 from django.conf import settings
 from vedikaweb.vedikaapi.decorators import custom_exceptions, is_admin, is_manager,jwttokenvalidator,servicejwttokenvalidator
@@ -64,12 +64,18 @@ class Usersdelete(APIView):
                 emp_id = serial_data.validated_data['emp_id'].emp_id
                 relieved = serial_data.validated_data['relieved']
 
-                obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
+                obj = Employee.objects.only('role_id', 'created','emp_name','email').get(emp_id = emp_id)
                 role_id = obj.role_id
                 emp_name = obj.emp_name
                 staff_no = obj.staff_no
                 created = obj.created
+                email = obj.email
                 current_date = datetime.now().date()
+                emp_details = {
+                        "staff_no": staff_no,
+                        "email": email,
+                        "emp_name": emp_name
+                }
                 if (created.date() > relieved):
                     return Response(utils.StyleRes(False,'Relieve date must be greater than joining date',{"Joining date": created , "Relieving date":relieved}), status = StatusCode.HTTP_NOT_ACCEPTABLE)
                 
@@ -79,13 +85,12 @@ class Usersdelete(APIView):
                         return Response(utils.StyleRes(False,"This manager has {} employee".format(manager_id['cnt']),str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)
                 
                 if((((relieved == current_date) and datetime.now().hour >= 21)) or( relieved < current_date)):
-                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
-
+                    obj = Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved,email=email+str(DeletedEmployeePrefix.Deleted.value),emp_name=emp_name+str(DeletedEmployeePrefix.Deleted.value),staff_no=staff_no+str(DeletedEmployeePrefix.Deleted.value))
                     # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
                     EmployeeMaster.objects.using('attendance').filter(EmpId=staff_no).update(DeviceId=0, AmdId=0)
                     
                     # adding email_details to EmailQueue 
-                    email_service.informManagerEmpDisable(emp_id,relieved,stagging = False)
+                    email_service.informManagerEmpDisable(emp_id,emp_details,relieved,stagging = False)
                     return Response(utils.StyleRes(True,"Employee disable","{} account disabled successfully.".format(emp_name)), status=StatusCode.HTTP_OK)
                 else:
                     obj, created = StageEmpolyee.objects.update_or_create(
@@ -93,7 +98,7 @@ class Usersdelete(APIView):
                         defaults={'status': 1,'relieved':relieved},
                     )
                     # adding email_details to EmailQueue 
-                    email_service.informManagerEmpDisable(emp_id,relieved,stagging=True)
+                    email_service.informManagerEmpDisable(emp_id,emp_details,relieved,stagging=True)
                     return Response(utils.StyleRes(True,"Disbale Employee in Stagging","{} account will be disabled on {} at 9PM.".format(emp_name,relieved)) , status=StatusCode.HTTP_OK)
             else:
                 return Response(utils.StyleRes(False,"Employee update",str(serial_data.errors)), status=StatusCode.HTTP_BAD_REQUEST)

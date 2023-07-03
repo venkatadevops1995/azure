@@ -20,7 +20,7 @@ from .serializers import EmployeeProjectTimeTrackerReqSerializer, EmployeeProjec
 from .serializers import EmployeeManagerSerializer, PunchLogsSerializer
 from vedikaweb.vedikaapi.services.email_service import email_service
 
-from .constants import EmpStatus, LeaveDayStatus, LeaveExcelHeadings, StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, LeaveRequestStatus, LeaveMailTypes
+from .constants import DeletedEmployeePrefix, EmpStatus, LeaveDayStatus, LeaveExcelHeadings, StatusCode, ExcelHeadings, DefaultProjects, WorkApprovalStatuses, MailConfigurations, LeaveRequestStatus, LeaveMailTypes
 from .utils import utils,StringOptimize
 from .decorators import custom_exceptions,jwttokenvalidator, query_debugger
 from django.db.models import Q,F,Count,Prefetch,CharField, Value as V
@@ -881,10 +881,11 @@ def relieveEmployee():
 
         for stg_emp in stagged_employee:
             emp_id = stg_emp['emp_id']
-            obj = Employee.objects.only('role_id', 'created','emp_name').get(emp_id = emp_id)
+            obj = Employee.objects.only('role_id', 'created','emp_name','email').get(emp_id = emp_id)
             role_id = obj.role_id
             emp_name = obj.emp_name
             staff_no = obj.staff_no
+            email = obj.email
             relieved = stg_emp['relieved']
 
             # ##checking that emplyoee is manager or not
@@ -902,7 +903,7 @@ def relieveEmployee():
                     except Exception as e:
                         log.info("Issue to send mail to :",mail_list) 
                 else:
-                    Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                    Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved,email= email+str(DeletedEmployeePrefix.Deleted.value),emp_name=emp_name+str(DeletedEmployeePrefix.Deleted.value),staff_no=staff_no+str(DeletedEmployeePrefix.Deleted.value))
                     StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
                     
                     # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
@@ -912,7 +913,7 @@ def relieveEmployee():
 
             # ##Employee is not any manager // so update him/her
             else:
-                Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved)
+                Employee.objects.filter(emp_id = emp_id).update(status=0, relieved=relieved,email=email+str(DeletedEmployeePrefix.Deleted.value),emp_name=emp_name+str(DeletedEmployeePrefix.Deleted.value),staff_no=staff_no+str(DeletedEmployeePrefix.Deleted.value))
                 StageEmpolyee.objects.filter(emp_id = emp_id).update(status=0)
                     
                 # change the DeviceId and AmdId of relieved employee in EmployeeMaster 
