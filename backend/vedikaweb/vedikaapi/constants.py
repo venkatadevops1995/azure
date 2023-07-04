@@ -150,3 +150,6 @@ class LeaveMailTypes(Enum):
     DiscrepancyApplied= "Correction Applied"
     DiscrepancyApproved= "Correction Approved"
     DiscrepancyRejected= "Correction Rejected"
+
+class DeletedEmployeePrefix(Enum):
+    Deleted = "_deleted"
