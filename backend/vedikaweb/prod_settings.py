@@ -305,8 +305,8 @@ ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
 
 IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com','gd@invecas.com']
-SENDEMAILTOALL=True
-CUSTOM_EMAILS = []
+SENDEMAILTOALL=False
+CUSTOM_EMAILS = ['moulali@atai.ai','dipak@atai.ai']
 
 
 MONTH_CYCLE_START_DATE = 26
