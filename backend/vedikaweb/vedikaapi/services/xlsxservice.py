@@ -8,6 +8,8 @@ cell_format = {'font_size': 10,'font_name':'Arial','align':'center'}
 project_cell_format = {'font_size': 10,'font_name':'Arial','align':'center','font_color':'cc5803'}
 absent_cell_format = {'font_size': 10,'font_name':'Arial','align':'left','font_color':'red'}
 student_holiday_format = {'font_size': 10,'bold':False,'font_name':'Arial','align':'left','bg_color':'red','border':1}
+new_format_h1 = {'font_size': 14,'bold':True,'align':'center'}
+new_format_h2 = {'font_size': 12,'bold':True,'align':'center'}
 
 merge_format = {
     'bold': 1,
@@ -20,7 +22,7 @@ cust_cell_special_format = {'fg_color':'gray','border':1,'text_wrap':True}
 # here is one extra column for checking status = 0 or one at last 
 class ExcelServices:
     def __init__(self,filename,workSheetName='MainWorksheet',in_memory=False,header_format=header_format,cell_format=cell_format,merge_rane=None
-                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format, project_cell_format = project_cell_format, absent_cell_format=absent_cell_format,student_holiday_format=student_holiday_format):
+                ,merge_format=merge_format,merge_string='MERGE RANGE',multisheetFlag=False, disable_format=disable_format, project_cell_format = project_cell_format, absent_cell_format=absent_cell_format,student_holiday_format=student_holiday_format,new_format_h1=new_format_h1,new_format_h2=new_format_h2):
         self.filenameWithExt = filename
         self.workSheetName = workSheetName
         if in_memory:
@@ -37,6 +39,9 @@ class ExcelServices:
         self.cell_format=self.workbook.add_format(cell_format)
         self.cust_cell_special_format=self.workbook.add_format(cust_cell_special_format)
         self.merge_format=self.workbook.add_format(merge_format)
+        self.new_format_h1=self.workbook.add_format(new_format_h1)
+        self.new_format_h2=self.workbook.add_format(new_format_h2)
+        
         if(multisheetFlag):
             self.multiWorksheet=[]
         else:
@@ -128,7 +133,19 @@ class ExcelServices:
                         if(regra[each]== 'Absent'):
                             worksheet.write(row_nums, col , regra[each],self.absent_cell_format)
                         else:
-                            worksheet.write(row_nums, col , regra[each],self.cell_format)
+                            if(self.workSheetName == 'Attendance By Alt.Id Report'):
+                                if(regra[each] == 'SOCTRONICS TECHNOLOGIES PVT. LTD.'):
+                                    worksheet.merge_range("A3:D3",regra[each],self.new_format_h1)
+
+                                elif(regra[each]  == 'Badge ID' or regra[each]  == 'EmpName' or regra[each]  == 'DateTime' or regra[each]  == 'In/Out' or regra[each]  == 'ReaderName'):
+                                    worksheet.write(row_nums, col , regra[each],self.header_format)
+                                    
+                                elif(str(regra[each]).find('From Date:') !=-1 ):
+                                    worksheet.merge_range("A5:D5",regra[each],self.new_format_h2)
+                                else:
+                                    worksheet.write(row_nums, col , regra[each],self.cell_format)
+                            else:
+                                worksheet.write(row_nums, col , regra[each],self.cell_format)
                 col=col+1
         if(closeFlag):
             self.workbook.close()
