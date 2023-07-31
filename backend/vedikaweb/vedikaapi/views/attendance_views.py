@@ -475,7 +475,7 @@ class VedaStudentAttendanceApi(APIView):
 class AttendanceByAltId(APIView):
     @jwttokenvalidator
     @custom_exceptions
-    @is_admin
+    # @is_admin
     def get(self, request):
         from_date =  request.GET.get('start_date','')
         to_date = request.GET.get('end_date','')
@@ -485,9 +485,8 @@ class AttendanceByAltId(APIView):
         ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
         final_dict = {'final_datastructure': []}
         for each_emp in all_emp_data:
-            emp_obj = Employee.objects.only('staff_no', 'emp_name').get(emp_id = each_emp.emp_id)
-            staff_no = emp_obj.staff_no
-            emp_name = emp_obj.emp_name
+            staff_no = each_emp.staff_no
+            emp_name = each_emp.emp_name
             emp_master_data = EmployeeMaster.objects.using('attendance').filter( Q(EmpId=staff_no) & Q(AmdId__gt = 0) & Q(DeviceId__gt = 0))
             
             each_emp_data = {'data':'','emp_name':emp_name}
