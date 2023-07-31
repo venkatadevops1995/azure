@@ -117,6 +117,16 @@
             }
 
         ]
+    },
+    {
+        "text": "Alternative Reports",
+        "link": "",
+        "submenu": [
+            {
+                "text": "Attendance report",
+                "link": "attendance-report-by-alt"
+            }
+        ]
     }
     
     

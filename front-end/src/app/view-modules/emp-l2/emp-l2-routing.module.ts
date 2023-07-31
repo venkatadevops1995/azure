@@ -29,7 +29,9 @@ import {AuthGuardSecurityService_HR,
   AuthGuardSecurityService_HR_OR_Manager,
   AuthGuardSecurityService_Report_Access,
   AuthGuardSecurityService_HR_OR_SUB_Attendance,
-  AuthGuardSecurityService_HR_OR_SUB_Add_User} from '../../services/auth-guard-security.service';
+  AuthGuardSecurityService_HR_OR_SUB_Add_User,
+  AuthGuardSecurityService_Alt_Report_Access} from '../../services/auth-guard-security.service';
+import { DownloadAltAttendanceComponent } from '../common/download-alt-attendance/download-alt-attendance.component';
 
 const routes: Routes = [
   // { path: '', component: EmpL2Component },
@@ -59,6 +61,7 @@ const routes: Routes = [
   {path:"hr-timesheet-reports",component:HrTimesheetReportComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"mis-add-project",component:AddProjectComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
+  {path:"attendance-report-by-alt",component:DownloadAltAttendanceComponent,canActivate:[AuthGuardSecurityService_Alt_Report_Access]},
   {path:"**",redirectTo:"history-dashboard",pathMatch:'full'}
 
 

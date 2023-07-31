@@ -26,9 +26,11 @@ import { DownloadMisComponent } from '../common/download-mis/download-mis.compon
 import {AuthGuardSecurityService_HR,
   AuthGuardSecurityService_HR_OR_SUB_Attendance,
   AuthGuardSecurityService_HR_OR_SUB_Add_User,
-  AuthGuardSecurityService_Report_Access} from '../../services/auth-guard-security.service';
+  AuthGuardSecurityService_Report_Access,
+  AuthGuardSecurityService_Alt_Report_Access} from '../../services/auth-guard-security.service';
 import { BatchListsComponent } from '../common/veda/batch-lists/batch-lists.component';
 import { AttendanceReportComponent } from '../common/veda/attendance-report/attendance-report.component';
+import { DownloadAltAttendanceComponent } from '../common/download-alt-attendance/download-alt-attendance.component';
 
 
 const routes: Routes = [
@@ -58,6 +60,7 @@ const routes: Routes = [
   {path:"mis-download", component:DownloadMisComponent,canActivate:[AuthGuardSecurityService_Report_Access]},
   {path:"veda-batch-list", component:BatchListsComponent,canActivate:[AuthGuardSecurityService_HR]},
   {path:"veda-attendance-report", component:AttendanceReportComponent,canActivate:[AuthGuardSecurityService_HR]},   
+  {path:"attendance-report-by-alt",component:DownloadAltAttendanceComponent,canActivate:[AuthGuardSecurityService_Alt_Report_Access]},
   {path:"**",redirectTo:"timesheet",pathMatch:'full'}
 ];
 

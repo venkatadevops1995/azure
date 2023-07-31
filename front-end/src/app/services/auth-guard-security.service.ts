@@ -183,3 +183,31 @@ export class AuthGuardSecurityService_HR_OR_SUB_Attendance implements CanActivat
       }
   }
 }
+
+// For Alternative Report Access
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuardSecurityService_Alt_Report_Access implements CanActivate {
+
+  constructor(
+    private ss: SingletonService,
+    private router: Router,
+    private user: UserService,
+    private http: HttpClientService
+  ) { }
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    let sub_report_access = this.user.getSubReportAccess()
+    let dashbaord_route = this.user.getDashboardRoute()
+    if (sub_report_access.includes('alt-attendance')) {
+      return true;
+    } else {
+      this.router.navigate([dashbaord_route], {
+      });
+      return false;
+    }
+  }
+}

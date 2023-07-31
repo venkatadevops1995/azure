@@ -25,6 +25,7 @@ import { EmpPolicyListModule } from '../common/emp-policy-list/emp-policy-list.m
 import { HrAttendenceReportModule } from '../common/hr-attendance-report/hr-attendance-report.module';
 import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesheet-report.module';
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
+import { DownloadAltAttendanceModule } from '../common/download-alt-attendance/download-alt-attendance.module';
 
 @NgModule({
   declarations: [EmpL3Component],
@@ -53,7 +54,8 @@ import { DownloadMisModule } from '../common/download-mis/download-mis.module';
     HrAttendenceReportModule,
     HrTimesheetReportModule,
     NgCircleProgressModule.forRoot({}),
-    DownloadMisModule
+    DownloadMisModule,
+    DownloadAltAttendanceModule
   ]
 })
 export class EmpL3Module { }
