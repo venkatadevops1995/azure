@@ -197,7 +197,7 @@ export class SidebarComponent implements OnInit {
                 this.menu = this.menu.filter(item => item.text != "MIS");
               }
               if (!sub_report_access.includes('alt-attendance')) {
-                this.menu = this.menu.filter(item => item.text != "Alternative Reports");
+                this.menu = this.menu.filter(item => item.text != "Client Reports");
               }
 
               // if(!is_hr){
