@@ -34,6 +34,7 @@ import { HrTimesheetReportModule } from '../common/hr-timesheet-report/hr-timesh
 import { DownloadMisModule } from '../common/download-mis/download-mis.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.module';
+import { DownloadAltAttendanceModule } from '../common/download-alt-attendance/download-alt-attendance.module';
 @NgModule({
   declarations: [EmpL2Component, L2DashboardComponent],
   imports: [
@@ -69,7 +70,8 @@ import { FocusModule } from 'src/app/directives/focuseDirective/focus/focus.modu
     HrTimesheetReportModule,
     DownloadMisModule,
     UseSvgModule,
-    FocusModule
+    FocusModule,
+    DownloadAltAttendanceModule
   ]
 })
 export class EmpL2Module { }

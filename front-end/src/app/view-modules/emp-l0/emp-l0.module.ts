@@ -26,6 +26,7 @@ import { DownloadMisModule } from '../common/download-mis/download-mis.module';
 import { TimeSheetModule } from '../common/time-sheet/time-sheet.module';
 import { UseSvgModule } from 'src/app/components/use-svg/use-svg.module';
 import { VedaModule } from '../common/veda/veda.module';
+import { DownloadAltAttendanceModule } from '../common/download-alt-attendance/download-alt-attendance.module';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { VedaModule } from '../common/veda/veda.module';
     HrAttendenceReportModule,
     HrTimesheetReportModule,
     DownloadMisModule,
+    DownloadAltAttendanceModule,
     VedaModule
   ]
 })
