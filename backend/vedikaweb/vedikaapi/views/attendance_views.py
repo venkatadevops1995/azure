@@ -5,7 +5,7 @@ from django.conf import settings
 from openpyxl import load_workbook
 from itertools import groupby
 from django.db.models import Q,F
-from datetime import date,datetime
+from datetime import date,datetime,timedelta
 
 # Modles
 from vedikaweb.vedikaapi.models import EmployeeMaster, PunchLogs, VedaBatch, Employee,EmployeeHierarchy, AttendanceAccessGroup, GlobalAccessFlag,VedaStudent
@@ -479,11 +479,17 @@ class AttendanceByAltId(APIView):
     def get(self, request):
         from_date =  request.GET.get('start_date','')
         to_date = request.GET.get('end_date','')
+        format = "%Y-%m-%d"
         if(from_date == '' or to_date == ''):
             return Response(utils.StyleRes(False,'failure',{'msg':'start date and end date  is required '}), status=StatusCode.HTTP_NOT_ACCEPTABLE)
         all_emp_data = Employee.objects.filter(status=1)
         ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
         final_dict = {'final_datastructure': []}
+        if(type(from_date)==str):
+            from_date_with_time = datetime.strptime(from_date,format)
+        if(type(to_date)==str):
+            to_date_with_time = datetime.strptime(to_date,format)
+        to_date_with_time = datetime.combine(to_date_with_time, datetime.min.time())+timedelta(hours=23,minutes=59,seconds=59)
         for each_emp in all_emp_data:
             staff_no = each_emp.staff_no
             emp_name = each_emp.emp_name
@@ -493,7 +499,7 @@ class AttendanceByAltId(APIView):
             if(len(emp_master_data) > 0):
                 deviceId = emp_master_data.last().DeviceId
                 amdId = emp_master_data.last().AmdId
-                each_emp_punch_data = PunchLogs.objects.using('attendance').filter( Q(DeviceID=deviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
+                each_emp_punch_data = PunchLogs.objects.using('attendance').filter( Q(DeviceID=deviceId) & Q(LogDate__gte=from_date_with_time) & Q(LogDate__lte=to_date_with_time)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
                 each_emp_data['data'] = each_emp_punch_data.values()
                 each_emp_data['amdId'] = amdId
                 
@@ -501,7 +507,7 @@ class AttendanceByAltId(APIView):
 
         columns=[]
 
-        file_name="Attendance_By_Alt_Id"+str(from_date)+'_'+str(to_date)+'.xlsx'
+        file_name="Attendance_By_Alt_Id_"+str(from_date)+'_'+str(to_date)+'.xlsx'
         response=utils.contentTypesResponce('xl',file_name)
         e=ExcelServices(response,in_memory=True,workSheetName="Attendance By Alt.Id Report",cell_format={'font_size': 10,'font_name':'Arial','align':'left'})
         data=[columns]
