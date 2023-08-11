@@ -709,7 +709,12 @@ export class ApplyLeaveComponent implements OnInit {
             let dates = res.error.results;
             dates = dates.map((item) => this.datepipe.transform(item, 'dd/MM/yyyy'))
             this.ss.statusMessage.showStatusMessage(false, "The requested date(s) " + dates.join(", ") + " " + (dates.length == 1 ? "has" : "have") + " conflict with another request")
-          } else {
+          }else if(res.status == 400 && res?.error?.results?.hasOwnProperty('emp_comments')) {
+            let errMsg = 'Purpose of leave field allow maximum 1000 character.';
+            this.ss.statusMessage.showStatusMessage(false, errMsg)
+
+          }
+          else {
             this.ss.statusMessage.showStatusMessage(false, "Something went wrong")
           }
         }

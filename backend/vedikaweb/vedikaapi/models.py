@@ -732,7 +732,7 @@ class LeaveRequest(models.Model):
     leave_type = models.ForeignKey(LeaveType, models.DO_NOTHING)
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
-    emp_comments = models.CharField(max_length=255, blank=True, null=True)
+    emp_comments = models.CharField(max_length=1000, blank=True, null=True)
     leave_reason = models.CharField(max_length=40, blank=True, null=False )
     uploads_invitation = models.TextField(null=True)
     manager_comments = models.CharField(max_length=255, blank=True, null=True)
