@@ -142,7 +142,7 @@ class LeaveRequestView(APIView):
         
         # User can't able to apply leave beacuse date is in-between 27th December to 31th December
         if(len(restrict_apply_leave) >0):
-            return Response(utils.StyleRes(False,"Not allowed to apply leave"), status=StatusCode.HTTP_NOT_ACCEPTABLE) 
+            return Response(utils.StyleRes(False,"You cannot apply leave now.  Contact HR"), status=StatusCode.HTTP_NOT_ACCEPTABLE) 
         # test request script 
         # emp_id=req_data.get('emp_id')
         # gender= EmployeeProfile.objects.get(emp_id=emp_id).gender_id
