@@ -305,7 +305,7 @@ ENABLE_SUPPORT_EMAIL = True
 SUPPORT_EMAIL = 'atwork@atai.ai'
 
 IGNORE_ADMIN_EMAILS=['kishor.arumilli@atai.ai','venkata@atai.ai','PrabhakaraRao.Aravapalli@invecas.com','kp@soctronics.com','gd@invecas.com']
-SENDEMAILTOALL=False
+SENDEMAILTOALL=True
 CUSTOM_EMAILS = ['moulali@atai.ai','dipak@atai.ai']
 
 
