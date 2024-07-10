@@ -654,7 +654,7 @@ class MailOptedStatus(APIView):
 
 class SendWelcomeEmails(APIView):
     def get(self,request):
-        mails_list = ['moulali@atai.ai']
+        mails_list = ['suman@atai.ai']
         
         for eachemp in mails_list:
             fun_owner="Bulli Kishor Arumilli"

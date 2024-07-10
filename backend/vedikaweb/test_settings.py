@@ -306,15 +306,15 @@ SUPPORT_EMAIL = 'atwork@atai.ai'
 
 IGNORE_ADMIN_EMAILS=[]
 SENDEMAILTOALL=False
-CUSTOM_EMAILS = ['moulali@atai.ai','dipak@atai.ai']
+CUSTOM_EMAILS = ['suman@atai.ai','dipak@atai.ai']
 
 
 MONTH_CYCLE_START_DATE = 26
 TODAY_AS_HISTORY = True
 
-ADMINS_TO_ACCESS_REPORTS = ['1moulali@atai.ai','1prerana@atai.ai']
+ADMINS_TO_ACCESS_REPORTS = ['1suman@atai.ai','1prerana@atai.ai']
 SUB_ADMINS_TO_ACCESS_REPORTS = ['1dipak@atai.ai','1trinath@atai.ai']
-STAGED_EMPLOYEE_INFO_EMAILS=['moulali@atai.ai','dipak@atai.ai']
-MIS_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']
-CLB_REPORT_RECEIVER_EMAILS =['moulali@atai.ai','dipak@atai.ai']
+STAGED_EMPLOYEE_INFO_EMAILS=['suman@atai.ai','dipak@atai.ai']
+MIS_REPORT_RECEIVER_EMAILS =['suman@atai.ai','dipak@atai.ai']
+CLB_REPORT_RECEIVER_EMAILS =['suman@atai.ai','dipak@atai.ai']
 IGNOROR_PUNCH_DEVICES = ['AIOR181160597', 'AIOR181160618']
