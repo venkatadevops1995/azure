@@ -193,12 +193,13 @@ class AttendenceService():
         
 
         ignorePunchLog = settings.IGNOROR_PUNCH_DEVICES 
+        ignorePunchLogSources = settings.IGNOROR_PUNCH_SOURCES
         device_id = 0
         alternative_id = 0
         if(len(emp_obj)>0):
             device_id = emp_obj.last().DeviceId
             alternative_id = emp_obj.last().AmdId
-            qs=PunchLogs.objects.using('attendance').filter(Q(DeviceID=emp_obj.last().DeviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog))).order_by('LogDate')
+            qs=PunchLogs.objects.using('attendance').filter(Q(DeviceID=emp_obj.last().DeviceId) & Q(LogDate__gte=from_date) & Q(LogDate__lte=to_date)  & (~Q(SerialNo__in=ignorePunchLog)) & (~Q(Source__in=ignorePunchLogSources))).order_by('LogDate')
             grouped = itertools.groupby(qs, lambda record: record.LogDate.strftime("%Y-%m-%d"))
             jobs_by_day = [{"Date":day,"result": [{'Direction':each.Direction,'Time':each.LogDate} for each in list(jobs_this_day)]} for day, jobs_this_day in grouped]
             present_dates_list = list(map(lambda x:x['Date'],jobs_by_day))
